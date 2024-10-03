@@ -28,7 +28,7 @@ const Signin = () => {
         dispatch(setToken(token));
         localStorage.setItem("token", token);
         toast.success("Login Success");
-        navigate("/edit");
+        navigate("/dashboard");
       }
     } catch (error) {
       console.log(error);
@@ -50,7 +50,7 @@ const Signin = () => {
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 z-10">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
-            alt="Your Company"
+            alt="Menu Logo"
             src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
             className="mx-auto h-10 w-auto"
           />

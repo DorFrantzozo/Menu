@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Disclosure,
   DisclosureButton,
@@ -14,11 +15,10 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../../state/user/userSlice";
 
-const navigation = [
-  { name: "Dashboard", href: "dashboard", current: true },
-  { name: "Edit", href: "edit", current: false },
-  // { name: "Projects", href: "#", current: false },
-  { name: "Designs", href: "#", current: false },
+const navigationItems = [
+  { name: "Dashboard", href: "dashboard" },
+  { name: "Edit", href: "edit" },
+  { name: "Designs", href: "designs" },
 ];
 
 function classNames(...classes) {
@@ -26,18 +26,22 @@ function classNames(...classes) {
 }
 
 export default function Navbar() {
+  const [currentNav, setCurrentNav] = useState("dashboard");
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
-  const handleDropDown = (link) => {
-    navigate(link);
+
+  const handleNavClick = (item) => {
+    setCurrentNav(item.href);
+    navigate(`/${item.href}`);
   };
+
   const handleLogOut = () => {
     dispatch(logoutUser(user));
     localStorage.removeItem("token");
     navigate("/");
   };
+
   return (
     <Disclosure as="nav" className="bg-gray-800">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -49,14 +53,13 @@ export default function Navbar() {
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
-                {navigation.map((item) => (
+                {navigationItems.map((item) => (
                   <button
-                    onClick={() => navigate(`/${item.href}`)}
                     key={item.name}
-                    href={item.href}
-                    aria-current={item.current ? "page" : undefined}
+                    onClick={() => handleNavClick(item)}
+                    aria-current={currentNav === item.href ? "page" : undefined}
                     className={classNames(
-                      item.current
+                      currentNav === item.href
                         ? "bg-gray-900 text-white"
                         : "text-gray-300 hover:bg-gray-700 hover:text-white",
                       "rounded-md px-3 py-2 text-sm font-medium"
@@ -97,7 +100,7 @@ export default function Navbar() {
               >
                 <MenuItem>
                   <button
-                    onClick={() => handleDropDown("/profile")}
+                    onClick={() => handleNavClick("/profile")}
                     className="block px-4 py-2 text-sm text-left w-full text-green-400 data-[focus]:bg-gray-700"
                   >
                     Your Profile
@@ -105,7 +108,7 @@ export default function Navbar() {
                 </MenuItem>
                 <MenuItem>
                   <button
-                    onClick={() => handleDropDown("/settings")}
+                    onClick={() => handleNavClick("/settings")}
                     className="block px-4 py-2 text-sm text-left w-full text-green-400 data-[focus]:bg-gray-700"
                   >
                     Settings
@@ -113,9 +116,8 @@ export default function Navbar() {
                 </MenuItem>
                 <MenuItem>
                   <button
-                    onClick={() => handleLogOut()}
-                    value={"Sign out"}
-                    className="block px-4 py-2 w-full  text-left text-sm text-green-400 data-[focus]:bg-gray-700"
+                    onClick={handleLogOut}
+                    className="block px-4 py-2 w-full text-left text-sm text-green-400 data-[focus]:bg-gray-700"
                   >
                     Sign out
                   </button>
@@ -128,14 +130,14 @@ export default function Navbar() {
 
       <DisclosurePanel className="sm:hidden">
         <div className="space-y-1 px-2 pb-3 pt-2">
-          {navigation.map((item) => (
+          {navigationItems.map((item) => (
             <DisclosureButton
               key={item.name}
-              as="a"
-              href={item.href}
-              aria-current={item.current ? "page" : undefined}
+              as="button"
+              onClick={() => handleNavClick(item)}
+              aria-current={currentNav === item.href ? "page" : undefined}
               className={classNames(
-                item.current
+                currentNav === item.href
                   ? "bg-gray-900 text-white"
                   : "text-gray-300 hover:bg-gray-700 hover:text-white",
                 "block rounded-md px-3 py-2 text-base font-medium"

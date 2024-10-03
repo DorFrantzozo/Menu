@@ -5,23 +5,32 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setToken, setUser } from "../state/user/userSlice";
+import { PhotoIcon } from "@heroicons/react/24/solid";
 const Signup = () => {
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [restaurantName, setRestaurantName] = useState("");
+  const [img, setImg] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("restaurantName", restaurantName);
+    formData.append("password", password);
+    formData.append("logo", img);
+
     try {
       const response = await axios.post(
         "http://localhost:8000/api/user/signup",
+        formData,
         {
-          email,
-          password,
-          restaurantName,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
 
@@ -109,6 +118,39 @@ const Signup = () => {
                   autoComplete="current-password"
                   className="block w-full  rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-400 sm:text-sm sm:leading-6"
                 />
+              </div>
+            </div>
+            <div className="mt-2 flex justify-center rounded-lg border border-dashed border-green-400 px-6 py-10 bg-white">
+              <div className="text-center">
+                <PhotoIcon
+                  aria-hidden="true"
+                  className="mx-auto h-12 w-12 text-gray-300"
+                />
+                {img && (
+                  <p className="mt-2 text-sm text-green-400">
+                    Selected file: {img.name} {/* Display file name */}
+                  </p>
+                )}
+                <div className="mt-4 flex text-sm leading-6 text-gray-600">
+                  <label
+                    htmlFor="file-upload"
+                    className="relative cursor-pointer rounded-md bg-black w-[100px] font-semibold text-white focus-within:outline-none focus-within:ring-2 focus-within:ring-green-400 focus-within:ring-offset-2 hover:text-green-400"
+                  >
+                    <span>Upload a file</span>
+                    <input
+                      id="file-upload"
+                      name="logo"
+                      type="file"
+                      className="sr-only"
+                      onChange={(e) => setImg(e.target.files[0])} // Assuming you're handling image file upload here
+                    />
+                  </label>
+                  <p className="pl-1 text-black">or drag and drop</p>
+                </div>
+
+                <p className="text-xs leading-5 text-black">
+                  PNG, JPG, GIF up to 10MB
+                </p>
               </div>
             </div>
 

@@ -13,9 +13,7 @@ const MenuCard = (item) => {
           <img
             src={item.item.img}
             alt={item.item.name}
-            width={200}
-            height={200}
-            className="w-full h-auto text-white rounded"
+            className="w-[400px] h-[250px] text-white rounded"
           />
         ) : (
           <div className="w-full h-48 bg-gray-200 flex items-center justify-center">

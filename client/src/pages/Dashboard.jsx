@@ -36,7 +36,11 @@ const Dashboard = () => {
   return (
     <div>
       <div className=" flex justify-center  ">
-        <div className="md:flex md:justify-between block">
+        <img src={user.logo} width={80} height={100} alt="" />
+        <h1 className="text-white mt-4 font-semibold text-2xl ">
+          {user.restaurantName.toUpperCase()}'S Menu
+        </h1>
+        <div className="md:flex md:justify-between block mt-20">
           {categories &&
             categories.map((category) => (
               <MenuCard key={category._id} item={category} />
