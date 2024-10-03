@@ -10,6 +10,9 @@ import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 import Edit from "./pages/Edit";
 import AddDish from "./components/AddDish";
+import Dashboard from "./pages/Dashboard";
+import AddCategory from "./components/AddCategory";
+import DishPage from "./pages/DishPage";
 
 function App() {
   const user = useSelector((state) => state.user.user);
@@ -29,7 +32,11 @@ function App() {
           <Route path="/signin" element={<Signin />} />
           <Route path="/edit" element={<Edit />} />
           <Route path="/add-dish" element={<AddDish />} />
+          <Route path="/add-category" element={<AddCategory />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dishesPage" element={<DishPage />} />
         </Routes>
+
         <Footer />
       </BrowserRouter>
       <ToastContainer position="top-right" autoClose={5000} theme="dark" />

@@ -7,6 +7,7 @@ const Card = () => {
   const handleAddDish = () => {
     navigate("/add-dish");
   };
+ 
   const handleAddCategory = () => {
     navigate("/add-category");
   };

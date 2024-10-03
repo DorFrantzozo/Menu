@@ -5,11 +5,15 @@ import {
   updateCategoryByUserId,
   deleteCategory,
 } from "../controllers/category-controller.js";
-import { isAuth } from "../utils/jwt.js";
+import { upload } from "../utils/multer.js";
 
 const categoryRouter = express.Router();
 
-categoryRouter.post("/createCategory", createCategoryByUserId); //TODO:chack is auth
+categoryRouter.post(
+  "/createCategory",
+  upload.single("img"),
+  createCategoryByUserId
+); //TODO:chack is auth
 categoryRouter.post("/getCategories", getCategoriesByUserId);
 categoryRouter.post("/updateCategory", updateCategoryByUserId);
 categoryRouter.delete("/deleteCategory/:userId/:categoryId", deleteCategory);

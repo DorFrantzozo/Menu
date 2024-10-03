@@ -1,30 +1,55 @@
-import Dish from "../model/dish.js"; // Ensure the correct path to your model
+import Dish from "../model/dish.js";
+import cloudinary from "../utils/cloudinary.js";
 
-// Create a new dish
 const createDish = async (req, res) => {
-  const userId = req.params.id;
-  const { name, img, description, price, category, pregnant, gluten, lactose } =
+  const { userId } = req.body;
+  const { name, description, price, category, pregnant, gluten, lactose } =
     req.body;
+
   const isexist = await Dish.findOne({ userId, name });
+
   if (isexist) {
     return res.status(400).json({ message: "Dish already exists" });
   }
-  const newDish = new Dish({
-    userId,
-    name,
-    img,
-    description,
-    price,
-    category,
-    pregnant,
-    gluten,
-    lactose,
-  });
 
   try {
-    await newDish.save();
-    console.log("Dish created successfully");
-    res.status(201).json(newDish);
+    let imgUrl = null;
+    if (req.file) {
+      const uploadResult = await new Promise((resolve, reject) => {
+        cloudinary.uploader
+          .upload_stream(
+            {
+              public_id: `categories/${name}`,
+              folder: "categories",
+              transformation: {
+                quality: "auto",
+                fetch_format: "auto",
+              },
+            },
+            (error, result) => {
+              if (error) return reject(error);
+              resolve(result);
+            }
+          )
+          .end(req.file.buffer);
+      });
+      imgUrl = uploadResult.secure_url;
+      const newDish = new Dish({
+        userId,
+        name,
+        img: imgUrl,
+        description,
+        price,
+        category,
+        pregnant,
+        gluten,
+        lactose,
+      });
+
+      await newDish.save();
+      console.log("Dish created successfully");
+      res.status(201).json(newDish);
+    }
   } catch (error) {
     console.error("Error creating dish:", error.message);
     res.status(400).json({ message: error.message });
@@ -32,11 +57,14 @@ const createDish = async (req, res) => {
 };
 
 // Get dishes by category and userId
-const getDishesByCategory = async (req, res) => { 
+const getDishesByCategory = async (req, res) => {
   try {
     const { userId, category } = req.params;
+
     const dishes = await Dish.find({ userId, category });
+
     res.status(200).json(dishes);
+
     console.log("Dishes retrieved successfully:", dishes);
   } catch (error) {
     console.error("Error retrieving dishes:", error.message);
@@ -46,7 +74,7 @@ const getDishesByCategory = async (req, res) => {
 
 // Update a dish by userId and dishId
 const updateDish = async (req, res) => {
-  const { userId, dishId } = req.params; // Changed from categoryId to dishId
+  const { userId, dishId } = req.params;
   const { name, img, description, price, category, pregnant, gluten, lactose } =
     req.body;
 

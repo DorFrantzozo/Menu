@@ -15,8 +15,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../../state/user/userSlice";
 
 const navigation = [
-  { name: "Dashboard", href: "#", current: true },
-  { name: "Edit", href: "#", current: false },
+  { name: "Dashboard", href: "dashboard", current: true },
+  { name: "Edit", href: "edit", current: false },
   // { name: "Projects", href: "#", current: false },
   { name: "Designs", href: "#", current: false },
 ];
@@ -35,6 +35,8 @@ export default function Navbar() {
   };
   const handleLogOut = () => {
     dispatch(logoutUser(user));
+    localStorage.removeItem("token");
+    navigate("/");
   };
   return (
     <Disclosure as="nav" className="bg-gray-800">
@@ -48,7 +50,8 @@ export default function Navbar() {
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
                 {navigation.map((item) => (
-                  <a
+                  <button
+                    onClick={() => navigate(`/${item.href}`)}
                     key={item.name}
                     href={item.href}
                     aria-current={item.current ? "page" : undefined}
@@ -60,7 +63,7 @@ export default function Navbar() {
                     )}
                   >
                     {item.name}
-                  </a>
+                  </button>
                 ))}
               </div>
             </div>

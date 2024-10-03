@@ -44,7 +44,7 @@ export default function DropDown({ setCategory }) {
                 {(active) => (
                   <button
                     onClick={() => {
-                      setCategory(category.name); // First function
+                      setCategory(category._id); // First function
                       setDropTitle(category.name); // Second function
                     }}
                     className={`${

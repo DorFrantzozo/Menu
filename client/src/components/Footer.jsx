@@ -1,7 +1,7 @@
 import logo from "../assets/img/logo.png";
 const Footer = () => {
   return (
-    <div>
+    <div className="z-10">
       <footer className=" bg-black text-center text-neutral-600 dark:bg-black dark:text-neutral-200 lg:text-left">
         <div className="flex items-center justify-center border-b-2 border-neutral-200 p-6 dark:border-neutral-500 lg:justify-end">
           {/* <!-- Social network icons container --> */}
@@ -79,7 +79,7 @@ const Footer = () => {
             {/* <!-- TW Elements section --> */}
             <div className="">
               <p>
-                <img src={logo} alt="" />
+                <img src={logo} alt="" width={300} height={200} />
               </p>
             </div>
             {/* <!-- Products section --> */}

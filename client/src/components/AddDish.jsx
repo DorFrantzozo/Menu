@@ -17,20 +17,29 @@ export default function AddDish() {
   const [lactose, setLactose] = useState(false);
 
   const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent default form submission
+    event.preventDefault();
+
+    // Create a new FormData object
+    const formData = new FormData();
+    formData.append("userId", user._id);
+    formData.append("name", name);
+    formData.append("img", img); // Append the image file
+    formData.append("description", description);
+    formData.append("price", price);
+    formData.append("category", category);
+    formData.append("pregnant", pregnant);
+    formData.append("gluten", gluten);
+    formData.append("lactose", lactose);
 
     try {
+      // Send a POST request with FormData
       const response = await axios.post(
-        `http://localhost:8000/api/dish/createDish/${user.userId}`, // Ensure userId is correctly appended
+        `http://localhost:8000/api/dish/createDish/${user._id}`,
+        formData,
         {
-          name,
-          img,
-          description,
-          price,
-          category,
-          pregnant,
-          gluten,
-          lactose,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
       console.log("Dish created successfully:", response.data);
@@ -224,13 +233,13 @@ export default function AddDish() {
         <div className="mt-6 flex items-center justify-end gap-x-6">
           <button
             type="button"
-            className="text-sm font-semibold leading-6 text-white"
+            className="text-sm font-semibold leading-6 text-gray-900"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-black shadow-sm hover:bg-green-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
           >
             Save
           </button>
