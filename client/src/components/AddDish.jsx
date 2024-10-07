@@ -6,6 +6,7 @@ import DropDown from "./DropDown";
 
 export default function AddDish() {
   const user = useSelector((state) => state.user.user);
+  const token = localStorage.getItem("token");
   // State variables for form inputs
   const [name, setName] = useState("");
   const [img, setImg] = useState("");
@@ -17,6 +18,7 @@ export default function AddDish() {
   const [lactose, setLactose] = useState(false);
 
   const handleSubmit = async (event) => {
+   
     event.preventDefault();
 
     // Create a new FormData object
@@ -39,6 +41,7 @@ export default function AddDish() {
         {
           headers: {
             "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
           },
         }
       );

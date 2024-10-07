@@ -57,6 +57,12 @@ export default function Hero() {
                   </div>
                 ))}
               </dl>
+              <div className="">
+               Get Started
+                <button className="text-white text-xl bg-green-400 rounded w-[100px] mt-28 ">
+                  Signin
+                </button>
+              </div>
             </div>
           </div>
 

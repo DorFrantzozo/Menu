@@ -6,12 +6,18 @@ import {
   deleteDish,
 } from "../controllers/dish-controller.js";
 import { upload } from "../utils/multer.js";
+import { isAuth } from "../utils/jwt.js";
 
 const dishRouter = express.Router();
 
-dishRouter.post("/createDish/:userId", upload.single("img"), createDish);
-dishRouter.get("/getDish/:userId/:category", getDishesByCategory);
-dishRouter.put("/updateDish/:userId/:dishId", updateDish);
-dishRouter.delete("/deleteDish/:userId/:dishId", deleteDish);
+dishRouter.post(
+  "/createDish/:userId",
+  isAuth,
+  upload.single("img"),
+  createDish
+);
+dishRouter.get("/getDish/:userId/:category", isAuth, getDishesByCategory);
+dishRouter.put("/updateDish/:userId/:dishId", isAuth, updateDish);
+dishRouter.delete("/deleteDish/:userId/:dishId", isAuth, deleteDish);
 
 export default dishRouter;

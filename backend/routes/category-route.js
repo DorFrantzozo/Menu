@@ -6,6 +6,7 @@ import {
   deleteCategory,
 } from "../controllers/category-controller.js";
 import { upload } from "../utils/multer.js";
+import { isAuth } from "../utils/jwt.js";
 
 const categoryRouter = express.Router();
 
@@ -14,7 +15,11 @@ categoryRouter.post(
   upload.single("img"),
   createCategoryByUserId
 ); //TODO:chack is auth
-categoryRouter.post("/getCategories", getCategoriesByUserId);
-categoryRouter.post("/updateCategory", updateCategoryByUserId);
-categoryRouter.delete("/deleteCategory/:userId/:categoryId", deleteCategory);
+categoryRouter.post("/getCategories", isAuth, getCategoriesByUserId);
+categoryRouter.post("/updateCategory", isAuth, updateCategoryByUserId);
+categoryRouter.delete(
+  "/deleteCategory/:userId/:categoryId",
+  isAuth,
+  deleteCategory
+);
 export default categoryRouter;

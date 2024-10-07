@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Home from "./pages/Landing";
 import Navbar from "./components/nav/Navbar";
 import Signup from "./pages/Signup";
 import Footer from "./components/Footer";
@@ -13,9 +12,20 @@ import AddDish from "./components/AddDish";
 import Dashboard from "./pages/Dashboard";
 import AddCategory from "./components/AddCategory";
 import DishPage from "./pages/DishPage";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setUser } from "./state/user/userSlice";
 
 function App() {
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
+
+  useEffect(() => {
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      dispatch(setUser(JSON.parse(savedUser)));
+    }
+  }, [dispatch]);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -23,21 +33,39 @@ function App() {
         {user && <Navbar />}
 
         <Routes>
-          <Route path="/" element={<Landing />} />
+          {/* Redirect logged-in users from Landing page to Dashboard */}
           <Route
-            path="/home"
-            element={user ? <Home /> : <Navigate to="/" />}
-          />{" "}
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/signin" element={<Signin />} />
+            path="/"
+            element={user ? <Navigate to="/dashboard" /> : <Landing />}
+          />
+
+          {/* Protect Dashboard route for logged-in users only */}
+          <Route
+            path="/dashboard"
+            element={user ? <Dashboard /> : <Navigate to="/signin" />}
+          />
+
+          {/* Protect Signin route - redirect logged-in users to Dashboard */}
+          <Route
+            path="/signin"
+            element={user ? <Navigate to="/dashboard" /> : <Signin />}
+          />
+
+          {/* Protect Signup route - redirect logged-in users to Dashboard */}
+          <Route
+            path="/signup"
+            element={user ? <Navigate to="/dashboard" /> : <Signup />}
+          />
+
           <Route path="/edit" element={<Edit />} />
           <Route path="/add-dish" element={<AddDish />} />
           <Route path="/add-category" element={<AddCategory />} />
-          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dishesPage" element={<DishPage />} />
         </Routes>
 
-        <Footer />
+        <div className="mt-auto">
+          <Footer />
+        </div>
       </BrowserRouter>
       <ToastContainer position="top-right" autoClose={5000} theme="dark" />
     </div>

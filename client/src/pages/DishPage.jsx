@@ -10,12 +10,19 @@ const DishPage = () => {
   const [dishes, setDishes] = useState([]);
   const location = useLocation();
   const { item } = location.state || {};
+
   useEffect(() => {
     if (user && user._id) {
       const fetchCategories = async () => {
         try {
+          const token = localStorage.getItem("token");
           const response = await axios.get(
-            `http://localhost:8000/api/dish/getDish/${user._id}/${item.item._id}`
+            `http://localhost:8000/api/dish/getDish/${user._id}/${item._id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`, // Attach token in the Authorization header
+              },
+            }
           );
 
           if (response.data) {
@@ -33,7 +40,7 @@ const DishPage = () => {
     }
   }, [user]);
   return (
-    <div>
+    <div className="flex justify-center ">
       {dishes.map((dish) => (
         <MenuCard item={dish} key={dish._id} />
       ))}

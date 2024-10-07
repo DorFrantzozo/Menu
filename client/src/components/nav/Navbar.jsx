@@ -17,7 +17,7 @@ import { logoutUser } from "../../state/user/userSlice";
 
 const navigationItems = [
   { name: "Dashboard", href: "dashboard" },
-  { name: "Edit", href: "edit" },
+  { name: "Add", href: "edit" },
   { name: "Designs", href: "designs" },
 ];
 
@@ -27,7 +27,7 @@ function classNames(...classes) {
 
 export default function Navbar() {
   const [currentNav, setCurrentNav] = useState("dashboard");
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -43,7 +43,7 @@ export default function Navbar() {
   };
 
   return (
-    <Disclosure as="nav" className="bg-gray-800">
+    <Disclosure as="nav" className="bg-emerald-500">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
           <NavbarSmall />
@@ -60,8 +60,8 @@ export default function Navbar() {
                     aria-current={currentNav === item.href ? "page" : undefined}
                     className={classNames(
                       currentNav === item.href
-                        ? "bg-gray-900 text-white"
-                        : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                        ? "bg-gray-200 text-black"
+                        : "text-white hover:bg-gray-300 hover:text-white",
                       "rounded-md px-3 py-2 text-sm font-medium"
                     )}
                   >
@@ -74,7 +74,7 @@ export default function Navbar() {
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
             <button
               type="button"
-              className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+              className="relative rounded-full p-1 text-green-400 hover:text-black focus:outline-none "
             >
               <span className="absolute -inset-1.5" />
               <span className="sr-only">View notifications</span>
@@ -84,14 +84,22 @@ export default function Navbar() {
             {/* Profile dropdown */}
             <Menu as="div" className="relative ml-3">
               <div>
-                <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                <MenuButton className="relative flex rounded-full bg-gray-800 text-sm  ">
                   <span className="absolute -inset-1.5" />
                   <span className="sr-only">Open user menu</span>
-                  <img
-                    alt=""
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                    className="h-8 w-8 rounded-full"
-                  />
+                  {user.logo ? (
+                    <img
+                      alt=""
+                      src={user.logo}
+                      className="h-8 w-8 rounded-full"
+                    />
+                  ) : (
+                    <img
+                      alt=""
+                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                      className="h-8 w-8 rounded-full"
+                    />
+                  )}
                 </MenuButton>
               </div>
               <MenuItems

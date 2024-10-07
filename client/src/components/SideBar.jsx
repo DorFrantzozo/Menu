@@ -1,14 +1,24 @@
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
 const SideBar = (categories) => {
-  // Destructure categories here
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.user.user);
+
   return (
-    <div className="text-white text-center p-3 w-[250px] bg-gray-500 h-[full]">
-      Menu
-      <div>
-        {categories &&
-          categories.map((category) => (
-            <h1 key={category._id}>{category.name}</h1>
-          ))}
-      </div>
+    <div className="bg-slate-50  block h-screen  justify-center">
+      <div className=" text-center text-black p-4">{user.restaurantName}</div>
+      <hr className="border-black border-t-1 w-3/4 mt-4 mx-auto" />
+      {categories &&
+        categories.categories.map((item, index) => (
+          <button
+            key={index}
+            className="text-center w-full text-black p-2 mt-10"
+            onClick={() => navigate("/dishesPage", { state: { item: item } })}
+          >
+            {item.name}
+          </button>
+        ))}
     </div>
   );
 };

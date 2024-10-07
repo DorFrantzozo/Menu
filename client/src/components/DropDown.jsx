@@ -9,13 +9,19 @@ export default function DropDown({ setCategory }) {
   const user = useSelector((state) => state.user.user);
   const [categories, setCategories] = useState([]);
   const [dropTitle, setDropTitle] = useState("");
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await axios.post(
           "http://localhost:8000/api/category/getCategories",
-          { userId: user._id }
+          { userId: user._id },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setCategories(response.data);
       } catch (error) {

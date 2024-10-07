@@ -39,6 +39,10 @@ const Dish = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  vegi: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 export default mongoose.model("Dish", Dish);

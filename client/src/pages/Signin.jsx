@@ -27,6 +27,7 @@ const Signin = () => {
         dispatch(setUser(user));
         dispatch(setToken(token));
         localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
         toast.success("Login Success");
         navigate("/dashboard");
       }

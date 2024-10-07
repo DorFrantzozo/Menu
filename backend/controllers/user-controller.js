@@ -89,6 +89,7 @@ const loginUser = async (req, res) => {
     const token = generateToken(user);
 
     const { password: _, ...userWithoutPassword } = user.toObject();
+
     res.status(200).json({ user: user, token: token });
   } catch (error) {
     console.error("Error during login:", error.message);
