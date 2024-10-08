@@ -44,11 +44,10 @@ const Signin = () => {
           backgroundImage: `url(${resturant2})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          opacity: 0.4,
         }}
-        className="absolute h-full w-full"
+        className="absolute h-full w-full z-10 "
       ></div>
-      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 z-10">
+      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 z-10 ">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
             alt="Menu Logo"

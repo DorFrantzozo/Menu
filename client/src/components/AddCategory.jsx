@@ -43,9 +43,9 @@ export default function AddCategory() {
 
   return (
     <form onSubmit={handleSubmit} className="flex justify-center">
-      <div className="space-y-12 w-400 mt-10 border rounded p-2">
+      <div className="space-y-12 w-400 mt-10 border rounded p-2 bg-stone-100">
         <div className="border-b border-gray-900/10 pb-12">
-          <h2 className="font-semibold leading-7 text-white flex justify-center text-2xl">
+          <h2 className="font-semibold leading-7 text-black flex justify-center text-2xl">
             New Category
           </h2>
 
@@ -54,7 +54,7 @@ export default function AddCategory() {
               <div className="sm:col-span-4">
                 <label
                   htmlFor="name"
-                  className="block text-sm font-medium leading-6 text-green-400"
+                  className="block text-sm font-medium leading-6 text-black-400"
                 >
                   Category Name
                 </label>
@@ -63,7 +63,7 @@ export default function AddCategory() {
                     name="name"
                     type="text"
                     required
-                    className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 bg-white rounded placeholder:text-gray-400 focus:ring-2 sm:text-sm sm:leading-6 focus-within:ring-green-600"
+                    className="block flex-1 border-1  border-slate-600 bg-transparent py-1.5 pl-1 text-gray-900  rounded placeholder:text-gray-400 focus:ring-2 sm:text-sm sm:leading-6 focus-within:ring-green-200"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
@@ -74,11 +74,11 @@ export default function AddCategory() {
             <div className="col-span-full mt-10">
               <label
                 htmlFor="img"
-                className="block text-sm font-medium leading-6 text-green-400"
+                className="block text-sm font-medium leading-6 text-black"
               >
                 Photo
               </label>
-              <div className="mt-2 flex justify-center rounded-lg border border-dashed border-green-400 px-6 py-10 bg-white">
+              <div className="mt-2 flex justify-center rounded-lg border border-dashed border-slate-600  px-6 py-10 bg-white">
                 <div className="text-center">
                   <PhotoIcon
                     aria-hidden="true"
@@ -119,13 +119,13 @@ export default function AddCategory() {
           <button
             type="button"
             onClick={() => navigate("/dashboard")}
-            className="text-sm font-semibold leading-6 text-white"
+            className="text-sm font-semibold leading-6 text-black"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-black shadow-sm hover:bg-green-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
             Save
           </button>

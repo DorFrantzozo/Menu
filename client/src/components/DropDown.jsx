@@ -54,10 +54,13 @@ export default function DropDown({ setCategory }) {
                       setDropTitle(category.name); // Second function
                     }}
                     className={`${
-                      active ? "bg-gray-100 text-gray-900" : "text-gray-700"
+                      active
+                        ? "bg-white text-center text-gray-900 hover:bg-slate-100"
+                        : "text-gray-700"
                     } block px-4 py-2 text-sm w-full text-left`}
                   >
                     {category.name}
+                    <hr className=" w-3/4 mx-auto" />
                   </button>
                 )}
               </MenuItem>

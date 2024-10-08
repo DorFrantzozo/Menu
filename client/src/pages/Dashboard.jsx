@@ -52,7 +52,7 @@ const Dashboard = () => {
                     navigate("/dishesPage", { state: { item: category } })
                   }
                 >
-                  <p className="text-white mb-5 ">{category.name}</p>
+                  <p className="text-black text-2xl mb-5 ">{category.name}</p>
                   <img
                     src={category.img}
                     width={"350px"}

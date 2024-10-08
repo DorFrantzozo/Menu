@@ -10,7 +10,7 @@ const MenuCard = (item) => {
     <button
       onClick={() => navigate("/dishesPage", { state: { item: item.item } })}
     >
-      <div className="max-w-sm rounded overflow-hidden shadow-lg  flex flex-col bg-slate-100 m-5 h-[500px] ">
+      <div className="max-w-sm rounded overflow-hidden shadow-lg  flex flex-col bg-stone-200 m-5 h-[500px] ">
         <div className="flex">
           {item.item.img ? (
             <img

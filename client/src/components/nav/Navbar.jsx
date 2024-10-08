@@ -43,7 +43,7 @@ export default function Navbar() {
   };
 
   return (
-    <Disclosure as="nav" className="bg-emerald-500">
+    <Disclosure as="nav" className="bg-green-600">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
           <NavbarSmall />

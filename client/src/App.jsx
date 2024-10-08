@@ -63,7 +63,7 @@ function App() {
           <Route path="/dishesPage" element={<DishPage />} />
         </Routes>
 
-        <div className="mt-auto">
+        <div className="mt-auto z-50">
           <Footer />
         </div>
       </BrowserRouter>
