@@ -49,7 +49,9 @@ const Dashboard = () => {
               <div key={category._id} className="m-5">
                 <button
                   onClick={() =>
-                    navigate("/dishesPage", { state: { item: category } })
+                    navigate("/dishesPage", {
+                      state: { item: category },
+                    })
                   }
                 >
                   <p className="text-black text-2xl mb-5 ">{category.name}</p>

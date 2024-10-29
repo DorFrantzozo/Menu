@@ -16,6 +16,7 @@ export default function AddDish() {
   const [pregnant, setPregnant] = useState(false);
   const [gluten, setGluten] = useState(false);
   const [lactose, setLactose] = useState(false);
+  const [vegi, setVegi] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -30,6 +31,7 @@ export default function AddDish() {
     formData.append("category", category);
     formData.append("pregnant", pregnant);
     formData.append("gluten", gluten);
+    formData.append("vegi", vegi);
     formData.append("lactose", lactose);
 
     try {
@@ -224,6 +226,24 @@ export default function AddDish() {
                   <div className="text-sm leading-6">
                     <label htmlFor="lactose" className="text-xl text-black">
                       Lactose
+                    </label>
+                  </div>
+                </div>
+
+                <div className="relative flex gap-x-3">
+                  <div className="flex h-6 items-center">
+                    <input
+                      id="vegi"
+                      name="vegi"
+                      type="checkbox"
+                      className="h-4 w-4 rounded border-gray-300 text-black focus:ring-green-400"
+                      checked={vegi}
+                      onChange={(e) => setVegi(e.target.checked)}
+                    />
+                  </div>
+                  <div className="text-sm leading-6">
+                    <label htmlFor="vegi" className="text-xl text-black">
+                      vegi
                     </label>
                   </div>
                 </div>

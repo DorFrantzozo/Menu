@@ -15,6 +15,9 @@ import DishPage from "./pages/DishPage";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setUser } from "./state/user/userSlice";
+import Profile from "./pages/Profile";
+import EditDish from "./pages/EditDish";
+import Menu from "./pages/Menu";
 
 function App() {
   const dispatch = useDispatch();
@@ -33,6 +36,7 @@ function App() {
         {user && <Navbar />}
 
         <Routes>
+          <Route path="/menu" element={<Menu />} />
           {/* Redirect logged-in users from Landing page to Dashboard */}
           <Route
             path="/"
@@ -61,6 +65,8 @@ function App() {
           <Route path="/add-dish" element={<AddDish />} />
           <Route path="/add-category" element={<AddCategory />} />
           <Route path="/dishesPage" element={<DishPage />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/editDish" element={<EditDish />} />
         </Routes>
 
         <div className="mt-auto z-50">

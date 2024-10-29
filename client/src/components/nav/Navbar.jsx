@@ -43,7 +43,7 @@ export default function Navbar() {
   };
 
   return (
-    <Disclosure as="nav" className="bg-green-600">
+    <Disclosure as="nav" className="bg-black">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
           <NavbarSmall />
@@ -89,7 +89,7 @@ export default function Navbar() {
                   <span className="sr-only">Open user menu</span>
                   {user.logo ? (
                     <img
-                      alt=""
+                      alt="user logo"
                       src={user.logo}
                       className="h-8 w-8 rounded-full"
                     />
@@ -108,7 +108,7 @@ export default function Navbar() {
               >
                 <MenuItem>
                   <button
-                    onClick={() => handleNavClick("/profile")}
+                    onClick={() => navigate("/profile")}
                     className="block px-4 py-2 text-sm text-left w-full text-green-400 data-[focus]:bg-gray-700"
                   >
                     Your Profile

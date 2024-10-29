@@ -97,7 +97,107 @@ const loginUser = async (req, res) => {
   }
 };
 
-const updateUser = async (req, res) => {};
+const updateUser = async (req, res) => {
+  const { email, password, restaurantName } = req.body;
+  const { userId } = req.params;
+  console.log("Updating user:", userId);
+
+  try {
+    // Log the incoming request body
+    console.log("Request body:", req.body);
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update email if provided
+    if (email) {
+      const existingUser = await User.findOne({ email });
+      if (existingUser && existingUser._id.toString() !== userId) {
+        return res.status(400).json({ message: "Email already in use" });
+      }
+      user.email = email;
+    }
+
+    // Update password if provided
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user.password = hashedPassword;
+    }
+
+    // Update restaurant name if provided
+    if (restaurantName) {
+      user.restaurantName = restaurantName;
+    }
+
+    // Handle image upload to Cloudinary if a new file is present
+    if (req.file) {
+      if (user.logo) {
+        // If the user already has a logo, delete it from Cloudinary
+        const publicId = user.logo.split("/").pop().split(".")[0];
+        await cloudinary.uploader.destroy(`users/${publicId}`);
+      }
+
+      // Upload new logo to Cloudinary
+      const uploadResult = await new Promise((resolve, reject) => {
+        cloudinary.uploader
+          .upload_stream(
+            {
+              public_id: `users/${user.email}_logo`,
+              folder: "users",
+              transformation: {
+                quality: "auto",
+                fetch_format: "auto",
+              },
+            },
+            (error, result) => {
+              if (error) return reject(error);
+              resolve(result);
+            }
+          )
+          .end(req.file.buffer);
+      });
+
+      user.logo = uploadResult.secure_url; // Update user logo URL with the new one
+    }
+
+    // Save the updated user
+    await user.save();
+
+    // Generate a new token if the user updated their email or password
+    const token = generateToken(user);
+
+    // Exclude the password before sending the response
+    const { password: _, ...updatedUser } = user.toObject();
+
+    res.status(200).json({ user: updatedUser, token });
+  } catch (error) {
+    console.error("Error updating user:", error.message);
+    console.error(error); // Log the entire error object for more details
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+const findRestaurantsByname = async (req, res) => {
+  const { name } = req.query;
+
+  try {
+    const restaurant = await User.find({
+      restaurantName: { $regex: new RegExp(name, "i") },
+    });
+    console.log(restaurant);
+    if (restaurant[0].restaurantName.toLowerCase() != name) {
+      return res.status(404).json({ message: "Restaurant not found" });
+    } else if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found" });
+    } else {
+      res.status(200).json(restaurant[0]);
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 const deleteUser = async (req, res) => {
   const { email, password } = req.body;
@@ -117,6 +217,4 @@ const deleteUser = async (req, res) => {
   }
 };
 
-export { createUser, loginUser, updateUser, deleteUser };
-
-//TODO: create update user!!
+export { createUser, loginUser, updateUser, deleteUser, findRestaurantsByname };

@@ -2,24 +2,33 @@ import { useNavigate } from "react-router-dom";
 import milk from "../assets/img/milk.png";
 import pregnant from "../assets/img/pregnant.png";
 import gluten from "../assets/img/gluten.png";
+import vegi from "../assets/img/vegetable.png";
+import { PencilSquareIcon } from "@heroicons/react/24/outline";
 
 const MenuCard = (item) => {
   const navigate = useNavigate();
 
+  const handleEditClick = () => {
+    navigate("/editDish", { state: { item: item } });
+  };
+
   return (
-    <button
-      onClick={() => navigate("/dishesPage", { state: { item: item.item } })}
-    >
-      <div className="max-w-sm rounded overflow-hidden shadow-lg  flex flex-col bg-stone-200 m-5 h-[500px] ">
+    <button>
+      <PencilSquareIcon
+        onClick={handleEditClick}
+        className="absolute w-7 rounded-full bg-gray-300 p-1"
+      />
+
+      <div className="max-w-sm rounded overflow-hidden shadow-lg flex flex-col bg-stone-200 m-5 h-[500px]">
         <div className="flex">
           {item.item.img ? (
             <img
               src={item.item.img}
               alt={item.item.name}
-              className="w-[400px] h-[250px] text-white  object-fit"
+              className="w-[400px] h-[250px] text-white object-fit"
             />
           ) : (
-            <div className="w-full  bg-gray-200 flex items-center justify-center">
+            <div className="w-full bg-gray-200 flex items-center justify-center">
               <span className="text-black">No Image Available</span>
             </div>
           )}
@@ -37,15 +46,22 @@ const MenuCard = (item) => {
         </div>
         <div className="flex justify-center mt-4">
           <div className="block">
-            {!item.item.lactose && <img src={milk} alt="milk" width={40} />}
+            {item.item.lactose && <img src={milk} alt="milk" width={40} />}{" "}
+            {/* Show milk icon if lactose is true */}
           </div>
           <div>
-            {!item.item.gluten && <img src={gluten} alt="gluten" width={40} />}
+            {item.item.gluten && <img src={gluten} alt="gluten" width={40} />}{" "}
+            {/* Show gluten icon if gluten is true */}
           </div>
           <div>
-            {!item.item.pregnant && (
+            {item.item.pregnant && (
               <img src={pregnant} alt="pregnant" width={40} />
-            )}
+            )}{" "}
+            {/* Show pregnant icon if pregnant is true */}
+          </div>
+          <div>
+            {item.item.vegi && <img src={vegi} alt="vegi" width={40} />}{" "}
+            {/* Show pregnant icon if pregnant is true */}
           </div>
         </div>
       </div>

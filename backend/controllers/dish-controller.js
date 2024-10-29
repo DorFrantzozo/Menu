@@ -3,8 +3,16 @@ import cloudinary from "../utils/cloudinary.js";
 
 const createDish = async (req, res) => {
   const { userId } = req.body;
-  const { name, description, price, category, pregnant, gluten, lactose } =
-    req.body;
+  const {
+    name,
+    description,
+    price,
+    category,
+    pregnant,
+    gluten,
+    lactose,
+    vegi,
+  } = req.body;
 
   const isexist = await Dish.findOne({ userId, name });
 
@@ -44,6 +52,7 @@ const createDish = async (req, res) => {
         pregnant,
         gluten,
         lactose,
+        vegi,
       });
 
       await newDish.save();
@@ -75,23 +84,63 @@ const getDishesByCategory = async (req, res) => {
 // Update a dish by userId and dishId
 const updateDish = async (req, res) => {
   const { userId, dishId } = req.params;
-  const { name, img, description, price, category, pregnant, gluten, lactose } =
-    req.body;
+  const {
+    name,
+    description,
+    price,
+    category,
+    pregnant,
+    gluten,
+    lactose,
+    vegi,
+  } = req.body;
 
   try {
-    const dish = await Dish.findOne({ _id: dishId, userId }); // Find by dishId and userId
+    const dish = await Dish.findOne({ _id: dishId, userId });
     if (!dish) {
       return res.status(404).json({ message: "Dish not found" });
     }
-    // Update fields
+
+    // Check if a new image is being uploaded
+    if (req.file) {
+      if (dish.img) {
+        // If the dish already has an image, delete it from Cloudinary
+        const publicId = dish.img.split("/").pop().split(".")[0];
+        await cloudinary.uploader.destroy(`dishes/${publicId}`);
+      }
+
+      // Upload new image to Cloudinary
+      const uploadResult = await new Promise((resolve, reject) => {
+        cloudinary.uploader
+          .upload_stream(
+            {
+              public_id: `dishes/${dish.name.replace(/\s+/g, "_")}`, // Use dish name or a unique identifier
+              folder: "dishes",
+              transformation: {
+                quality: "auto",
+                fetch_format: "auto",
+              },
+            },
+            (error, result) => {
+              if (error) return reject(error);
+              resolve(result);
+            }
+          )
+          .end(req.file.buffer);
+      });
+
+      dish.img = uploadResult.secure_url; // Update dish image URL with the new one
+    }
+
+    // Update other fields
     dish.name = name;
-    dish.img = img;
     dish.description = description;
     dish.price = price;
     dish.category = category;
     dish.pregnant = pregnant;
     dish.gluten = gluten;
     dish.lactose = lactose;
+    dish.vegi = vegi;
 
     await dish.save();
     res.status(200).json(dish);

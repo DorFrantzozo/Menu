@@ -17,7 +17,12 @@ dishRouter.post(
   createDish
 );
 dishRouter.get("/getDish/:userId/:category", isAuth, getDishesByCategory);
-dishRouter.put("/updateDish/:userId/:dishId", isAuth, updateDish);
-dishRouter.delete("/deleteDish/:userId/:dishId", isAuth, deleteDish);
+dishRouter.put(
+  "/updateDish/:userId/:dishId",
+  upload.single("img"),
+
+  updateDish
+);
+dishRouter.delete("/deleteDish/:userId/:dishId", deleteDish);
 
 export default dishRouter;
