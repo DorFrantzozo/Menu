@@ -3,11 +3,12 @@ import { PhotoIcon } from "@heroicons/react/24/solid";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import DropDown from "./DropDown";
+import { useNavigate } from "react-router-dom";
 
 export default function AddDish() {
   const user = useSelector((state) => state.user.user);
   const token = localStorage.getItem("token");
-  // State variables for form inputs
+
   const [name, setName] = useState("");
   const [img, setImg] = useState("");
   const [description, setDescription] = useState("");
@@ -17,6 +18,7 @@ export default function AddDish() {
   const [gluten, setGluten] = useState(false);
   const [lactose, setLactose] = useState(false);
   const [vegi, setVegi] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -35,8 +37,7 @@ export default function AddDish() {
     formData.append("lactose", lactose);
 
     try {
-      // Send a POST request with FormData
-      const response = await axios.post(
+      await axios.post(
         `http://localhost:8000/api/dish/createDish/${user._id}`,
         formData,
         {
@@ -46,7 +47,8 @@ export default function AddDish() {
           },
         }
       );
-      console.log("Dish created successfully:", response.data);
+
+      navigate("/dashboard");
     } catch (error) {
       console.error("Error creating dish:", error);
     }

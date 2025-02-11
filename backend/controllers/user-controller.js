@@ -1,7 +1,7 @@
 import User from "../model/user.js";
 import bcrypt from "bcryptjs";
 import cloudinary from "../utils/cloudinary.js";
-import { generateToken } from "../utils/jwt.js";
+import { expirationTime, generateToken } from "../utils/jwt.js";
 
 const createUser = async (req, res) => {
   const { email, password, restaurantName } = req.body;
@@ -50,20 +50,17 @@ const createUser = async (req, res) => {
       email,
       password: hashedPassword,
       restaurantName,
-      logo: logoUrl, // Store the logo URL in the user document
+      logo: logoUrl,
+      designNumber: 1,
     });
 
-    // Save the user to the database
     await newUser.save();
 
-    // Generate token
     const token = generateToken(newUser);
 
-    // Exclude password from the user object before sending the response
     const { password: _, ...userWithoutPassword } = newUser.toObject();
 
-    // Send back user data and token
-    res.status(201).json({ user: userWithoutPassword, token });
+    res.status(201).json({ user: userWithoutPassword, token: token });
   } catch (error) {
     console.error("Error creating user:", error.message);
     res.status(500).json({ message: "Server error" });
@@ -87,10 +84,11 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
     const token = generateToken(user);
+    const expireTime = expirationTime();
 
     const { password: _, ...userWithoutPassword } = user.toObject();
 
-    res.status(200).json({ user: user, token: token });
+    res.status(200).json({ user: user, token: token, expireTime: expireTime });
   } catch (error) {
     console.error("Error during login:", error.message);
     res.status(500).json({ message: error.message });
@@ -100,12 +98,8 @@ const loginUser = async (req, res) => {
 const updateUser = async (req, res) => {
   const { email, password, restaurantName } = req.body;
   const { userId } = req.params;
-  console.log("Updating user:", userId);
 
   try {
-    // Log the incoming request body
-    console.log("Request body:", req.body);
-
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -186,7 +180,7 @@ const findRestaurantsByname = async (req, res) => {
     const restaurant = await User.find({
       restaurantName: { $regex: new RegExp(name, "i") },
     });
-    console.log(restaurant);
+
     if (restaurant[0].restaurantName.toLowerCase() != name) {
       return res.status(404).json({ message: "Restaurant not found" });
     } else if (!restaurant) {
@@ -217,4 +211,28 @@ const deleteUser = async (req, res) => {
   }
 };
 
-export { createUser, loginUser, updateUser, deleteUser, findRestaurantsByname };
+const updateDesignByNumber = async (req, res) => {
+  const { userId, number } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    user.design = number;
+    await user.save();
+    res.status(200).json({ message: "Design updated successfully" });
+    console.log(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export {
+  createUser,
+  loginUser,
+  updateUser,
+  deleteUser,
+  findRestaurantsByname,
+  updateDesignByNumber,
+};

@@ -23,10 +23,11 @@ const Signin = () => {
       );
 
       if (response.status === 200) {
-        const { user, token } = response.data;
+        const { user, token, expireTime } = response.data;
         dispatch(setUser(user));
         dispatch(setToken(token));
         localStorage.setItem("token", token);
+        localStorage.setItem("expireTime", expireTime);
         localStorage.setItem("user", JSON.stringify(user));
         toast.success("Login Success");
         navigate("/dashboard");

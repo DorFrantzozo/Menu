@@ -7,7 +7,7 @@ const Card = () => {
   const handleAddDish = () => {
     navigate("/add-dish");
   };
- 
+
   const handleAddCategory = () => {
     navigate("/add-category");
   };
@@ -15,21 +15,31 @@ const Card = () => {
     <>
       <div className="sm:flex block">
         <div className="block  w-[350px] h-[450px] mr-10 sm:mb-40">
-          <img className="rounded" src={category} width="350px" alt="" />
+          <img
+            className="rounded hover:scale-110 transition duration-500"
+            src={category}
+            width="350px"
+            alt=""
+          />
 
           <button
             onClick={handleAddCategory}
-            className="text-white text-2xl w-full rounded p-3 flex justify-center mt-5 bg-green-400"
+            className="text-white text-2xl w-full rounded p-3 flex justify-center mt-5 bg-stone-400"
           >
             Add New Category
           </button>
         </div>
-        <div className="block  w-[350px] h-[450px] mb-40 ">
-          <img className="rounded" src={dish} width="350px" alt="" />
+        <div className="block   w-[350px] h-[450px] mb-40 ">
+          <img
+            className="rounded hover:scale-110 transition duration-500"
+            src={dish}
+            width="350px"
+            alt=""
+          />
 
           <button
             onClick={handleAddDish}
-            className="text-white text-2xl w-full rounded p-3 flex justify-center mt-5 bg-green-400"
+            className="text-white text-2xl w-full rounded p-3 flex justify-center mt-5 bg-stone-400"
           >
             Add New Dish
           </button>

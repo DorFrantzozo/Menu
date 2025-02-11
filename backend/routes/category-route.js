@@ -15,8 +15,12 @@ categoryRouter.post(
   upload.single("img"),
   createCategoryByUserId
 ); //TODO:chack is auth
-categoryRouter.post("/getCategories", isAuth, getCategoriesByUserId);
-categoryRouter.post("/updateCategory", isAuth, updateCategoryByUserId);
+categoryRouter.post("/getCategories", getCategoriesByUserId);
+categoryRouter.put(
+  "/updateCategory/:userId/:categoryId",
+  upload.single("img"),
+  updateCategoryByUserId
+);
 categoryRouter.delete(
   "/deleteCategory/:userId/:categoryId",
   isAuth,

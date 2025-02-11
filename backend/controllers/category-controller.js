@@ -62,7 +62,10 @@ const getCategoriesByUserId = async (req, res) => {
 
 //TODO: function needs category id!!!
 const updateCategoryByUserId = async (req, res) => {
-  const { userId, categoryId, newName, newImg } = req.body;
+  const { userId, categoryId } = req.params;
+  console.log(userId);
+
+  const { newName } = req.body;
 
   try {
     const category = await Category.findOne({ _id: categoryId, userId });
@@ -71,9 +74,35 @@ const updateCategoryByUserId = async (req, res) => {
         .status(404)
         .json({ message: "Category not found for this user" });
     }
+    if (req.file) {
+      if (category.img) {
+        const publicId = category.img.split("/").pop().split(".")[0];
+        await cloudinary.uploader.destroy(`categorys/${publicId}`);
+      }
 
-    category.name = newName || category.name;
-    category.img = newImg || category.img;
+      // Upload new image to Cloudinary
+      const uploadResult = await new Promise((resolve, reject) => {
+        cloudinary.uploader
+          .upload_stream(
+            {
+              public_id: `categorys/${dish.name.replace(/\s+/g, "_")}`, // Use dish name or a unique identifier
+              folder: "categorys",
+              transformation: {
+                quality: "auto",
+                fetch_format: "auto",
+              },
+            },
+            (error, result) => {
+              if (error) return reject(error);
+              resolve(result);
+            }
+          )
+          .end(req.file.buffer);
+      });
+
+      category.img = uploadResult.secure_url;
+    }
+    category.name = newName;
 
     await category.save();
     res.status(200).json(category);

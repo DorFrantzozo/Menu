@@ -18,6 +18,9 @@ import { setUser } from "./state/user/userSlice";
 import Profile from "./pages/Profile";
 import EditDish from "./pages/EditDish";
 import Menu from "./pages/Menu";
+import EditCategory from "./pages/EditCategory";
+import Design1 from "../../designs/design1";
+import Designs from "./pages/Designs";
 
 function App() {
   const dispatch = useDispatch();
@@ -28,15 +31,27 @@ function App() {
     if (savedUser) {
       dispatch(setUser(JSON.parse(savedUser)));
     }
-  }, [dispatch]);
+  }, []);
 
+  const isTokenExpired = () => {
+    const expirationTime = localStorage.getItem("expireTime");
+    return expirationTime && Date.now() > Number(expirationTime);
+  };
+  if (isTokenExpired()) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("expireTime");
+    alert("Session expired. Please log in again.");
+
+    return;
+  }
   return (
     <div className="flex flex-col min-h-screen">
       <BrowserRouter>
         {user && <Navbar />}
+        {/* {!user && <Navigate to="/signin" />} */}
 
         <Routes>
-          <Route path="/menu" element={<Menu />} />
           {/* Redirect logged-in users from Landing page to Dashboard */}
           <Route
             path="/"
@@ -62,11 +77,16 @@ function App() {
           />
 
           <Route path="/edit" element={<Edit />} />
+          <Route path="/designs" element={<Designs />} />
+
           <Route path="/add-dish" element={<AddDish />} />
           <Route path="/add-category" element={<AddCategory />} />
           <Route path="/dishesPage" element={<DishPage />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/editDish" element={<EditDish />} />
+          <Route path="/editCategory" element={<EditCategory />} />
+          <Route path="/menu" element={<Menu />} />
+          <Route path="/design1" element={<Design1 />} />
         </Routes>
 
         <div className="mt-auto z-50">

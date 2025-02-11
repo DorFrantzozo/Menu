@@ -38,6 +38,7 @@ const Signup = () => {
         const { user, token } = response.data;
         dispatch(setUser(user));
         dispatch(setToken(token));
+        localStorage.setItem("token", token);
         toast.success("User created successfully");
         navigate("/home");
       }
@@ -54,7 +55,7 @@ const Signup = () => {
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img alt="Your Company" src={logo} className="mx-auto  w-auto" />
-          <h2 className="mt-10 text-center text-white text-2xl  leading-9 tracking-tight ">
+          <h2 className="mt-10 text-center text-black text-2xl  leading-9 tracking-tight ">
             Create Your Account
           </h2>
         </div>
@@ -64,7 +65,7 @@ const Signup = () => {
             <div>
               <label
                 htmlFor="name"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-black"
               >
                 Resturant Name
               </label>
@@ -82,7 +83,7 @@ const Signup = () => {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-black"
               >
                 Email address
               </label>
@@ -103,7 +104,7 @@ const Signup = () => {
               <div className="flex items-center justify-between">
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium leading-6  text-white"
+                  className="block text-sm font-medium leading-6  text-black"
                 >
                   Password
                 </label>

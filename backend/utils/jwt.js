@@ -6,12 +6,16 @@ const generateToken = (user) => {
   });
 };
 
+const expirationTime = () => {
+  return Date.now() + 60 * 60 * 1000;
+};
+
 const isAuth = (req, res, next) => {
   const authorization = req.headers.authorization;
   if (authorization) {
     const token = authorization.slice(7, authorization.length);
     jwt.verify(token, process.env.JWT_SECRET, (err, decode) => {
-      console.log(token);
+      
       if (err) {
         res.status(401).send({ message: "Invalid Token" });
       } else {
@@ -35,11 +39,11 @@ const decodeToken = (req, res, next) => {
         req.user = decode;
         return id;
       }
-      console.log(id);
+    
     });
   } else {
     res.status(401).send({ message: "No Token" });
   }
 };
 
-export { generateToken, isAuth, decodeToken };
+export { generateToken, isAuth, decodeToken, expirationTime };

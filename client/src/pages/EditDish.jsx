@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { CheckIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import Modal from "../components/Modal";
+import { toast } from "react-toastify";
 const EditDish = () => {
   const user = useSelector((state) => state.user.user);
-  console.log(user);
+
   const location = useLocation();
   const { item } = location.state || {};
-  const dish = item?.item; // Ensure item is defined
+  const dish = item?.item;
+  const token = localStorage.getItem("token");
 
   // Initialize state based on dish properties
   const [dishName, setDishName] = useState(dish?.name || "");
@@ -20,20 +22,11 @@ const EditDish = () => {
   const [pregnant, setPregnant] = useState(dish?.pregnant || false);
   const [lactose, setLactose] = useState(dish?.lactose || false);
   const [vegi, setVegi] = useState(dish?.vegi || false);
-  const token = localStorage.getItem("token");
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (dish) {
-      // Logging the initial dish values
-      console.log("Initial dish values:", {
-        gluten: dish.gluten,
-        pregnant: dish.pregnant,
-        lactose: dish.lactose,
-        vegi: dish.vegi,
-      });
-
-      // Setting initial states based on the dish fields
       setGluten(dish.gluten);
       setPregnant(dish.pregnant);
       setLactose(dish.lactose);
@@ -70,25 +63,13 @@ const EditDish = () => {
         }
       );
       console.log(response.data);
+      navigate("/dashboard");
+      toast.success("השינויים נשמרו בהצלחה");
     } catch (error) {
       console.error("Error updating dish:", error);
     }
   };
-  const handleRemoveDish = async () => {
-    try {
-      const response = await axios.delete(
-        `http://localhost:8000/api/dish/deleteDish/${user._id}/${dish._id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log(response.data);
-    } catch (error) {
-      console.error("Error deleting dish:", error);
-    }
-  };
+
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <h1 className="text-black flex justify-center text-2xl mt-10">
@@ -247,7 +228,15 @@ const EditDish = () => {
           >
             מחק מנה
           </button>
-          {isOpen && <Modal isOpen={isOpen} setOpen={setIsOpen} />}
+          {isOpen && (
+            <Modal
+              open={isOpen}
+              setOpen={setIsOpen}
+              user={user}
+              item={dish}
+              type={true}
+            />
+          )}
         </div>
       </form>
     </div>

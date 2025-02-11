@@ -158,8 +158,9 @@ const Profile = () => {
                 />
               </div>
             </div>
-
-            <div className="sm:col-span-6 w-60">
+            <div className="sm:col-span-6 w-60 mt-10 ">
+              <hr className="mb-10 w-[1010px]" />
+              <h1>* פרטים אלו לא יוצגו באופן ציבורי</h1>
               <label
                 htmlFor="password"
                 className="block text-sm font-medium leading-6 text-gray-900"
@@ -176,6 +177,15 @@ const Profile = () => {
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6"
                 />
               </div>
+              <div id="userFromStrotage" className="">
+                <h1 className="mt-5">Id: {userFromStorage?._id}</h1>
+                <h1 className="mt-5">
+                  Member Since: {userFromStorage?.createdAt.split("T")[0]}
+                </h1>
+                <h1 className="mt-5">
+                  Design : {userFromStorage?.designNumber}
+                </h1>
+              </div>
             </div>
           </div>
         </div>
@@ -183,7 +193,7 @@ const Profile = () => {
       <div className="mt-6 flex justify-end ml-10 gap-x-6">
         <button
           type="submit"
-          className="rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:text-green-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          className="rounded-md mb-3 bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:text-green-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
           שמירה
         </button>

@@ -1,31 +1,29 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import axios from "axios";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
-import SideBar from "../components/SideBar";
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
-
-const Dashboard = () => {
+import SideBar from "../client/src/components/SideBar";
+const Design1 = (menu) => {
   const user = useSelector((state) => state.user.user);
-  const navigate = useNavigate();
+  console.log(menu);
+  const useridFromMenu = menu._id;
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    if (user && user._id) {
+    if (menu && useridFromMenu) {
       const fetchCategories = async () => {
         try {
           const token = localStorage.getItem("token");
           const response = await axios.post(
             `http://localhost:8000/api/category/getCategories`,
             {
-              userId: user._id,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${token}`, // Attach token in the Authorization header
-              },
+              userId: useridFromMenu,
             }
+            // { TODO: i cancel IsAuth from router
+            //   headers: {
+            //     Authorization: `Bearer ${token}`, // Attach token in the Authorization header
+            //   },
+            // }
           );
 
           if (response.data) {
@@ -40,12 +38,20 @@ const Dashboard = () => {
 
       fetchCategories();
     }
-  }, [user, categories]);
-
+  }, [menu]);
   return (
-    <div className="flex justify-center">
-      <div className="flex-1 mt-20">
-        <div className="grid lg:grid-cols-3 gap-5 justify-items-center grid-cols-2">
+    <div className="flex">
+      {/* Main Content */}
+
+      <div className="flex-grow p-4" style={{ marginRight: "13rem" }}>
+        {" "}
+        {/* Sidebar width margin */}
+        <div className="block w-full">
+          <h1 className="text-2xl font-semibold text-black mt-10">
+            {menu.menu.restaurantName}
+          </h1>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-2 mt-4">
           {categories &&
             categories.map((category) => (
               <div key={category._id} className="m-3">
@@ -54,15 +60,8 @@ const Dashboard = () => {
                     {category.name}
                   </p>
 
-                  <PencilSquareIcon
-                    onClick={() =>
-                      navigate("/editCategory", { state: { item: category } })
-                    }
-                    className="absolute -m-2  w-7 rounded-full bg-gray-300 p-1"
-                  />
-
                   <img
-                    className="rounded w-full h-auto max-w-[450px] sm:max-w-[350px] min-h-[200px] object-cover"
+                    className="rounded w-full h-auto max-w-[350px] min-h-[200px] object-cover"
                     src={category.img}
                     alt={category.name}
                     onClick={() =>
@@ -76,11 +75,13 @@ const Dashboard = () => {
             ))}
         </div>
       </div>
-      <div className="min-w-72 h-full sm:block hidden">
-        <SideBar categories={categories} />
+
+      {/* Sidebar */}
+      <div className="w-72 h-screen fixed right-0 bg-gray-200">
+        {/* <SideBar categories={categories} /> */}
       </div>
     </div>
   );
 };
 
-export default Dashboard;
+export default Design1;

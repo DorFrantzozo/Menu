@@ -19,6 +19,9 @@ const userSchema = new mongoose.Schema(
     logo: {
       type: String,
     },
+    designNumber: {
+      type: Number,
+    },
   },
   { timestamps: true }
 ); // Automatically adds createdAt and updatedAt fields
