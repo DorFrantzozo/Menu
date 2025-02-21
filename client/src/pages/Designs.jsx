@@ -14,7 +14,7 @@ const Designs = () => {
       const response = await axios.get("http://localhost:8000/api/user/find", {
         params: { name },
       });
-      console.log(response);
+
       setMenu(response.data);
       console.log(menu);
     } catch (error) {
@@ -23,7 +23,6 @@ const Designs = () => {
   };
   useEffect(() => {
     fatchData(name);
-    console.log(menu);
   }, [name]);
 
   return (
@@ -33,6 +32,12 @@ const Designs = () => {
         onClick={() => navigate("/design1", { state: menu })}
       >
         design1
+      </button>
+      <button
+        className="px-4 py-2 text-xl text-white border rounded bg-black"
+        onClick={() => navigate("/design2", { state: menu })}
+      >
+        design2
       </button>
     </div>
   );

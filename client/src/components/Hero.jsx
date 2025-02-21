@@ -26,7 +26,7 @@ const features = [
 
 export default function Hero() {
   return (
-    <div className="overflow-hidden bg-black py-24 sm:py-32">
+    <div className="overflow-hidden bg-white py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
           <div className="lg:pr-8 lg:pt-4">
@@ -34,19 +34,19 @@ export default function Hero() {
               <h2 className="text-base font-semibold leading-7 text-green-400">
                 Eazy And Fast
               </h2>
-              <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              <p className="mt-2 text-3xl font-bold tracking-tight text-black sm:text-4xl">
                 Personalized menus for each restaurant
               </p>
-              <p className="mt-6 text-lg leading-8 text-gray-300">
+              <p className="mt-6 text-lg leading-8 text-black">
                 Restaurants can create custom menus tailored to their customers
                 tastes. They can also adjust prices based on customer feedback.
                 This allows them to provide the best possible experience to
                 their customers.
               </p>
-              <dl className="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-300 lg:max-w-none">
+              <dl className="mt-10 max-w-xl space-y-8 text-base leading-7 text-black lg:max-w-none">
                 {features.map((feature) => (
                   <div key={feature.name} className="relative pl-9">
-                    <dt className="inline font-bold  text-white">
+                    <dt className="inline font-bold  text-blcak">
                       <feature.icon
                         aria-hidden="true"
                         className="absolute left-1 top-1 h-5 w-5 text-green-400"
@@ -58,8 +58,8 @@ export default function Hero() {
                 ))}
               </dl>
               <div className="">
-               Get Started
-                <button className="text-white text-xl bg-green-400 rounded w-[100px] mt-28 ">
+                Get Started
+                <button className="text-blcak text-xl bg-black rounded w-[100px] mt-28 p-1 ">
                   Signin
                 </button>
               </div>

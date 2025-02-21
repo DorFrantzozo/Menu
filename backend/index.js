@@ -6,6 +6,7 @@ import dishRouter from "./routes/dish-route.js";
 import cors from "cors";
 
 import dotenv from "dotenv";
+import assetRouter from "./routes/asset-route.js";
 dotenv.config();
 
 const app = express();
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use("/api/user", userRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/dish", dishRouter);
+app.use("/api/asset", assetRouter);
 try {
   await connect();
   app.listen(process.env.PORT, () => {

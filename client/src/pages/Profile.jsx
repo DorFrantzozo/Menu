@@ -2,6 +2,8 @@ import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { updateUser } from "../state/user/userSlice";
 
 const Profile = () => {
   const fileInputRef = useRef(null);
@@ -11,23 +13,23 @@ const Profile = () => {
   const [img, setImg] = useState("");
   const navigate = useNavigate();
   const [userFromStorage, setUser] = useState(null);
+  const dispatch = useDispatch();
 
-  // Get user from localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      setUser(JSON.parse(storedUser)); // Parse the JSON string into an object
+      setUser(JSON.parse(storedUser));
     }
   }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData();
-    formData.append("email", email || userFromStorage?.email); // Use email from state or localStorage
+    formData.append("email", email || userFromStorage?.email);
     formData.append(
       "restaurantName",
       restaurantName || userFromStorage?.restaurantName
-    ); // Use restaurant name from state or localStorage
+    );
     formData.append("password", password);
     formData.append("logo", img);
 
@@ -43,25 +45,25 @@ const Profile = () => {
       );
 
       if (response.status === 200) {
+        dispatch(updateUser(response.data.user));
         console.log("ok!");
-        navigate("/profile");
+        console.log(restaurantName);
+        navigate("/dashboard");
       }
     } catch (error) {
       console.error(error.message);
     }
   };
 
-  // Function to handle button click to trigger file input
   const handleButtonClick = () => {
-    fileInputRef.current.click(); // Programmatically click the hidden input
+    fileInputRef.current.click();
   };
 
-  // Function to handle the file selection
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       console.log("Selected file:", file);
-      setImg(file); // Store the selected file for uploading
+      setImg(file);
     }
   };
 
@@ -108,7 +110,7 @@ const Profile = () => {
               </button>
               <button
                 className="bg-slate-50 shadow-md rounded-lg w-20 text-sm h-10"
-                onClick={() => setImg(null)} // Handle removing the image
+                onClick={() => setImg(null)}
                 type="button"
               >
                 הסר

@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
 export default function DropDown({ setCategory }) {
-  const user = useSelector((state) => state.user.user);
+  const user = useSelector((state) => state.user);
   const [categories, setCategories] = useState([]);
   const [dropTitle, setDropTitle] = useState("");
   const token = localStorage.getItem("token");

@@ -19,13 +19,16 @@ import Profile from "./pages/Profile";
 import EditDish from "./pages/EditDish";
 import Menu from "./pages/Menu";
 import EditCategory from "./pages/EditCategory";
-import Design1 from "../../designs/design1";
+import Design1 from "../../designs/Design1/Design1";
 import Designs from "./pages/Designs";
+import Design1Dish from "../../designs/Design1/Design1Dish";
+import Design2 from "../../designs/Design2.jsx/Design2";
+import AddAssetsPage from "./pages/AddAssetsPage";
 
 function App() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
-
+  console.log(user);
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
@@ -41,7 +44,7 @@ function App() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("expireTime");
-    alert("Session expired. Please log in again.");
+    window.location.reload();
 
     return;
   }
@@ -49,10 +52,8 @@ function App() {
     <div className="flex flex-col min-h-screen">
       <BrowserRouter>
         {user && <Navbar />}
-        {/* {!user && <Navigate to="/signin" />} */}
 
         <Routes>
-          {/* Redirect logged-in users from Landing page to Dashboard */}
           <Route
             path="/"
             element={user ? <Navigate to="/dashboard" /> : <Landing />}
@@ -81,12 +82,18 @@ function App() {
 
           <Route path="/add-dish" element={<AddDish />} />
           <Route path="/add-category" element={<AddCategory />} />
+          <Route path="/add-asset" element={<AddAssetsPage />} />
           <Route path="/dishesPage" element={<DishPage />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/editDish" element={<EditDish />} />
           <Route path="/editCategory" element={<EditCategory />} />
           <Route path="/menu" element={<Menu />} />
           <Route path="/design1" element={<Design1 />} />
+          <Route path="/design2" element={<Design2 />} />
+          <Route
+            path="/design1/:categoryName/dishes/:userId/:categoryId"
+            element={<Design1Dish />}
+          />
         </Routes>
 
         <div className="mt-auto z-50">

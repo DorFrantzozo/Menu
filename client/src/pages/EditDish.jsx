@@ -73,7 +73,7 @@ const EditDish = () => {
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <h1 className="text-black flex justify-center text-2xl mt-10">
-        "{dish?.name}" עריכה
+        {dish?.name} עריכה
       </h1>
 
       <form onSubmit={handleSubmit} className="flex flex-col items-center">

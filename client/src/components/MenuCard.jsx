@@ -1,10 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import milk from "../assets/img/milk.png";
-import pregnant from "../assets/img/pregnant.png";
-import gluten from "../assets/img/gluten.png";
-import vegi from "../assets/img/vegetable.png";
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
 
+import { PencilSquareIcon } from "@heroicons/react/24/outline";
+import Alergies from "./sensitivities/Alergies";
 const MenuCard = (item) => {
   const navigate = useNavigate();
 
@@ -44,25 +41,9 @@ const MenuCard = (item) => {
             <p className="text-slate-900 text-base mt-1">{item.item.price} ₪</p>
           )}
         </div>
+
         <div className="flex justify-center mt-4">
-          <div className="block">
-            {item.item.lactose && <img src={milk} alt="milk" width={40} />}{" "}
-            {/* Show milk icon if lactose is true */}
-          </div>
-          <div>
-            {item.item.gluten && <img src={gluten} alt="gluten" width={40} />}{" "}
-            {/* Show gluten icon if gluten is true */}
-          </div>
-          <div>
-            {item.item.pregnant && (
-              <img src={pregnant} alt="pregnant" width={40} />
-            )}{" "}
-            {/* Show pregnant icon if pregnant is true */}
-          </div>
-          <div>
-            {item.item.vegi && <img src={vegi} alt="vegi" width={40} />}{" "}
-            {/* Show pregnant icon if pregnant is true */}
-          </div>
+          <Alergies dish={item.item} />
         </div>
       </div>
     </button>

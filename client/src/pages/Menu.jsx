@@ -1,33 +1,37 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { useState } from "react";
-import Design1 from "../../../designs/design1";
+import { useNavigate } from "react-router-dom";
 
 const Menu = () => {
-  const [menu, setMenu] = useState([]);
+  const [menu, setMenu] = useState(null); // התחלה עם null במקום מערך ריק
+  const navigate = useNavigate();
   const url = window.location.href;
   const selectedBuisness = url.split(".")[0].split("//")[1];
-  const design = menu.designNumber;
 
-  const fatchData = async (name) => {
+  const fetchData = async (name) => {
     try {
       const response = await axios.get("http://localhost:8000/api/user/find", {
         params: { name },
       });
-      console.log(response);
       setMenu(response.data);
-      console.log(menu);
-      console.log(response.data);
     } catch (error) {
       console.log(error);
     }
   };
+
   useEffect(() => {
-    fatchData(selectedBuisness);
-    console.log(menu);
+    fetchData(selectedBuisness);
   }, [selectedBuisness]);
 
-  return <div>{design === 1 && <Design1 menu={menu} />}</div>;
+  useEffect(() => {
+    if (menu && menu.designNumber === 1) {
+      navigate("/design1");
+    } else if (menu && menu.designNumber === 2) {
+      navigate("/design2");
+    }
+  }, [menu, navigate]);
+
+  return <div>Loading...</div>;
 };
 
 export default Menu;

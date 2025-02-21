@@ -3,28 +3,38 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Modal from "../components/Modal";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const EditCategory = () => {
   const location = useLocation();
-  const [img, setImg] = useState(null);
-  const [name, setName] = useState(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const user = useSelector((state) => state.user.user);
-  const { item } = location.state || {};
-  const category = item;
   const navigate = useNavigate();
-
+  const user = useSelector((state) => state.user.user);
   const token = localStorage.getItem("token");
+
+  // ודא שה-item לא undefined
+  const item = location.state?.item || {};
+
+  const [img, setImg] = useState(null);
+  const [name, setName] = useState(item.name || "");
+  const [locationNumber, setLocationNumber] = useState(
+    item.locationNumber || 0
+  );
+  const [isOpen, setIsOpen] = useState(false);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     const formData = new FormData();
     formData.append("newName", name);
+    formData.append("locationNumber", locationNumber || item.locationNumber);
+
     if (img) {
       formData.append("img", img);
     }
+
     try {
       await axios.put(
-        `http://localhost:8000/api/category/updateCategory/${user._id}/${category._id}`,
+        `http://localhost:8000/api/category/updateCategory/${user._id}/${item._id}`,
         formData,
         {
           headers: {
@@ -34,10 +44,13 @@ const EditCategory = () => {
         }
       );
       navigate("/dashboard");
+      toast.success("Category updated successfully");
     } catch (error) {
       console.error("Error updating category:", error);
+      toast.error(error.response?.data?.message);
     }
   };
+
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <h1 className="text-black flex justify-center text-2xl mt-10">
@@ -66,33 +79,55 @@ const EditCategory = () => {
               שנה תמונה
             </label>
 
-            <img
-              src={item?.img}
-              width={200}
-              height={250}
-              alt=""
-              className="rounded mt-5 max-w-full lg:max-w-[400px] lg:max-h-[500px]"
-            />
+            {item?.img && (
+              <img
+                src={item.img}
+                width={200}
+                height={250}
+                alt=""
+                className="rounded mt-5 max-w-full lg:max-w-[400px] lg:max-h-[500px]"
+              />
+            )}
           </div>
 
           <div className="w-full lg:w-60">
             <label
-              htmlFor="dishName"
+              htmlFor="categoryName"
               className="block text-lg font-medium leading-6 text-end text-gray-900"
             >
               שם הקטגוריה
             </label>
             <div className="mt-2">
               <input
+                value={name}
                 onChange={(e) => setName(e.target.value)}
-                id="categoryNameName"
+                id="categoryName"
                 name="categoryName"
                 type="text"
-                placeholder={item?.name || ""}
-                autoComplete="categoryName-name"
+                placeholder="שם הקטגוריה"
                 className="block text-end w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6"
               />
             </div>
+          </div>
+        </div>
+
+        <div className="w-full lg:w-40 ms-80 ">
+          <label
+            htmlFor="locationNumber"
+            className="block text-lg font-medium leading-6 text-end text-gray-900"
+          >
+            מיקום בתפריט
+          </label>
+          <div className="mt-2">
+            <input
+              value={locationNumber}
+              onChange={(e) => setLocationNumber(e.target.value)}
+              id="locationNumber"
+              name="locationNumber"
+              type="text"
+              placeholder="מיקום בתפריט"
+              className="block text-end w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6"
+            />
           </div>
         </div>
 
@@ -117,7 +152,7 @@ const EditCategory = () => {
               open={isOpen}
               setOpen={setIsOpen}
               user={user}
-              item={category}
+              item={item}
               type={false}
             />
           )}

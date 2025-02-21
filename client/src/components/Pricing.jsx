@@ -13,13 +13,13 @@ export default function Pricing() {
     Navigate("/signin");
   };
   return (
-    <div className="bg-black py-24 sm:py-32">
+    <div className="bg-white py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl sm:text-center">
-          <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+          <h2 className="text-3xl font-semibold tracking-tight text-black sm:text-4xl">
             Start Your 30-day free trial
           </h2>
-          <p className="mt-6 text-lg leading-8 text-white">
+          <p className="mt-6 text-lg leading-8 text-black">
             Distinctio et nulla eum soluta et neque labore quibusdam. Saepe et
             quasi iusto modi velit ut non voluptas in. Explicabo id ut laborum.
           </p>
@@ -29,7 +29,7 @@ export default function Pricing() {
             <h3 className="text-2xl font-semibold tracking-tight text-green-400">
               Monthly Subscription
             </h3>
-            <p className="mt-6 text-base leading-7 text-white-600">
+            <p className="mt-6 text-base leading-7 text-black">
               Lorem ipsum dolor sit amet consect etur adipisicing elit. Itaque
               amet indis perferendis blanditiis repellendus etur quidem
               assumenda.
@@ -42,7 +42,7 @@ export default function Pricing() {
             </div>
             <ul
               role="list"
-              className="mt-8 grid grid-cols-1 gap-4 text-sm leading-6 text-white sm:grid-cols-2 sm:gap-6"
+              className="mt-8 grid grid-cols-1 gap-4 text-sm leading-6 text-black sm:grid-cols-2 sm:gap-6"
             >
               {includedFeatures.map((feature) => (
                 <li key={feature} className="flex gap-x-3">
@@ -56,9 +56,9 @@ export default function Pricing() {
             </ul>
           </div>
           <div className="-mt-2 p-2 lg:mt-0 lg:w-full lg:max-w-md lg:flex-shrink-0">
-            <div className="rounded-2xl bg-lime-200 py-10 text-center ring-1 ring-inset ring-gray-900/5 lg:flex lg:flex-col lg:justify-center lg:py-16">
+            <div className="rounded-2xl bg-green-400 py-10 text-center ring-1 ring-inset ring-gray-900/5 lg:flex lg:flex-col lg:justify-center lg:py-16">
               <div className="mx-auto max-w-xs px-8">
-                <p className="text-base font-semibold text-gray-600">
+                <p className="text-base font-semibold text-black">
                   Start now and exploare
                 </p>
                 <p className="mt-6 flex items-baseline justify-center gap-x-2">
@@ -72,14 +72,14 @@ export default function Pricing() {
                 <button
                   onClick={handleclick}
                   className="mt-10 block w-full rounded-md bg-black px-3 py-2
-                  text-center text-sm font-semibold text-white shadow-sm
+                  text-center text-sm font-semibold text-wjote shadow-sm
                   focus-visible:outline focus-visible:outline-2
                   focus-visible:outline-offset-2
                  "
                 >
                   Get Started
                 </button>
-                <p className="mt-6 text-xs leading-5 text-gray-600">
+                <p className="mt-6 text-xs leading-5 text-black">
                   Invoices and receipts available for easy company reimbursement
                 </p>
               </div>

@@ -13,6 +13,10 @@ const CategorySchema = new mongoose.Schema({
     type: String,
     required: true, // Makes img a required field
   },
+  locationNumber: {
+    type: Number,
+    required: true,
+  },
 });
 
 export default mongoose.model("Category", CategorySchema);

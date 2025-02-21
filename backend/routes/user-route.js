@@ -1,4 +1,5 @@
 import express from "express";
+import { upload } from "../utils/multer.js";
 import {
   loginUser,
   createUser,
@@ -7,7 +8,8 @@ import {
   findRestaurantsByname,
   updateDesignByNumber,
 } from "../controllers/user-controller.js";
-import { upload } from "../utils/multer.js";
+
+
 const userRouter = express.Router();
 
 userRouter.post("/login", loginUser);

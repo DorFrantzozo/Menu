@@ -1,51 +1,58 @@
 import dish from "../assets/img/dish.jpg";
 import category from "../assets/img/category.png";
 import { useNavigate } from "react-router-dom";
+import tomatoAndCarrot from "../assets/img/tomatoAndCarrot.jpg";
 
 const Card = () => {
   const navigate = useNavigate();
-  const handleAddDish = () => {
-    navigate("/add-dish");
-  };
 
-  const handleAddCategory = () => {
-    navigate("/add-category");
-  };
   return (
-    <>
-      <div className="sm:flex block">
-        <div className="block  w-[350px] h-[450px] mr-10 sm:mb-40">
-          <img
-            className="rounded hover:scale-110 transition duration-500"
-            src={category}
-            width="350px"
-            alt=""
-          />
-
-          <button
-            onClick={handleAddCategory}
-            className="text-white text-2xl w-full rounded p-3 flex justify-center mt-5 bg-stone-400"
-          >
-            Add New Category
-          </button>
-        </div>
-        <div className="block   w-[350px] h-[450px] mb-40 ">
-          <img
-            className="rounded hover:scale-110 transition duration-500"
-            src={dish}
-            width="350px"
-            alt=""
-          />
-
-          <button
-            onClick={handleAddDish}
-            className="text-white text-2xl w-full rounded p-3 flex justify-center mt-5 bg-stone-400"
-          >
-            Add New Dish
-          </button>
-        </div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-center mb-10">
+      {/* Category Card */}
+      <div className="w-full max-w-[350px] h-auto flex flex-col items-center">
+        <img
+          className="rounded-lg hover:scale-105 transition duration-300"
+          src={category}
+          alt="קטגוריה"
+        />
+        <button
+          onClick={() => navigate("/add-category")}
+          className="text-white text-lg sm:text-xl w-full rounded-lg p-3 mt-4 bg-stone-400 hover:bg-stone-500 transition duration-300"
+        >
+          הוסף קטגוריה חדשה
+        </button>
       </div>
-    </>
+
+      {/* Dish Card */}
+      <div className="w-full max-w-[350px] h-auto flex flex-col items-center">
+        <img
+          className="rounded-lg hover:scale-105 transition duration-300"
+          src={dish}
+          alt="מנה"
+        />
+        <button
+          onClick={() => navigate("/add-dish")}
+          className="text-white text-lg sm:text-xl w-full rounded-lg p-3 mt-4 bg-stone-400 hover:bg-stone-500 transition duration-300"
+        >
+          הוסף מנה חדשה
+        </button>
+      </div>
+
+      {/* Assets Card */}
+      <div className="w-full max-w-[350px] h-auto flex flex-col items-center">
+        <img
+          className="rounded-lg hover:scale-105 transition duration-300"
+          src={tomatoAndCarrot}
+          alt="Assets"
+        />
+        <button
+          onClick={() => navigate("/add-asset")}
+          className="text-white text-lg sm:text-xl w-full rounded-lg p-3 mt-4 bg-stone-400 hover:bg-stone-500 transition duration-300"
+        >
+          הוסף תמונות
+        </button>
+      </div>
+    </div>
   );
 };
 

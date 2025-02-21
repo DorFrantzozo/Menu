@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { setUser, setToken } from "../state/user/userSlice";
-import resturant2 from "../assets/img/resturant.png";
+import logo from "../assets/img/logoBlack.png";
 const Signin = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -23,6 +23,7 @@ const Signin = () => {
       );
 
       if (response.status === 200) {
+        
         const { user, token, expireTime } = response.data;
         dispatch(setUser(user));
         dispatch(setToken(token));
@@ -34,28 +35,20 @@ const Signin = () => {
       }
     } catch (error) {
       console.log(error);
-      toast.error("Failed to Login");
+      toast.error(error.response.data.message);
     }
   };
 
   return (
     <>
-      <div
-        style={{
-          backgroundImage: `url(${resturant2})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-        className="absolute h-full w-full z-10 "
-      ></div>
-      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 z-10 ">
+      <div className="flex min-h-full flex-1 flex-col justify-center px-6  lg:px-8  ">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
             alt="Menu Logo"
-            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-            className="mx-auto h-10 w-auto"
+            src={logo}
+            className="h-[180px] w-[290px]  mx-auto"
           />
-          <h2 className="mt-10 text-center text-2xl leading-9 tracking-tight text-white">
+          <h2 className="text-center text-2xl leading-9 tracking-tight text-black">
             Sign in to your account
           </h2>
         </div>
@@ -70,7 +63,7 @@ const Signin = () => {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium leading-6 text-white"
+                className="block text-sm font-medium leading-6 text-black"
               >
                 Email address
               </label>
@@ -92,14 +85,14 @@ const Signin = () => {
               <div className="flex items-center justify-between">
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium leading-6 text-white"
+                  className="block text-sm font-medium leading-6 text-black"
                 >
                   Password
                 </label>
                 <div className="text-sm">
                   <a
                     href="#"
-                    className="font-semibold text-white hover:text-green-400"
+                    className="font-semibold text-black hover:text-green-400"
                   >
                     Forgot password?
                   </a>
@@ -122,7 +115,7 @@ const Signin = () => {
             <div>
               <button
                 type="submit"
-                className="flex w-full justify-center rounded-md bg-green-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm   hover:text-black    focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className="flex w-full justify-center rounded-md bg-green-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm   hover:text-black    focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 Sign in
               </button>
@@ -131,7 +124,7 @@ const Signin = () => {
                   setEmail("dorfrant@gmail.com");
                   setPassword("000000");
                 }}
-                className="flex w-full justify-center rounded-md bg-green-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm   hover:text-black    focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600  mt-4"
+                className="flex w-full justify-center rounded-md bg-green-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm   hover:text-black    focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600  mt-4"
               >
                 test auto fill
               </button>
@@ -142,7 +135,7 @@ const Signin = () => {
             Not a member?{" "}
             <button
               onClick={() => navigate("/signup")}
-              className="font-semibold leading-6 text-green-400 hover:text-white"
+              className="font-semibold leading-6 text-green-400 hover:text-black mb-10"
             >
               Start a 14 day free trial
             </button>

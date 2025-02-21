@@ -6,7 +6,7 @@ import DropDown from "./DropDown";
 import { useNavigate } from "react-router-dom";
 
 export default function AddDish() {
-  const user = useSelector((state) => state.user.user);
+  const user = useSelector((state) => state.user);
   const token = localStorage.getItem("token");
 
   const [name, setName] = useState("");

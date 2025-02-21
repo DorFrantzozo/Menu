@@ -16,7 +16,7 @@ dishRouter.post(
   upload.single("img"),
   createDish
 );
-dishRouter.get("/getDish/:userId/:category", isAuth, getDishesByCategory);
+dishRouter.get("/getDish/:userId/:category", getDishesByCategory);
 dishRouter.put(
   "/updateDish/:userId/:dishId",
   upload.single("img"),

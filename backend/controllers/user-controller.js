@@ -88,7 +88,11 @@ const loginUser = async (req, res) => {
 
     const { password: _, ...userWithoutPassword } = user.toObject();
 
-    res.status(200).json({ user: user, token: token, expireTime: expireTime });
+    res.status(200).json({
+      user: userWithoutPassword,
+      token: token,
+      expireTime: expireTime,
+    });
   } catch (error) {
     console.error("Error during login:", error.message);
     res.status(500).json({ message: error.message });

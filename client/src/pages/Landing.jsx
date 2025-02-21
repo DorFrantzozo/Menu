@@ -5,8 +5,8 @@ const Home = () => {
   return (
     <div className="text-white">
       <Hero />
-   
-      <hr className="border-lime-200"></hr>
+
+      <hr className="border-emerald-400"></hr>
       <Pricing />
     </div>
   );
