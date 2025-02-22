@@ -37,17 +37,11 @@ const Profile = () => {
       const response = await axios.put(
         `http://localhost:8000/api/user/updateUser/${userFromStorage?._id}`,
         formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
 
       if (response.status === 200) {
         dispatch(updateUser(response.data.user));
-        console.log("ok!");
-        console.log(restaurantName);
         navigate("/dashboard");
       }
     } catch (error) {
@@ -55,152 +49,120 @@ const Profile = () => {
     }
   };
 
-  const handleButtonClick = () => {
-    fileInputRef.current.click();
-  };
-
+  const handleButtonClick = () => fileInputRef.current.click();
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    if (file) {
-      console.log("Selected file:", file);
-      setImg(file);
-    }
+    if (file) setImg(file);
   };
 
   return (
-    <form dir="rtl" onSubmit={handleSubmit}>
-      {/* Hidden file input */}
-      <input
-        ref={fileInputRef}
-        type="file"
-        onChange={handleFileChange}
-        className="hidden"
-      />
-      <div className="space-y-12 flex w-full mt-28 ms-20 ">
-        <div className="border-b border-gray-900/10 pb-12 w-full ">
-          <h2 className="text-base font-semibold leading-7 text-gray-900">
-            פרופיל
-          </h2>
-          <p className="mt-1 text-sm leading-6 text-gray-600">
-            המידע הזה יוצג באופן ציבורי, לכן שים לב מה אתה משתף.
-          </p>
+    <div className="min-h-[90vh] flex justify-center  mt-10 ">
+      <form
+        dir="rtl"
+        onSubmit={handleSubmit}
+        className="bg-white  rounded-lg p-8 w-full max-w-3xl h-full "
+      >
+        <input
+          ref={fileInputRef}
+          type="file"
+          onChange={handleFileChange}
+          className="hidden"
+        />
 
-          <hr className="w-full border-gray-300 my-4" />
-          <div className="flex items-center justify-between">
-            <div className="inline-flex items-center">
-              {userFromStorage?.logo ? (
-                <img
-                  className="w-40 h-30 rounded-full"
-                  src={userFromStorage.logo}
-                  alt="logo"
-                />
-              ) : (
-                <UserCircleIcon className="w-20 h-20 rounded-full ml-4" />
-              )}
-              <p className="ml-4 text-bold">תמונת פרופיל</p>
-            </div>
+        <h2 className="text-2xl font-semibold text-gray-900 text-center">
+          פרופיל
+        </h2>
+        <p className="text-sm text-gray-600 text-center mb-6">
+          המידע הזה יוצג באופן ציבורי, לכן שים לב מה אתה משתף.
+        </p>
 
-            <div className="flex space-x-4 me-28">
-              <button
-                className="border rounded-lg w-36 text-sm h-10 me-4"
-                onClick={handleButtonClick}
-                type="button"
-              >
-                העלה תמונה חדשה
-              </button>
-              <button
-                className="bg-slate-50 shadow-md rounded-lg w-20 text-sm h-10"
-                onClick={() => setImg(null)}
-                type="button"
-              >
-                הסר
-              </button>
-            </div>
-          </div>
+        <div className="flex flex-col items-center space-y-4">
+          {userFromStorage?.logo ? (
+            <img
+              className="w-24 h-24 rounded-full"
+              src={userFromStorage.logo}
+              alt="logo"
+            />
+          ) : (
+            <UserCircleIcon className="w-24 h-24 text-gray-400" />
+          )}
 
-          <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-7">
-            <div className="sm:col-span-8 w-60">
-              <label
-                htmlFor="restaurant-name"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                שם המסעדה
-              </label>
-              <p className="text-sm"> שנה את שם המסעדה </p>
-              <div className="mt-2">
-                <input
-                  onChange={(e) => setRestaurantName(e.target.value)}
-                  id="restaurant-name"
-                  name="restaurant-name"
-                  type="text"
-                  placeholder={userFromStorage?.restaurantName || ""}
-                  autoComplete="restaurant-name"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-
-            <div className="sm:col-span-8 w-60">
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                מייל
-              </label>
-              <p className="text-sm"> שנה את מייל המסדעה </p>
-              <div className="mt-2">
-                <input
-                  onChange={(e) => setEmail(e.target.value)}
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  placeholder={userFromStorage?.email || ""}
-                  className="block w-full text-left rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-            <div className="sm:col-span-6 w-60 mt-10 ">
-              <hr className="mb-10 w-[1010px]" />
-              <h1>* פרטים אלו לא יוצגו באופן ציבורי</h1>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                סיסמה
-              </label>
-              <div className="mt-2">
-                <input
-                  onChange={(e) => setPassword(e.target.value)}
-                  id="password"
-                  name="password"
-                  type="password"
-                  placeholder="הכנס סיסמה"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6"
-                />
-              </div>
-              <div id="userFromStrotage" className="">
-                <h1 className="mt-5">Id: {userFromStorage?._id}</h1>
-                <h1 className="mt-5">
-                  Member Since: {userFromStorage?.createdAt.split("T")[0]}
-                </h1>
-                <h1 className="mt-5">
-                  Design : {userFromStorage?.designNumber}
-                </h1>
-              </div>
-            </div>
+          <div className="flex space-x-4">
+            <button
+              className="border rounded-lg w-36 text-sm h-10 me-6"
+              onClick={handleButtonClick}
+              type="button"
+            >
+              העלה תמונה חדשה
+            </button>
+            <button
+              className="bg-red-100 text-red-600 hover:bg-red-400 hover:text-white transition duration-300 rounded-lg w-20 text-sm h-10"
+              onClick={() => setImg(null)}
+              type="button"
+            >
+              הסר תמונה
+            </button>
           </div>
         </div>
-      </div>
-      <div className="mt-6 flex justify-end ml-10 gap-x-6">
-        <button
-          type="submit"
-          className="rounded-md mb-3 bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:text-green-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        >
-          שמירה
-        </button>
-      </div>
-    </form>
+
+        <div className="mt-6 space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-900">
+              שם המסעדה
+            </label>
+            <input
+              onChange={(e) => setRestaurantName(e.target.value)}
+              type="text"
+              placeholder={userFromStorage?.restaurantName || ""}
+              className="w-full mt-1 p-2 border border-gray-300 rounded-lg"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-900">
+              מייל
+            </label>
+            <input
+              onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              placeholder={userFromStorage?.email || ""}
+              className="w-full mt-1 p-2 border border-gray-300 rounded-lg"
+            />
+          </div>
+        </div>
+
+        <hr className="my-6 mt-[10%]" />
+        <h1 className="mt-[20%]">* פרטים אלו לא יוצגו באופן ציבורי</h1>
+        <div>
+          <label className="block text-sm font-medium text-gray-900">
+            סיסמה
+          </label>
+          <input
+            onChange={(e) => setPassword(e.target.value)}
+            type="password"
+            placeholder="הכנס סיסמה"
+            className="w-full mt-1 p-2 border border-gray-300 rounded-lg"
+          />
+        </div>
+
+        <div className="text-sm">
+          <p className="mt-2">Id: {userFromStorage?._id}</p>
+          <p className="mt-2">
+            חבר מאז: {userFromStorage?.createdAt.split("T")[0]}
+          </p>
+          <p className="mt-2">עיצוב מספר: {userFromStorage?.designNumber}</p>
+        </div>
+
+        <div className="mt-6 flex justify-center">
+          <button
+            type="submit"
+            className="bg-black text-white px-4 py-2 rounded-lg hover:bg-green-500 transition"
+          >
+            שמירה
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 

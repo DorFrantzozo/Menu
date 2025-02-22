@@ -4,7 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import Spinner from "../../client/src/components/Spinner";
 import hr from "../../client/src/assets/img/hrDisign.png";
-import Alergies from "../../client/src/components/sensitivities/Alergies";
+import Allergies from "../../client/src/components/sensitivities/Allergies";
 import IconDescription from "../../client/src/components/sensitivities/IconDescription";
 const Design2 = () => {
   const hostname = window.location.hostname;
@@ -100,11 +100,11 @@ const Design2 = () => {
   }, [restaurantName]);
 
   return (
-    <div>
+    <div className="flex justify-center">
       {!restaurant ? (
         <Spinner />
       ) : (
-        <div className="min-h-screen flex flex-col  bg-gray-50 p-6  ">
+        <div className="min-h-screen flex flex-col   0 p-6  ">
           <h1 className="text-4xl mb-10 font-bold text-center text-gray-800">
             {restaurant.restaurantName}
           </h1>
@@ -122,7 +122,7 @@ const Design2 = () => {
                       dishes[category._id].map((dish) => (
                         <div key={dish._id} className="p-4 w-full">
                           <div className="flex justify-between items-center">
-                            <Alergies dish={dish} />
+                            <Allergies dish={dish} />
                             <h3 className="text-lg font-semibold text-gray-700 text-wrap">
                               {dish.name}
                             </h3>
@@ -132,7 +132,7 @@ const Design2 = () => {
                             <p className="font-semibold text-gray-800 ms-2">
                               {dish.price}₪
                             </p>
-                            <p className="whitespace-normal">
+                            <p className="whitespace-normal   ">
                               {dish.description}
                             </p>
                           </div>
@@ -142,9 +142,9 @@ const Design2 = () => {
                 </div>
               ))}
           </div>
-            <div className="mt-auto">
-              <IconDescription />
-            </div>
+          <div className="mt-auto">
+            <IconDescription />
+          </div>
         </div>
       )}
     </div>

@@ -4,7 +4,7 @@ import Signup from "./pages/Signup";
 import Footer from "./components/Footer";
 import { ToastContainer } from "react-toastify";
 import Signin from "./pages/Signin";
-import Landing from "./pages/Landing";
+
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 import Edit from "./pages/Edit";
@@ -24,6 +24,7 @@ import Designs from "./pages/Designs";
 import Design1Dish from "../../designs/Design1/Design1Dish";
 import Design2 from "../../designs/Design2.jsx/Design2";
 import AddAssetsPage from "./pages/AddAssetsPage";
+import Landing2 from "./pages/Landing2";
 
 function App() {
   const dispatch = useDispatch();
@@ -56,7 +57,7 @@ function App() {
         <Routes>
           <Route
             path="/"
-            element={user ? <Navigate to="/dashboard" /> : <Landing />}
+            element={user ? <Navigate to="/dashboard" /> : <Landing2 />}
           />
 
           {/* Protect Dashboard route for logged-in users only */}

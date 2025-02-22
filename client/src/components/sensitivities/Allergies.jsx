@@ -4,7 +4,7 @@ import pregnant from "../../assets/img/pregnant.png";
 import gluten from "../../assets/img/gluten.png";
 import vegi from "../../assets/img/vegetable.png";
 
-const Alergies = ({ dish }) => {
+const Allergies = ({ dish }) => {
   return (
     <div className="flex ">
       <div>{dish.lactose && <img src={milk} alt="milk" width={25} />}</div>
@@ -16,9 +16,9 @@ const Alergies = ({ dish }) => {
     </div>
   );
 };
-export default Alergies;
+export default Allergies;
 
-Alergies.propTypes = {
+Allergies.propTypes = {
   dish: PropTypes.shape({
     lactose: PropTypes.bool,
     gluten: PropTypes.bool,

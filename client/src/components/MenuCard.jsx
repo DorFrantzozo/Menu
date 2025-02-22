@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
-import Alergies from "./sensitivities/Alergies";
+import Alergies from "./sensitivities/Allergies";
 const MenuCard = (item) => {
   const navigate = useNavigate();
 

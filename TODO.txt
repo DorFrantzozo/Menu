@@ -1,0 +1,34 @@
+TODO:✅
+add loading spinners [✅]
+add optional category description
+finish design 1 []
+finish design 2{ []
+    fix responsive []
+    add touchups []
+}
+fix profile responsive [✅] 
+make barcode generation for users []
+find new design []
+design the website better []
+translate all to hebrew []
+go online  []
+code refactor (components) []  
+Accessability []
+
+
+
+FIXME:
+fix User object from user.user => user
+
+
+Feature ideas:
+-maps button in the bottom
+-filter (spicy/vegi/gluten)
+-menu views
+-share menu
+-wifi show for clients
+
+
+
+my pros:
+אין צורך בשיניים בתשלום

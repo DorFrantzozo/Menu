@@ -6,7 +6,7 @@ import DropDown from "./DropDown";
 import { useNavigate } from "react-router-dom";
 
 export default function AddDish() {
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user.user);
   const token = localStorage.getItem("token");
 
   const [name, setName] = useState("");
@@ -23,7 +23,6 @@ export default function AddDish() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Create a new FormData object
     const formData = new FormData();
     formData.append("userId", user._id);
     formData.append("name", name);
