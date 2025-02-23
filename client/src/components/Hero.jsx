@@ -1,9 +1,10 @@
+import mobileExample from "../assets/img/handHoldPhone.png";
 import {
   PencilSquareIcon,
   PaintBrushIcon,
   UserIcon,
 } from "@heroicons/react/20/solid";
-import ipad from "../assets/img/ipad.jpeg";
+
 const features = [
   {
     name: "Select Your Design",
@@ -26,54 +27,38 @@ const features = [
 
 export default function Hero() {
   return (
-    <div className="overflow-hidden bg-white py-24 sm:py-32">
+    <div className="sm:py-32 relative" dir="rtl">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
+          {/* טקסט */}
           <div className="lg:pr-8 lg:pt-4">
             <div className="lg:max-w-lg">
               <h2 className="text-base font-semibold leading-7 text-green-400">
-                Eazy And Fast
+                קל ומהיר
               </h2>
               <p className="mt-2 text-3xl font-bold tracking-tight text-black sm:text-4xl">
-                Personalized menus for each restaurant
+                תפריט בעיצוב אישי
               </p>
               <p className="mt-6 text-lg leading-8 text-black">
-                Restaurants can create custom menus tailored to their customers
-                tastes. They can also adjust prices based on customer feedback.
-                This allows them to provide the best possible experience to
-                their customers.
+                צרו תפריט מותאם אישית שיגרום ללקוחות שלכם להתאהב. <br />
+                המערכת שלנו מאפשרת לכם לבחור ממבחר עיצובים או לעצב תפריט ייחודי
+                שמשקף את סגנון המסעדה ומתאים בדיוק להעדפות הלקוחות. תוכלו לעדכן
+                את התפריט בקלות בכל רגע.
+                <br />
+                הצטרפו אלינו והעניקו ללקוחות שלכם את החוויה הטובה ביותר – בדיוק
+                כמו שהם מצפים.
               </p>
-              <dl className="mt-10 max-w-xl space-y-8 text-base leading-7 text-black lg:max-w-none">
-                {features.map((feature) => (
-                  <div key={feature.name} className="relative pl-9">
-                    <dt className="inline font-bold  text-blcak">
-                      <feature.icon
-                        aria-hidden="true"
-                        className="absolute left-1 top-1 h-5 w-5 text-green-400"
-                      />
-                      {feature.name}
-                    </dt>{" "}
-                    <dd className="inline">{feature.description}</dd>
-                  </div>
-                ))}
-              </dl>
-              <div className="">
-                Get Started
-                <button className="text-blcak text-xl bg-black rounded w-[100px] mt-28 p-1 ">
-                  Signin
-                </button>
-              </div>
             </div>
           </div>
-
-          <img
-            alt="Product screenshot"
-            src={ipad}
-            width={2432}
-            height={1442}
-            className="w-[48rem] max-w-none rounded-xl shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem] md:-ml-4 lg:-ml-0"
-          />
         </div>
+      </div>
+
+      <div className="relative w-full h-[400px] bg-gray-200 rounded-t-3xl mt-10 flex ">
+        <img
+          src={mobileExample}
+          alt="טלפון עם תפריט"
+          className="absolute bottom-full  left-40 w-[250px] sm:w-[300px] lg:w-[350px]"
+        />
       </div>
     </div>
   );
