@@ -1,12 +1,11 @@
 TODO:✅
-add loading spinners [✅]
+Copy env for leptop[] 
 add optional category description
 finish design 1 []
 finish design 2{ []
     fix responsive []
     add touchups []
 }
-fix profile responsive [✅] 
 make barcode generation for users []
 find new design []
 design the website better []
@@ -31,3 +30,9 @@ Feature ideas:
 
 
 my pros:
+אין צורך בשיניים בתשלום
+
+
+Completed:
+add loading spinners [✅]
+fix profile responsive [✅] 
