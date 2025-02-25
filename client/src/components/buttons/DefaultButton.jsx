@@ -15,7 +15,7 @@ const DefaultButton = ({
   return (
     <Button
       onClick={handleClick}
-      className={`text-${color} font-semibold rounded p-1 ${hover} ${hoverTextColor} transition duration-500 w-[80px]  bg-${bg}`}
+      className={`text-${color} font-light rounded p-1 ${hover} ${hoverTextColor} transition duration-500 w-[80px]  bg-${bg}`}
     >
       {text}
     </Button>

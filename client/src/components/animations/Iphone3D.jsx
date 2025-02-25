@@ -1,7 +1,9 @@
+import "./Iphone3DCss.css";
 import Spline from "@splinetool/react-spline";
-
-export default function Iphone3D() {
+export default function App() {
   return (
-    <Spline scene="https://prod.spline.design/pR1cGfKYV1bElmT7/scene.splinecode" />
+    <div className="spline-scene">
+      <Spline scene="https://prod.spline.design/djrp61xOwEgsjvgS/scene.splinecode" />
+    </div>
   );
 }

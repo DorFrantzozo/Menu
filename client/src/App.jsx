@@ -97,7 +97,7 @@ function App() {
           />
         </Routes>
 
-        <div className="mt-auto z-50">
+        <div className=" z-50">
           <Footer />
         </div>
       </BrowserRouter>
