@@ -117,7 +117,7 @@ const Design2 = () => {
                   <h2 className="text-2xl font-semibold flex justify-center text-gray-700 border-b pb-2 mb-4">
                     {category.name}
                   </h2>
-                  <div className="">
+                  <div>
                     {dishes[category._id] &&
                       dishes[category._id].map((dish) => (
                         <div key={dish._id} className="p-4 w-full">
@@ -128,11 +128,11 @@ const Design2 = () => {
                             </h3>
                           </div>
 
-                          <div className="flex justify-between items-center text-gray-600 text-sm mt-2">
+                          <div className="flex justify-between text-gray-600 text-sm mt-2">
                             <p className="font-semibold text-gray-800 ms-2">
                               {dish.price}₪
                             </p>
-                            <p className="whitespace-normal   ">
+                            <p className="whitespace-normal ms-10 break-words text-right text-sm sm:text-base md:text-lg lg:text-xl">
                               {dish.description}
                             </p>
                           </div>

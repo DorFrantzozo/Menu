@@ -1,9 +1,8 @@
 TODO:✅
-Copy env for leptop[] 
 add optional category description
 finish design 1 []
 finish design 2{ []
-    fix responsive []
+    fix responsive [✅]
     add touchups []
 }
 make barcode generation for users []

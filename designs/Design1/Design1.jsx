@@ -91,7 +91,7 @@ const Design1 = () => {
               .map((category) => (
                 <div
                   key={category._id}
-                  className="p-4 bg-white shadow-lg rounded-lg cursor-pointer transform transition-all hover:scale-105 hover:shadow-2xl"
+                  className="p-4   rounded-lg cursor-pointer transform transition-all hover:scale-105 hover:shadow-2xl"
                   onClick={() =>
                     navigate(
                       `${encodeURIComponent(category.name)}/dishes/${

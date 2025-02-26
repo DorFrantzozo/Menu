@@ -44,21 +44,29 @@ const Design1Dish = () => {
         {categoryName}
       </h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="space-y-8 ">
         {dishes.map((dish) => (
-          <div key={dish._id} className="p-4 bg-white shadow-lg rounded-lg">
+          <div
+            key={dish._id}
+            className="flex items-center p-2   mb-10 shadow-lg rounded-lg space-x-6"
+          >
             <img
               src={dish.img}
-              className="w-full h-56 object-cover rounded-lg"
+              className="w-[200px] h-[200px] rounded transform hover:scale-150 transition-all duration-300"
               alt={dish.name}
             />
-            <h3 className="text-xl font-semibold text-center text-gray-700 mt-4">
-              {dish.name}
-            </h3>
-            <p className="text-center text-gray-600 mt-2">{dish.description}</p>
-            <p className="text-center font-bold text-lg text-gray-900 mt-2">
-              {dish.price} ₪
-            </p>
+
+            <div className="flex flex-col w-full">
+              <h3 className="text-xl font-semibold text-right text-gray-700">
+                {dish.name}
+              </h3>
+              <p className="text-gray-600 mt-2 text-right">
+                {dish.description}
+              </p>
+              <p className="font-bold text-lg text-gray-900 mt-2">
+                {dish.price} ₪
+              </p>
+            </div>
           </div>
         ))}
       </div>
