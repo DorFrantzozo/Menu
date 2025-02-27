@@ -98,7 +98,7 @@ const Design1 = () => {
                         restaurant._id
                       }/${category._id}`
                     )
-                  } // ניווט לעמוד המנות
+                  }
                 >
                   <h2 className="text-xl font-semibold text-center text-gray-700">
                     {category.name}

@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-
+import Alergies from "../../client/src/components/sensitivities/Allergies";
+import IconDescription from "../../client/src/components/sensitivities/IconDescription";
 const Design1Dish = () => {
   const { userId, categoryId, categoryName } = useParams(); // לקבל את ה- userId וה- categoryId מה-URL
   const [dishes, setDishes] = useState([]);
@@ -32,10 +33,10 @@ const Design1Dish = () => {
   }, [userId, categoryId]);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen  p-6">
       <button
         onClick={() => navigate(-1)} // כפתור חזרה לעמוד הקטגוריות
-        className="mb-4 text-blue-500 font-semibold"
+        className="mb-4  font-semibold"
       >
         חזור לעמוד הקטגוריות
       </button>
@@ -50,11 +51,7 @@ const Design1Dish = () => {
             key={dish._id}
             className="flex items-center p-2   mb-10 shadow-lg rounded-lg space-x-6"
           >
-            <img
-              src={dish.img}
-              className="w-[200px] h-[200px] rounded transform hover:scale-150 transition-all duration-300"
-              alt={dish.name}
-            />
+            <img src={dish.img} className="dish-img rounded " alt={dish.name} />
 
             <div className="flex flex-col w-full">
               <h3 className="text-xl font-semibold text-right text-gray-700">
@@ -66,9 +63,11 @@ const Design1Dish = () => {
               <p className="font-bold text-lg text-gray-900 mt-2">
                 {dish.price} ₪
               </p>
+              <Alergies dish={dish} />
             </div>
           </div>
         ))}
+        <IconDescription />
       </div>
     </div>
   );
