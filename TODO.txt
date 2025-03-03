@@ -1,5 +1,6 @@
 TODO:✅
 add optional category description
+add admin panel[]
 finish design 1 []
 finish design 2{ []
     fix responsive [✅]
@@ -20,7 +21,7 @@ fix User object from user.user => user
 
 
 Feature ideas:
--maps button in the bottom
+-maps (business location)button in the bottom
 -filter (spicy/vegi/gluten)
 -menu views
 -share menu

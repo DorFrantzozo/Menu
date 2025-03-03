@@ -25,6 +25,7 @@ import Design1Dish from "../../designs/Design1/Design1Dish";
 import Design2 from "../../designs/Design2.jsx/Design2";
 import AddAssetsPage from "./pages/AddAssetsPage";
 import Landing2 from "./pages/Landing2";
+import AdminPage from "./pages/AdminPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -76,6 +77,17 @@ function App() {
           <Route
             path="/signup"
             element={user ? <Navigate to="/dashboard" /> : <Signup />}
+          />
+
+          <Route
+            path="/admin"
+            element={
+              user && user.role !== "admin" ? (
+                <Navigate to="/" />
+              ) : (
+                <AdminPage />
+              )
+            }
           />
 
           <Route path="/edit" element={<Edit />} />

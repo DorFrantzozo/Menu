@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema(
     designNumber: {
       type: Number,
     },
+    role: { type: String, default: "user" },
   },
   { timestamps: true }
 ); // Automatically adds createdAt and updatedAt fields

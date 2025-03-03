@@ -1,9 +1,13 @@
-import Iphone3D from "./animations/Iphone3D";
-import {} from // PencilSquareIcon,
+import logo from "../assets/img/logoBlack.png";
+import iphone from "../assets/img/iphone-landing.jpg";
 // PaintBrushIcon,
 // UserIcon,
-"@heroicons/react/20/solid";
+("@heroicons/react/20/solid");
+import AnimatedContent from "./TextAnimations/AnimatedContent";
 import BlurText from "./TextAnimations/BlurText/BlurText";
+import StarBorder from "./TextAnimations/StarBorder";
+import { useNavigate } from "react-router-dom";
+
 // const features = [
 //   {
 //     name: "Select Your Design",
@@ -25,43 +29,60 @@ import BlurText from "./TextAnimations/BlurText/BlurText";
 // ];
 
 export default function Hero() {
+  const navigate = useNavigate();
   return (
-    <div className="sm:py-32 relative" dir="rtl">
-      <div className="hidden lg:block">
-        <div className="bg-black w-[200px] h-24 absolute sm:mt-[420px] ms-[200px] z-10 "></div>
-        <Iphone3D />
-      </div>
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
-          <div className="lg:pr-8 lg:pt-4">
-            <div className="lg:max-w-lg">
-              <BlurText
-                text="תפריט בעיצוב אישי"
-                className="text-3xl text-white"
-                rootMargin="400px"
-              />
+    <>
+      <img
+        src={logo}
+        width={300}
+        height={100}
+        alt="logo"
+        className="w-full hidden lg:block max-w-[300px] mx-auto"
+      />
 
-              <p className="mt-6 text-lg leading-8 text-white">
-                צרו תפריט מותאם אישית שיגרום ללקוחות שלכם להתאהב. <br />
-                המערכת שלנו מאפשרת לכם לבחור ממבחר עיצובים או לעצב תפריט ייחודי
-                שמשקף את סגנון המסעדה ומתאים בדיוק להעדפות הלקוחות. תוכלו לעדכן
-                את התפריט בקלות בכל רגע.
-                <br />
-                הצטרפו אלינו והעניקו ללקוחות שלכם את החוויה הטובה ביותר – בדיוק
-                כמו שהם מצפים.
-              </p>
-            </div>
+      <div className="w-full flex flex-col lg:flex-row justify-around px-4">
+        <div className="lg:w-1/2">
+          <BlurText
+            text="תפריט דיגיטלי מעוצב "
+            delay={150}
+            animateBy="words"
+            direction="top"
+            className="text-[40px] md:text-[60px] mb-8 text-black mt-20 lg:mt-0 lg:me-36 text-center lg:text-left"
+          />
+          <div dir="rtl" className="flex flex-col items-start mt-10 lg:mt-40">
+            <p className="font-bold text-start text-xl md:text-2xl">
+              תפריט דיגיטלי מעוצב בלחיצת כפתור! 🍽️🚀
+            </p>
+            <p className="text-sm md:text-lg text-wrap mt-4">
+              בחר עיצוב, עדכן מנות ומחירים בקלות, וקבל אתר תפריט מוכן עם קוד
+              ברקוד לסריקה.
+              <br />
+              תוך דקות – התפריט שלך באוויר!
+            </p>
+            <button onClick={() => navigate("/signin")}>
+              <StarBorder
+                as="button"
+                className="mt-10"
+                speed="3s"
+                color="green"
+              >
+                התחל עכשיו
+              </StarBorder>
+            </button>
           </div>
         </div>
-      </div>
 
-      {/* <div className="relative w-full h-[400px] bg-gray-200 rounded-t-3xl mt-10 flex ">
-        <img
-          src={mobileExample}
-          alt="טלפון עם תפריט"
-          className="absolute bottom-full  left-40 w-[250px] sm:w-[300px] lg:w-[350px]"
-        />
-      </div> */}
-    </div>
+        <div className="lg:w-1/2 mt-10 lg:mt-0">
+          <AnimatedContent distance={400} delay={100}>
+            <img
+              src={iphone}
+              className="w-full max-w-[700px] mx-auto"
+              alt="Menu"
+            />
+          </AnimatedContent>
+        </div>
+      </div>
+      <hr className="bg-black h-[px]mb" />
+    </>
   );
 }

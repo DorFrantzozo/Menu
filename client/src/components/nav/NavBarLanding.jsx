@@ -11,8 +11,8 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 
 const navigation = [
-  { name: "עלינו", href: "#", current: true },
-  { name: "צור קשר", href: "#", current: false },
+  { name: "עלינו", href: "/", current: false },
+  { name: "צור קשר", href: "/contact", current: false },
   { name: "דוגמה", href: "#", current: false },
 ];
 
@@ -45,25 +45,7 @@ export default function NavBarLanding() {
             <img alt="Menu-logo" src={logo} className="h-18 w-28" />
           </div>
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-            <div className="hidden sm:ml-6 sm:block ms-10">
-              <div className="flex space-x-4">
-                {navigation.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    aria-current={item.current ? "page" : undefined}
-                    className={classNames(
-                      item.current
-                        ? "bg-gray-900 text-white"
-                        : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                      "rounded-md px-3 py-2 text-sm font-medium"
-                    )}
-                  >
-                    {item.name}
-                  </a>
-                ))}
-              </div>
-            </div>
+            <div className="hidden sm:ml-6 sm:block ms-10"></div>
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
             <div className="hidden sm:block">

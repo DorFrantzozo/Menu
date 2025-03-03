@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import CircularGallery from "../components/TextAnimations/CircularGallery";
+
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import design1Tamneil from "../assets/img/design1Tamneil.png";
+import Design2Tamneil from "../assets/img/Design2Tamneil.png";
 const Designs = () => {
   const items = [design1Tamneil];
   const navigate = useNavigate();
@@ -44,9 +45,20 @@ const Designs = () => {
     //     design2
     //   </button>
     // </div>
-    <>
-      <CircularGallery items={items} />
-    </>
+    <div className="bg-black flex">
+      <img
+        src={design1Tamneil}
+        className="shadow-slate-200 mt-20 mb-80 ms-10 hover:scale-110 transition duration-500 rounded-lg shadow-lg"
+        width={200}
+        alt=""
+      />
+      <img
+        src={Design2Tamneil}
+        className="shadow-slate-200 mt-20 mb-80 ms-10 hover:scale-110 transition duration-500 rounded-lg shadow-lg"
+        width={200}
+        alt=""
+      />
+    </div>
   );
 };
 
