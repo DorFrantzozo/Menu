@@ -18,5 +18,5 @@ userRouter.put("/updateUser/:userId", upload.single("logo"), updateUser);
 userRouter.get("/find", findRestaurantsByname);
 userRouter.post("/deleteUser", deleteUser);
 userRouter.get("/getAllUsers", getAllUsers);
-userRouter.post("/updateDesign", updateDesignByNumber);
+userRouter.put("/updateDesign", updateDesignByNumber);
 export default userRouter;

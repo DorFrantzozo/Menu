@@ -27,10 +27,12 @@ export function UsersCountCard() {
   }, []);
 
   return (
-    <Card className="w-[350px]">
+    <Card className="w-[220px] bg-zinc-900 text-white">
       <CardHeader>
-        <CardTitle>Users</CardTitle>
-        <CardDescription>Current users</CardDescription>
+        <CardTitle className="text-white">Users</CardTitle>
+        <CardDescription className="text-white">
+          Current Subscribed users
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <CountUp
@@ -38,12 +40,14 @@ export function UsersCountCard() {
           to={userCount}
           delay={0}
           duration={1}
-          className="text-4xl text-green-500"
+          className="text-4xl text-green-500 flex justify-center"
         />
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button variant="outline">Cancel</Button>
-        <Button>Deploy</Button>
+        {/* <Button className="text-black" variant="outline">
+          Cancel
+        </Button>
+        <Button>Deploy</Button> */}
       </CardFooter>
     </Card>
   );

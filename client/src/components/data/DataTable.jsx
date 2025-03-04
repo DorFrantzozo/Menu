@@ -126,17 +126,20 @@ export default function DataTable() {
   });
 
   return (
-    <div className="w-full">
+    <div className="w-full mt-10 bg-zinc-900 rounded-lg p-6">
       <div className="flex items-center py-4 space-x-4">
         <Input
           placeholder="Search users..."
           value={globalFilter}
           onChange={(event) => setGlobalFilter(event.target.value)}
-          className="max-w-sm"
+          className="max-w-sm text-white focus:bg-zinc-700 transition duration-500 ease-in-out focus:border-white"
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
+            <Button
+              variant="outline"
+              className="ml-auto bg-zinc-800 text-white hover:bg-zinc-500 hover:text-white"
+            >
               Columns <ChevronDown />
             </Button>
           </DropdownMenuTrigger>
@@ -161,13 +164,16 @@ export default function DataTable() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-md border">
+      <div className="">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead
+                    className="text-white  bg-zinc-800 "
+                    key={header.id}
+                  >
                     {header.column.columnDef.header}
                   </TableHead>
                 ))}
@@ -177,7 +183,7 @@ export default function DataTable() {
           <TableBody>
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow className="text-white" key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {cell.column.columnDef.cell(cell.getContext())}
@@ -189,7 +195,7 @@ export default function DataTable() {
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-24 text-center text-white"
                 >
                   No results.
                 </TableCell>

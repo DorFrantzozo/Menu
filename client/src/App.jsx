@@ -82,7 +82,7 @@ function App() {
           <Route
             path="/admin"
             element={
-              user && user.role !== "admin" ? (
+              !user || user.role !== "admin" ? (
                 <Navigate to="/" />
               ) : (
                 <AdminPage />

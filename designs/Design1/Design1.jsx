@@ -13,12 +13,14 @@ const Design1 = () => {
   const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
-  const menu = location.state || null;
+  const menu = location.state || {};
 
   const handleNoRestaurantNameInUrl = () => {
     const fetchRestaurantFromState = async () => {
       const name = location.state?.restaurantName.toLowerCase();
       restaurantName = name;
+      console.log(menu);
+
       try {
         const res = await axios.get(
           `http://localhost:8000/api/user/find?name=${restaurantName}`

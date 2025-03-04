@@ -24,10 +24,11 @@ const Menu = () => {
   }, [selectedBuisness]);
 
   useEffect(() => {
+    console.log("Navigating with menu:", menu);
     if (menu && menu.designNumber === 1) {
-      navigate("/design1");
+      navigate("/design1", { state: menu });
     } else if (menu && menu.designNumber === 2) {
-      navigate("/design2");
+      navigate("/design2", { state: menu });
     }
   }, [menu, navigate]);
 
