@@ -55,24 +55,21 @@ export default function Navbar() {
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
                 {user.role === "admin" && <AdminButton />}
-                {user.role !== "admin" &&
-                  navigationItems.map((item) => (
-                    <button
-                      key={item.name}
-                      onClick={() => handleNavClick(item)}
-                      aria-current={
-                        currentNav === item.href ? "page" : undefined
-                      }
-                      className={classNames(
-                        currentNav === item.href
-                          ? "bg-gray-200 text-black"
-                          : "text-white hover:bg-gray-300 hover:text-white",
-                        "rounded-md px-3 py-2 text-sm font-medium"
-                      )}
-                    >
-                      {item.name}
-                    </button>
-                  ))}
+                {navigationItems.map((item) => (
+                  <button
+                    key={item.name}
+                    onClick={() => handleNavClick(item)}
+                    aria-current={currentNav === item.href ? "page" : undefined}
+                    className={classNames(
+                      currentNav === item.href
+                        ? "bg-gray-200 text-black"
+                        : "text-white hover:bg-gray-300 hover:text-white",
+                      "rounded-md px-3 py-2 text-sm font-medium"
+                    )}
+                  >
+                    {item.name}
+                  </button>
+                ))}
               </div>
             </div>
           </div>

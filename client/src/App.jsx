@@ -30,9 +30,10 @@ import AdminPage from "./pages/AdminPage";
 function App() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
-  console.log(user);
+
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
+
     if (savedUser) {
       dispatch(setUser(JSON.parse(savedUser)));
     }

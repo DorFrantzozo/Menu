@@ -51,17 +51,17 @@ export default function AddCategory() {
       <div className="space-y-12 w-400 mt-10 border rounded p-2 bg-stone-100">
         <div className="border-b border-gray-900/10 pb-12">
           <h2 className="font-semibold leading-7 text-black flex justify-center text-2xl">
-            New Category
+            קטגוריה חדשה
           </h2>
 
-          <div>
+          <div dir="rtl">
             <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-12">
               <div className="sm:col-span-4">
                 <label
                   htmlFor="name"
                   className="block text-sm font-medium leading-6 text-black-400"
                 >
-                  Category Name
+                  שם הקטגוריה
                 </label>
                 <div className="mt-2">
                   <input
@@ -75,6 +75,25 @@ export default function AddCategory() {
                 </div>
               </div>
             </div>
+            <div className="w-full mt-8">
+              <label
+                htmlFor="desciption"
+                className="block text-sm font-medium leading-6 text-black-400"
+              >
+                תיאור הקטגוריה
+              </label>
+              <span className="text-[13px]"> * אופציונלי </span>
+              <div className="mt-2 w-[full]">
+                <textarea
+                  name="name"
+                  type="text"
+                  required
+                  className="  border-1 w-[80%]  border-slate-600 bg-transparent py-1.5 pl-1 text-gray-900  rounded placeholder:text-gray-400 focus:ring-2 sm:text-sm sm:leading-6 focus-within:ring-green-200"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+            </div>
 
             <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-12">
               <div className="sm:col-span-4">
@@ -82,11 +101,11 @@ export default function AddCategory() {
                   htmlFor="locationNumber"
                   className="block text-sm font-medium leading-6 text-black-400"
                 >
-                  Location Number
+                  מספר מיקום
                 </label>
                 <span className="text-xs">
-                  *this will represent the location of the category in the menu
-                  (starts from 0){" "}
+                  * ייצג את סדר הופעת הקטגוריה בתפריט <br />( מתחיל מ - 0)
+                  {"  "}
                 </span>
                 <div className="mt-2">
                   <input
@@ -107,7 +126,7 @@ export default function AddCategory() {
                 htmlFor="img"
                 className="block text-sm font-medium leading-6 text-black"
               >
-                Photo
+                תמונה
               </label>
               <div className="mt-2 flex justify-center rounded-lg border border-dashed border-slate-600  px-6 py-10 bg-white">
                 <div className="text-center">
@@ -125,7 +144,7 @@ export default function AddCategory() {
                       htmlFor="file-upload"
                       className="relative cursor-pointer rounded-md bg-black w-[100px] font-semibold text-white focus-within:outline-none focus-within:ring-2 focus-within:ring-green-400 focus-within:ring-offset-2 hover:text-green-400"
                     >
-                      <span>Upload a file</span>
+                      <span>העלה תמונה</span>
                       <input
                         id="file-upload"
                         name="img"
@@ -134,11 +153,11 @@ export default function AddCategory() {
                         onChange={(e) => setImg(e.target.files[0])} // Set the file to state
                       />
                     </label>
-                    <p className="pl-1 text-black">or drag and drop</p>
+                    <p className="pl-1 text-black ms-2">או גרור למסגרת</p>
                   </div>
 
                   <p className="text-xs leading-5 text-black">
-                    PNG, JPG, GIF up to 10MB
+                    PNG, JPG, GIF עד 10MB
                   </p>
                 </div>
               </div>

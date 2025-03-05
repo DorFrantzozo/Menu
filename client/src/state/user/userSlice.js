@@ -26,6 +26,7 @@ const userSlice = createSlice({
     },
     updateUser: (state, action) => {
       state.user = action.payload;
+      localStorage.removeItem("user");
       localStorage.setItem("user", JSON.stringify(action.payload));
     },
   },

@@ -217,15 +217,22 @@ const deleteUser = async (req, res) => {
 
 const updateDesignByNumber = async (req, res) => {
   const { userId, number } = req.body;
+  console.log(userId);
+  console.log(number);
+  console.log("test");
 
   try {
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    user.design = number;
+    user.designNumber = number;
     await user.save();
-    res.status(200).json({ message: "Design updated successfully" });
+    res.status(200).json({
+      message: "Design updated successfully",
+      user: user,
+      design: user.designNumber,
+    });
     console.log(user);
   } catch (error) {
     res.status(500).json({ message: error.message });

@@ -1,9 +1,9 @@
 TODO:✅
+finish backend for category describe
 add optional category description
 add admin panel[]
 finish design 1 []
 finish design 2{ []
-    fix responsive [✅]
     add touchups []
 }
 make barcode generation for users []
@@ -36,3 +36,5 @@ my pros:
 Completed:
 add loading spinners [✅]
 fix profile responsive [✅] 
+    fix responsive [✅]
+    added change menu design logic[✅]
