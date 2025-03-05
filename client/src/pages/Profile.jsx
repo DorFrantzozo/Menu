@@ -4,6 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { updateUser } from "../state/user/userSlice";
+import QRCode from "qrcode";
 
 const Profile = () => {
   const fileInputRef = useRef(null);
@@ -13,14 +14,32 @@ const Profile = () => {
   const [img, setImg] = useState("");
   const navigate = useNavigate();
   const [userFromStorage, setUser] = useState(null);
-  const dispatch = useDispatch();
+  const [qrcode, setQrCode] = useState("");
+  const [userName, setUserName] = useState("");
 
+  const dispatch = useDispatch();
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      const user = JSON.parse(storedUser);
+      setUser(user);
+      setUserName(user.restaurantName);
     }
   }, []);
+
+  useEffect(() => {
+    if (userName) {
+      // רק אם userName עודכן
+      const generateQrCode = async () => {
+        const url = `${userName}.http://localhost:5173/menu`;
+
+        const qrUrl = await QRCode.toDataURL(url);
+        setQrCode(qrUrl);
+      };
+
+      generateQrCode();
+    }
+  }, [userName]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -128,6 +147,10 @@ const Profile = () => {
               placeholder={userFromStorage?.email || ""}
               className="w-full mt-1 p-2 border border-gray-300 rounded-lg"
             />
+          </div>
+          <h1 className=" text-center mt">קוד ה - QR של המסדעה</h1>
+          <div className="flex justify-center">
+            <img src={qrcode} className="" alt="" />
           </div>
         </div>
 
