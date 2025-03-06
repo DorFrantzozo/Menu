@@ -6,10 +6,12 @@ import Contact from "./Contact";
 const Landing2 = () => {
   return (
     <>
-      <div className="bg-[#fffdf6] min-h-screen">
+      <div className=" min-h-screen">
         <NavBarLanding />
         <Hero />
-        <LandingPros />
+        <div className="">
+          <LandingPros />
+        </div>
         <Contact />
       </div>
     </>

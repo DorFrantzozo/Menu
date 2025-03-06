@@ -1,5 +1,5 @@
 import logo from "../assets/img/logoBlack.png";
-import iphone from "../assets/img/iphone-landing.jpg";
+import iphone from "../assets/img/iphone-landing.png";
 // PaintBrushIcon,
 // UserIcon,
 ("@heroicons/react/20/solid");
@@ -76,7 +76,7 @@ export default function Hero() {
           <AnimatedContent distance={400} delay={100}>
             <img
               src={iphone}
-              className="w-full max-w-[700px] mx-auto"
+              className="w-full max-w-[800px] mx-auto -mt-16"
               alt="Menu"
             />
           </AnimatedContent>

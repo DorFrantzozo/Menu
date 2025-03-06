@@ -65,7 +65,7 @@ const EditDish = () => {
           },
         }
       );
-      console.log(response)
+      console.log(response);
       navigate("/dashboard");
       toast.success("השינויים נשמרו בהצלחה");
     } catch (error) {
@@ -80,7 +80,7 @@ const EditDish = () => {
       {isLoading ? (
         <Spinner loading={isLoading} />
       ) : (
-        <div className="px-4 sm:px-6 lg:px-8">
+        <div className="px-4 sm:px-6 lg:px-8 lg:h-[80vh]">
           <h1 className="text-black flex justify-center text-2xl mt-10">
             {dish?.name} עריכה
           </h1>

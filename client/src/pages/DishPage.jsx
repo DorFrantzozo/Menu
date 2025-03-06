@@ -40,7 +40,7 @@ const DishPage = () => {
     }
   }, [user]);
   return (
-    <div className="p-4">
+    <div className="p-4 lg:h-[80vh]">
       <h1 className="text-center font-semibold text-2xl md:text-3xl mt-6 mb-6 md:mt-10 md:mb-10">
         {title}
       </h1>

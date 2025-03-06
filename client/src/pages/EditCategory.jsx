@@ -60,7 +60,7 @@ const EditCategory = () => {
       {isLoading ? (
         <Spinner />
       ) : (
-        <div className="px-4 sm:px-6 lg:px-8">
+        <div className="px-4 sm:px-6 lg:px-8 lg:h-[80vh] mt-20 ">
           <h1 className="text-black flex justify-center text-2xl mt-10">
             {item?.name} עריכה
           </h1>
@@ -119,7 +119,7 @@ const EditCategory = () => {
               </div>
             </div>
 
-            <div className="w-full lg:w-40 ms-80 ">
+            <div className="w-full lg:w-40 lg:ms-80 ">
               <label
                 htmlFor="locationNumber"
                 className="block text-lg font-medium leading-6 text-end text-gray-900"

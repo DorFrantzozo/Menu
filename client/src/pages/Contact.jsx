@@ -16,8 +16,8 @@ const Contact = () => {
                 <h2 className="mb-6 text-[32px] font-bold uppercase text-white  sm:text-[40px] lg:text-[36px] xl:text-[40px]">
                   השאירו פרטים
                 </h2>
-                <p className="mb-9 text-base leading-relaxed text-body-color dark:text-white">
-                  ניתן להשאיר הודעה ואנחנו נחזור אליך בהקדם
+                <p className="mb-9 text-base leading-relaxed text-body-color font-bold text-white">
+                  השאירו פרטים לתיאום הדגמה ללא עלות
                 </p>
 
                 <div className="mb-8 flex w-full max-w-[370px]">
@@ -28,7 +28,7 @@ const Contact = () => {
                     <h4 className="mb-1 text-xl font-bold text-white ">
                       טלפון
                     </h4>
-                    <p className="text-base text-body-color dark:text-white">
+                    <p className="text-base text-body-color text-white">
                       053-4314774
                     </p>
                   </div>
@@ -40,8 +40,8 @@ const Contact = () => {
                   </div>
                   <div className="w-full ">
                     <h4 className="mb-1 text-xl font-bold text-white ">מייל</h4>
-                    <p className="text-base text-body-color dark:text-white">
-                      info@yourdomain.com
+                    <p className="text-base text-body-color text-white">
+                      dorfrant@gmail.com
                     </p>
                   </div>
                 </div>
@@ -49,17 +49,27 @@ const Contact = () => {
             </div>
             <div className="w-full px-4 lg:w-1/2 xl:w-5/12">
               <div className="relative rounded-lg bg-white p-8 shadow-lg dark:bg-dark-2 sm:p-12">
-                <form>
-                  <ContactInputBox type="text" name="name" placeholder="שם" />
+                <form
+                  action="https://formsubmit.co/dorfrant@gmail.com"
+                  method="POST"
+                >
+                  <ContactInputBox
+                    type="text"
+                    name="name"
+                    placeholder="שם"
+                    required
+                  />
                   <ContactInputBox
                     type="text"
                     name="email"
                     placeholder="מייל"
+                    required
                   />
                   <ContactInputBox
                     type="text"
                     name="phone"
                     placeholder="טלפון"
+                    required
                   />
                   <ContactTextArea
                     row="6"
@@ -97,6 +107,7 @@ const ContactTextArea = ({ row, placeholder, name, defaultValue }) => {
           name={name}
           className="w-full resize-none rounded border border-stroke px-[14px] py-3 text-base text-body-color outline-none focus:border-black dark:border-dark-3 dark:bg-dark dark:text-white"
           defaultValue={defaultValue}
+          required
         />
       </div>
     </>
@@ -108,6 +119,7 @@ const ContactInputBox = ({ type, placeholder, name }) => {
     <>
       <div className="mb-6">
         <input
+          required
           type={type}
           placeholder={placeholder}
           name={name}

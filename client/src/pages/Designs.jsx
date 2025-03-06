@@ -69,7 +69,7 @@ const Designs = () => {
     //   </button>
     // </div>
     <>
-      <div className=" flex">
+      <div className=" flex lg:h-[80vh]">
         <div className="text-center mt-20 ">
           <img
             src={design1Tamneil}
