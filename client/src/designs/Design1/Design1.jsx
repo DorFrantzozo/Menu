@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import Spinner from "../../client/src/components/Spinner";
+import Spinner from "../../components/Spinner";
 const Design1 = () => {
   const hostname = window.location.hostname;
   const parts = hostname.split(".");

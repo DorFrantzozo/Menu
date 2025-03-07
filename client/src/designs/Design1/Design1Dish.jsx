@@ -3,8 +3,8 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import Alergies from "../../client/src/components/sensitivities/Allergies";
-import IconDescription from "../../client/src/components/sensitivities/IconDescription";
+import Alergies from "../../components/sensitivities/Allergies";
+import IconDescription from "../../components/sensitivities/IconDescription";
 const Design1Dish = () => {
   const { userId, categoryId, categoryName } = useParams(); // לקבל את ה- userId וה- categoryId מה-URL
   const [dishes, setDishes] = useState([]);

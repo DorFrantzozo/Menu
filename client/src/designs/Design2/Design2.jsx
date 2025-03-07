@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import Spinner from "../../client/src/components/Spinner";
-import hr from "../../client/src/assets/img/hrDisign.png";
-import Allergies from "../../client/src/components/sensitivities/Allergies";
-import IconDescription from "../../client/src/components/sensitivities/IconDescription";
+import Spinner from "../../components/Spinner";
+import hr from "../../assets/img/hrDisign.png";
+import Allergies from "../../components/sensitivities/Allergies";
+import IconDescription from "../../components/sensitivities/IconDescription";
 const Design2 = () => {
   const hostname = window.location.hostname;
   const parts = hostname.split(".");
