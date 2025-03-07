@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
+import { useLocation } from "react-router-dom";
+
 import { toast } from "react-toastify";
 import Spinner from "../../components/Spinner";
-import hr from "../../assets/img/hrDisign.png";
 import Allergies from "../../components/sensitivities/Allergies";
 import IconDescription from "../../components/sensitivities/IconDescription";
+import axiosInstance from "@/utils/baseUrl";
 const Design2 = () => {
   const hostname = window.location.hostname;
   const parts = hostname.split(".");
@@ -21,9 +21,7 @@ const Design2 = () => {
       const name = location.state?.restaurantName.toLowerCase();
       restaurantName = name;
       try {
-        const res = await axios.get(
-          `http://localhost:8000/api/user/find?name=${restaurantName}`
-        );
+        const res = await axiosInstance.get(`user/find?name=${restaurantName}`);
         if (res.data) {
           setRestaurant(res.data);
         } else {
@@ -43,8 +41,8 @@ const Design2 = () => {
           handleNoRestaurantNameInUrl();
         }
 
-        const res = await axios.get(
-          `http://localhost:8000/api/user/find?name=${restaurantName}`
+        const res = await axiosInstance.get(
+          `/user/find?name=${restaurantName}`
         );
         if (res.data) {
           setRestaurant(res.data);
@@ -60,10 +58,9 @@ const Design2 = () => {
     const fetchCategories = async (userId) => {
       if (!userId) return;
       try {
-        const response = await axios.post(
-          `http://localhost:8000/api/category/getCategories`,
-          { userId }
-        );
+        const response = await axiosInstance.post(`/category/getCategories`, {
+          userId,
+        });
         if (response.data) {
           setCategories(response.data);
           response.data.forEach((category) => {
@@ -79,8 +76,8 @@ const Design2 = () => {
 
     const fetchDishes = async (userId, categoryId) => {
       try {
-        const response = await axios.get(
-          `http://localhost:8000/api/dish/getDish/${userId}/${categoryId}`
+        const response = await axiosInstance.get(
+          `/dish/getDish/${userId}/${categoryId}`
         );
         if (response.data) {
           setDishes((prevDishes) => ({

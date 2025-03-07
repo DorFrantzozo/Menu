@@ -1,10 +1,9 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import MenuCard from "../components/MenuCard";
-
+import axiosInstance from "../utils/baseUrl";
 const DishPage = () => {
   const user = useSelector((state) => state.user.user);
   const [dishes, setDishes] = useState([]);
@@ -17,8 +16,8 @@ const DishPage = () => {
       const fetchCategories = async () => {
         try {
           const token = localStorage.getItem("token");
-          const response = await axios.get(
-            `http://localhost:8000/api/dish/getDish/${user._id}/${item._id}`,
+          const response = await axiosInstance.get(
+            `/dish/getDish/${user._id}/${item._id}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`, // Attach token in the Authorization header

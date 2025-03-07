@@ -1,9 +1,10 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import axios from "axios";
+
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
+import axiosInstance from "../utils/baseUrl";
 
 export default function DropDown({ setCategory }) {
   const user = useSelector((state) => state.user.user);
@@ -14,8 +15,8 @@ export default function DropDown({ setCategory }) {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.post(
-          "http://localhost:8000/api/category/getCategories",
+        const response = await axiosInstance.post(
+          "/category/getCategories",
           { userId: user._id },
           {
             headers: {

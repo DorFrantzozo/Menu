@@ -2,10 +2,10 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Modal from "../components/Modal";
 import { useSelector } from "react-redux";
-import axios from "axios";
+
 import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
-
+import axiosInstance from "../utils/baseUrl";
 const EditCategory = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -35,8 +35,8 @@ const EditCategory = () => {
     }
 
     try {
-      await axios.put(
-        `http://localhost:8000/api/category/updateCategory/${user._id}/${item._id}`,
+      await axiosInstance.put(
+        `/category/updateCategory/${user._id}/${item._id}`,
         formData,
         {
           headers: {

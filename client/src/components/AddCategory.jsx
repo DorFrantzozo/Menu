@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { PhotoIcon } from "@heroicons/react/24/solid";
-import axios from "axios";
+
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../utils/baseUrl";
 
 export default function AddCategory() {
   const user = useSelector((state) => state.user.user);
@@ -25,8 +26,8 @@ export default function AddCategory() {
     }
 
     try {
-      const response = await axios.post(
-        `http://localhost:8000/api/category/createCategory/`,
+      const response = await axiosInstance.post(
+        `/category/createCategory/`,
         formData,
         {
           headers: {

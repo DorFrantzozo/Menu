@@ -1,10 +1,10 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
+import axiosInstance from "../utils/baseUrl";
 
 const Dashboard = () => {
   const user = useSelector((state) => state.user.user);
@@ -16,8 +16,8 @@ const Dashboard = () => {
       const fetchCategories = async () => {
         try {
           const token = localStorage.getItem("token");
-          const response = await axios.post(
-            `http://localhost:8000/api/category/getCategories`,
+          const response = await axiosInstance.post(
+            `/category/getCategories`,
             {
               userId: user._id,
             },

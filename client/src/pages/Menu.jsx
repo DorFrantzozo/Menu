@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../utils/baseUrl";
 
 const Menu = () => {
   const [menu, setMenu] = useState(null); // התחלה עם null במקום מערך ריק
@@ -10,7 +11,7 @@ const Menu = () => {
 
   const fetchData = async (name) => {
     try {
-      const response = await axios.get("http://localhost:8000/api/user/find", {
+      const response = await axiosInstance.get("/user/find", {
         params: { name },
       });
       setMenu(response.data);

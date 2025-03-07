@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -14,16 +13,12 @@ const Signin = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/user/login",
-        {
-          email,
-          password,
-        }
-      );
+      const response = await axiosInstance.post("/user/login", {
+        email,
+        password,
+      });
 
       if (response.status === 200) {
-        
         const { user, token, expireTime } = response.data;
         dispatch(setUser(user));
         dispatch(setToken(token));

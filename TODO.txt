@@ -1,6 +1,7 @@
 TODO:✅
-finish backend for category describe
-add optional category description
+i18 []
+finish backend for category describe[]
+add optional category description[]
 add admin panel[]
 finish design 1 []
 finish design 2{ []

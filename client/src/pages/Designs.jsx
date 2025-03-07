@@ -1,6 +1,4 @@
 import { useNavigate } from "react-router-dom";
-
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import design1Tamneil from "../assets/img/design1Tamneil.png";
@@ -9,7 +7,7 @@ import DefaultButton from "@/components/buttons/DefaultButton";
 import Spinner from "@/components/Spinner";
 import { toast } from "react-toastify";
 import { updateUser } from "@/state/user/userSlice";
-
+import axiosInstance from "../utils/baseUrl";
 const Designs = () => {
   const items = [design1Tamneil];
   const navigate = useNavigate();
@@ -22,8 +20,8 @@ const Designs = () => {
   const [menu, setMenu] = useState([]);
   const handleChangeMenuDesign = async (designNumber) => {
     try {
-      const response = await axios.put(
-        `http://localhost:8000/api/user/updateDesign`,
+      const response = await axiosInstance.put(
+        `/user/updateDesign`,
         { number: designNumber, userId: user._id },
         { headers: { "Content-Type": "application/json" } }
       );
@@ -39,7 +37,7 @@ const Designs = () => {
 
   const fatchData = async (name) => {
     try {
-      const response = await axios.get("http://localhost:8000/api/user/find", {
+      const response = await axiosInstance.get("/user/find", {
         params: { name },
       });
 

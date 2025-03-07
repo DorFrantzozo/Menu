@@ -1,10 +1,11 @@
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { useEffect, useRef, useState } from "react";
-import axios from "axios";
+
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { updateUser } from "../state/user/userSlice";
 import QRCode from "qrcode";
+import axiosInstance from "../utils/baseUrl";
 
 const Profile = () => {
   const fileInputRef = useRef(null);
@@ -53,8 +54,8 @@ const Profile = () => {
     formData.append("logo", img);
 
     try {
-      const response = await axios.put(
-        `http://localhost:8000/api/user/updateUser/${userFromStorage?._id}`,
+      const response = await axiosInstance.put(
+        `/user/updateUser/${userFromStorage?._id}`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );

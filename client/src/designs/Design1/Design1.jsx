@@ -1,9 +1,10 @@
 // MenuPage.jsx
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
+
 import { toast } from "react-toastify";
 import Spinner from "../../components/Spinner";
+import axiosInstance from "../../utils/baseUrl";
 const Design1 = () => {
   const hostname = window.location.hostname;
   const parts = hostname.split(".");
@@ -22,8 +23,8 @@ const Design1 = () => {
       console.log(menu);
 
       try {
-        const res = await axios.get(
-          `http://localhost:8000/api/user/find?name=${restaurantName}`
+        const res = await axiosInstance.get(
+          `/user/find?name=${restaurantName}`
         );
         if (res.data) {
           setRestaurant(res.data);
@@ -44,8 +45,8 @@ const Design1 = () => {
           handleNoRestaurantNameInUrl();
         }
 
-        const res = await axios.get(
-          `http://localhost:8000/api/user/find?name=${restaurantName}`
+        const res = await axiosInstance.get(
+          `/user/find?name=${restaurantName}`
         );
         if (res.data) {
           setRestaurant(res.data);
@@ -61,10 +62,9 @@ const Design1 = () => {
     const fetchCategories = async (userId) => {
       if (!userId) return;
       try {
-        const response = await axios.post(
-          `http://localhost:8000/api/category/getCategories`,
-          { userId }
-        );
+        const response = await axiosInstance.post(`/category/getCategories`, {
+          userId,
+        });
         if (response.data) {
           setCategories(response.data);
         } else {

@@ -6,16 +6,17 @@ import {
 } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import PropTypes from "prop-types";
-import axios from "axios";
+
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../utils/baseUrl";
 
 export default function Modal({ open, setOpen, user, item, type }) {
   const navigate = useNavigate();
   const handleDelete = () => {
     if (type == true) {
       try {
-        const response = axios.delete(
-          `http://localhost:8000/api/dish/deleteDish/${user._id}/${item._id}`,
+        const response = axiosInstance.delete(
+          `/dish/deleteDish/${user._id}/${item._id}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -31,8 +32,8 @@ export default function Modal({ open, setOpen, user, item, type }) {
     } else {
       if (type == false) {
         try {
-          const response = axios.delete(
-            `http://localhost:8000/api/category/deleteCategory/${user._id}/${item._id}`,
+          const response = axiosInstance.delete(
+            `/category/deleteCategory/${user._id}/${item._id}`,
             {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,

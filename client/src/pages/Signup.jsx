@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { setToken, setUser } from "../state/user/userSlice";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import logo from "../assets/img/logoBlack.png";
+import axiosInstance from "../utils/baseUrl";
 const Signup = () => {
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
@@ -25,15 +26,11 @@ const Signup = () => {
     formData.append("logo", img);
 
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/user/signup",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axiosInstance.post("/user/signup", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       if (response.status === 201) {
         const { user, token } = response.data;

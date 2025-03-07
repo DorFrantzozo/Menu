@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CheckIcon } from "@heroicons/react/24/outline";
-import axios from "axios";
 import { useSelector } from "react-redux";
 import Modal from "../components/Modal";
 import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
+import axiosInstance from "../utils/baseUrl";
 const EditDish = () => {
   const user = useSelector((state) => state.user.user);
 
@@ -55,8 +55,8 @@ const EditDish = () => {
     }
 
     try {
-      const response = await axios.put(
-        `http://localhost:8000/api/dish/updateDish/${user._id}/${dish._id}`,
+      const response = await axiosInstance.put(
+        `/dish/updateDish/${user._id}/${dish._id}`,
         formData,
         {
           headers: {

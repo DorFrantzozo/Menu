@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { PhotoIcon } from "@heroicons/react/24/solid";
-import axios from "axios";
+
 import { useSelector } from "react-redux";
 import DropDown from "./DropDown";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../utils/baseUrl";
 
 export default function AddDish() {
   const user = useSelector((state) => state.user.user);
@@ -36,16 +37,12 @@ export default function AddDish() {
     formData.append("lactose", lactose);
 
     try {
-      await axios.post(
-        `http://localhost:8000/api/dish/createDish/${user._id}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await axiosInstance.post(`/dish/createDish/${user._id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       navigate("/dashboard");
     } catch (error) {

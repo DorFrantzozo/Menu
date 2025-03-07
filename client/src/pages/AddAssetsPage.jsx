@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { PhotoIcon } from "@heroicons/react/24/solid";
-import axios from "axios";
+
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import FileTypeDropDown from "../components/FileTypeDropDown";
-
+import axiosInstance from "../utils/baseUrl";
 export default function AddAssetPage() {
   const user = useSelector((state) => state.user.user);
   const [fileName, setFileName] = useState("");
@@ -30,8 +30,8 @@ export default function AddAssetPage() {
     formData.append("img", img);
 
     try {
-      const response = await axios.post(
-        `http://localhost:8000/api/asset/uploadAsset/${user._id}`,
+      const response = await axiosInstance.post(
+        `/asset/uploadAsset/${user._id}`,
         formData,
         {
           headers: {
