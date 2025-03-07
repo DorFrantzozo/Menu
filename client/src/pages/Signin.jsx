@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { setUser, setToken } from "../state/user/userSlice";
 import logo from "../assets/img/logoBlack.png";
+import axiosInstance from "../utils/baseUrl";
 const Signin = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
