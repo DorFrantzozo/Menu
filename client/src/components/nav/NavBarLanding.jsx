@@ -1,5 +1,5 @@
 import ShinyText from "../TextAnimations/ShinyText/ShinyText";
-import DefaultButton from "../Buttons/DefaultButton";
+import DefaultButton from "../buttons/DefaultButton";
 import {
   Button,
   Disclosure,

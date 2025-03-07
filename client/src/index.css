@@ -37,9 +37,6 @@ hr.style-seven:before {
   height: 120px;
 }
 
-.footer {
-}
-
 @layer base {
   :root {
     --background: 0 0% 100%;

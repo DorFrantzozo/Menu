@@ -1,5 +1,6 @@
 import forms from "@tailwindcss/forms";
 import rtl from "tailwindcss-rtl";
+import tailwindAnimate from "tailwindcss-animate";
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: ["class"],
@@ -91,5 +92,5 @@ export default {
       },
     },
   },
-  plugins: [forms, rtl, require("tailwindcss-animate")],
+  plugins: [forms, rtl, tailwindAnimate],
 };
