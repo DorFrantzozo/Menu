@@ -1,15 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import design1Tamneil from "../assets/img/design1Tamneil.png";
-import Design2Tamneil from "../assets/img/Design2Tamneil.png";
+import design1Tambneil from "../assets/img/design1Tamneil.png";
+import design2Tambneil from "../assets/img/design2Tambneil.png";
 import DefaultButton from "@/components/buttons/DefaultButton";
 import Spinner from "@/components/Spinner";
 import { toast } from "react-toastify";
 import { updateUser } from "@/state/user/userSlice";
 import axiosInstance from "../utils/baseUrl";
 const Designs = () => {
-  const items = [design1Tamneil];
   const navigate = useNavigate();
 
   const user = useSelector((state) => state.user.user);
@@ -67,15 +66,14 @@ const Designs = () => {
     //   </button>
     // </div>
     <>
-      <div className=" flex lg:h-[80vh]">
-        <div className="text-center mt-20 ">
+      <div className="block md:flex justify-center gap-10">
+        <div className="flex flex-col items-center">
           <img
-            src={design1Tamneil}
-            className="shadow-slate-200  mt-10  mb-10 ms-10 hover:scale-110 transition duration-500 rounded-lg shadow-lg"
-            width={200}
+            src={design1Tambneil}
+            className="shadow-slate-200 h-[700px] mb-10 mt-20 hover:scale-110 transition duration-500 rounded-lg shadow-lg"
             alt=""
           />
-          <div className="flex justify-around mt-5">
+          <div className="flex gap-10 justify-around mt-5 w-full sm:w-auto">
             <DefaultButton
               text="החל"
               bg="zinc-800"
@@ -90,14 +88,14 @@ const Designs = () => {
             />
           </div>
         </div>
-        <div className="text-center mt-10  mb-20">
+
+        <div className="flex flex-col items-center mb-20">
           <img
-            src={Design2Tamneil}
-            className="shadow-slate-200 h-[430px] mb-10 mt-20 - ms-10 hover:scale-110 transition duration-500 rounded-lg shadow-lg"
-            width={200}
+            src={design2Tambneil}
+            className="shadow-slate-200 h-[700px] mb-10 mt-20 hover:scale-110 transition duration-500 rounded-lg shadow-lg"
             alt=""
           />
-          <div className="flex justify-around mt-5">
+          <div className="flex justify-around gap-10 mt-5 w-full sm:w-auto">
             <DefaultButton
               text="החל"
               bg="zinc-800"
