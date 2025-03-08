@@ -55,60 +55,61 @@ function App() {
     <div className="flex flex-col min-h-screen">
       <BrowserRouter>
         {user && <Navbar />}
+        <div className="flex-grow">
+          <Routes>
+            <Route
+              path="/"
+              element={user ? <Navigate to="/dashboard" /> : <Landing2 />}
+            />
 
-        <Routes>
-          <Route
-            path="/"
-            element={user ? <Navigate to="/dashboard" /> : <Landing2 />}
-          />
+            {/* Protect Dashboard route for logged-in users only */}
+            <Route
+              path="/dashboard"
+              element={user ? <Dashboard /> : <Navigate to="/signin" />}
+            />
 
-          {/* Protect Dashboard route for logged-in users only */}
-          <Route
-            path="/dashboard"
-            element={user ? <Dashboard /> : <Navigate to="/signin" />}
-          />
+            {/* Protect Signin route - redirect logged-in users to Dashboard */}
+            <Route
+              path="/signin"
+              element={user ? <Navigate to="/dashboard" /> : <Signin />}
+            />
 
-          {/* Protect Signin route - redirect logged-in users to Dashboard */}
-          <Route
-            path="/signin"
-            element={user ? <Navigate to="/dashboard" /> : <Signin />}
-          />
+            {/* Protect Signup route - redirect logged-in users to Dashboard */}
+            <Route
+              path="/signup"
+              element={user ? <Navigate to="/dashboard" /> : <Signup />}
+            />
 
-          {/* Protect Signup route - redirect logged-in users to Dashboard */}
-          <Route
-            path="/signup"
-            element={user ? <Navigate to="/dashboard" /> : <Signup />}
-          />
+            <Route
+              path="/admin"
+              element={
+                !user || user.role !== "admin" ? (
+                  <Navigate to="/" />
+                ) : (
+                  <AdminPage />
+                )
+              }
+            />
 
-          <Route
-            path="/admin"
-            element={
-              !user || user.role !== "admin" ? (
-                <Navigate to="/" />
-              ) : (
-                <AdminPage />
-              )
-            }
-          />
+            <Route path="/edit" element={<Edit />} />
+            <Route path="/designs" element={<Designs />} />
 
-          <Route path="/edit" element={<Edit />} />
-          <Route path="/designs" element={<Designs />} />
-
-          <Route path="/add-dish" element={<AddDish />} />
-          <Route path="/add-category" element={<AddCategory />} />
-          <Route path="/add-asset" element={<AddAssetsPage />} />
-          <Route path="/dishesPage" element={<DishPage />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/editDish" element={<EditDish />} />
-          <Route path="/editCategory" element={<EditCategory />} />
-          <Route path="/menu" element={<Menu />} />
-          <Route path="/design1" element={<Design1 />} />
-          <Route path="/design2" element={<Design2 />} />
-          <Route
-            path="/design1/:categoryName/dishes/:userId/:categoryId"
-            element={<Design1Dish />}
-          />
-        </Routes>
+            <Route path="/add-dish" element={<AddDish />} />
+            <Route path="/add-category" element={<AddCategory />} />
+            <Route path="/add-asset" element={<AddAssetsPage />} />
+            <Route path="/dishesPage" element={<DishPage />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/editDish" element={<EditDish />} />
+            <Route path="/editCategory" element={<EditCategory />} />
+            <Route path="/menu" element={<Menu />} />
+            <Route path="/design1" element={<Design1 />} />
+            <Route path="/design2" element={<Design2 />} />
+            <Route
+              path="/design1/:categoryName/dishes/:userId/:categoryId"
+              element={<Design1Dish />}
+            />
+          </Routes>
+        </div>
 
         <div className=" z-50">
           <Footer />

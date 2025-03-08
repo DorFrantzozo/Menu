@@ -48,13 +48,8 @@ const LandingPros = () => {
         <h1 className="text-3xl text-center ">
           נסו עכשיו 14 ימי התנסות ללא עלות
         </h1>
-        <div className="flex justify-center">
-          <TiltedCard
-            className=""
-            imageSrc={systemDemo}
-            imageWidth="800px"
-            imageHeight="auto"
-          />
+        <div className=" mt-10  ">
+          <img src={systemDemo} className="rounded-xl" alt="systemDemo" />
         </div>
       </div>
     </>

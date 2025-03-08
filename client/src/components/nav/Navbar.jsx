@@ -140,6 +140,7 @@ export default function Navbar() {
 
       <DisclosurePanel className="sm:hidden">
         <div className="space-y-1 px-2 pb-3 pt-2">
+          {user.role === "admin" && <AdminButton />}
           {navigationItems.map((item) => (
             <DisclosureButton
               key={item.name}

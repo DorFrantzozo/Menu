@@ -80,7 +80,7 @@ const EditDish = () => {
       {isLoading ? (
         <Spinner loading={isLoading} />
       ) : (
-        <div className="px-4 sm:px-6 lg:px-8 lg:h-[80vh]">
+        <div className="px-4 sm:px-6 lg:px-8 ">
           <h1 className="text-black flex justify-center text-2xl mt-10">
             {dish?.name} עריכה
           </h1>
