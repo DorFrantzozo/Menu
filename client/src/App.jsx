@@ -57,6 +57,7 @@ function App() {
         {user && <Navbar />}
         <div className="flex-grow">
           <Routes>
+            
             <Route
               path="/"
               element={user ? <Navigate to="/dashboard" /> : <Landing2 />}
