@@ -1,12 +1,16 @@
 import { useNavigate } from "react-router-dom";
 import Card from "../components/Card";
 import { useSelector } from "react-redux";
+import { useEffect } from "react";
 const Edit = () => {
   const user = useSelector((state) => state.user.user);
+
   const navigate = useNavigate();
-  if (!user) {
-    navigate("/");
-  }
+  useEffect(() => {
+    if (!user) {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <div className="lg:h-[80vh]">
