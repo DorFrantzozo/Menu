@@ -37,7 +37,7 @@ function App() {
     if (savedUser) {
       dispatch(setUser(JSON.parse(savedUser)));
     }
-  }, [user, dispatch]);
+  }, [dispatch]);
 
   const isTokenExpired = () => {
     const expirationTime = localStorage.getItem("expireTime");
