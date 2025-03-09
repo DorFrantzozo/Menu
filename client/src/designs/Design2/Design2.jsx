@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { useSelector } from "react-redux"; // שימוש ב-Redux כדי לשלוף את שם המסעדה אם מחובר
 
 import { toast } from "react-toastify";
 import Spinner from "../../components/Spinner";
@@ -8,80 +9,37 @@ import IconDescription from "../../components/sensitivities/IconDescription";
 import axiosInstance from "@/utils/baseUrl";
 
 const Design2 = () => {
+  const location = useLocation();
+
+  // שולפים את שם המסעדה אם הוא קיים ב-Redux
+  const restaurantFromRedux = useSelector((state) => state.restaurantName);
+  const [restaurantName, setRestaurantName] = useState(null);
   const [restaurant, setRestaurant] = useState(null);
   const [categories, setCategories] = useState([]);
   const [dishes, setDishes] = useState({});
-  const location = useLocation();
 
-  // משתנים לשם המסעדה שמגיע מהדומיין או מה-state של React Router
-  const hostname = window.location.hostname;
-  const parts = hostname.split(".");
-  let restaurantName = parts.length >= 2 ? parts[0].toLowerCase() : null; // מוודאים ששם המסעדה קטן
-
-  // פונקציה לשחזור שם מסעדה מה-state
-  const handleNoRestaurantNameInUrl = async () => {
-    const name = location.state?.restaurantName?.toLowerCase();
-    if (name) {
-      restaurantName = name;
-    }
-    try {
-      const res = await axiosInstance.get(`user/find?name=${restaurantName}`);
-      if (res.data) {
-        setRestaurant(res.data);
-        fetchCategories(res.data._id);
-      } else {
-        toast.error("מסעדה לא נמצאה");
-      }
-    } catch (error) {
-      toast.error("שגיאה: " + error.message);
-    }
-  };
-
-  // פונקציה להורדת קטגוריות
-  const fetchCategories = async (userId) => {
-    if (!userId) return;
-    try {
-      const response = await axiosInstance.post(`/category/getCategories`, {
-        userId,
-      });
-      if (response.data) {
-        setCategories(response.data);
-        response.data.forEach((category) => {
-          fetchDishes(userId, category._id);
-        });
-      } else {
-        toast.error("טעינת הקטגוריות נכשלה");
-      }
-    } catch (error) {
-      toast.error("שגיאה בטעינת הקטגוריות: " + error.message);
-    }
-  };
-
-  // פונקציה להורדת מנות
-  const fetchDishes = async (userId, categoryId) => {
-    try {
-      const response = await axiosInstance.get(
-        `/dish/getDish/${userId}/${categoryId}`
-      );
-      if (response.data) {
-        setDishes((prevDishes) => ({
-          ...prevDishes,
-          [categoryId]: response.data,
-        }));
-      } else {
-        toast.error("לא נמצאו מנות");
-      }
-    } catch (error) {
-      toast.error("שגיאה בטעינת המנות: " + error.message);
-    }
+  // אם לא מצאת שם במסד הנתונים, שלוף אותו מהדומיין
+  const fetchRestaurantFromDomain = () => {
+    const hostname = window.location.hostname;
+    const parts = hostname.split(".");
+    const name = parts.length >= 2 ? parts[0] : null;
+    setRestaurantName(name);
   };
 
   useEffect(() => {
-    const fetchRestaurant = async () => {
-      try {
-        if (!restaurantName) {
-          await handleNoRestaurantNameInUrl(); // אם לא נמצא שם בדומיין, נקרא לפונקציה כדי לבדוק ב-state
-        } else {
+    // אם יש לך שם מסעדה ב-Redux, השתמש בו
+    if (restaurantFromRedux) {
+      setRestaurantName(restaurantFromRedux);
+    } else {
+      // אם לא, שלוף אותו מהדומיין
+      fetchRestaurantFromDomain();
+    }
+  }, [restaurantFromRedux]);
+
+  useEffect(() => {
+    if (restaurantName) {
+      const fetchRestaurant = async () => {
+        try {
           const res = await axiosInstance.get(
             `/user/find?name=${restaurantName}`
           );
@@ -91,13 +49,51 @@ const Design2 = () => {
           } else {
             toast.error("מסעדה לא נמצאה");
           }
+        } catch (error) {
+          toast.error("שגיאה: " + error.message);
         }
-      } catch (error) {
-        toast.error("שגיאה: " + error.message);
-      }
-    };
-    fetchRestaurant();
-  }, [restaurantName]); // התלות היא על restaurantName
+      };
+
+      const fetchCategories = async (userId) => {
+        if (!userId) return;
+        try {
+          const response = await axiosInstance.post(`/category/getCategories`, {
+            userId,
+          });
+          if (response.data) {
+            setCategories(response.data);
+            response.data.forEach((category) => {
+              fetchDishes(userId, category._id);
+            });
+          } else {
+            toast.error("טעינת הקטגוריות נכשלה");
+          }
+        } catch (error) {
+          toast.error("שגיאה בטעינת הקטגוריות: " + error.message);
+        }
+      };
+
+      const fetchDishes = async (userId, categoryId) => {
+        try {
+          const response = await axiosInstance.get(
+            `/dish/getDish/${userId}/${categoryId}`
+          );
+          if (response.data) {
+            setDishes((prevDishes) => ({
+              ...prevDishes,
+              [categoryId]: response.data,
+            }));
+          } else {
+            toast.error("לא נמצאו מנות");
+          }
+        } catch (error) {
+          toast.error("שגיאה בטעינת המנות: " + error.message);
+        }
+      };
+
+      fetchRestaurant();
+    }
+  }, [restaurantName]);
 
   return (
     <div className="flex justify-center">
@@ -123,11 +119,10 @@ const Design2 = () => {
                         <div key={dish._id} className="p-4 w-full">
                           <div className="flex justify-between items-center">
                             <Allergies dish={dish} />
-                            <h3 className="text-lg font-semibold text-gray-700 text-wrap">
+                            <h3 className="text-lg font-semibold text-gray-700">
                               {dish.name}
                             </h3>
                           </div>
-
                           <div className="flex justify-between text-gray-600 text-sm mt-2">
                             <p className="font-semibold text-gray-800 ms-2">
                               {dish.price}₪
