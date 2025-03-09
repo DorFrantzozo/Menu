@@ -15,7 +15,6 @@ const Design1 = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const menu = location.state || {};
-  console.log(menu);
 
   const handleNoRestaurantNameInUrl = () => {
     const fetchRestaurantFromState = async () => {
@@ -44,6 +43,7 @@ const Design1 = () => {
   };
 
   useEffect(() => {
+    console.log(menu);
     const fetchRestaurant = async () => {
       try {
         if (!restaurantName) {
