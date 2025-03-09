@@ -19,6 +19,7 @@ const Design1 = () => {
 
   useEffect(() => {
     const fetchRestaurant = async () => {
+      console.log(menu);
       if (menu?.restaurantName) {
         setRestaurantName(menu?.restaurantName?.toLowerCase());
       } else if (restaurantNameFromSubdomain) {
