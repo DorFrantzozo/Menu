@@ -43,7 +43,9 @@ const Design1 = () => {
   };
 
   useEffect(() => {
-    console.log(menu);
+    console.log("logged menu in design1Page", menu);
+    console.log("resturant name : " + restaurantName);
+    console.log("hostname : " + hostname);
     const fetchRestaurant = async () => {
       try {
         if (!restaurantName) {
