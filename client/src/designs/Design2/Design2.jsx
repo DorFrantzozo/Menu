@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-
 import { toast } from "react-toastify";
 import Spinner from "../../components/Spinner";
 import Allergies from "../../components/sensitivities/Allergies";
 import IconDescription from "../../components/sensitivities/IconDescription";
 import axiosInstance from "@/utils/baseUrl";
+
 const Design2 = () => {
   const hostname = window.location.hostname;
   const parts = hostname.split(".");
@@ -18,7 +18,11 @@ const Design2 = () => {
 
   const handleNoRestaurantNameInUrl = () => {
     const fetchRestaurantFromState = async () => {
-      const name = location.state?.restaurantName.toLowerCase();
+      const name = location.state?.restaurantName?.toLowerCase(); // הגנה אם אין שם
+      if (!name) {
+        toast.error("שם מסעדה לא נמצא במידע שנשלח");
+        return;
+      }
       restaurantName = name;
       try {
         const res = await axiosInstance.get(`user/find?name=${restaurantName}`);
@@ -36,22 +40,22 @@ const Design2 = () => {
 
   useEffect(() => {
     const fetchRestaurant = async () => {
-      try {
-        if (!restaurantName) {
-          handleNoRestaurantNameInUrl();
+      if (!restaurantName) {
+        handleNoRestaurantNameInUrl(); // אם לא נמצא שם ב-URL, תנסה מה-state
+      } else {
+        try {
+          const res = await axiosInstance.get(
+            `/user/find?name=${restaurantName}`
+          );
+          if (res.data) {
+            setRestaurant(res.data);
+            fetchCategories(res.data._id);
+          } else {
+            toast.error("מסעדה לא נמצאה");
+          }
+        } catch (error) {
+          toast.error("שגיאה: " + error.message);
         }
-
-        const res = await axiosInstance.get(
-          `/user/find?name=${restaurantName}`
-        );
-        if (res.data) {
-          setRestaurant(res.data);
-          fetchCategories(res.data._id);
-        } else {
-          toast.error("מסעדה לא נמצאה");
-        }
-      } catch (error) {
-        toast.error("שגיאה: " + error.message);
       }
     };
 
@@ -84,7 +88,6 @@ const Design2 = () => {
             ...prevDishes,
             [categoryId]: response.data,
           }));
-          console.log(response.data);
         } else {
           toast.error("לא נמצאו מנות");
         }
@@ -92,21 +95,21 @@ const Design2 = () => {
         toast.error("שגיאה בטעינת המנות: " + error.message);
       }
     };
-    console.log(dishes);
+
     fetchRestaurant();
-  }, [restaurantName]);
+  }, [restaurantName, location.state]); // הוספתי את location.state כדי לעקוב אחרי שינויים
 
   return (
     <div className="flex justify-center">
       {!restaurant ? (
         <Spinner />
       ) : (
-        <div className="min-h-screen flex flex-col   0 p-6  ">
+        <div className="min-h-screen flex flex-col p-6">
           <h1 className="text-4xl mb-10 font-bold text-center text-gray-800">
             {restaurant.restaurantName}
           </h1>
           <hr className="style-seven" />
-          <div className="mt-10 w-full   ">
+          <div className="mt-10 w-full">
             {categories
               .sort((a, b) => a.locationNumber - b.locationNumber)
               .map((category) => (
@@ -124,7 +127,6 @@ const Design2 = () => {
                               {dish.name}
                             </h3>
                           </div>
-
                           <div className="flex justify-between text-gray-600 text-sm mt-2">
                             <p className="font-semibold text-gray-800 ms-2">
                               {dish.price}₪
