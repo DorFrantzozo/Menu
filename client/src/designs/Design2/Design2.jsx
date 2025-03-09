@@ -21,7 +21,6 @@ const Design2 = () => {
   const restaurantNameFromSubdomain = parts.length >= 3 ? parts[0] : null;
 
   useEffect(() => {
-    console.log("design 2 menu", menu);
     if (menu?.restaurantName) {
       setRestaurantName(menu?.restaurantName?.toLowerCase());
     } else if (restaurantNameFromSubdomain) {
@@ -43,8 +42,8 @@ const Design2 = () => {
       }
     };
     fetchRestaurant();
-  }, [restaurantName]); // התלות היא על restaurantName
-  // פונקציה להורדת קטגוריות
+  }, [menu]); //
+
   const fetchCategories = async (userId) => {
     if (!userId) return;
     try {
