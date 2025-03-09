@@ -8,12 +8,12 @@ const Menu = () => {
   const [menu, setMenu] = useState(null); // התחלה עם null במקום מערך ריק
   const navigate = useNavigate();
   const url = window.location.href;
-  const selectedBuisness = url.split(".")[0].split("//")[1];
-  console.log("Full URL:", window.location.href);
-  console.log("Selected Business:", selectedBuisness);
-  console.log("Full URL:", window.location.href);
-  console.log("Hostname:", window.location.hostname);
-  console.log("Extracted Business:", window.location.hostname.split(".")[0]);
+  const hostname = window.location.hostname; // למשל: "restaurant-name.menu-seven-amber.vercel.app"
+  const selectedBuisness = hostname.split(".")[0]; // מחלץ רק את "restaurant-name"
+
+  console.log("Full URL:", url);
+  console.log("Full Hostname:", hostname);
+  console.log("Extracted Business Name:", selectedBuisness);
 
   const fetchData = async (name) => {
     try {
