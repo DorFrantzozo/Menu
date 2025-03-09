@@ -83,7 +83,7 @@ const Design1 = () => {
                   </h2>
                   <img
                     src={category.img}
-                    className="w-full h-48 object-cover mt-4 rounded-lg"
+                    className="w-full h-full object-cover mt-4 rounded-lg"
                     alt={category.name}
                   />
                 </div>
