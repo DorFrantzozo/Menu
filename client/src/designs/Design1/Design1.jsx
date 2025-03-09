@@ -24,7 +24,6 @@ const Design1 = () => {
     setRestaurantName(name);
   }, [restaurantNameFromSubdomain, restaurantNameFromState]);
 
-  // אם אין שם מסעדה, נטען אותה מה-API
   const handleNoRestaurantNameInUrl = () => {
     const fetchRestaurantFromState = async () => {
       const name = menu?.restaurantName?.toLowerCase();
@@ -54,7 +53,7 @@ const Design1 = () => {
   useEffect(() => {
     console.log("Logged menu in Design1 Page", menu);
     console.log("Restaurant name: " + restaurantName);
-    console.log("Hostname: " + hostname);
+    console.log("parts:" + parts);
 
     const fetchRestaurant = async () => {
       if (!restaurantName) {
