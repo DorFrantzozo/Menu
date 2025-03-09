@@ -25,6 +25,7 @@ const Design1 = () => {
   }, [restaurantNameFromSubdomain, restaurantNameFromState]);
 
   const handleNoRestaurantNameInUrl = () => {
+    console.log("inside handleNoRestaurantNameInUrl");
     const fetchRestaurantFromState = async () => {
       const name = menu?.restaurantName?.toLowerCase();
       if (name) {
