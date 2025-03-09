@@ -6,52 +6,76 @@ import { toast } from "react-toastify";
 import Spinner from "../../components/Spinner";
 import axiosInstance from "../../utils/baseUrl";
 const Design1 = () => {
+  const hostname = window.location.hostname;
+  const parts = hostname.split(".");
+  let restaurantName = parts.length >= 2 ? parts[0] : null;
+
   const [restaurant, setRestaurant] = useState(null);
   const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
   const menu = location.state || {};
 
-  const restaurantName = menu.restaurantName || ""; // אם אין שם, נשתמש במיתר ריק
+  const handleNoRestaurantNameInUrl = () => {
+    const fetchRestaurantFromState = async () => {
+      const name = menu.restaurantName.toLowerCase();
+      restaurantName = name;
+      console.log(name);
 
-  const fetchRestaurant = async () => {
-    if (!restaurantName) {
-      toast.error("שם המסעדה לא נמצא ב-URL או במצב");
-      return;
-    }
-    try {
-      const res = await axiosInstance.get(`/user/find?name=${restaurantName}`);
-      if (res.data) {
-        setRestaurant(res.data);
-        fetchCategories(res.data._id);
-      } else {
-        toast.error("מסעדה לא נמצאה");
+      try {
+        const res = await axiosInstance.get(
+          `/user/find?name=${restaurantName}`
+        );
+        if (res.data) {
+          setRestaurant(res.data);
+        } else {
+          toast.error("מסעדה לא נמצאה");
+        }
+      } catch (error) {
+        toast.error("שגיאה: " + error.message);
       }
-    } catch (error) {
-      toast.error("שגיאה בטעינת המסעדה: " + error.message);
-    }
-  };
-
-  const fetchCategories = async (userId) => {
-    if (!userId) return;
-    try {
-      const response = await axiosInstance.post(`/category/getCategories`, {
-        userId,
-      });
-      if (response.data) {
-        setCategories(response.data);
-      } else {
-        toast.error("טעינת הקטגוריות נכשלה");
-      }
-    } catch (error) {
-      toast.error("שגיאה בטעינת הקטגוריות: " + error.message);
-    }
+    };
+    fetchRestaurantFromState();
   };
 
   useEffect(() => {
-    if (restaurantName) {
-      fetchRestaurant();
-    }
+    const fetchRestaurant = async () => {
+      try {
+        if (!restaurantName) {
+          handleNoRestaurantNameInUrl();
+        }
+
+        const res = await axiosInstance.get(
+          `/user/find?name=${restaurantName}`
+        );
+        if (res.data) {
+          setRestaurant(res.data);
+          fetchCategories(res.data._id);
+        } else {
+          toast.error("מסעדה לא נמצאה");
+        }
+      } catch (error) {
+        toast.error("שגיאה: " + error.message);
+      }
+    };
+
+    const fetchCategories = async (userId) => {
+      if (!userId) return;
+      try {
+        const response = await axiosInstance.post(`/category/getCategories`, {
+          userId,
+        });
+        if (response.data) {
+          setCategories(response.data);
+        } else {
+          toast.error("טעינת הקטגוריות נכשלה");
+        }
+      } catch (error) {
+        toast.error("שגיאה בטעינת הקטגוריות: " + error.message);
+      }
+    };
+
+    fetchRestaurant();
   }, [restaurantName]);
 
   return (
@@ -61,7 +85,7 @@ const Design1 = () => {
       ) : (
         <div className="min-h-screen bg-gray-50 p-6">
           <h1 className="text-4xl font-bold text-center text-gray-800">
-            {restaurant.restaurantName || "טעינה..."}
+            {restaurant.restaurantName}
           </h1>
           <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {categories
@@ -69,7 +93,7 @@ const Design1 = () => {
               .map((category) => (
                 <div
                   key={category._id}
-                  className="p-4 rounded-lg cursor-pointer transform transition-all hover:scale-105 hover:shadow-2xl"
+                  className="p-4   rounded-lg cursor-pointer transform transition-all hover:scale-105 hover:shadow-2xl"
                   onClick={() =>
                     navigate(
                       `${encodeURIComponent(category.name)}/dishes/${
@@ -83,7 +107,7 @@ const Design1 = () => {
                   </h2>
                   <img
                     src={category.img}
-                    className="w-full h-full object-cover mt-4 rounded-lg"
+                    className="w-full h-48 object-cover mt-4 rounded-lg"
                     alt={category.name}
                   />
                 </div>
