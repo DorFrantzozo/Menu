@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import axiosInstance from "../../utils/baseUrl";
+import Spinner from "@/components/Spinner";
 
 const Design1 = () => {
   const [restaurant, setRestaurant] = useState(null);
