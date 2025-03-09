@@ -11,13 +11,7 @@ dotenv.config();
 
 const app = express();
 
-const corsOptions = {
-  origin: /menu-seven-amber\.vercel\.app$/, // תומך בכל סאב-דומיין
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true,
-};
-
-app.use(cors(corsOptions));
+app.use(cors());
 
 app.use(express.json());
 
