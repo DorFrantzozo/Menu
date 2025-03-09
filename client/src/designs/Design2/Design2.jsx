@@ -42,7 +42,7 @@ const Design2 = () => {
       }
     };
     fetchRestaurant();
-  }, [menu]); //
+  }, []); //
 
   const fetchCategories = async (userId) => {
     if (!userId) return;

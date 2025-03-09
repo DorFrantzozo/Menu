@@ -18,19 +18,12 @@ const Design1 = () => {
   const restaurantNameFromSubdomain = parts.length >= 3 ? parts[0] : null;
 
   useEffect(() => {
-    try {
+    const fetchRestaurant = async () => {
       if (menu?.restaurantName) {
         setRestaurantName(menu?.restaurantName?.toLowerCase());
       } else if (restaurantNameFromSubdomain) {
         setRestaurantName(restaurantNameFromSubdomain);
       }
-    } catch (error) {
-      console.log(error);
-    }
-  }, [restaurantNameFromSubdomain, restaurantNameFromState]);
-
-  useEffect(() => {
-    const fetchRestaurant = async () => {
       try {
         const res = await axiosInstance.get(
           `/user/find?name=${restaurantName}`
