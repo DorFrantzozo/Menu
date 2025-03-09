@@ -15,12 +15,17 @@ const Design1 = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const menu = location.state || {};
+  console.log(menu);
 
   const handleNoRestaurantNameInUrl = () => {
     const fetchRestaurantFromState = async () => {
-      const name = menu.restaurantName.toLowerCase();
-      restaurantName = name;
-      console.log(name);
+      const name = menu?.restaurantName?.toLowerCase();
+      if (name) {
+        restaurantName = name;
+        console.log(name);
+      } else {
+        toast.error("שם המסעדה לא נמצא ב-state");
+      }
 
       try {
         const res = await axiosInstance.get(
