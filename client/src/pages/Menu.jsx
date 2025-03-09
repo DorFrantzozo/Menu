@@ -20,7 +20,11 @@ const Menu = () => {
       const response = await axiosInstance.get("/user/find", {
         params: { name },
       });
-      setMenu(response.data);
+      if (response.data) {
+        setMenu(response.data);
+      } else {
+        console.error("Restaurant not found");
+      }
     } catch (error) {
       console.log(error);
     }
