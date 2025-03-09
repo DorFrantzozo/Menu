@@ -11,32 +11,15 @@ const Design2 = () => {
   const [restaurant, setRestaurant] = useState(null);
   const [categories, setCategories] = useState([]);
   const [dishes, setDishes] = useState({});
+  const [restaurantName, setRestaurantName] = useState(null);
   const location = useLocation();
+  const menu = location.state || {};
+  const restaurantNameFromState = menu?.restaurantName?.toLowerCase();
 
   // משתנים לשם המסעדה שמגיע מהדומיין או מה-state של React Router
   const hostname = window.location.hostname;
   const parts = hostname.split(".");
-  let restaurantName = parts.length >= 2 ? parts[0].toLowerCase() : null; // מוודאים ששם המסעדה קטן
-
-  // פונקציה לשחזור שם מסעדה מה-state
-  const handleNoRestaurantNameInUrl = async () => {
-    const name = location.state?.restaurantName?.toLowerCase();
-    console.log(name);
-    if (name) {
-      restaurantName = name;
-    }
-    try {
-      const res = await axiosInstance.get(`user/find?name=${restaurantName}`);
-      if (res.data) {
-        setRestaurant(res.data);
-        fetchCategories(res.data._id);
-      } else {
-        toast.error("מסעדה לא נמצאה");
-      }
-    } catch (error) {
-      toast.error("שגיאה: " + error.message);
-    }
-  };
+  const restaurantNameFromSubdomain = parts.length >= 3 ? parts[0] : null;
 
   // פונקציה להורדת קטגוריות
   const fetchCategories = async (userId) => {
@@ -78,20 +61,24 @@ const Design2 = () => {
   };
 
   useEffect(() => {
+    if (menu?.restaurantName) {
+      setRestaurantName(menu?.restaurantName?.toLowerCase());
+    } else if (restaurantNameFromSubdomain) {
+      setRestaurantName(restaurantNameFromSubdomain);
+    }
+  }, [restaurantNameFromSubdomain, restaurantNameFromState]);
+
+  useEffect(() => {
     const fetchRestaurant = async () => {
       try {
-        if (!restaurantName) {
-          await handleNoRestaurantNameInUrl(); // אם לא נמצא שם בדומיין, נקרא לפונקציה כדי לבדוק ב-state
+        const res = await axiosInstance.get(
+          `/user/find?name=${restaurantName}`
+        );
+        if (res.data) {
+          setRestaurant(res.data);
+          fetchCategories(res.data._id);
         } else {
-          const res = await axiosInstance.get(
-            `/user/find?name=${restaurantName}`
-          );
-          if (res.data) {
-            setRestaurant(res.data);
-            fetchCategories(res.data._id);
-          } else {
-            toast.error("מסעדה לא נמצאה");
-          }
+          toast.error("מסעדה לא נמצאה");
         }
       } catch (error) {
         toast.error("שגיאה: " + error.message);
