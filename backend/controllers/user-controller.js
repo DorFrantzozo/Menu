@@ -179,6 +179,10 @@ const updateUser = async (req, res) => {
 
 const findRestaurantsByname = async (req, res) => {
   const { name } = req.query;
+  console.log(name);
+  if (!name) {
+    return res.status(400).json({ message: "Name parameter is required" });
+  }
 
   try {
     const restaurant = await User.find({
