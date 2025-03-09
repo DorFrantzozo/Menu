@@ -18,50 +18,31 @@ const Design1 = () => {
   const parts = hostname.split(".");
   const restaurantNameFromSubdomain = parts.length >= 3 ? parts[0] : null;
 
-  // אם יש סאב-דומיין, נשמור אותו, אחרת נשתמש בשם המסעדה מסטייט
+  
   useEffect(() => {
-    const name = restaurantNameFromSubdomain || restaurantNameFromState;
-    setRestaurantName(name);
+    try{
+      if (menu?.restaurantName) {
+        setRestaurantName(menu?.restaurantName?.toLowerCase());
+      }
+      else if (restaurantNameFromSubdomain) {
+        setRestaurantName(restaurantNameFromSubdomain);
+      }
+    } catch (error) {
+      console.log(error);
+
+    }
+
+
   }, [restaurantNameFromSubdomain, restaurantNameFromState]);
 
-  const handleNoRestaurantNameInUrl = () => {
-    console.log("inside handleNoRestaurantNameInUrl");
-    const fetchRestaurantFromState = async () => {
-      const name = menu?.restaurantName?.toLowerCase();
-      if (name) {
-        setRestaurantName(name);
-        console.log(name);
-      } else {
-        toast.error("שם המסעדה לא נמצא ב-state");
-      }
 
-      try {
-        const res = await axiosInstance.get(
-          `/user/find?name=${restaurantName}`
-        );
-        if (res.data) {
-          setRestaurant(res.data);
-        } else {
-          toast.error("מסעדה לא נמצאה");
-        }
-      } catch (error) {
-        toast.error("שגיאה: " + error.message);
-      }
-    };
-    fetchRestaurantFromState();
-  };
 
   useEffect(() => {
-    console.log("Logged menu in Design1 Page", menu);
     console.log("Restaurant name: " + restaurantName);
     console.log("parts:" + parts);
 
     const fetchRestaurant = async () => {
-      console.log(restaurantName);
-      if (!restaurantName) {
-        handleNoRestaurantNameInUrl();
-        return;
-      }
+    
 
       try {
         const res = await axiosInstance.get(
