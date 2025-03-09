@@ -13,18 +13,25 @@ const Design1 = () => {
   const menu = location.state || {};
   const restaurantNameFromState = menu?.restaurantName?.toLowerCase();
 
+  // חילוץ הסאב-דומיין אם יש
   const hostname = window.location.hostname;
   const parts = hostname.split(".");
   const restaurantNameFromSubdomain = parts.length >= 3 ? parts[0] : null;
 
   useEffect(() => {
-    const fetchRestaurant = async () => {
-      console.log(menu);
+    try {
       if (menu?.restaurantName) {
         setRestaurantName(menu?.restaurantName?.toLowerCase());
       } else if (restaurantNameFromSubdomain) {
         setRestaurantName(restaurantNameFromSubdomain);
       }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [restaurantNameFromSubdomain, restaurantNameFromState]);
+
+  useEffect(() => {
+    const fetchRestaurant = async () => {
       try {
         const res = await axiosInstance.get(
           `/user/find?name=${restaurantName}`
