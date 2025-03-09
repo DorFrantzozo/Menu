@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-
 import { toast } from "react-toastify";
 import Spinner from "../../components/Spinner";
 import Allergies from "../../components/sensitivities/Allergies";
@@ -15,35 +14,46 @@ const Design2 = () => {
   const location = useLocation();
   const menu = location.state || {};
 
-  // משתנים לשם המסעדה שמגיע מהדומיין או מה-state של React Router
+  // Extract restaurant name from subdomain
   const hostname = window.location.hostname;
   const parts = hostname.split(".");
   const restaurantNameFromSubdomain = parts.length >= 3 ? parts[0] : null;
 
+  // Extract restaurant name from state if available
+  const restaurantNameFromState = menu?.restaurantName?.toLowerCase();
+
+  // Set the restaurant name depending on the available values
   useEffect(() => {
-    if (menu?.restaurantName) {
-      setRestaurantName(menu?.restaurantName?.toLowerCase());
+    if (restaurantNameFromState) {
+      setRestaurantName(restaurantNameFromState);
     } else if (restaurantNameFromSubdomain) {
       setRestaurantName(restaurantNameFromSubdomain);
     }
-    const fetchRestaurant = async () => {
-      try {
-        const res = await axiosInstance.get(
-          `/user/find?name=${restaurantName}`
-        );
-        if (res.data) {
-          setRestaurant(res.data);
-          fetchCategories(res.data._id);
-        } else {
-          toast.error("מסעדה לא נמצאה");
-        }
-      } catch (error) {
-        toast.error("שגיאה: " + error.message);
-      }
-    };
-    fetchRestaurant();
-  }, []); //
+  }, [restaurantNameFromState, restaurantNameFromSubdomain]);
 
+  // Fetch restaurant details based on the name
+  useEffect(() => {
+    if (restaurantName) {
+      const fetchRestaurant = async () => {
+        try {
+          const res = await axiosInstance.get(
+            `/user/find?name=${restaurantName}`
+          );
+          if (res.data) {
+            setRestaurant(res.data);
+            fetchCategories(res.data._id);
+          } else {
+            toast.error("מסעדה לא נמצאה");
+          }
+        } catch (error) {
+          toast.error("שגיאה: " + error.message);
+        }
+      };
+      fetchRestaurant();
+    }
+  }, [restaurantName]); // Run this effect when restaurantName changes
+
+  // Fetch categories based on restaurant ID
   const fetchCategories = async (userId) => {
     if (!userId) return;
     try {
@@ -52,6 +62,7 @@ const Design2 = () => {
       });
       if (response.data) {
         setCategories(response.data);
+        // Fetch dishes for each category
         response.data.forEach((category) => {
           fetchDishes(userId, category._id);
         });
@@ -63,7 +74,7 @@ const Design2 = () => {
     }
   };
 
-  // פונקציה להורדת מנות
+  // Fetch dishes for a specific category
   const fetchDishes = async (userId, categoryId) => {
     try {
       const response = await axiosInstance.get(
