@@ -14,13 +14,36 @@ const Design2 = () => {
   const [restaurantName, setRestaurantName] = useState(null);
   const location = useLocation();
   const menu = location.state || {};
-  const restaurantNameFromState = menu?.restaurantName?.toLowerCase();
 
   // משתנים לשם המסעדה שמגיע מהדומיין או מה-state של React Router
   const hostname = window.location.hostname;
   const parts = hostname.split(".");
   const restaurantNameFromSubdomain = parts.length >= 3 ? parts[0] : null;
 
+  useEffect(() => {
+    console.log("design 2 menu", menu);
+    if (menu?.restaurantName) {
+      setRestaurantName(menu?.restaurantName?.toLowerCase());
+    } else if (restaurantNameFromSubdomain) {
+      setRestaurantName(restaurantNameFromSubdomain);
+    }
+    const fetchRestaurant = async () => {
+      try {
+        const res = await axiosInstance.get(
+          `/user/find?name=${restaurantName}`
+        );
+        if (res.data) {
+          setRestaurant(res.data);
+          fetchCategories(res.data._id);
+        } else {
+          toast.error("מסעדה לא נמצאה");
+        }
+      } catch (error) {
+        toast.error("שגיאה: " + error.message);
+      }
+    };
+    fetchRestaurant();
+  }, [restaurantName]); // התלות היא על restaurantName
   // פונקציה להורדת קטגוריות
   const fetchCategories = async (userId) => {
     if (!userId) return;
@@ -59,33 +82,6 @@ const Design2 = () => {
       toast.error("שגיאה בטעינת המנות: " + error.message);
     }
   };
-
-  useEffect(() => {
-    if (menu?.restaurantName) {
-      setRestaurantName(menu?.restaurantName?.toLowerCase());
-    } else if (restaurantNameFromSubdomain) {
-      setRestaurantName(restaurantNameFromSubdomain);
-    }
-  }, [restaurantNameFromSubdomain, restaurantNameFromState]);
-
-  useEffect(() => {
-    const fetchRestaurant = async () => {
-      try {
-        const res = await axiosInstance.get(
-          `/user/find?name=${restaurantName}`
-        );
-        if (res.data) {
-          setRestaurant(res.data);
-          fetchCategories(res.data._id);
-        } else {
-          toast.error("מסעדה לא נמצאה");
-        }
-      } catch (error) {
-        toast.error("שגיאה: " + error.message);
-      }
-    };
-    fetchRestaurant();
-  }, [restaurantName]); // התלות היא על restaurantName
 
   return (
     <div className="flex justify-center">
