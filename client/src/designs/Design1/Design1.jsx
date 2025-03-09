@@ -57,6 +57,7 @@ const Design1 = () => {
     console.log("parts:" + parts);
 
     const fetchRestaurant = async () => {
+      console.log(restaurantName);
       if (!restaurantName) {
         handleNoRestaurantNameInUrl();
         return;

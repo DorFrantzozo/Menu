@@ -4,7 +4,6 @@ import Signup from "./pages/Signup";
 import Footer from "./components/Footer";
 import { ToastContainer } from "react-toastify";
 import Signin from "./pages/Signin";
-
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 import Edit from "./pages/Edit";
@@ -26,6 +25,7 @@ import Design2 from "./designs/Design2/Design2";
 import AddAssetsPage from "./pages/AddAssetsPage";
 import Landing2 from "./pages/Landing2";
 import AdminPage from "./pages/AdminPage";
+import { Analytics } from "@vercel/analytics/react";
 
 function App() {
   const dispatch = useDispatch();
@@ -54,6 +54,7 @@ function App() {
   return (
     <div className="flex flex-col min-h-screen">
       <BrowserRouter>
+        <Analytics />
         {user && <Navbar />}
         <div className="flex-grow">
           <Routes>

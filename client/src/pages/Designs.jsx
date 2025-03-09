@@ -26,9 +26,7 @@ const Designs = () => {
       );
       toast.success("העיצוב שונה בהצלחה");
       dispatch(updateUser(response.data.user));
-      console.log(user);
-
-      console.log(response);
+  
     } catch (error) {
       console.log(error);
     }
@@ -41,7 +39,7 @@ const Designs = () => {
       });
 
       setMenu(response.data);
-      console.log(response.data);
+    
     } catch (error) {
       console.log(error);
     }
