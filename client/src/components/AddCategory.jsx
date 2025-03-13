@@ -26,14 +26,13 @@ export default function AddCategory() {
     formData.append("name", name);
     formData.append("locationNumber", locationNumber);
     formData.append("description", description);
-    if (!img) {
-      toast.error("יש לבחור תמונה לפני השליחה");
-      return;
-    } else if (img) {
-      formData.append("img", img);
-    }
+    formData.append("img", img);
 
     try {
+      formData.forEach((value, key) => {
+        console.log(key, value);
+      });
+
       const response = await axiosInstance.post(
         `/category/createCategory/`,
         formData,
@@ -52,7 +51,7 @@ export default function AddCategory() {
       // Check if the error has a response message or use the default message
       const errorMessage =
         error.response?.data?.message || error.message || "An error occurred";
-      toast.error(errorMessage);
+      toast.error(errorMessage + " Please try again.");
     }
   };
 
@@ -157,7 +156,6 @@ export default function AddCategory() {
                       <input
                         id="file-upload"
                         name="img"
-                        required
                         type="file"
                         className="sr-only"
                         onChange={(e) => setImg(e.target.files[0])} // Set the file to state

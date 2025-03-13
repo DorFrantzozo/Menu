@@ -48,7 +48,7 @@ const createCategoryByUserId = async (req, res) => {
     const newCategory = new Category({
       userId,
       name,
-      img: imgUrl,
+      img: imgUrl || "",
       locationNumber: locationNumber,
     });
 
