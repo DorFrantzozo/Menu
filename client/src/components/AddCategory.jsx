@@ -1,17 +1,21 @@
 import { useState } from "react";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/baseUrl";
+import { updateMenuCategories } from "@/state/menu/menuCategoriesSlice";
+import { getCategories } from "@/utils/fetchData";
 
 export default function AddCategory() {
   const user = useSelector((state) => state.user.user);
   const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
   const [locationNumber, setLocationNumber] = useState(0);
   const [img, setImg] = useState(null); // Handle image file
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -21,8 +25,12 @@ export default function AddCategory() {
     formData.append("userId", user._id);
     formData.append("name", name);
     formData.append("locationNumber", locationNumber);
-    if (img) {
-      formData.append("img", img); // Append the image file to formData
+    formData.append("description", description);
+    if (!img) {
+      toast.error("יש לבחור תמונה לפני השליחה");
+      return;
+    } else if (img) {
+      formData.append("img", img);
     }
 
     try {
@@ -36,6 +44,7 @@ export default function AddCategory() {
         }
       );
       console.log("Category created successfully:", response.data);
+      dispatch(updateMenuCategories(await getCategories()));
       toast.success("Category created successfully");
       navigate("/dashboard");
     } catch (error) {
@@ -48,7 +57,7 @@ export default function AddCategory() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex justify-center">
+    <form onSubmit={handleSubmit} className="flex justify-center mb-10">
       <div className="space-y-12 w-400 mt-10 border rounded p-2 bg-stone-100">
         <div className="border-b border-gray-900/10 pb-12">
           <h2 className="font-semibold leading-7 text-black flex justify-center text-2xl">
@@ -78,7 +87,7 @@ export default function AddCategory() {
             </div>
             <div className="w-full mt-8">
               <label
-                htmlFor="desciption"
+                htmlFor="description"
                 className="block text-sm font-medium leading-6 text-black-400"
               >
                 תיאור הקטגוריה
@@ -88,10 +97,9 @@ export default function AddCategory() {
                 <textarea
                   name="name"
                   type="text"
-                  required
                   className="  border-1 w-[80%]  border-slate-600 bg-transparent py-1.5 pl-1 text-gray-900  rounded placeholder:text-gray-400 focus:ring-2 sm:text-sm sm:leading-6 focus-within:ring-green-200"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
                 />
               </div>
             </div>
@@ -116,7 +124,7 @@ export default function AddCategory() {
                     required
                     className="block flex-1 border-1  border-slate-600 bg-transparent py-1.5 pl-1 text-gray-900  rounded placeholder:text-gray-400 focus:ring-2 sm:text-sm sm:leading-6 focus-within:ring-green-200"
                     value={locationNumber}
-                    onChange={(e) => setLocationNumber(e.target.value)}
+                    onChange={(e) => setLocationNumber(Number(e.target.value))}
                   />
                 </div>
               </div>
@@ -149,6 +157,7 @@ export default function AddCategory() {
                       <input
                         id="file-upload"
                         name="img"
+                        required
                         type="file"
                         className="sr-only"
                         onChange={(e) => setImg(e.target.files[0])} // Set the file to state
@@ -166,19 +175,19 @@ export default function AddCategory() {
           </div>
         </div>
 
-        <div className="mt-6 flex items-center justify-end gap-x-6 ">
+        <div className="mt-6 flex items-center gap-x-6 ">
+          <button
+            type="submit"
+            className="rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            שמור
+          </button>
           <button
             type="button"
             onClick={() => navigate("/dashboard")}
             className="text-sm font-semibold leading-6 text-black"
           >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            Save
+            ביטול
           </button>
         </div>
       </div>

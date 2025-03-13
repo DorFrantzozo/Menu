@@ -15,6 +15,7 @@ import NavbarSmall from "./NavbarSmall";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../../state/user/userSlice";
+import { logoutMenuCategories } from "@/state/menu/menuCategoriesSlice";
 
 const navigationItems = [
   { name: "Dashboard", href: "dashboard" },
@@ -39,7 +40,9 @@ export default function Navbar() {
 
   const handleLogOut = () => {
     dispatch(logoutUser(user));
+    dispatch(logoutMenuCategories());
     localStorage.removeItem("token");
+    localStorage.removeItem("expireTime");
     navigate("/");
   };
 

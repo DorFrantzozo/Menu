@@ -9,11 +9,11 @@ const createCategoryByUserId = async (req, res) => {
     return res.status(400).json({ message: "Category already exists" });
   }
 
-  const existCateforyLocationNumber = await Category.findOne({
+  const existCategoryLocationNumber = await Category.findOne({
     userId,
     locationNumber,
   });
-  if (existCateforyLocationNumber) {
+  if (existCategoryLocationNumber) {
     return res
       .status(400)
       .json({ message: "Category Location is already used " });

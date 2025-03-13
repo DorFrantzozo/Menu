@@ -11,11 +11,14 @@ const CategorySchema = new mongoose.Schema({
   },
   img: {
     type: String,
-    required: true, // Makes img a required field
+    required: true,
   },
   locationNumber: {
     type: Number,
     required: true,
+  },
+  description: {
+    type: String,
   },
 });
 

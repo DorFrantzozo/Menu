@@ -26,16 +26,22 @@ import AddAssetsPage from "./pages/AddAssetsPage";
 import Landing2 from "./pages/Landing2";
 import AdminPage from "./pages/AdminPage";
 import { Analytics } from "@vercel/analytics/react";
+import { setMenuCategories } from "./state/menu/menuCategoriesSlice";
 
 function App() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
+  const menuCategories = useSelector((state) => state.menuCategories);
 
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
+    const savedCategories = localStorage.getItem("categories");
 
     if (savedUser) {
       dispatch(setUser(JSON.parse(savedUser)));
+    }
+    if (savedCategories) {
+      dispatch(setMenuCategories(JSON.parse(savedCategories)));
     }
   }, [dispatch]);
 

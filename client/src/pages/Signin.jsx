@@ -5,6 +5,8 @@ import { toast } from "react-toastify";
 import { setUser, setToken } from "../state/user/userSlice";
 import logo from "../assets/img/logoBlack.png";
 import axiosInstance from "../utils/baseUrl";
+import { getCategories } from "@/utils/fetchData";
+import { setMenuCategories } from "@/state/menu/menuCategoriesSlice";
 const Signin = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -21,11 +23,17 @@ const Signin = () => {
 
       if (response.status === 200) {
         const { user, token, expireTime } = response.data;
+
         dispatch(setUser(user));
         dispatch(setToken(token));
         localStorage.setItem("token", token);
         localStorage.setItem("expireTime", expireTime);
         localStorage.setItem("user", JSON.stringify(user));
+
+        const categories = await getCategories(user);
+        dispatch(setMenuCategories(categories));
+        localStorage.setItem("categories", JSON.stringify(categories));
+
         toast.success("Login Success");
         navigate("/dashboard");
       }

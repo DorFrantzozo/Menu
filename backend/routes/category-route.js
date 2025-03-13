@@ -10,11 +10,7 @@ import { isAuth } from "../utils/jwt.js";
 
 const categoryRouter = express.Router();
 
-categoryRouter.post(
-  "/createCategory",
-  upload.single("img"),
-  createCategoryByUserId
-); //TODO:chack is auth
+categoryRouter.post("/createCategory", upload.single("img"), createCategoryByUserId);
 categoryRouter.post("/getCategories", getCategoriesByUserId);
 categoryRouter.put(
   "/updateCategory/:userId/:categoryId",
