@@ -79,6 +79,7 @@ const updateCategoryByUserId = async (req, res) => {
   console.log("Category ID:", categoryId);
   console.log("New Name:", newName);
   console.log("Location Number:", locationNumber);
+      console.log("Request Params:", req.params);
 
   try {
     // Ensure categoryId is provided
@@ -161,7 +162,7 @@ const deleteCategory = async (req, res) => {
   const { userId, categoryId } = req.params;
 
   try {
-    console.log("Request Params:", req.params);
+
     const category = await Category.findOne({ _id: categoryId, userId });
     if (!category) {
       return res
@@ -172,7 +173,7 @@ const deleteCategory = async (req, res) => {
     await category.deleteOne();
     res.status(200).json({ message: "Category deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message:  error.message });
   }
 };
 
