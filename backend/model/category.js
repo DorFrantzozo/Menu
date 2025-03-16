@@ -11,7 +11,6 @@ const CategorySchema = new mongoose.Schema({
   },
   img: {
     type: String,
-    required: true,
   },
   locationNumber: {
     type: Number,

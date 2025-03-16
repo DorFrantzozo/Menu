@@ -44,7 +44,7 @@ const createCategoryByUserId = async (req, res) => {
       });
 
       imgUrl = uploadResult.secure_url;
-      console.log(imgUrl);
+      console.log("img url" + imgUrl);
     }
 
     const newCategory = new Category({

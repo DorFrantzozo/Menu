@@ -5,6 +5,7 @@ import { expirationTime, generateToken } from "../utils/jwt.js";
 
 const createUser = async (req, res) => {
   const { email, password, restaurantName } = req.body;
+  console.log(req.body);
 
   if (!email || !password || !restaurantName) {
     return res.status(400).json({ message: "All fields are required" });
@@ -50,7 +51,7 @@ const createUser = async (req, res) => {
       email,
       password: hashedPassword,
       restaurantName,
-      logo: logoUrl,
+      logo: logoUrl || null,
       designNumber: 1,
     });
 
@@ -63,7 +64,7 @@ const createUser = async (req, res) => {
     res.status(201).json({ user: userWithoutPassword, token: token });
   } catch (error) {
     console.error("Error creating user:", error.message);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: error.message });
   }
 };
 
