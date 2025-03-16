@@ -15,7 +15,7 @@ const Dashboard = () => {
       <div className="flex-1 mt-20">
         <div className="grid lg:grid-cols-3 gap-5 justify-items-center grid-cols-2">
           {menuCategories &&
-            menuCategories?.map((category) => (
+            menuCategories.map((category) => (
               <div key={category._id} className="m-3">
                 <button>
                   <p className="text-black text-2xl mb-3 text-center">

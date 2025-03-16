@@ -29,10 +29,6 @@ export default function AddCategory() {
     formData.append("img", img);
 
     try {
-      formData.forEach((value, key) => {
-        console.log(key, value);
-      });
-
       const response = await axiosInstance.post(
         `/category/createCategory/`,
         formData,
@@ -119,7 +115,6 @@ export default function AddCategory() {
                   <input
                     name="locationNumber"
                     type="text"
-                    placeholder="0"
                     required
                     className="block flex-1 border-1  border-slate-600 bg-transparent py-1.5 pl-1 text-gray-900  rounded placeholder:text-gray-400 focus:ring-2 sm:text-sm sm:leading-6 focus-within:ring-green-200"
                     value={locationNumber}

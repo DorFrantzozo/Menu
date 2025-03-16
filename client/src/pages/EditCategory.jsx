@@ -35,6 +35,7 @@ const EditCategory = () => {
     }
 
     try {
+      console.log(user._id, "and", item._id);
       await axiosInstance.put(
         `/category/updateCategory/${user._id}/${item._id}`,
         formData,

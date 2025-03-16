@@ -99,7 +99,7 @@ const updateCategoryByUserId = async (req, res) => {
       if (category.img) {
         // Extract publicId from existing Cloudinary URL and delete old image
         const publicId = category.img.split("/").pop().split(".")[0];
-        await cloudinary.uploader.destroy(`categorys/${publicId}`);
+        await cloudinary.uploader.destroy(`categories/${publicId}`);
       }
 
       // Upload new image to Cloudinary
@@ -107,8 +107,8 @@ const updateCategoryByUserId = async (req, res) => {
         cloudinary.uploader
           .upload_stream(
             {
-              public_id: `categorys/${category.name.replace(/\s+/g, "_")}`,
-              folder: "categorys",
+              public_id: `categories/${category.name.replace(/\s+/g, "_")}`,
+              folder: "categories",
               transformation: {
                 quality: "auto",
                 fetch_format: "auto",
@@ -161,6 +161,7 @@ const deleteCategory = async (req, res) => {
   const { userId, categoryId } = req.params;
 
   try {
+    console.log("Request Params:", req.params);
     const category = await Category.findOne({ _id: categoryId, userId });
     if (!category) {
       return res
