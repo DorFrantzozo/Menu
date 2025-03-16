@@ -13,7 +13,7 @@ export default function AddCategory() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [locationNumber, setLocationNumber] = useState(0);
-  const [img, setImg] = useState(null); // Handle image file
+  const [img, setImg] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -29,12 +29,13 @@ export default function AddCategory() {
     formData.append("img", img);
 
     try {
+      console.log(axiosInstance.defaults.baseURL + `/category/createCategory`);
       const response = await axiosInstance.post(
-        `/category/createCategory/`,
+        `/category/createCategory`,
         formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data", // Specify multipart/form-data for file uploads
+            "Content-Type": "multipart/form-data",
           },
         }
       );

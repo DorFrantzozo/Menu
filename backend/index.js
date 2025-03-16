@@ -15,10 +15,10 @@ app.use(cors());
 
 app.use(express.json());
 
-app.use("/api/user", userRouter);
-app.use("/api/category", categoryRouter);
-app.use("/api/dish", dishRouter);
-app.use("/api/asset", assetRouter);
+app.use("/user", userRouter);
+app.use("/category", categoryRouter);
+app.use("/dish", dishRouter);
+app.use("/asset", assetRouter);
 try {
   await connect();
   app.listen(process.env.PORT, () => {
