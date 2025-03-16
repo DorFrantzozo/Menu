@@ -3,11 +3,12 @@ import cloudinary from "../utils/cloudinary.js";
 
 const createCategoryByUserId = async (req, res) => {
   const { userId, name, locationNumber } = req.body;
-
+  console.log(req.body);
   const existingCategory = await Category.findOne({ userId, name });
   if (existingCategory) {
     return res.status(400).json({ message: "Category already exists" });
   }
+  console.log(existingCategory);
 
   const existCategoryLocationNumber = await Category.findOne({
     userId,
@@ -18,10 +19,10 @@ const createCategoryByUserId = async (req, res) => {
       .status(400)
       .json({ message: "Category Location is already used " });
   }
-
+  console.log(existCategoryLocationNumber);
   try {
     let imgUrl = null;
-
+    console.log(req.file);
     if (req.file) {
       const uploadResult = await new Promise((resolve, reject) => {
         cloudinary.uploader
@@ -43,6 +44,7 @@ const createCategoryByUserId = async (req, res) => {
       });
 
       imgUrl = uploadResult.secure_url;
+      console.log(imgUrl);
     }
 
     const newCategory = new Category({
@@ -51,11 +53,13 @@ const createCategoryByUserId = async (req, res) => {
       img: imgUrl || "",
       locationNumber: locationNumber,
     });
+    console.log(newCategory);
 
     await newCategory.save();
 
     res.status(201).json(newCategory);
   } catch (error) {
+    console.log(error);
     res.status(400).json({ message: error.message });
   }
 };
@@ -79,7 +83,7 @@ const updateCategoryByUserId = async (req, res) => {
   console.log("Category ID:", categoryId);
   console.log("New Name:", newName);
   console.log("Location Number:", locationNumber);
-      console.log("Request Params:", req.params);
+  console.log("Request Params:", req.params);
 
   try {
     // Ensure categoryId is provided
@@ -162,7 +166,6 @@ const deleteCategory = async (req, res) => {
   const { userId, categoryId } = req.params;
 
   try {
-
     const category = await Category.findOne({ _id: categoryId, userId });
     if (!category) {
       return res
@@ -173,7 +176,7 @@ const deleteCategory = async (req, res) => {
     await category.deleteOne();
     res.status(200).json({ message: "Category deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message:  error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
