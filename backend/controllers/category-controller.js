@@ -57,7 +57,7 @@ const createCategoryByUserId = async (req, res) => {
 
     await newCategory.save();
 
-    res.status(201).json(newCategory);
+    res.status(201).json({ newCategory });
   } catch (error) {
     console.log(error);
     res.status(400).json({ message: error.message });
@@ -154,7 +154,7 @@ const updateCategoryByUserId = async (req, res) => {
 
     // Save updated category
     await category.save();
-    res.status(200).json(category);
+    res.status(200).json({ category });
   } catch (error) {
     console.error("Error updating category:", error);
     res.status(500).json({ message: error.message });
