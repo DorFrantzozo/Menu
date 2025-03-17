@@ -29,7 +29,6 @@ export default function AddCategory() {
     formData.append("img", img);
 
     try {
-      console.log(axiosInstance.defaults.baseURL + `/category/createCategory`);
       const response = await axiosInstance.post(
         `/category/createCategory`,
         formData,

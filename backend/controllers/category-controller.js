@@ -2,6 +2,10 @@ import Category from "../model/category.js";
 import cloudinary from "../utils/cloudinary.js";
 
 const createCategoryByUserId = async (req, res) => {
+  console.log(process.env.CLOUDINARY_CLOUD_NAME);
+  console.log(process.env.CLOUDINARY_API_KEY);
+  console.log(process.env.CLOUDINARY_API_SECRET);
+  console.log(process.env.CLOUDINARY_URL);
   try {
     const { userId, name, locationNumber } = req.body;
 
@@ -56,7 +60,7 @@ const createCategoryByUserId = async (req, res) => {
         console.error("Cloudinary Upload Error:", uploadError);
         return res.status(500).json({ message: "Image upload failed" });
       }
-    } 
+    }
 
     const newCategory = new Category({
       userId,
