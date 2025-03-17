@@ -39,7 +39,9 @@ export default function AddCategory() {
         }
       );
       console.log("Category created successfully:", response.data);
-      dispatch(updateMenuCategories(await getCategories()));
+      const updatedCategories = await getCategories();
+      console.log(updatedCategories);
+      dispatch(updateMenuCategories(updatedCategories));
       toast.success("Category created successfully");
       navigate("/dashboard");
     } catch (error) {

@@ -74,6 +74,7 @@ const getCategoriesByUserId = async (req, res) => {
   try {
     const { userId } = req.body;
     const categories = await Category.find({ userId });
+    console.log(categories);
     res.status(200).json(categories);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -180,7 +181,7 @@ const deleteCategory = async (req, res) => {
     }
 
     if (category.img) {
-      const publicId = category.img.split("/").pop().split(".")[0]; 
+      const publicId = category.img.split("/").pop().split(".")[0];
       await cloudinary.uploader.destroy(`categories/${publicId}`);
     }
 

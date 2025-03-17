@@ -9,10 +9,14 @@ import PropTypes from "prop-types";
 
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/baseUrl";
+import { useDispatch } from "react-redux";
+import { updateMenuCategories } from "@/state/menu/menuCategoriesSlice";
+import { getCategories } from "@/utils/fetchData";
 
 export default function Modal({ open, setOpen, user, item, type }) {
   const navigate = useNavigate();
-  const handleDelete = () => {
+  const dispatch = useDispatch();
+  const handleDelete = async () => {
     if (type == true) {
       try {
         const response = axiosInstance.delete(
@@ -40,7 +44,8 @@ export default function Modal({ open, setOpen, user, item, type }) {
               },
             }
           );
-          console.log(response.data);
+          dispatch(updateMenuCategories(await getCategories()));
+          console.log(response);
           setOpen(false);
           navigate("/dashboard");
         } catch (error) {

@@ -16,7 +16,7 @@ const getCategories = async (user) => {
         },
       }
     );
-
+   
     return response.data;
   } catch (error) {
     return error;

@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  menuCategories: [],
+  menuCategories: JSON.parse(localStorage.getItem("categories")) || [],
 };
 
 const categorySlice = createSlice({
