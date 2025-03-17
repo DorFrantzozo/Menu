@@ -1,8 +1,8 @@
 import Category from "../model/category.js";
 import cloudinary from "../utils/cloudinary.js";
-import cloudinary from "cloudinary";
+
 const createCategoryByUserId = async (req, res) => {
-  console.log("Cloudinary Config:", cloudinary.v2.config());
+
   console.log(process.env.CLOUDINARY_CLOUD_NAME);
   console.log(process.env.CLOUDINARY_API_KEY);
   console.log(process.env.CLOUDINARY_API_SECRET);
