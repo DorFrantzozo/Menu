@@ -2,19 +2,12 @@ import Category from "../model/category.js";
 import cloudinary from "../utils/cloudinary.js";
 
 const createCategoryByUserId = async (req, res) => {
-
-  console.log(process.env.CLOUDINARY_CLOUD_NAME);
-  console.log(process.env.CLOUDINARY_API_KEY);
-  console.log(process.env.CLOUDINARY_API_SECRET);
-  console.log(process.env.CLOUDINARY_URL);
   try {
     const { userId, name, locationNumber } = req.body;
 
     if (!userId || !name || !locationNumber) {
       return res.status(400).json({ message: "All fields are required" });
     }
-
-    console.log("Received Data:", req.body);
 
     // Check for existing category name
     const existingCategory = await Category.findOne({ userId, name });
@@ -37,8 +30,6 @@ const createCategoryByUserId = async (req, res) => {
 
     // Ensure the file is uploaded properly
     if (req.file) {
-      console.log("File Received:", req.file);
-
       try {
         const uploadResult = await new Promise((resolve, reject) => {
           const stream = cloudinary.uploader.upload_stream(
@@ -53,14 +44,11 @@ const createCategoryByUserId = async (req, res) => {
             }
           );
           stream.end(req.file.buffer); // Ensure buffer is correctly passed
-          console.log("File Size:", req.file?.buffer?.length);
         });
 
         imgUrl = uploadResult.secure_url;
-        console.log("Cloudinary URL:", imgUrl);
       } catch (uploadError) {
-        console.error("Cloudinary Upload Error:", uploadError);
-        return res.status(500).json({ message: "Image upload failed" });
+        return res.status(500).json({ message: uploadError });
       }
     }
 
@@ -191,12 +179,19 @@ const deleteCategory = async (req, res) => {
         .json({ message: "Category not found for this user" });
     }
 
+    if (category.img) {
+      const publicId = category.img.split("/").pop().split(".")[0]; 
+      await cloudinary.uploader.destroy(`categories/${publicId}`);
+    }
+
     await category.deleteOne();
     res.status(200).json({ message: "Category deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
+export default deleteCategory;
 
 export {
   createCategoryByUserId,
