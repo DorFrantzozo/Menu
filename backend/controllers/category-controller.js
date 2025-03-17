@@ -2,65 +2,77 @@ import Category from "../model/category.js";
 import cloudinary from "../utils/cloudinary.js";
 
 const createCategoryByUserId = async (req, res) => {
-  const { userId, name, locationNumber } = req.body;
-  console.log(req.body);
-  const existingCategory = await Category.findOne({ userId, name });
-  if (existingCategory) {
-    return res.status(400).json({ message: "Category already exists" });
-  }
-  console.log(existingCategory);
-
-  const existCategoryLocationNumber = await Category.findOne({
-    userId,
-    locationNumber,
-  });
-  if (existCategoryLocationNumber) {
-    return res
-      .status(400)
-      .json({ message: "Category Location is already used " });
-  }
-  console.log(existCategoryLocationNumber);
   try {
+    const { userId, name, locationNumber } = req.body;
+
+    if (!userId || !name || !locationNumber) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    console.log("Received Data:", req.body);
+
+    // Check for existing category name
+    const existingCategory = await Category.findOne({ userId, name });
+    if (existingCategory) {
+      return res.status(400).json({ message: "Category already exists" });
+    }
+
+    // Check for existing location number
+    const existCategoryLocationNumber = await Category.findOne({
+      userId,
+      locationNumber,
+    });
+    if (existCategoryLocationNumber) {
+      return res
+        .status(400)
+        .json({ message: "Category Location is already used " });
+    }
+
     let imgUrl = null;
-    console.log(req.file);
+
+    // Ensure the file is uploaded properly
     if (req.file) {
-      const uploadResult = await new Promise((resolve, reject) => {
-        cloudinary.uploader
-          .upload_stream(
+      console.log("File Received:", req.file);
+
+      try {
+        const uploadResult = await new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
             {
-              public_id: `categories/${name}`,
               folder: "categories",
-              transformation: {
-                quality: "auto",
-                fetch_format: "auto",
-              },
+              public_id: `categories/${name}`,
+              transformation: { quality: "auto", fetch_format: "auto" },
             },
             (error, result) => {
               if (error) return reject(error);
               resolve(result);
             }
-          )
-          .end(req.file.buffer); // Ensure req.file.buffer is used
-      });
+          );
+          stream.end(req.file.buffer); // Ensure buffer is correctly passed
+        });
 
-      imgUrl = uploadResult.secure_url;
-      console.log("img url" + imgUrl);
-    }
+        imgUrl = uploadResult.secure_url;
+        console.log("Cloudinary URL:", imgUrl);
+      } catch (uploadError) {
+        console.error("Cloudinary Upload Error:", uploadError);
+        return res.status(500).json({ message: "Image upload failed" });
+      }
+    } 
 
     const newCategory = new Category({
       userId,
       name,
-      img: imgUrl || "",
-      locationNumber: locationNumber,
+      img: imgUrl || "", // Default to empty string if no image is uploaded
+      locationNumber,
     });
-    console.log(newCategory);
 
     await newCategory.save();
 
     res.status(201).json({ newCategory });
   } catch (error) {
-    console.log(error);
-    res.status(400).json({ message: error.message });
+    console.error("Error Creating Category:", error);
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 };
 
