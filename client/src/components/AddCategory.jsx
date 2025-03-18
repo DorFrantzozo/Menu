@@ -38,9 +38,9 @@ export default function AddCategory() {
           },
         }
       );
-      console.log("Category created successfully:", response.data);
-      const updatedCategories = await getCategories();
-      console.log(updatedCategories);
+      console.log(response.data);
+      const updatedCategories = await getCategories(user);
+
       dispatch(updateMenuCategories(updatedCategories));
       toast.success("Category created successfully");
       navigate("/dashboard");

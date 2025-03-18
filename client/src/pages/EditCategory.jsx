@@ -1,14 +1,17 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Modal from "../components/Modal";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
 import axiosInstance from "../utils/baseUrl";
+import { updateMenuCategories } from "@/state/menu/menuCategoriesSlice";
+import { getCategories } from "@/utils/fetchData";
 const EditCategory = () => {
-  const location = useLocation();
   const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
   const token = localStorage.getItem("token");
 
@@ -35,7 +38,6 @@ const EditCategory = () => {
     }
 
     try {
-      console.log(user._id, "and", item._id);
       await axiosInstance.put(
         `/category/updateCategory/${user._id}/${item._id}`,
         formData,
@@ -46,6 +48,10 @@ const EditCategory = () => {
           },
         }
       );
+      const updatedCategories = await getCategories(user);
+    
+      dispatch(updateMenuCategories(updatedCategories));
+
       navigate("/dashboard");
       toast.success("קטגוריה שונתה בהצלחה");
     } catch (error) {

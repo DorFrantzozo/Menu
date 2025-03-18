@@ -20,7 +20,7 @@ const categorySlice = createSlice({
       state.menuCategories = action.payload;
       localStorage.removeItem("categories");
       localStorage.setItem("categories", JSON.stringify(action.payload));
-      console.log(action.payload);
+    
     },
   },
 });

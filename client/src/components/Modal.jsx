@@ -12,46 +12,43 @@ import axiosInstance from "../utils/baseUrl";
 import { useDispatch } from "react-redux";
 import { updateMenuCategories } from "@/state/menu/menuCategoriesSlice";
 import { getCategories } from "@/utils/fetchData";
+import Spinner from "./Spinner";
+import { useState } from "react";
 
 export default function Modal({ open, setOpen, user, item, type }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false); // הוספת state לטעינה
   const handleDelete = async () => {
-    if (type == true) {
-      try {
-        const response = axiosInstance.delete(
-          `/dish/deleteDish/${user._id}/${item._id}`,
+    setLoading(true); // הפעל את מצב הטעינה כשמתחילים את הבקשה
+    try {
+      if (type === true) {
+        await axiosInstance.delete(`/dish/deleteDish/${user._id}/${item._id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        const updatedCategories = await getCategories(user);
+        dispatch(updateMenuCategories(updatedCategories));
+      } else {
+        await axiosInstance.delete(
+          `/category/deleteCategory/${user._id}/${item._id}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
           }
         );
-        console.log(response.data);
-        setOpen(false);
-        navigate("/dashboard");
-      } catch (error) {
-        console.error("Error deleting dish:", error);
+        const updatedCategories = await getCategories(user);
+        dispatch(updateMenuCategories(updatedCategories));
       }
-    } else {
-      if (type == false) {
-        try {
-          const response = axiosInstance.delete(
-            `/category/deleteCategory/${user._id}/${item._id}`,
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            }
-          );
-          dispatch(updateMenuCategories(await getCategories()));
-          console.log(response);
-          setOpen(false);
-          navigate("/dashboard");
-        } catch (error) {
-          console.error("Error deleting category:", error);
-        }
-      }
+      setOpen(false);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Error deleting item:", error);
+    } finally {
+      setLoading(false); // לאחר סיום הבקשה, עדכן את מצב הטעינה
     }
   };
   return (
@@ -64,7 +61,6 @@ export default function Modal({ open, setOpen, user, item, type }) {
         transition
         className="fixed inset-0 bg-black bg-opacity-75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in"
       />
-
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
         <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
           <DialogPanel
@@ -79,10 +75,10 @@ export default function Modal({ open, setOpen, user, item, type }) {
                     className="h-6 w-6 text-red-600"
                   />
                 </div>
-                <div className="mt-3  text-center sm:ml-4 sm:mt-0 sm:text-right">
+                <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-right">
                   <DialogTitle
                     as="h3"
-                    className="text-base font-semibold leading-6 text-gray-900 text-right "
+                    className="text-base font-semibold leading-6 text-gray-900 text-right"
                   >
                     אזהרת מחיקה
                   </DialogTitle>
@@ -94,21 +90,30 @@ export default function Modal({ open, setOpen, user, item, type }) {
                 </div>
               </div>
             </div>
-            <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row sm:px-6">
-              <button
-                type="button"
-                onClick={handleDelete}
-                className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-              >
-                מחק
-              </button>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="mt-3 ms-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-              >
-                ביטול
-              </button>
+            <div className=" px-4 py-3 sm:flex sm:flex-row sm:px-6">
+              {loading ? (
+                <div className="flex justify-center w-full">
+                  <Spinner />
+                </div>
+              ) : (
+                // הצגת הספינר במקרה של טעינה
+                <>
+                  <button
+                    type="button"
+                    onClick={handleDelete}
+                    className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+                  >
+                    מחק
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setOpen(false)}
+                    className="mt-3 ms-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                  >
+                    ביטול
+                  </button>
+                </>
+              )}
             </div>
           </DialogPanel>
         </div>
