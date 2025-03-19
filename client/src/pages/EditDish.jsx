@@ -1,11 +1,16 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CheckIcon } from "@heroicons/react/24/outline";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Modal from "../components/Modal";
 import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
 import axiosInstance from "../utils/baseUrl";
+import {
+  getAllDishesAndMapToCategories,
+  getCategories,
+} from "@/utils/fetchData";
+import { setMenuCategories } from "@/state/menu/menuCategoriesSlice";
 const EditDish = () => {
   const user = useSelector((state) => state.user.user);
 
@@ -35,6 +40,7 @@ const EditDish = () => {
   //     setVegi(dish.vegi);
   //   }
   // }, [dish]);
+  const dispatch = useDispatch();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -55,7 +61,7 @@ const EditDish = () => {
     }
 
     try {
-      const response = await axiosInstance.put(
+      await axiosInstance.put(
         `/dish/updateDish/${user._id}/${dish._id}`,
         formData,
         {
@@ -65,7 +71,13 @@ const EditDish = () => {
           },
         }
       );
-      console.log(response);
+
+      const categories = await getCategories(user);
+      const categoriesWithDishes = await getAllDishesAndMapToCategories(
+        user,
+        categories
+      );
+      dispatch(setMenuCategories(categoriesWithDishes));
       navigate("/dashboard");
       toast.success("השינויים נשמרו בהצלחה");
     } catch (error) {

@@ -4,11 +4,10 @@ import SideBar from "../components/SideBar";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const menuCategories = useSelector(
     (state) => state.menuCategories.menuCategories
   );
-
-  const navigate = useNavigate();
 
   return (
     <div className="flex justify-center">

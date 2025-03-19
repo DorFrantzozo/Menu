@@ -3,10 +3,14 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { setUser, setToken } from "../state/user/userSlice";
+import {
+  getCategories,
+  getAllDishesAndMapToCategories,
+} from "@/utils/fetchData";
+import { setMenuCategories } from "@/state/menu/menuCategoriesSlice";
+
 import logo from "../assets/img/logoBlack.png";
 import axiosInstance from "../utils/baseUrl";
-import { getCategories } from "@/utils/fetchData";
-import { setMenuCategories } from "@/state/menu/menuCategoriesSlice";
 const Signin = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -31,15 +35,25 @@ const Signin = () => {
         localStorage.setItem("user", JSON.stringify(user));
 
         const categories = await getCategories(user);
-        dispatch(setMenuCategories(categories));
-        localStorage.setItem("categories", JSON.stringify(categories));
+        // Get categories with their dishes
+        const categoriesWithDishes = await getAllDishesAndMapToCategories(
+          user,
+          categories,
+          dispatch
+        );
 
-        toast.success("Login Success");
+        dispatch(setMenuCategories(categoriesWithDishes));
+        localStorage.setItem(
+          "categories",
+          JSON.stringify(categoriesWithDishes)
+        );
+
+        toast.success("התחברות בהצלחה");
         navigate("/dashboard");
       }
     } catch (error) {
+      toast.error("שם המשתמש או הסיסמה אינם תקינים");
       console.log(error);
-      toast.error(error.response.data.message);
     }
   };
 
@@ -53,7 +67,7 @@ const Signin = () => {
             className="h-[180px] w-[290px]  mx-auto"
           />
           <h2 className="text-center text-2xl leading-9 tracking-tight text-black">
-            Sign in to your account
+            התחברות לחשבון
           </h2>
         </div>
 
@@ -122,15 +136,6 @@ const Signin = () => {
                 className="flex w-full justify-center rounded-md bg-green-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm   hover:text-black    focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 Sign in
-              </button>
-              <button
-                onClick={() => {
-                  setEmail("dorfrant@gmail.com");
-                  setPassword("000000");
-                }}
-                className="flex w-full justify-center rounded-md bg-green-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm   hover:text-black    focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600  mt-4"
-              >
-                test auto fill
               </button>
             </div>
           </form>

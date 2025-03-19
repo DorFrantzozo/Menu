@@ -16,11 +16,38 @@ const getCategories = async (user) => {
         },
       }
     );
-   
+
     return response.data;
   } catch (error) {
     return error;
   }
 };
 
-export { getAllUsers, getCategories };
+const getAllDishesAndMapToCategories = async (user, categories) => {
+  try {
+    const updatedCategories = await Promise.all(
+      categories.map(async (category) => {
+        const response = await axiosInstance.get(
+          `/dish/getDish/${user._id}/${category._id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        return {
+          ...category,
+          menuDishes: response.data,
+        };
+      })
+    );
+
+    return updatedCategories;
+  } catch (error) {
+    console.error("Error fetching dishes:", error);
+    return error;
+  }
+};
+
+export { getAllUsers, getCategories, getAllDishesAndMapToCategories };

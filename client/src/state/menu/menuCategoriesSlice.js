@@ -9,22 +9,45 @@ const categorySlice = createSlice({
   initialState,
   reducers: {
     setMenuCategories: (state, action) => {
+      console.log("Setting menu categories with payload:", action.payload);
       state.menuCategories = action.payload;
-      localStorage.setItem("categories", JSON.stringify(action.payload));
+      console.log("Updated state:", state.menuCategories);
+      localStorage.setItem("categories", JSON.stringify(state.menuCategories));
     },
     logoutMenuCategories: (state) => {
       state.menuCategories = [];
       localStorage.removeItem("categories");
     },
     updateMenuCategories: (state, action) => {
-      state.menuCategories = action.payload;
+      state.menuCategories = action.payload.map((category) => ({
+        ...category,
+        menuDishes: category.menuDishes || [], // אם אין מנות, יוצרים מערך ריק
+      }));
       localStorage.removeItem("categories");
-      localStorage.setItem("categories", JSON.stringify(action.payload));
-    
+      localStorage.setItem("categories", JSON.stringify(state.menuCategories));
+    },
+    addMenuDishesToCategory: (state, action) => {
+      const { categoryId, dishes } = action.payload;
+      console.log(`Adding dishes to category ${categoryId}:`, dishes);
+      const category = state.menuCategories.find(
+        (cat) => cat._id === categoryId
+      );
+      if (category) {
+        category.menuDishes = dishes;
+        console.log(
+          `Updated category ${categoryId} with dishes:`,
+          category.menuDishes
+        );
+      }
+      localStorage.setItem("categories", JSON.stringify(state.menuCategories));
     },
   },
 });
 
-export const { setMenuCategories, logoutMenuCategories, updateMenuCategories } =
-  categorySlice.actions;
+export const {
+  setMenuCategories,
+  logoutMenuCategories,
+  updateMenuCategories,
+  addMenuDishesToCategory,
+} = categorySlice.actions;
 export default categorySlice.reducer;
