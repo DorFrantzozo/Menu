@@ -1,3 +1,4 @@
+import { error } from "console";
 import axiosInstance from "../utils/baseUrl";
 
 const getAllUsers = async () => {
@@ -50,4 +51,30 @@ const getAllDishesAndMapToCategories = async (user, categories) => {
   }
 };
 
-export { getAllUsers, getCategories, getAllDishesAndMapToCategories };
+const getRestaurantName = (menu) => {
+  const hostname = window.location.hostname;
+  const parts = hostname.split(".");
+  const restaurantNameFromSubdomain = parts.length >= 3 ? parts[0] : null;
+  const restaurantNameFromState = menu?.restaurantName?.toLowerCase();
+
+  return restaurantNameFromState || restaurantNameFromSubdomain || null;
+};
+
+const fetchRestaurant = async (restaurantName) => {
+  try {
+    const res = await axiosInstance.get(`/user/find?name=${restaurantName}`);
+    if (res.data) {
+      return res.data;
+    }
+  } catch (error) {
+    return "שגיאה: " + error.message;
+  }
+};
+
+export {
+  getAllUsers,
+  getCategories,
+  getAllDishesAndMapToCategories,
+  getRestaurantName,
+  fetchRestaurant,
+};

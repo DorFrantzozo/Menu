@@ -27,6 +27,7 @@ import Landing2 from "./pages/Landing2";
 import AdminPage from "./pages/AdminPage";
 import { Analytics } from "@vercel/analytics/react";
 import { setMenuCategories } from "./state/menu/menuCategoriesSlice";
+import Design3 from "./designs/Design3/Design3";
 
 function App() {
   const dispatch = useDispatch();
@@ -111,6 +112,7 @@ function App() {
             <Route path="/menu" element={<Menu />} />
             <Route path="/design1" element={<Design1 />} />
             <Route path="/design2" element={<Design2 />} />
+            <Route path="/design3" element={<Design3 />} />
             <Route
               path="/design1/:categoryName/dishes/:userId/:categoryId"
               element={<Design1Dish />}

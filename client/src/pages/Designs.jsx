@@ -26,7 +26,6 @@ const Designs = () => {
       );
       toast.success("העיצוב שונה בהצלחה");
       dispatch(updateUser(response.data.user));
-  
     } catch (error) {
       console.log(error);
     }
@@ -39,7 +38,6 @@ const Designs = () => {
       });
 
       setMenu(response.data);
-    
     } catch (error) {
       console.log(error);
     }
@@ -106,6 +104,28 @@ const Designs = () => {
               bg="zinc-800"
               color="white"
               onClick={() => navigate("/design2", { state: menu })}
+            />
+          </div>
+        </div>
+
+        <div className="flex flex-col items-center mb-20">
+          <img
+            src={design2Tambneil}
+            className="shadow-slate-200 h-[700px] mb-10 mt-20 hover:scale-110 transition duration-500 rounded-lg shadow-lg"
+            alt=""
+          />
+          <div className="flex justify-around gap-10 mt-5 w-full sm:w-auto">
+            <DefaultButton
+              text="החל"
+              bg="zinc-800"
+              color="white"
+              onClick={() => handleChangeMenuDesign(3)}
+            />
+            <DefaultButton
+              text="לנסות"
+              bg="zinc-800"
+              color="white"
+              onClick={() => navigate("/design3", { state: menu })}
             />
           </div>
         </div>

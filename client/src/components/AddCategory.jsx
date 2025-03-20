@@ -21,7 +21,6 @@ export default function AddCategory() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Create a FormData object to send the image file and other fields
     const formData = new FormData();
     formData.append("userId", user._id);
     formData.append("name", name);
@@ -44,7 +43,6 @@ export default function AddCategory() {
     } catch (error) {
       setIsLoading(false);
       console.error("Error creating category:", error);
-      // Check if the error has a response message or use the default message
       const errorMessage =
         error.response?.data?.message || error.message || "An error occurred";
       toast.error(errorMessage + " Please try again.");

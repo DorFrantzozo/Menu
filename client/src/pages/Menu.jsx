@@ -40,6 +40,8 @@ const Menu = () => {
       navigate("/design1", { state: menu });
     } else if (menu && menu.designNumber === 2) {
       navigate("/design2", { state: menu });
+    } else if (menu && menu.designNumber === 3) {
+      navigate("/design3", { state: menu });
     }
   }, [menu, navigate]);
 

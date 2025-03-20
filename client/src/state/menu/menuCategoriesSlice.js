@@ -9,9 +9,7 @@ const categorySlice = createSlice({
   initialState,
   reducers: {
     setMenuCategories: (state, action) => {
-      console.log("Setting menu categories with payload:", action.payload);
       state.menuCategories = action.payload;
-      console.log("Updated state:", state.menuCategories);
       localStorage.setItem("categories", JSON.stringify(state.menuCategories));
     },
     logoutMenuCategories: (state) => {
