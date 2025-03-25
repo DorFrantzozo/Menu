@@ -29,7 +29,7 @@ const Dashboard = () => {
                   />
 
                   <img
-                    className="rounded w-full h-auto max-w-[450px] sm:max-w-[350px] min-h-[200px] object-cover"
+                    className="rounded w-full h-[220px]  sm:w-[450px]   object-cover"
                     src={category.img}
                     alt={category.name}
                     onClick={() =>

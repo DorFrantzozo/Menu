@@ -30,9 +30,10 @@ const Profile = () => {
 
   useEffect(() => {
     if (userName) {
+     
       // רק אם userName עודכן
       const generateQrCode = async () => {
-        const url = `${userName}.http://localhost:5173/menu`;
+        const url = `${userName}.menuyou.online/menu`;
 
         const qrUrl = await QRCode.toDataURL(url);
         setQrCode(qrUrl);

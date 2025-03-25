@@ -46,11 +46,11 @@ const Design1Dish = () => {
         {categoryName}
       </h1>
 
-      <div className="space-y-8 ">
+      <div className="space-y-8  ">
         {dishes.map((dish) => (
           <div
             key={dish._id}
-            className="flex items-center p-2 border   mb-10  rounded-lg space-x-6"
+            className="flex items-center p-2 border     rounded-lg space-x-6"
           >
             <div className="flex flex-col w-full">
               <h3 className="text-xl font-semibold text-right text-gray-700">

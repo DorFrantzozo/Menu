@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import design1Tambneil from "../assets/img/design1Tamneil.png";
 import design2Tambneil from "../assets/img/design2Tambneil.png";
+import design3Tambneil from "../assets/img/design3Tambneil.png";
 import DefaultButton from "@/components/buttons/DefaultButton";
 import Spinner from "@/components/Spinner";
 import { toast } from "react-toastify";
@@ -99,7 +100,7 @@ const Designs = () => {
 
         <div className="flex flex-col items-center mb-20">
           <img
-            src={design2Tambneil}
+            src={design3Tambneil}
             className="shadow-slate-200 h-[700px] mb-10 mt-20 hover:scale-110 transition duration-500 rounded-lg shadow-lg"
             alt=""
           />
