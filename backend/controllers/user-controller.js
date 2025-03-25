@@ -11,7 +11,6 @@ const createUser = async (req, res) => {
   }
 
   try {
-    // Check if user already exists
     const existUser = await User.findOne({ email });
     if (existUser) {
       return res.status(400).json({ message: "User already exists" });
@@ -19,7 +18,6 @@ const createUser = async (req, res) => {
 
     let logoUrl = null;
 
-    // Handle image upload to Cloudinary if file is present
     if (req.file) {
       const uploadResult = await new Promise((resolve, reject) => {
         cloudinary.uploader
@@ -83,6 +81,10 @@ const loginUser = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
+
+    const now = new Date();
+    const isTrialExpired = !user.isPaid && user.trialExpiresAt < now;
+
     const token = generateToken(user);
     const expireTime = expirationTime();
 
@@ -90,6 +92,7 @@ const loginUser = async (req, res) => {
 
     res.status(200).json({
       user: userWithoutPassword,
+      isTrialExpired: isTrialExpired,
       token: token,
       expireTime: expireTime,
     });
