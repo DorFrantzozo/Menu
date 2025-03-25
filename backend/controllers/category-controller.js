@@ -74,7 +74,7 @@ const getCategoriesByUserId = async (req, res) => {
   try {
     const { userId } = req.body;
     const categories = await Category.find({ userId });
-    console.log(categories);
+
     res.status(200).json(categories);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -85,12 +85,6 @@ const getCategoriesByUserId = async (req, res) => {
 const updateCategoryByUserId = async (req, res) => {
   const { userId, categoryId } = req.params;
   const { newName, locationNumber } = req.body;
-
-  console.log("User ID:", userId);
-  console.log("Category ID:", categoryId);
-  console.log("New Name:", newName);
-  console.log("Location Number:", locationNumber);
-  console.log("Request Params:", req.params);
 
   try {
     // Ensure categoryId is provided

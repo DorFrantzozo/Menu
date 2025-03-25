@@ -4,37 +4,67 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { getCategories, getRestaurantName } from "@/utils/fetchData";
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import PropTypes from "prop-types";
 
-const AccordionMenu = (restaurantDetails) => {
+import { useState } from "react";
+
+const AccordionMenu = ({ categories, dishes, textColor = "white" }) => {
+  const [activeCategory, setActiveCategory] = useState(null);
+
+  // Sort categories by locationNumber
+  const sortedCategories = [...categories].sort(
+    (a, b) => a.locationNumber - b.locationNumber
+  );
+
   return (
-    <div>
-      {" "}
-      <Accordion type="single" collapsible className="w-full">
-        <AccordionItem value="item-1">
-          <AccordionTrigger>{}</AccordionTrigger>
+    <Accordion
+      type="single"
+      collapsible
+      className="w-full"
+      onValueChange={(value) => setActiveCategory(value)}
+    >
+      {sortedCategories.map((category) => (
+        <AccordionItem key={category._id} value={`item-${category._id}`}>
+          <AccordionTrigger
+            className={`text-2xl mb-8 mt-8 flex justify-center font-bold transition-colors duration-200 ${
+              activeCategory === `item-${category._id}`
+                ? "text-sky-400 hover:text-sky-500"
+                : `text-${textColor} hover:text-gray-400`
+            }`}
+          >
+            {category.name}
+          </AccordionTrigger>
           <AccordionContent>
-            Yes. It adheres to the WAI-ARIA design pattern.
+            {dishes[category._id] && dishes[category._id].length > 0 ? (
+              <ul>
+                {dishes[category._id].map((dish) => (
+                  <div className="text-center mb-8" key={dish._id}>
+                    <li className={`text-2xl font-semibold text-${textColor}`}>
+                      {dish.name}
+                    </li>
+                    <li className={`text-${textColor}`}>{dish.description}</li>
+                    <li className="flex justify-center items-center gap-2">
+                      <span className={`text-${textColor}`}>
+                        ₪ {dish.price}
+                      </span>
+                    </li>
+                  </div>
+                ))}
+              </ul>
+            ) : (
+              <p className={`text-${textColor}`}>אין מנות זמינות</p>
+            )}
           </AccordionContent>
         </AccordionItem>
-        <AccordionItem value="item-2">
-          <AccordionTrigger>Is it styled?</AccordionTrigger>
-          <AccordionContent>
-            Yes. It comes with default styles that matches the other
-            components&apos; aesthetic.
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="item-3">
-          <AccordionTrigger>Is it animated?</AccordionTrigger>
-          <AccordionContent>
-            Yes. It's animated by default, but you can disable it if you prefer.
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
-    </div>
+      ))}
+    </Accordion>
   );
 };
 
 export default AccordionMenu;
+
+AccordionMenu.propTypes = {
+  categories: PropTypes.array.isRequired,
+  dishes: PropTypes.object.isRequired,
+  textColor: PropTypes.string,
+};

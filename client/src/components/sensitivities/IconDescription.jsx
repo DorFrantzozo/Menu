@@ -5,7 +5,7 @@ import vegi from "../../assets/img/vegetable.png";
 
 const IconDescription = () => {
   return (
-    <div className="flex flex-wrap justify-center items-center gap-4 w-[90%] md:w-[75%] mx-auto mt-4 mb-4">
+    <div className="flex flex-wrap justify-center items-center gap-4 w-[90%] md:w-[75%] mx-auto  mb-4 ">
       <div className="flex items-center gap-2">
         <p className="text-sm md:text-base">מתאים לרגישים ללקטוז -</p>
         <img src={milk} className="w-5 md:w-6" alt="milk-icon" />

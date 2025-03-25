@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import Card from "../components/Card";
+import Card from "../components/Cards/Card";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import Spinner from "@/components/Spinner";

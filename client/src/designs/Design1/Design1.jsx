@@ -86,7 +86,7 @@ const Design1 = () => {
               .map((category) => (
                 <div
                   key={category._id}
-                  className="p-4 rounded-lg cursor-pointer transform transition-all hover:scale-105 hover:shadow-2xl"
+                  className="p-4 rounded cursor-pointer transform transition-all hover:scale-110 "
                   onClick={() =>
                     navigate(
                       `${encodeURIComponent(category.name)}/dishes/${restaurant._id}/${category._id}`

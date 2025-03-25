@@ -34,7 +34,7 @@ const Design1Dish = () => {
   }, [userId, categoryId]);
 
   return (
-    <div className="min-h-screen  p-6">
+    <div className="min-h-screen   p-6">
       <button
         onClick={() => navigate(-1)} // כפתור חזרה לעמוד הקטגוריות
         className="mb-4  font-semibold"
@@ -50,10 +50,8 @@ const Design1Dish = () => {
         {dishes.map((dish) => (
           <div
             key={dish._id}
-            className="flex items-center p-2   mb-10 shadow-lg rounded-lg space-x-6"
+            className="flex items-center p-2 border   mb-10  rounded-lg space-x-6"
           >
-            <img src={dish.img} className="dish-img rounded " alt={dish.name} />
-
             <div className="flex flex-col w-full">
               <h3 className="text-xl font-semibold text-right text-gray-700">
                 {dish.name}
@@ -61,13 +59,19 @@ const Design1Dish = () => {
               <p className="text-gray-600 mt-2 text-right">
                 {dish.description}
               </p>
+              <Alergies dish={dish} />
               <p className="font-bold text-lg text-gray-900 mt-2">
                 {dish.price} ₪
               </p>
-              <Alergies dish={dish} />
             </div>
+            <img
+              src={dish.img}
+              className="dish-img rounded w-[120px] h-[100px]  "
+              alt={dish.name}
+            />
           </div>
         ))}
+
         <IconDescription />
       </div>
     </div>

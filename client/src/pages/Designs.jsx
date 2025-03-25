@@ -12,12 +12,13 @@ const Designs = () => {
   const navigate = useNavigate();
 
   const user = useSelector((state) => state.user.user);
-  console.log(user._id);
   const name = user.restaurantName.toLowerCase() || "";
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
 
   const [menu, setMenu] = useState([]);
   const handleChangeMenuDesign = async (designNumber) => {
+    setIsLoading(true);
     try {
       const response = await axiosInstance.put(
         `/user/updateDesign`,
@@ -28,6 +29,8 @@ const Designs = () => {
       dispatch(updateUser(response.data.user));
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -47,22 +50,8 @@ const Designs = () => {
   }, [name]);
 
   return (
-    // <div className="mt-16">
-    //   <button
-    //     className="px-4 py-2 text-xl text-white border rounded-2xl "
-    //     onClick={() => navigate("/design1", { state: menu })}
-    //   >
-    //     <img src={design1Tamneil} className="w-40" alt="design1Tamneil" />
-    //     design1
-    //   </button>
-    //   <button
-    //     className="px-4 py-2 text-xl text-white border rounded bg-black"
-    //     onClick={() => navigate("/design2", { state: menu })}
-    //   >
-    //     design2
-    //   </button>
-    // </div>
     <>
+      {isLoading && <Spinner />}
       <div className="block md:flex justify-center gap-10">
         <div className="flex flex-col items-center">
           <img

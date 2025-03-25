@@ -10,6 +10,7 @@ import Spinner from "./Spinner";
 import {
   getCategories,
   getAllDishesAndMapToCategories,
+  fetchCategoriesAndDishes,
 } from "@/utils/fetchData";
 import { setMenuCategories } from "@/state/menu/menuCategoriesSlice";
 
@@ -59,6 +60,14 @@ export default function AddDish() {
         categories
       );
       dispatch(setMenuCategories(categoriesWithDishes));
+
+      // Update localStorage with new data
+      const { categories: newCategories, dishes: newDishes } =
+        await fetchCategoriesAndDishes(user._id);
+      localStorage.setItem(
+        `menu_${user.restaurantName}`,
+        JSON.stringify({ categories: newCategories, dishes: newDishes })
+      );
       localStorage.setItem("categories", JSON.stringify(categoriesWithDishes));
 
       setIsLoading(false);

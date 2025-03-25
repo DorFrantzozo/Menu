@@ -1,4 +1,3 @@
-import { error } from "console";
 import axiosInstance from "../utils/baseUrl";
 
 const getAllUsers = async () => {
@@ -6,11 +5,12 @@ const getAllUsers = async () => {
   return response.data;
 };
 
-const getCategories = async (user) => {
+const getCategories = async (userId) => {
+ 
   try {
     const response = await axiosInstance.post(
       "/category/getCategories",
-      { userId: user._id },
+      { userId: userId },
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -19,6 +19,20 @@ const getCategories = async (user) => {
     );
 
     return response.data;
+  } catch (error) {
+    return error;
+  }
+};
+const getDishes = async (userId, categoryId) => {
+  try {
+    const response = await axiosInstance.get(
+      `/dish/getDish/${userId}/${categoryId}`
+    );
+    if (response.data) {
+      return response.data;
+    } else {
+      return response;
+    }
   } catch (error) {
     return error;
   }
@@ -46,7 +60,7 @@ const getAllDishesAndMapToCategories = async (user, categories) => {
 
     return updatedCategories;
   } catch (error) {
-    console.error("Error fetching dishes:", error);
+    console.log("Error fetching dishes:", error);
     return error;
   }
 };
@@ -67,7 +81,46 @@ const fetchRestaurant = async (restaurantName) => {
       return res.data;
     }
   } catch (error) {
-    return "שגיאה: " + error.message;
+    return error;
+  }
+};
+
+// new function for getting categories and dishes
+const fetchCategoriesAndDishes = async (userId) => {
+  try {
+    // Fetch categories from server
+    const categoriesResponse = await axiosInstance.post(
+      `/category/getCategories`,
+      {
+        userId,
+      }
+    );
+
+    if (!categoriesResponse.data) {
+      throw new Error("Failed to fetch categories");
+    }
+
+    const categories = categoriesResponse.data;
+    const dishesMap = {};
+
+    // Fetch dishes for each category
+    await Promise.all(
+      categories.map(async (category) => {
+        const dishesResponse = await axiosInstance.get(
+          `/dish/getDish/${userId}/${category._id}`
+        );
+        dishesMap[category._id] = dishesResponse.data || [];
+      })
+    );
+
+    return {
+      categories,
+      dishes: dishesMap,
+      lastUpdated: new Date().getTime(), // Add timestamp for reference
+    };
+  } catch (error) {
+    console.error("Error fetching categories and dishes:", error);
+    throw error;
   }
 };
 
@@ -77,4 +130,6 @@ export {
   getAllDishesAndMapToCategories,
   getRestaurantName,
   fetchRestaurant,
+  getDishes,
+  fetchCategoriesAndDishes,
 };

@@ -5,7 +5,6 @@ import { expirationTime, generateToken } from "../utils/jwt.js";
 
 const createUser = async (req, res) => {
   const { email, password, restaurantName } = req.body;
-  console.log(req.body);
 
   if (!email || !password || !restaurantName) {
     return res.status(400).json({ message: "All fields are required" });
@@ -180,7 +179,7 @@ const updateUser = async (req, res) => {
 
 const findRestaurantsByname = async (req, res) => {
   const { name } = req.query;
-  console.log(name);
+
   if (!name) {
     return res.status(400).json({ message: "Name parameter is required" });
   }
@@ -222,9 +221,6 @@ const deleteUser = async (req, res) => {
 
 const updateDesignByNumber = async (req, res) => {
   const { userId, number } = req.body;
-  console.log(userId);
-  console.log(number);
-  console.log("test");
 
   try {
     const user = await User.findById(userId);
@@ -238,7 +234,6 @@ const updateDesignByNumber = async (req, res) => {
       user: user,
       design: user.designNumber,
     });
-    console.log(user);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

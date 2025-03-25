@@ -1,7 +1,7 @@
-import dish from "../assets/img/dish.jpg";
-import category from "../assets/img/category.png";
+import dish from "../../assets/img/dish.jpg";
+import category from "../../assets/img/category.png";
 import { useNavigate } from "react-router-dom";
-import tomatoAndCarrot from "../assets/img/tomatoAndCarrot.jpg";
+import tomatoAndCarrot from "../../assets/img/tomatoAndCarrot.jpg";
 
 const Card = () => {
   const navigate = useNavigate();

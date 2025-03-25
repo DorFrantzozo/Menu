@@ -136,19 +136,19 @@ const Signin = () => {
                 type="submit"
                 className="flex w-full justify-center rounded-md bg-green-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm   hover:text-black    focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                Sign in
+                התחבר
               </button>
             </div>
           </form>
 
           <p className="mt-10 text-center text-sm text-gray-500">
-            Not a member?{" "}
             <button
               onClick={() => navigate("/signup")}
               className="font-semibold leading-6 text-green-400 hover:text-black mb-10"
             >
-              Start a 14 day free trial
+              הרשמה
             </button>
+            {"   "} ?אין לך חשבון
           </p>
         </div>
       </div>
