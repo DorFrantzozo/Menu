@@ -65,12 +65,12 @@ const Design3 = () => {
 
   return (
     <div
-      className="flex justify-center  "
+      className="flex justify-center min-h-screen w-full"
       style={{
         background: "linear-gradient(to bottom, #000000, #1a1a1a)",
       }}
     >
-      <div className="min-h-screen flex flex-col  w-full max-w-2xl">
+      <div className="flex flex-col w-full max-w-2xl py-4">
         <div className="flex justify-center">
           <img
             src={restaurantData.logo}
@@ -79,7 +79,7 @@ const Design3 = () => {
           />
         </div>
 
-        <div className="mt-10 w-[80%] mx-auto">
+        <div className="mt-6 w-[80%] mx-auto">
           <AccordionMenu
             categories={categories}
             dishes={dishes}

@@ -1,5 +1,5 @@
 import { Button } from "@headlessui/react";
-import Proptype from "prop-types";
+import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 const DefaultButton = ({
   text = "דוגמה לכפתור",
@@ -8,6 +8,7 @@ const DefaultButton = ({
   color = "text-black",
   hover = "",
   hoverTextColor = "",
+  width = "80px",
 }) => {
   const navigate = useNavigate();
   const handleClick = onClick || (() => navigate("/signin"));
@@ -15,7 +16,7 @@ const DefaultButton = ({
   return (
     <Button
       onClick={handleClick}
-      className={`text-${color} font-light rounded p-1 ${hover} ${hoverTextColor} transition duration-500 w-[80px]  bg-${bg}`}
+      className={`text-${color} font-light rounded p-2 ${hover} ${hoverTextColor} transition duration-500 w-[${width}]  bg-${bg}`}
     >
       {text}
     </Button>
@@ -25,10 +26,11 @@ const DefaultButton = ({
 export default DefaultButton;
 
 DefaultButton.propTypes = {
-  text: Proptype.string.isRequired,
-  onClick: Proptype.func,
-  bg: Proptype.string,
-  color: Proptype.string,
-  hover: Proptype.string,
-  hoverTextColor: Proptype.string,
+  text: PropTypes.string.isRequired,
+  onClick: PropTypes.func,
+  bg: PropTypes.string,
+  color: PropTypes.string,
+  hover: PropTypes.string,
+  hoverTextColor: PropTypes.string,
+  width: PropTypes.string,
 };

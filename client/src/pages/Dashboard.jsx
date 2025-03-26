@@ -3,17 +3,25 @@ import { useNavigate } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import AddDataToStart from "../components/Cards/AddDataToStart";
+import FreeTrailCounter from "@/components/Cards/FreeTrailCounter";
 const Dashboard = () => {
   const navigate = useNavigate();
+  const user = useSelector((state) => state.user.user);
   const menuCategories = useSelector(
     (state) => state.menuCategories.menuCategories
   );
 
   return (
     <div className="flex justify-center">
+      {user?.trialExpiresAt && new Date(user.trialExpiresAt) >= new Date() && (
+        <FreeTrailCounter />
+      )}
       <div className="flex-1 mt-20">
-        {menuCategories.length > 0 ? (
-          <div className="grid lg:grid-cols-3 gap-5 justify-items-center grid-cols-2">
+        {menuCategories?.length > 0 ? (
+          <div
+            dir="rtl"
+            className="grid lg:grid-cols-3 gap-5 justify-items-center grid-cols-2"
+          >
             {menuCategories.map((category) => (
               <div key={category._id} className="m-3">
                 <button>

@@ -43,7 +43,7 @@ const Signin = () => {
           dispatch
         );
 
-        dispatch(setMenuCategories(categoriesWithDishes));
+         dispatch(setMenuCategories(categoriesWithDishes));
         localStorage.setItem(
           "categories",
           JSON.stringify(categoriesWithDishes)

@@ -30,7 +30,6 @@ const Profile = () => {
 
   useEffect(() => {
     if (userName) {
-     
       // רק אם userName עודכן
       const generateQrCode = async () => {
         const url = `${userName}.menuyou.online/menu`;
@@ -100,7 +99,7 @@ const Profile = () => {
         <div className="flex flex-col items-center space-y-4">
           {userFromStorage?.logo ? (
             <img
-              className="w-24 h-24 rounded-full"
+              className="w-24 h-24 rounded-full border bg-gray-200"
               src={userFromStorage.logo}
               alt="logo"
             />

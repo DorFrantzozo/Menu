@@ -50,15 +50,11 @@ const columns = [
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
+        className="border-white"
       />
     ),
     enableSorting: false,
     enableHiding: false,
-  },
-  {
-    accessorKey: "email",
-    header: "Email",
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
   },
   {
     accessorKey: "restaurantName",
@@ -66,9 +62,39 @@ const columns = [
     cell: ({ row }) => <div>{row.getValue("restaurantName")}</div>,
   },
   {
+    accessorKey: "isPaid",
+    header: "Status",
+    cell: ({ row }) => {
+      const isPaid = row.getValue("isPaid");
+
+      return (
+        <div
+          className={`px-2 py-1 rounded-md text-white text-center ${
+            isPaid ? "bg-green-500" : "bg-red-200"
+          }`}
+        >
+          {isPaid ? " Paid ✅ " : " Unpaid ❌"}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "email",
+    header: "Email",
+    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+  },
+  {
     accessorKey: "role",
     header: "Role",
     cell: ({ row }) => <div className="capitalize">{row.getValue("role")}</div>,
+  },
+  {
+    accessorKey: "trialExpiresAt",
+    header: "Free Trial Ends",
+
+    cell: ({ row }) => (
+      <div>{row.getValue("trialExpiresAt").split("T")[0]}</div>
+    ),
   },
   {
     accessorKey: "designNumber",
@@ -124,6 +150,7 @@ export default function DataTable() {
       );
     },
   });
+  console.log(data);
 
   return (
     <div className="w-full mt-10 bg-zinc-900 rounded-lg p-6">
