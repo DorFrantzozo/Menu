@@ -201,7 +201,9 @@ export default function DataTable() {
                     className="text-white  bg-zinc-800 "
                     key={header.id}
                   >
-                    {header.column.columnDef.header}
+                    {typeof header.column.columnDef.header === "function"
+                      ? header.column.columnDef.header({ table: table })
+                      : header.column.columnDef.header}
                   </TableHead>
                 ))}
               </TableRow>

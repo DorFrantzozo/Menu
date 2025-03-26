@@ -1,12 +1,10 @@
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { useEffect, useRef, useState } from "react";
-
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { updateUser } from "../state/user/userSlice";
-import QRCode from "qrcode";
 import axiosInstance from "../utils/baseUrl";
-
+import { generateQRCode } from "../utils/qrGenerator";
 const Profile = () => {
   const fileInputRef = useRef(null);
   const [email, setEmail] = useState("");
@@ -29,17 +27,13 @@ const Profile = () => {
   }, []);
 
   useEffect(() => {
-    if (userName) {
-      // רק אם userName עודכן
-      const generateQrCode = async () => {
-        const url = `${userName}.menuyou.online/menu`;
-
-        const qrUrl = await QRCode.toDataURL(url);
+    const generateQR = async () => {
+      if (userName) {
+        const qrUrl = await generateQRCode(userName);
         setQrCode(qrUrl);
-      };
-
-      generateQrCode();
-    }
+      }
+    };
+    generateQR();
   }, [userName]);
 
   const handleSubmit = async (event) => {
@@ -149,9 +143,9 @@ const Profile = () => {
               className="w-full mt-1 p-2 border border-gray-300 rounded-lg"
             />
           </div>
-          <h1 className=" text-center mt">קוד ה - QR של המסדעה</h1>
+          <h1 className=" text-center mt-6">קוד ה - QR של המסעדה</h1>
           <div className="flex justify-center">
-            <img src={qrcode} className="" alt="" />
+            <img src={qrcode} className="" alt="qrcode" />
           </div>
         </div>
 

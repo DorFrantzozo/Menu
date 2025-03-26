@@ -28,11 +28,12 @@ import AdminPage from "./pages/AdminPage";
 import { Analytics } from "@vercel/analytics/react";
 import { setMenuCategories } from "./state/menu/menuCategoriesSlice";
 import Design3 from "./designs/Design3/Design3";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
-  const menuCategories = useSelector((state) => state.menuCategories);
+  // const menuCategories = useSelector((state) => state.menuCategories);
 
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
@@ -59,8 +60,14 @@ function App() {
     return;
   }
   return (
-    <div className="flex flex-col min-h-screen">
-      <BrowserRouter>
+    <div className="flex flex-col min-h-[100svh]">
+      <BrowserRouter
+        future={{
+          v7_startTransition: true,
+          v7_relativeSplatPath: true,
+        }}
+      >
+        <ScrollToTop />
         <Analytics />
         {user && <Navbar />}
         <div className="flex-grow">
