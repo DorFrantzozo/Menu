@@ -9,7 +9,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -17,9 +17,6 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -31,91 +28,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import DropDown from "./DropDown";
 
-const columns = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="border-white"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "restaurantName",
-    header: "Restaurant Name",
-    cell: ({ row }) => <div>{row.getValue("restaurantName")}</div>,
-  },
-  {
-    accessorKey: "isPaid",
-    header: "Status",
-    cell: ({ row }) => {
-      const isPaid = row.getValue("isPaid");
-
-      return (
-        <div
-          className={`px-2 py-1 rounded-md text-white text-center ${
-            isPaid ? "bg-green-500" : "bg-red-200"
-          }`}
-        >
-          {isPaid ? " Paid ✅ " : " Unpaid ❌"}
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "email",
-    header: "Email",
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
-  },
-  {
-    accessorKey: "role",
-    header: "Role",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("role")}</div>,
-  },
-  {
-    accessorKey: "trialExpiresAt",
-    header: "Free Trial Ends",
-
-    cell: ({ row }) => (
-      <div>{row.getValue("trialExpiresAt").split("T")[0]}</div>
-    ),
-  },
-  {
-    accessorKey: "designNumber",
-    header: "Design Number",
-    cell: ({ row }) => <div>{row.getValue("designNumber")}</div>,
-  },
-  {
-    accessorKey: "createdAt",
-    header: "Created At",
-    cell: ({ row }) => (
-      <div>{new Date(row.getValue("createdAt")).toLocaleDateString()}</div>
-    ),
-  },
-  {
-    accessorKey: "updatedAt",
-    header: "Updated At",
-    cell: ({ row }) => (
-      <div>{new Date(row.getValue("updatedAt")).toLocaleDateString()}</div>
-    ),
-  },
-];
+import updatePaidStatus from "@/utils/updateData";
 
 export default function DataTable() {
   const [sorting, setSorting] = React.useState([]);
@@ -123,6 +38,138 @@ export default function DataTable() {
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [data, setData] = React.useState([]);
+
+  const handleStatusChange = async (userId, newStatus) => {
+    try {
+      console.log(userId, newStatus);
+      // Update local state immediately for better UX
+      const updatedData = data.map((user) => {
+        if (user._id === userId) {
+          return {
+            ...user,
+            isPaid: newStatus === "Paid" ? true : false,
+          };
+        }
+        return user;
+      });
+      setData(updatedData);
+
+      // Use the updatePaidStatus function
+      await updatePaidStatus(userId, newStatus === "Paid" ? true : false);
+
+      console.log(`Status updated for user ${userId} to ${newStatus}`);
+    } catch (error) {
+      console.error("Error updating status:", error);
+      // Revert the local state if the API call fails
+      setData(data);
+    }
+  };
+
+  const columns = [
+    {
+      id: "select",
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+          className="border-white"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: "restaurantName",
+      header: "Restaurant Name",
+      cell: ({ row }) => <div>{row.getValue("restaurantName")}</div>,
+    },
+    {
+      accessorKey: "isPaid",
+      header: "Status",
+      cell: ({ row }) => {
+        const isPaid = row.getValue("isPaid");
+        const userId = row.original._id;
+
+        return (
+          <div className="flex gap-2">
+            <div
+              className={`px-2 py-1 rounded-md text-white text-center ${
+                isPaid ? "bg-green-500" : "bg-red-200"
+              }`}
+            >
+              {isPaid ? " Paid ✅ " : " Unpaid ❌"}
+            </div>
+            <Button className="bg-transparent shadow-none hover:bg-transparent ">
+              <DropDown
+                dropDownTitle="Change Status"
+                dropDownItems={["Paid", "Not Paid"]}
+                handelSelectedProp={(newStatus) =>
+                  handleStatusChange(userId, newStatus)
+                }
+              />
+            </Button>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "email",
+      header: "Email",
+      cell: ({ row }) => (
+        <div className="lowercase">{row.getValue("email")}</div>
+      ),
+    },
+    {
+      accessorKey: "_id",
+      header: "User Id",
+      cell: ({ row }) => <div>{row.getValue("_id")}</div>,
+    },
+    {
+      accessorKey: "role",
+      header: "Role",
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("role")}</div>
+      ),
+    },
+    {
+      accessorKey: "trialExpiresAt",
+      header: "Free Trial Ends",
+
+      cell: ({ row }) => (
+        <div>{row.getValue("trialExpiresAt").split("T")[0]}</div>
+      ),
+    },
+    {
+      accessorKey: "designNumber",
+      header: "Design Number",
+      cell: ({ row }) => <div>{row.getValue("designNumber")}</div>,
+    },
+    {
+      accessorKey: "createdAt",
+      header: "Created At",
+      cell: ({ row }) => (
+        <div>{new Date(row.getValue("createdAt")).toLocaleDateString()}</div>
+      ),
+    },
+    {
+      accessorKey: "updatedAt",
+      header: "Updated At",
+      cell: ({ row }) => (
+        <div>{new Date(row.getValue("updatedAt")).toLocaleDateString()}</div>
+      ),
+    },
+  ];
 
   React.useEffect(() => {
     getAllUsers().then((users) => setData(users));
@@ -150,7 +197,6 @@ export default function DataTable() {
       );
     },
   });
-  console.log(data);
 
   return (
     <div className="w-full mt-10 bg-zinc-900 rounded-lg p-6">

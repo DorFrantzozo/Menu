@@ -103,7 +103,8 @@ const loginUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const { email, password, restaurantName } = req.body;
+  const { email, password, restaurantName, isPaid } = req.body;
+  console.log(isPaid);
   const { userId } = req.params;
 
   try {
@@ -130,6 +131,10 @@ const updateUser = async (req, res) => {
     // Update restaurant name if provided
     if (restaurantName) {
       user.restaurantName = restaurantName;
+    }
+
+    if (isPaid !== undefined) {
+      user.isPaid = isPaid;
     }
 
     // Handle image upload to Cloudinary if a new file is present
