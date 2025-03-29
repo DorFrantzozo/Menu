@@ -104,7 +104,7 @@ const loginUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const { email, password, restaurantName, isPaid } = req.body;
-  console.log(isPaid);
+ 
   const { userId } = req.params;
 
   try {

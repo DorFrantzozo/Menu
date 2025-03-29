@@ -35,7 +35,7 @@ const Designs = () => {
     }
   };
 
-  const fatchData = async (name) => {
+  const fetchData = async (name) => {
     try {
       const response = await axiosInstance.get("/user/find", {
         params: { name },
@@ -47,7 +47,7 @@ const Designs = () => {
     }
   };
   useEffect(() => {
-    fatchData(name);
+    fetchData(name);
   }, [name]);
 
   return (

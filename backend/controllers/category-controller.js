@@ -84,7 +84,7 @@ const getCategoriesByUserId = async (req, res) => {
 //TODO: function needs category id!!!
 const updateCategoryByUserId = async (req, res) => {
   const { userId, categoryId } = req.params;
-  const { newName, locationNumber } = req.body;
+  const { newName, locationNumber, hide } = req.body;
 
   try {
     // Ensure categoryId is provided
@@ -151,6 +151,9 @@ const updateCategoryByUserId = async (req, res) => {
 
     if (newName && category.name !== newName) {
       category.name = newName;
+    }
+    if (hide !== undefined) {
+      category.hide = hide === "true" || hide === true;
     }
 
     // Save updated category

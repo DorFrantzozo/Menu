@@ -93,6 +93,7 @@ const updateDish = async (req, res) => {
     gluten,
     lactose,
     vegi,
+    hide,
   } = req.body;
 
   try {
@@ -131,7 +132,9 @@ const updateDish = async (req, res) => {
 
       dish.img = uploadResult.secure_url; // Update dish image URL with the new one
     }
-
+    if (hide !== undefined) {
+      dish.hide = hide === "true" || hide === true;
+    }
     // Update other fields
     dish.name = name;
     dish.description = description;

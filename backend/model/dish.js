@@ -43,6 +43,10 @@ const Dish = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  hide: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 export default mongoose.model("Dish", Dish);

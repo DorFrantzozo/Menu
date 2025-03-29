@@ -19,6 +19,10 @@ const CategorySchema = new mongoose.Schema({
   description: {
     type: String,
   },
+  hide: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 export default mongoose.model("Category", CategorySchema);

@@ -11,17 +11,16 @@ const Menu = () => {
   const hostname = window.location.hostname; // למשל: "restaurant-name.menu-seven-amber.vercel.app"
   const selectedBuisness = hostname.split(".")[0]; // מחלץ רק את "restaurant-name"
 
-  console.log("Full URL:", url);
-  console.log("Full Hostname:", hostname);
-  console.log("Extracted Business Name:", selectedBuisness);
-
   const fetchData = async (name) => {
+    console.log(name);
     try {
       const response = await axiosInstance.get("/user/find", {
         params: { name },
       });
+
       if (response.data) {
         setMenu(response.data);
+        console.log(response.data);
       } else {
         console.error("Restaurant not found");
       }
@@ -35,13 +34,18 @@ const Menu = () => {
   }, [selectedBuisness]);
 
   useEffect(() => {
-    console.log("Navigating with menu:", menu);
-    if (menu && menu.designNumber === 1) {
-      navigate("/design1", { state: menu });
-    } else if (menu && menu.designNumber === 2) {
-      navigate("/design2", { state: menu });
-    } else if (menu && menu.designNumber === 3) {
-      navigate("/design3", { state: menu });
+    if (menu !== null) {
+      if (menu.isPaid) {
+        if (menu.designNumber === 1) {
+          navigate("/design1", { state: menu });
+        } else if (menu.designNumber === 2) {
+          navigate("/design2", { state: menu });
+        } else if (menu.designNumber === 3) {
+          navigate("/design3", { state: menu });
+        }
+      } else {
+        navigate("/");
+      }
     }
   }, [menu, navigate]);
 

@@ -19,12 +19,14 @@ const EditCategory = () => {
   const item = location.state?.item || {};
 
   const [img, setImg] = useState(null);
+  const [hide, setHide] = useState(item.hide || false);
   const [name, setName] = useState(item.name || "");
   const [locationNumber, setLocationNumber] = useState(
     item.locationNumber || 0
   );
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  console.log(item);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -32,6 +34,7 @@ const EditCategory = () => {
     const formData = new FormData();
     formData.append("newName", name);
     formData.append("locationNumber", locationNumber || item.locationNumber);
+    formData.append("hide", hide);
 
     if (img) {
       formData.append("img", img);
@@ -49,7 +52,7 @@ const EditCategory = () => {
         }
       );
       const updatedCategories = await getCategories(user);
-    
+
       dispatch(updateMenuCategories(updatedCategories));
 
       navigate("/dashboard");
@@ -87,6 +90,7 @@ const EditCategory = () => {
                     }
                   }}
                 />
+
                 <label
                   htmlFor="file-input"
                   className="bg-slate-100 rounded p-2 cursor-pointer"
@@ -121,6 +125,23 @@ const EditCategory = () => {
                     type="text"
                     placeholder="שם הקטגוריה"
                     className="block text-end w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6"
+                  />
+                </div>
+                <div className="mt-8 w-full">
+                  <label
+                    htmlFor="hide"
+                    className="block text-lg font-medium leading-6 text-end text-gray-900"
+                  >
+                    הסתר קטגוריה
+                  </label>
+
+                  <input
+                    type="checkbox"
+                    id="hide"
+                    name="hide"
+                    checked={hide}
+                    onChange={(e) => setHide(e.target.checked)}
+                    className="rounded block ms-auto mt-2 text-green-500 focus:ring-green-200"
                   />
                 </div>
               </div>

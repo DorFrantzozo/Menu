@@ -69,13 +69,14 @@ const Design1 = () => {
     }
   };
 
+
   return (
     <div>
       {/* כאן תוכל להציג את המידע */}
       {!restaurant ? (
         <Spinner />
       ) : (
-        <div className="min-h-screen bg-gray-50 p-6">
+        <div className="min-h-screen  p-6">
           <h1 className="text-4xl font-bold text-center text-gray-800">
             {restaurant.restaurantName}
           </h1>

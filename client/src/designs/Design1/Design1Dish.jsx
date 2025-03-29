@@ -50,13 +50,13 @@ const Design1Dish = () => {
         {dishes.map((dish) => (
           <div
             key={dish._id}
-            className="flex items-center p-2 border     rounded-lg space-x-6"
+            className="flex items-center p-2        space-x-6"
           >
-            <div className="flex flex-col w-full">
-              <h3 className="text-xl font-semibold text-right text-gray-700">
+            <div className="flex flex-col w-full ">
+              <h3 className="text-lg font-semibold text-right text-gray-700">
                 {dish.name}
               </h3>
-              <p className="text-gray-600 mt-2 text-right">
+              <p className="text-gray-400 mt-2 text-right text-sm mb-2">
                 {dish.description}
               </p>
               <Alergies dish={dish} />
@@ -66,7 +66,7 @@ const Design1Dish = () => {
             </div>
             <img
               src={dish.img}
-              className="dish-img rounded w-[120px] h-[100px]  "
+              className="dish-img rounded-xl object-cover shadow-lg  w-[120px] h-[120px]  "
               alt={dish.name}
             />
           </div>
