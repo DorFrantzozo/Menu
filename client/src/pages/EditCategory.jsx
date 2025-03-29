@@ -7,7 +7,10 @@ import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
 import axiosInstance from "../utils/baseUrl";
 import { updateMenuCategories } from "@/state/menu/menuCategoriesSlice";
-import { getCategories } from "@/utils/fetchData";
+import {
+  getCategories,
+  getAllDishesAndMapToCategories,
+} from "@/utils/fetchData";
 const EditCategory = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -26,7 +29,6 @@ const EditCategory = () => {
   );
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  console.log(item);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -51,9 +53,15 @@ const EditCategory = () => {
           },
         }
       );
-      const updatedCategories = await getCategories(user);
 
-      dispatch(updateMenuCategories(updatedCategories));
+      // Fetch categories and their dishes
+      const categories = await getCategories(user);
+      const categoriesWithDishes = await getAllDishesAndMapToCategories(
+        user,
+        categories
+      );
+
+      dispatch(updateMenuCategories(categoriesWithDishes));
 
       navigate("/dashboard");
       toast.success("קטגוריה שונתה בהצלחה");

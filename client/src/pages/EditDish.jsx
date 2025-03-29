@@ -30,6 +30,7 @@ const EditDish = () => {
   const [vegi, setVegi] = useState(dish?.vegi || false);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [hide, setHide] = useState(dish?.hide || false);
   const navigate = useNavigate();
 
   // useEffect(() => {
@@ -55,6 +56,7 @@ const EditDish = () => {
     formData.append("lactose", lactose);
     formData.append("vegi", vegi);
     formData.append("category", dish.category);
+    formData.append("hide", hide);
 
     if (img) {
       formData.append("img", img);
@@ -164,6 +166,22 @@ const EditDish = () => {
                     placeholder={dish?.name || ""}
                     autoComplete="restaurant-name"
                     className="block text-end w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6"
+                  />
+                </div>
+                <div className="mt-8 w-full">
+                  <label
+                    htmlFor="hide"
+                    className="block text-lg font-medium leading-6 text-end text-gray-900"
+                  >
+                    הסתר מנה
+                  </label>
+                  <input
+                    type="checkbox"
+                    id="hide"
+                    name="hide"
+                    checked={hide}
+                    onChange={(e) => setHide(e.target.checked)}
+                    className="rounded block ms-auto mt-2 text-green-500 focus:ring-green-200"
                   />
                 </div>
               </div>

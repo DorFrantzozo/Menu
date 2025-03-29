@@ -1,7 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const loadCategoriesFromStorage = () => {
+  try {
+    return JSON.parse(localStorage.getItem("categories")) || [];
+  } catch (error) {
+    console.error("Error loading categories from localStorage:", error);
+    return [];
+  }
+};
+
+const saveCategoriesToStorage = (categories) => {
+  localStorage.setItem("categories", JSON.stringify(categories));
+};
+
 const initialState = {
-  menuCategories: JSON.parse(localStorage.getItem("categories")) || [],
+  menuCategories: loadCategoriesFromStorage(),
 };
 
 const categorySlice = createSlice({
@@ -9,35 +22,45 @@ const categorySlice = createSlice({
   initialState,
   reducers: {
     setMenuCategories: (state, action) => {
-      state.menuCategories = action.payload;
-      localStorage.setItem("categories", JSON.stringify(state.menuCategories));
+      if (
+        JSON.stringify(state.menuCategories) !== JSON.stringify(action.payload)
+      ) {
+        state.menuCategories = action.payload;
+        saveCategoriesToStorage(state.menuCategories);
+      }
     },
     logoutMenuCategories: (state) => {
       state.menuCategories = [];
       localStorage.removeItem("categories");
     },
     updateMenuCategories: (state, action) => {
-      state.menuCategories = action.payload.map((category) => ({
+      const updatedCategories = action.payload.map((category) => ({
         ...category,
-        menuDishes: category.menuDishes || [], // אם אין מנות, יוצרים מערך ריק
+        menuDishes: category.menuDishes || [],
       }));
-      localStorage.removeItem("categories");
-      localStorage.setItem("categories", JSON.stringify(state.menuCategories));
+
+      if (
+        JSON.stringify(state.menuCategories) !==
+        JSON.stringify(updatedCategories)
+      ) {
+        state.menuCategories = updatedCategories;
+        saveCategoriesToStorage(state.menuCategories);
+      }
     },
     addMenuDishesToCategory: (state, action) => {
       const { categoryId, dishes } = action.payload;
       console.log(`Adding dishes to category ${categoryId}:`, dishes);
-      const category = state.menuCategories.find(
+
+      const categoryIndex = state.menuCategories.findIndex(
         (cat) => cat._id === categoryId
       );
-      if (category) {
-        category.menuDishes = dishes;
-        console.log(
-          `Updated category ${categoryId} with dishes:`,
-          category.menuDishes
-        );
+      if (categoryIndex !== -1) {
+        state.menuCategories[categoryIndex].menuDishes = dishes;
+        console.log(`Updated category ${categoryId} with dishes:`, dishes);
+        saveCategoriesToStorage(state.menuCategories);
+      } else {
+        console.warn(`Category ${categoryId} not found!`);
       }
-      localStorage.setItem("categories", JSON.stringify(state.menuCategories));
     },
   },
 });
@@ -48,4 +71,5 @@ export const {
   updateMenuCategories,
   addMenuDishesToCategory,
 } = categorySlice.actions;
+
 export default categorySlice.reducer;

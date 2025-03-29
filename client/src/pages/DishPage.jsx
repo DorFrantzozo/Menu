@@ -18,13 +18,17 @@ const DishPage = () => {
   const categoryDishes = currentCategory?.menuDishes || [];
 
   return (
-    <div className="p-4 lg:h-[80vh]">
+    <div className="p-4">
       <h1 className="text-center font-semibold text-2xl md:text-3xl mt-6 mb-6 md:mt-10 md:mb-10">
         {title}
       </h1>
       <div className="block lg:flex lg:justify-center">
         {categoryDishes.map((dish) => (
-          <MenuCard item={dish} key={dish._id} />
+          <div key={dish._id} className="relative">
+            <MenuCard item={dish} />
+
+         
+          </div>
         ))}
       </div>
     </div>
