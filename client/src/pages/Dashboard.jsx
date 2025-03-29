@@ -13,7 +13,7 @@ const Dashboard = () => {
   );
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center mt-2">
       {user?.trialExpiresAt && new Date(user.trialExpiresAt) >= new Date() && (
         <FreeTrailCounter />
       )}
@@ -21,7 +21,7 @@ const Dashboard = () => {
         {menuCategories?.length > 0 ? (
           <div
             dir="rtl"
-            className="grid lg:grid-cols-3 gap-5 justify-items-center grid-cols-2"
+            className="grid lg:grid-cols-3 gap-5 justify-items-center grid-cols-1"
           >
             {menuCategories.map((category) => (
               <div key={category._id} className="m-3 relative">
@@ -40,7 +40,7 @@ const Dashboard = () => {
                   {/* עטיפה של התמונה ב-div */}
                   <div className="relative">
                     <img
-                      className="rounded w-full h-[220px] sm:w-[450px] object-cover"
+                      className="rounded w-[320px] h-[220px] sm:w-[450px] object-cover"
                       src={category.img}
                       alt={category.name}
                       onClick={() =>
@@ -54,7 +54,7 @@ const Dashboard = () => {
                         onClick={() =>
                           navigate("/dishesPage", { state: { item: category } })
                         }
-                        className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center text-white  text-xl font-bold"
+                        className="absolute inset-0 rounded bg-black bg-opacity-60 flex items-center justify-center text-white  text-xl font-bold"
                       >
                         הקטגוריה מוסתרת
                       </div>

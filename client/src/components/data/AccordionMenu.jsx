@@ -23,40 +23,46 @@ const AccordionMenu = ({ categories, dishes, textColor = "white" }) => {
       className="w-full"
       onValueChange={(value) => setActiveCategory(value)}
     >
-      {sortedCategories.map((category) => (
-        <AccordionItem key={category._id} value={`item-${category._id}`}>
-          <AccordionTrigger
-            className={`text-2xl mb-8 mt-8 flex justify-center font-bold transition-colors duration-200 ${
-              activeCategory === `item-${category._id}`
-                ? "text-sky-400 hover:text-sky-500"
-                : `text-${textColor} hover:text-gray-400`
-            }`}
-          >
-            {category.name}
-          </AccordionTrigger>
-          <AccordionContent>
-            {dishes[category._id] && dishes[category._id].length > 0 ? (
-              <ul>
-                {dishes[category._id].map((dish) => (
-                  <div className="text-center mb-8" key={dish._id}>
-                    <li className={`text-2xl font-semibold text-${textColor}`}>
-                      {dish.name}
-                    </li>
-                    <li className={`text-${textColor}`}>{dish.description}</li>
-                    <li className="flex justify-center items-center gap-2">
-                      <span className={`text-${textColor}`}>
-                        ₪ {dish.price}
-                      </span>
-                    </li>
-                  </div>
-                ))}
-              </ul>
-            ) : (
-              <p className={`text-${textColor}`}>אין מנות זמינות</p>
-            )}
-          </AccordionContent>
-        </AccordionItem>
-      ))}
+      {sortedCategories
+        .filter((category) => !category.hide)
+        .map((category) => (
+          <AccordionItem key={category._id} value={`item-${category._id}`}>
+            <AccordionTrigger
+              className={`text-2xl mb-8 mt-8 flex justify-center font-bold transition-colors duration-200 ${
+                activeCategory === `item-${category._id}`
+                  ? "text-sky-400 hover:text-sky-500"
+                  : `text-${textColor} hover:text-gray-400`
+              }`}
+            >
+              {category.name}
+            </AccordionTrigger>
+            <AccordionContent>
+              {dishes[category._id] && dishes[category._id].length > 0 ? (
+                <ul>
+                  {dishes[category._id].map((dish) => (
+                    <div className="text-center mb-8" key={dish._id}>
+                      <li
+                        className={`text-2xl font-semibold text-${textColor}`}
+                      >
+                        {dish.name}
+                      </li>
+                      <li className={`text-${textColor}`}>
+                        {dish.description}
+                      </li>
+                      <li className="flex justify-center items-center gap-2">
+                        <span className={`text-${textColor}`}>
+                          ₪ {dish.price}
+                        </span>
+                      </li>
+                    </div>
+                  ))}
+                </ul>
+              ) : (
+                <p className={`text-${textColor}`}>אין מנות זמינות</p>
+              )}
+            </AccordionContent>
+          </AccordionItem>
+        ))}
     </Accordion>
   );
 };

@@ -69,7 +69,6 @@ const Design1 = () => {
     }
   };
 
-
   return (
     <div>
       {/* כאן תוכל להציג את המידע */}
@@ -83,6 +82,7 @@ const Design1 = () => {
           {/* להציג קטגוריות */}
           <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {categories
+              .filter((category) => !category.hide)
               .sort((a, b) => a.locationNumber - b.locationNumber)
               .map((category) => (
                 <div

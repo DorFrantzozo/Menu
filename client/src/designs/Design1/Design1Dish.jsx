@@ -47,30 +47,32 @@ const Design1Dish = () => {
       </h1>
 
       <div className="space-y-8  ">
-        {dishes.map((dish) => (
-          <div
-            key={dish._id}
-            className="flex items-center p-2        space-x-6"
-          >
-            <div className="flex flex-col w-full ">
-              <h3 className="text-lg font-semibold text-right text-gray-700">
-                {dish.name}
-              </h3>
-              <p className="text-gray-400 mt-2 text-right text-sm mb-2">
-                {dish.description}
-              </p>
-              <Alergies dish={dish} />
-              <p className="font-bold text-lg text-gray-900 mt-2">
-                {dish.price} ₪
-              </p>
+        {dishes
+          .filter((dish) => !dish.hide)
+          .map((dish) => (
+            <div
+              key={dish._id}
+              className="flex items-center p-2        space-x-6"
+            >
+              <div className="flex flex-col w-full ">
+                <h3 className="text-lg font-semibold text-right text-gray-700">
+                  {dish.name}
+                </h3>
+                <p className="text-gray-400 mt-2 text-right text-sm mb-2">
+                  {dish.description}
+                </p>
+                <Alergies dish={dish} />
+                <p className="font-bold text-lg text-gray-900 mt-2">
+                  {dish.price} ₪
+                </p>
+              </div>
+              <img
+                src={dish.img}
+                className="dish-img rounded-xl object-cover shadow-lg  w-[120px] h-[120px]  "
+                alt={dish.name}
+              />
             </div>
-            <img
-              src={dish.img}
-              className="dish-img rounded-xl object-cover shadow-lg  w-[120px] h-[120px]  "
-              alt={dish.name}
-            />
-          </div>
-        ))}
+          ))}
 
         <IconDescription />
       </div>

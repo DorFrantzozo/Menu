@@ -13,7 +13,7 @@ const MenuCard = (item) => {
     <button>
       <PencilSquareIcon
         onClick={handleEditClick}
-        className="absolute w-7 rounded-full bg-gray-300 p-1"
+        className="absolute w-7 rounded-full bg-gray-300  p-1 z-10"
       />
 
       <div className="max-w-sm rounded overflow-hidden shadow-lg flex flex-col bg-stone-200 m-5 h-[500px]">
