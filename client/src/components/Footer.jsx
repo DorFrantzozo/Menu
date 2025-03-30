@@ -1,5 +1,7 @@
+import { useNavigate } from "react-router-dom";
 import logo from "../assets/img/logo.png";
 const Footer = () => {
+  const navigate = useNavigate();
   return (
     <div className="z-50   footer  ">
       <footer className=" bg-black text-center text-neutral-600 dark:bg-black dark:text-neutral-200 lg:text-left">
@@ -117,13 +119,21 @@ const Footer = () => {
                 </a>
               </p>
               <p className="mb-4">
-                <a className="text-neutral-600 dark:text-neutral-200">הרשמה</a>
+                <a
+                  className="text-neutral-600 dark:text-neutral-200"
+                  onClick={() => navigate("/signup")}
+                >
+                  הרשמה{" "}
+                </a>
               </p>
               <p className="mb-4">
                 <a className="text-neutral-600 dark:text-neutral-200">Orders</a>
               </p>
               <p>
-                <a className="text-neutral-600 dark:text-neutral-200">
+                <a
+                  className="text-neutral-600 hover:text-white cursor-pointer dark:text-neutral-200"
+                  onClick={() => navigate("/termofservice")}
+                >
                   תנאי שימוש
                 </a>
               </p>

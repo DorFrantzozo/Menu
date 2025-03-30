@@ -5,6 +5,8 @@ import { useDispatch } from "react-redux";
 import { updateUser } from "../state/user/userSlice";
 import axiosInstance from "../utils/baseUrl";
 import { generateQRCode } from "../utils/qrGenerator";
+import FreeTrailBanner from "@/components/Cards/FreeTrailBanner";
+import QrProfile from "@/components/data/qrCode/QrProfile";
 const Profile = () => {
   const fileInputRef = useRef(null);
   const [email, setEmail] = useState("");
@@ -25,17 +27,6 @@ const Profile = () => {
       setUserName(user.restaurantName);
     }
   }, []);
-
-  useEffect(() => {
-    const generateQR = async () => {
-      if (userName) {
-        const qrUrl = await generateQRCode(userName);
-        setQrCode(qrUrl);
-      }
-    };
-    generateQR();
-  }, [userName]);
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData();
@@ -70,117 +61,119 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-[90vh] flex justify-center  mt-10 ">
-      <form
-        dir="rtl"
-        onSubmit={handleSubmit}
-        className="bg-white  rounded-lg p-8 w-full max-w-3xl h-full "
-      >
-        <input
-          ref={fileInputRef}
-          type="file"
-          onChange={handleFileChange}
-          className="hidden"
-        />
-
-        <h2 className="text-2xl font-semibold text-gray-900 text-center">
-          פרופיל
-        </h2>
-        <p className="text-sm text-gray-600 text-center mb-6">
-          המידע הזה יוצג באופן ציבורי, לכן שים לב מה אתה משתף.
-        </p>
-
-        <div className="flex flex-col items-center space-y-4">
-          {userFromStorage?.logo ? (
-            <img
-              className="w-24 h-24 rounded-full border bg-gray-200"
-              src={userFromStorage.logo}
-              alt="logo"
-            />
-          ) : (
-            <UserCircleIcon className="w-24 h-24 text-gray-400" />
-          )}
-
-          <div className="flex space-x-4">
-            <button
-              className="border rounded-lg w-36 text-sm h-10 me-6"
-              onClick={handleButtonClick}
-              type="button"
-            >
-              העלה תמונה חדשה
-            </button>
-            <button
-              className="bg-red-100 text-red-600 hover:bg-red-400 hover:text-white transition duration-300 rounded-lg w-20 text-sm h-10"
-              onClick={() => setImg(null)}
-              type="button"
-            >
-              הסר תמונה
-            </button>
-          </div>
-        </div>
-
-        <div className="mt-6 space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-900">
-              שם המסעדה
-            </label>
-            <input
-              onChange={(e) => setRestaurantName(e.target.value)}
-              type="text"
-              placeholder={userFromStorage?.restaurantName || ""}
-              className="w-full mt-1 p-2 border border-gray-300 rounded-lg"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-900">
-              מייל
-            </label>
-            <input
-              onChange={(e) => setEmail(e.target.value)}
-              type="email"
-              placeholder={userFromStorage?.email || ""}
-              className="w-full mt-1 p-2 border border-gray-300 rounded-lg"
-            />
-          </div>
-          <h1 className=" text-center mt-6">קוד ה - QR של המסעדה</h1>
-          <div className="flex justify-center">
-            <img src={qrcode} className="" alt="qrcode" />
-          </div>
-        </div>
-
-        <hr className="my-6 mt-[10%]" />
-        <h1 className="mt-[20%]">* פרטים אלו לא יוצגו באופן ציבורי</h1>
-        <div>
-          <label className="block text-sm font-medium text-gray-900">
-            סיסמה
-          </label>
+    <>
+      <FreeTrailBanner user={userFromStorage} />
+      <div className="min-h-[90vh] flex justify-center  mt-10 ">
+        <form
+          dir="rtl"
+          onSubmit={handleSubmit}
+          className="bg-white  rounded-lg p-8 w-full max-w-3xl h-full "
+        >
           <input
-            onChange={(e) => setPassword(e.target.value)}
-            type="password"
-            placeholder="הכנס סיסמה"
-            className="w-full mt-1 p-2 border border-gray-300 rounded-lg"
+            ref={fileInputRef}
+            type="file"
+            onChange={handleFileChange}
+            className="hidden"
           />
-        </div>
 
-        <div className="text-sm">
-          <p className="mt-2">Id: {userFromStorage?._id}</p>
-          <p className="mt-2">
-            חבר מאז: {userFromStorage?.createdAt.split("T")[0]}
+          <h2 className="text-2xl font-semibold text-gray-900 text-center">
+            פרופיל
+          </h2>
+          <p className="text-sm text-gray-600 text-center mb-6">
+            המידע הזה יוצג באופן ציבורי, לכן שים לב מה אתה משתף.
           </p>
-          <p className="mt-2">עיצוב מספר: {userFromStorage?.designNumber}</p>
-        </div>
 
-        <div className="mt-6 flex justify-center">
-          <button
-            type="submit"
-            className="bg-black text-white px-4 py-2 rounded-lg hover:bg-green-500 transition"
-          >
-            שמירה
-          </button>
-        </div>
-      </form>
-    </div>
+          <div className="flex flex-col items-center space-y-4">
+            {userFromStorage?.logo ? (
+              <img
+                className="w-24 h-24 rounded-full border bg-gray-400"
+                src={userFromStorage.logo}
+                alt="logo"
+              />
+            ) : (
+              <UserCircleIcon className="w-24 h-24 text-gray-400" />
+            )}
+
+            <div className="ms-auto me-auto flex gap-2 ">
+              <button
+                className="border rounded-lg w-36 text-sm h-10 "
+                onClick={handleButtonClick}
+                type="button"
+              >
+                העלה תמונה חדשה
+              </button>
+              <button
+                className="bg-red-100 text-red-600 hover:bg-red-400 hover:text-white transition duration-300 rounded-lg w-20 text-sm h-10"
+                onClick={() => setImg(null)}
+                type="button"
+              >
+                הסר תמונה
+              </button>
+            </div>
+          </div>
+
+          <div className="mt-6 space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-900">
+                שם המסעדה
+              </label>
+              <input
+                onChange={(e) => setRestaurantName(e.target.value)}
+                type="text"
+                placeholder={userFromStorage?.restaurantName || ""}
+                className="w-full mt-1 p-2 border border-gray-300 rounded-lg"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-900">
+                מייל
+              </label>
+              <input
+                onChange={(e) => setEmail(e.target.value)}
+                type="email"
+                placeholder={userFromStorage?.email || ""}
+                className="w-full mt-1 p-2 border border-gray-300 rounded-lg"
+              />
+            </div>
+
+            <QrProfile userName={userName} />
+          </div>
+
+          <hr className="my-6 mt-[10%]" />
+          <h1 className="mt-[20%]">* פרטים אלו לא יוצגו באופן ציבורי</h1>
+          <div>
+            <label className="block text-sm font-medium text-gray-900">
+              סיסמה
+            </label>
+            <input
+              onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              placeholder="הכנס סיסמה"
+              className="w-full mt-1 p-2 border border-gray-300 rounded-lg"
+            />
+          </div>
+
+          <div className="text-sm">
+            <p className="mt-2">Id: {userFromStorage?._id}</p>
+            <p>סוג מנוי : {userFromStorage?.isPaid ? "פרימיום" : "ניסיון"}</p>
+            <p className="mt-2">
+              חבר מאז: {userFromStorage?.createdAt.split("T")[0]}
+            </p>
+            <p className="mt-2">עיצוב מספר: {userFromStorage?.designNumber}</p>
+          </div>
+
+          <div className="mt-6 flex justify-center">
+            <button
+              type="submit"
+              className="bg-black text-white px-4 py-2 rounded-lg hover:bg-green-500 transition"
+            >
+              שמירה
+            </button>
+          </div>
+        </form>
+      </div>
+    </>
   );
 };
 

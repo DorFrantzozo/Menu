@@ -9,7 +9,7 @@ const SideBar = () => {
   );
 
   return (
-    <div className="bg-gray-950 block h-screen  justify-center">
+    <div className="bg-gray-950 block h-screen   justify-center">
       <div className=" text-center text-white p-4">{user.restaurantName}</div>
       <hr className="border-white border-t-1 w-3/4 mt-4 mx-auto" />
       {menuCategories &&

@@ -29,6 +29,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { setMenuCategories } from "./state/menu/menuCategoriesSlice";
 import Design3 from "./designs/Design3/Design3";
 import ScrollToTop from "./components/ScrollToTop";
+import TermsOfService from "./pages/TermsOfService";
 
 function App() {
   const dispatch = useDispatch();
@@ -113,10 +114,15 @@ function App() {
             <Route path="/add-category" element={<AddCategory />} />
             <Route path="/add-asset" element={<AddAssetsPage />} />
             <Route path="/dishesPage" element={<DishPage />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route
+              path="/profile"
+              element={user ? <Profile /> : <Landing2 />}
+            />
             <Route path="/editDish" element={<EditDish />} />
             <Route path="/editCategory" element={<EditCategory />} />
             <Route path="/menu" element={<Menu />} />
+            <Route path="/termofservice" element={<TermsOfService />} />
+
             <Route path="/design1" element={<Design1 />} />
             <Route path="/design2" element={<Design2 />} />
             <Route path="/design3" element={<Design3 />} />

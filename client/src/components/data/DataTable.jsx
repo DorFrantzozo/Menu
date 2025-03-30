@@ -31,6 +31,8 @@ import {
 import DropDown from "./DropDown";
 
 import updatePaidStatus from "@/utils/updateData";
+import { useDispatch } from "react-redux";
+import { updateUser } from "@/state/user/userSlice";
 
 export default function DataTable() {
   const [sorting, setSorting] = React.useState([]);
@@ -38,6 +40,7 @@ export default function DataTable() {
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [data, setData] = React.useState([]);
+  const dispatch = useDispatch();
 
   const handleStatusChange = async (userId, newStatus) => {
     try {
@@ -55,9 +58,11 @@ export default function DataTable() {
       setData(updatedData);
 
       // Use the updatePaidStatus function
-      await updatePaidStatus(userId, newStatus === "Paid" ? true : false);
-
-      console.log(`Status updated for user ${userId} to ${newStatus}`);
+      const response = await updatePaidStatus(
+        userId,
+        newStatus === "Paid" ? true : false
+      );
+      dispatch(updateUser(response.user));
     } catch (error) {
       console.error("Error updating status:", error);
       // Revert the local state if the API call fails

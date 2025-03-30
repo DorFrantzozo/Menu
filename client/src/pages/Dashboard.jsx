@@ -3,7 +3,9 @@ import { useNavigate } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import AddDataToStart from "../components/Cards/AddDataToStart";
-import FreeTrailCounter from "@/components/Cards/FreeTrailCounter";
+import FreeTrailCounter from "@/components/Cards/FreeTrailBanner";
+import Banner from "@/components/banner/Banner";
+import FreeTrailBanner from "@/components/Cards/FreeTrailBanner";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -13,10 +15,8 @@ const Dashboard = () => {
   );
 
   return (
-    <div className="flex justify-center mt-2">
-      {user?.trialExpiresAt && new Date(user.trialExpiresAt) >= new Date() && (
-        <FreeTrailCounter />
-      )}
+    <div className=" ">
+      <FreeTrailBanner user={user} />
       <div className="flex-1 mt-20">
         {menuCategories?.length > 0 ? (
           <div
@@ -69,7 +69,7 @@ const Dashboard = () => {
         )}
       </div>
 
-      <div className="min-w-72 h-full sm:block hidden">
+      <div className="min-w-72 h-full  sm:block hidden">
         <SideBar categories={menuCategories} />
       </div>
     </div>
