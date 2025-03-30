@@ -89,7 +89,7 @@ export default function Navbar() {
             </button>
 
             {/* Profile dropdown */}
-            <Menu as="div" className="relative ml-3">
+            <Menu as="div" className="relative ml-3 z-20">
               <div>
                 <MenuButton className="relative flex rounded-full bg-gray-800 text-sm  ">
                   <span className="absolute -inset-1.5" />
@@ -116,15 +116,15 @@ export default function Navbar() {
                 <MenuItem>
                   <button
                     onClick={() => navigate("/profile")}
-                    className="block px-4 py-2 text-sm text-left w-full text-green-400 data-[focus]:bg-gray-700"
+                    className="block px-4 py-2  text-sm text-right w-full text-green-400 data-[focus]:bg-gray-700"
                   >
-                    Your Profile
+                    פרופיל
                   </button>
                 </MenuItem>
                 <MenuItem>
                   <button
                     onClick={() => handleNavClick("/settings")}
-                    className="block px-4 py-2 text-sm text-left w-full text-green-400 data-[focus]:bg-gray-700"
+                    className="block px-4 py-2 text-sm  text-right w-full text-green-400 data-[focus]:bg-gray-700"
                   >
                     Settings
                   </button>
@@ -132,9 +132,9 @@ export default function Navbar() {
                 <MenuItem>
                   <button
                     onClick={handleLogOut}
-                    className="block px-4 py-2 w-full text-left text-sm text-green-400 data-[focus]:bg-gray-700"
+                    className="block px-4 py-2 w-full text-right text-sm text-green-400 data-[focus]:bg-gray-700"
                   >
-                    Sign out
+                    התנתק
                   </button>
                 </MenuItem>
               </MenuItems>
