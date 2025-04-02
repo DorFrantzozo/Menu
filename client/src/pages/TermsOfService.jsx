@@ -1,8 +1,24 @@
-import React from "react";
+import NavbarLanding from "@/components/nav/NavBarLanding";
+import { useEffect, useState } from "react";
+import { checkIfUserLoggedIn } from "@/utils/fetchData";
 
 const TermsOfService = () => {
+  const [loggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    const chooseNavbar = async () => {
+      const isLoggedIn = await checkIfUserLoggedIn();
+      if (isLoggedIn) {
+        setLoggedIn(true);
+      } else {
+        setLoggedIn(false);
+      }
+      console.log(isLoggedIn);
+    };
+    chooseNavbar();
+  }, [loggedIn]);
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col" dir="rtl">
+      {loggedIn ? <></> : <NavbarLanding />}
       <div className="max-w-screen-lg mx-auto p-6">
         <h1 className="text-3xl font-semibold text-center  text-gray-900 mb-6">
           תנאי שימוש
@@ -52,8 +68,8 @@ const TermsOfService = () => {
             הכניסות לתפריט הדיגיטלי.
           </p>
           <p className="text-gray-700 mb-3">
-            האתר עשוי לאסוף נתונים אישיים כגון שם, כתובת דוא"ל ומספר טלפון בעת
-            הרשמה לאתר או שימוש בשירותים מסוימים.
+            האתר עשוי לאסוף נתונים אישיים כגון שם, כתובת דוא&quot;ל ומספר
+            טלפון בעת הרשמה לאתר או שימוש בשירותים מסוימים.
           </p>
         </section>
 

@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 const navigation = [
   { name: "עלינו", href: "/", current: false },
   { name: "צור קשר", href: "/contact", current: false },
-  { name: "דוגמה", href: "#", current: false },
+  { name: "התחברות", href: "/signin", current: false },
 ];
 
 function classNames(...classes) {
@@ -42,7 +42,9 @@ export default function NavBarLanding() {
             </DisclosureButton>
           </div>
           <div className="flex shrink-0 items-center">
-            <img alt="Menu-logo" src={logo} className="h-18 w-28" />
+            <button onClick={() => navigate("/")}>
+              <img alt="Menu-logo" src={logo} className="h-18 w-28" />
+            </button>
           </div>
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
             <div className="hidden sm:ml-6 sm:block ms-10"></div>

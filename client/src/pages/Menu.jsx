@@ -35,7 +35,10 @@ const Menu = () => {
 
   useEffect(() => {
     if (menu !== null) {
-      if (menu.isPaid) {
+      if (
+        menu.isPaid ||
+        (menu.trialExpiresAt && new Date(menu.trialExpiresAt) > new Date())
+      ) {
         if (menu.designNumber === 1) {
           navigate("/design1", { state: menu });
         } else if (menu.designNumber === 2) {

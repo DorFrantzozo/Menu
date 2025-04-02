@@ -6,10 +6,10 @@ export const generateQRCode = async (userName) => {
   try {
     // הגדרת קוד ה-QR עם רקע שקוף
     const qrUrl = await QRCode.toDataURL(url, {
-      color: {
-        dark: "#000000", // צבע ה-QR עצמו (שחור)
-        light: "#00000000", // רקע שקוף
-      },
+      // color: {
+      //   dark: "#000000", // צבע ה-QR עצמו (שחור)
+      //   light: "#00000000", // רקע שקוף
+      // },
 
       errorCorrectionLevel: "H", // רמת תיקון השגיאות
     });

@@ -6,7 +6,6 @@ const getAllUsers = async () => {
 };
 
 const getCategories = async (userId) => {
- 
   try {
     const response = await axiosInstance.post(
       "/category/getCategories",
@@ -124,6 +123,14 @@ const fetchCategoriesAndDishes = async (userId) => {
   }
 };
 
+const checkIfUserLoggedIn = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    return false;
+  }
+  return true;
+};
+
 export {
   getAllUsers,
   getCategories,
@@ -132,4 +139,5 @@ export {
   fetchRestaurant,
   getDishes,
   fetchCategoriesAndDishes,
+  checkIfUserLoggedIn,
 };
