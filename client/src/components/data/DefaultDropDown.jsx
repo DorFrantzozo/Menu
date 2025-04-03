@@ -8,16 +8,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
 import { ChevronDown } from "lucide-react";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 
-export function DropDown({
+const DefaultDropDown = ({
   dropDownTitle = "title",
   dropDownItems = ["Item 1", "Item 2", "Item 3"],
   handelSelectedProp,
-}) {
+  textColor = "text-black",
+  bgColor = "bg-white",
+  hoverColor = "hover:bg-zinc-400",
+  border = "none",
+}) => {
   const [selectedItem, setSelectedItem] = useState(null);
 
   useEffect(() => {
@@ -34,12 +37,16 @@ export function DropDown({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="bg-transparent shadow-none hover:text-black text-white hover:bg-transparent">
+        <Button
+          className={`bg-transparent shadow-none ${border} hover:text-black ${textColor} hover:bg-transparen`}
+        >
           <ChevronDown />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56 text-center bg-black text-white">
-        <DropdownMenuLabel className="text-white">
+      <DropdownMenuContent
+        className={`w-56 text-center ${bgColor} ${textColor}`}
+      >
+        <DropdownMenuLabel className={`${textColor}`}>
           {dropDownTitle}
         </DropdownMenuLabel>
         <DropdownMenuSeparator className="bg-zinc-700" />
@@ -47,7 +54,7 @@ export function DropDown({
           {dropDownItems.map((item, index) => (
             <DropdownMenuItem
               key={index}
-              className="text-white hover:bg-zinc-800"
+              className={`${textColor} ${hoverColor}  flex justify-center `}
               onClick={() => handleStatusChange(item)}
             >
               {item}
@@ -58,12 +65,14 @@ export function DropDown({
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+};
 
-DropDown.propTypes = {
+export default DefaultDropDown;
+
+DefaultDropDown.propTypes = {
   dropDownTitle: PropTypes.string,
   dropDownItems: PropTypes.arrayOf(PropTypes.string),
   handelSelectedProp: PropTypes.func,
+  textColor: PropTypes.string,
+  bgColor: PropTypes.string,
 };
-
-export default DropDown;

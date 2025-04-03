@@ -28,7 +28,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import DropDown from "./DropDown";
+import DropDown from "./DefaultDropDown";
 
 import updatePaidStatus from "@/utils/updateData";
 import { useDispatch } from "react-redux";
@@ -119,6 +119,9 @@ export default function DataTable() {
               <DropDown
                 dropDownTitle="Change Status"
                 dropDownItems={["Paid", "Not Paid"]}
+                bgColor="bg-black"
+                textColor="text-white"
+                hoverColor="hover:bg-zinc-700"
                 handelSelectedProp={(newStatus) =>
                   handleStatusChange(userId, newStatus)
                 }

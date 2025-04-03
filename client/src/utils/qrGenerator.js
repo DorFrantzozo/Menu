@@ -1,16 +1,31 @@
 import QRCode from "qrcode";
 
-export const generateQRCode = async (userName) => {
+// אפשרויות צבעים
+const qrColorOptions = {
+  blackOnWhite: { dark: "#000000", light: "#FFFFFF" }, // שחור על לבן
+  blackOnTransparent: { dark: "#000000", light: "#00000000" }, // שחור על שקוף
+  whiteOnBlack: { dark: "#FFFFFF", light: "#000000" }, // לבן על שחור
+  whiteOnTransparent: { dark: "#FFFFFF", light: "#00000000" }, // לבן על שקוף
+};
+
+// יצירת QR Code
+import QRCode from "qrcode";
+
+export const generateQRCode = async (userName, qrColor) => {
   const url = `${userName}.menuyou.online/menu`;
 
   try {
-    // הגדרת קוד ה-QR עם רקע שקוף
+    // הגדרת קוד ה-QR עם הצבע שנבחר
     const qrUrl = await QRCode.toDataURL(url, {
-      // color: {
-      //   dark: "#000000", // צבע ה-QR עצמו (שחור)
-      //   light: "#00000000", // רקע שקוף
-      // },
-
+      color: {
+        dark:
+          qrColor === "שחור עם רקע שקוף"
+            ? "#000000"
+            : qrColor === "שחור עם רקע לבן"
+              ? "#000000"
+              : "#FFFFFF", // צבע QR
+        light: qrColor === "שחור עם רקע שקוף" ? "#00000000" : "#FFFFFF", // צבע הרקע
+      },
       errorCorrectionLevel: "H", // רמת תיקון השגיאות
     });
 
@@ -20,41 +35,31 @@ export const generateQRCode = async (userName) => {
     console.error("שגיאה בהפקת קוד ה-QR:", error);
   }
 };
-export const downloadQRCode = (qrcode) => {
+
+// פונקציה להורדת ה-QR
+export const downloadQRCode = (qrcode, colorType) => {
   const link = document.createElement("a");
-  link.href = qrcode; // כתובת ה-QR
-  link.download = "restaurant_qr.png"; // שם הקובץ שיורד
+  link.href = qrcode;
+  link.download = `restaurant_qr_${colorType}.png`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
 };
 
 // פונקציה לשיתוף ה-QR
-export const shareQRCode = async ({ qrcode }) => {
+export const shareQRCode = async ({ qrcode, colorType = "blackOnWhite" }) => {
   if (navigator.share) {
     try {
-      // המר את ה-Base64 ל-Blob
-      const byteCharacters = atob(qrcode.split(",")[1]);
-      const byteArrays = [];
-      for (let offset = 0; offset < byteCharacters.length; offset += 1024) {
-        const slice = byteCharacters.slice(offset, offset + 1024);
-        const byteNumbers = new Array(slice.length);
-        for (let i = 0; i < slice.length; i++) {
-          byteNumbers[i] = slice.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-        byteArrays.push(byteArray);
-      }
-      const blob = new Blob(byteArrays, { type: "image/png" });
+      const response = await fetch(qrcode);
+      const blob = await response.blob();
+      const file = new File([blob], `qrcode_${colorType}.png`, {
+        type: blob.type,
+      });
 
-      // צור את הקובץ
-      const file = new File([blob], "qrcode.png", { type: "image/png" });
-
-      // שלח את הקובץ דרך שיתוף
       await navigator.share({
         title: "QR Code למסעדה",
         text: "סרוק את קוד ה-QR כדי לגשת לתפריט המסעדה",
-        files: [file], // שלח את הקובץ
+        files: [file],
       });
     } catch (error) {
       console.error("שגיאה בשיתוף:", error);
