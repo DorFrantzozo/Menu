@@ -1,3 +1,4 @@
+import VercelAnalytics from "@/components/data/VercelAnalytics";
 import DataTable from "../components/data/DataTable";
 import { UsersCountCard } from "@/components/Cards/UsersCountCard";
 const AdminPage = () => {
@@ -9,6 +10,9 @@ const AdminPage = () => {
           <UsersCountCard />
         </div>
         <DataTable />
+        <div className="mt-2">
+          <VercelAnalytics />
+        </div>
       </div>
     </div>
   );

@@ -9,7 +9,6 @@ const qrColorOptions = {
 };
 
 // יצירת QR Code
-import QRCode from "qrcode";
 
 export const generateQRCode = async (userName, qrColor) => {
   const url = `${userName}.menuyou.online/menu`;
