@@ -6,38 +6,40 @@ import {
 import DownloadIcon from "@/components/icons/DownloadIcon";
 import { ShareIcon } from "lucide-react";
 import DefaultDropDown from "../DefaultDropDown";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Spinner from "@/components/Spinner";
+import PropTypes from "prop-types";
 
 const QrProfile = ({ userName }) => {
   const [qrcode, setQrCode] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [qrColor, setQrColor] = useState("black");
+  const [qrColor, setQrColor] = useState("שחור עם רקע שקוף");
 
   useEffect(() => {
     const generateQR = async () => {
       if (userName) {
-        const qrUrl = await generateQRCode(userName, qrColor); // להעביר את הצבע לפונקציה
+        setIsLoading(true);
+        console.log("צבע נבחר:", qrColor); // בדיקה האם הצבע מתעדכן
+        const qrUrl = await generateQRCode(userName, qrColor);
         setQrCode(qrUrl);
         setIsLoading(false);
       }
     };
     generateQR();
-  }, [userName, qrColor]); // התלות בצבע וגם בשם המשתמש
+  }, [userName, qrColor]); // תלות בשם המשתמש ובצבע שנבחר
 
   const handleDownloadQr = (e) => {
     e.preventDefault();
-    downloadQRCode(qrcode); // מעביר את ה-qrcode כפרמטר לפונקציה
+    downloadQRCode(qrcode);
   };
 
   const handleShareClick = (e) => {
-    e.preventDefault(); // מונע מהכפתור לבצע פעולה ברירת מחדל (כמו ניווט מחדש)
-    shareQRCode({ qrcode: qrcode }); // מבצע את השיתוף
+    e.preventDefault();
+    shareQRCode({ qrcode });
   };
 
   const handleColorChange = (color) => {
-    setQrColor(color); // משנה את הצבע
-    console.log(color);
+    setQrColor(color);
   };
 
   if (isLoading) {
@@ -54,18 +56,19 @@ const QrProfile = ({ userName }) => {
       <div className="flex justify-center gap-0">
         <h1 className="p-1">בחר סוג QR</h1>
         <DefaultDropDown
-          dropDownTitle=" QR סוג "
+          dropDownTitle="QR סוג"
           dropDownItems={[
             "שחור עם רקע שקוף",
             "שחור עם רקע לבן",
             "לבן עם רקע שקוף",
+            "לבן עם רקע כהה",
           ]}
-          handelSelectedProp={handleColorChange} // מעדכן את הצבע
+          handelSelectedProp={handleColorChange}
         />
       </div>
 
-      <div className="flex justify-center ">
-        <img src={qrcode} alt="qrcode" />
+      <div className="flex justify-center">
+        <img src={qrcode} alt="QR Code" />
       </div>
       <div className="flex justify-center gap-2">
         <button
@@ -79,11 +82,10 @@ const QrProfile = ({ userName }) => {
         </button>
         <button
           className="bg-green-500 p-2 rounded-lg hover:bg-green-700 w-[120px] transition flex text-white"
-          onClick={handleShareClick} // כעת הקריאה לפונקציה מתבצעת דרך פונקציה מקומית
+          onClick={handleShareClick}
         >
           שתף QR{" "}
           <span className="ms-4">
-            {" "}
             <ShareIcon />
           </span>
         </button>
@@ -93,3 +95,7 @@ const QrProfile = ({ userName }) => {
 };
 
 export default QrProfile;
+
+QrProfile.propTypes = {
+  userName: PropTypes.string,
+};

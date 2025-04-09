@@ -123,10 +123,10 @@ export default function Navbar() {
                 </MenuItem>
                 <MenuItem>
                   <button
-                    onClick={() => handleNavClick("/settings")}
+                    onClick={() => navigate("/settings")}
                     className="block px-4 py-2 text-sm  text-right w-full text-green-400 data-[focus]:bg-gray-700"
                   >
-                    Settings
+                    הגדרות
                   </button>
                 </MenuItem>
                 <MenuItem>

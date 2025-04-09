@@ -1,35 +1,28 @@
 import QRCode from "qrcode";
 
-// אפשרויות צבעים
-const qrColorOptions = {
-  blackOnWhite: { dark: "#000000", light: "#FFFFFF" }, // שחור על לבן
-  blackOnTransparent: { dark: "#000000", light: "#00000000" }, // שחור על שקוף
-  whiteOnBlack: { dark: "#FFFFFF", light: "#000000" }, // לבן על שחור
-  whiteOnTransparent: { dark: "#FFFFFF", light: "#00000000" }, // לבן על שקוף
-};
-
-// יצירת QR Code
-import QRCode from "qrcode";
-
 export const generateQRCode = async (userName, qrColor) => {
   const url = `${userName}.menuyou.online/menu`;
 
   try {
-    // הגדרת קוד ה-QR עם הצבע שנבחר
-    const qrUrl = await QRCode.toDataURL(url, {
+    const qrOptions = {
       color: {
         dark:
-          qrColor === "שחור עם רקע שקוף"
-            ? "#000000"
-            : qrColor === "שחור עם רקע לבן"
-              ? "#000000"
-              : "#FFFFFF", // צבע QR
-        light: qrColor === "שחור עם רקע שקוף" ? "#00000000" : "#FFFFFF", // צבע הרקע
+          qrColor === "לבן עם רקע שקוף" || qrColor === "לבן עם רקע כהה"
+            ? "#FFFFFF"
+            : "#000000", // QR לבן רק אם נבחר לבן
+        light:
+          qrColor === "שחור עם רקע שקוף" || qrColor === "לבן עם רקע שקוף"
+            ? "#00000000" // רקע שקוף
+            : qrColor === "לבן עם רקע כהה"
+              ? "#333333" // רקע כהה (אפור כהה)
+              : "#FFFFFF", // רקע לבן (ברירת מחדל)
       },
       errorCorrectionLevel: "H", // רמת תיקון השגיאות
-    });
+    };
 
-    console.log(qrUrl);
+    const qrUrl = await QRCode.toDataURL(url, qrOptions);
+
+    console.log("QR URL:", qrUrl);
     return qrUrl;
   } catch (error) {
     console.error("שגיאה בהפקת קוד ה-QR:", error);

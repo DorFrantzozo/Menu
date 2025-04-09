@@ -30,6 +30,7 @@ import { setMenuCategories } from "./state/menu/menuCategoriesSlice";
 import Design3 from "./designs/Design3/Design3";
 import ScrollToTop from "./components/ScrollToTop";
 import TermsOfService from "./pages/TermsOfService";
+import Settings from "./pages/Settings";
 
 function App() {
   const dispatch = useDispatch();
@@ -109,6 +110,7 @@ function App() {
 
             <Route path="/edit" element={<Edit />} />
             <Route path="/designs" element={<Designs />} />
+            <Route path="/settings" element={<Settings />} />
 
             <Route path="/add-dish" element={<AddDish />} />
             <Route path="/add-category" element={<AddCategory />} />

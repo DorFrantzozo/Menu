@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { updateUser } from "../state/user/userSlice";
 import axiosInstance from "../utils/baseUrl";
-import { generateQRCode } from "../utils/qrGenerator";
 import FreeTrailBanner from "@/components/Cards/FreeTrailBanner";
 import QrProfile from "@/components/data/qrCode/QrProfile";
 const Profile = () => {
@@ -15,7 +14,7 @@ const Profile = () => {
   const [img, setImg] = useState("");
   const navigate = useNavigate();
   const [userFromStorage, setUser] = useState(null);
-  const [qrcode, setQrCode] = useState("");
+
   const [userName, setUserName] = useState("");
 
   const dispatch = useDispatch();
@@ -63,11 +62,11 @@ const Profile = () => {
   return (
     <>
       <FreeTrailBanner user={userFromStorage} />
-      <div className="min-h-[90vh] flex justify-center  mt-10 ">
+      <div className="min-h-[90vh] flex justify-center  mt-10  ">
         <form
           dir="rtl"
           onSubmit={handleSubmit}
-          className="bg-white  rounded-lg p-8 w-full max-w-3xl h-full "
+          className="bg-white rounded-lg p-8 w-full max-w-3xl h-full "
         >
           <input
             ref={fileInputRef}
