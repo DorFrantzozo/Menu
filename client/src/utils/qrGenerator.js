@@ -1,5 +1,18 @@
 import QRCode from "qrcode";
 
+<<<<<<< HEAD
+=======
+// אפשרויות צבעים
+const qrColorOptions = {
+  blackOnWhite: { dark: "#000000", light: "#FFFFFF" }, // שחור על לבן
+  blackOnTransparent: { dark: "#000000", light: "#00000000" }, // שחור על שקוף
+  whiteOnBlack: { dark: "#FFFFFF", light: "#000000" }, // לבן על שחור
+  whiteOnTransparent: { dark: "#FFFFFF", light: "#00000000" }, // לבן על שקוף
+};
+
+// יצירת QR Code
+
+>>>>>>> 5f8c590e9cbecd085ed5a78e8c95177fa34e6a71
 export const generateQRCode = async (userName, qrColor) => {
   const url = `${userName}.menuyou.online/menu`;
 
