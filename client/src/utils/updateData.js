@@ -14,27 +14,27 @@ const updatePaidStatus = async (userId, isPaid) => {
   return response.data;
 };
 
-const updateMenuSettings = async (
+const updateMenuSettings = async ({
   userId,
   wifiSsid,
   wifiPassword,
-  address,
-  isEnabled
-) => {
+
+  displayWifi,
+}) => {
   try {
     const response = await axiosInstance.put(`/user/updateUserMenuSettings`, {
       userId,
       wifiSsid,
       wifiPassword,
-      address,
-      isEnabled,
+
+      displayWifi,
     });
 
     console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error updating menu settings:", error);
-    return error?.massage;
+    return error?.response?.data?.message || "Unknown error";
   }
 };
 

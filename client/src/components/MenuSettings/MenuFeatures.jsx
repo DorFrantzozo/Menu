@@ -23,13 +23,7 @@ const MenuFeatures = () => {
         wifiSettings.userId,
         wifiSettings.displayWifi
       );
-      await updateMenuSettings(
-        { userId: user._id },
-        wifiSettings.wifiSsid,
-
-        wifiSettings.userId,
-        wifiSettings.displayWifi
-      );
+      await updateMenuSettings(wifiSettings);
     } catch (error) {
       console.error("Error updating menu settings:", error);
     }
