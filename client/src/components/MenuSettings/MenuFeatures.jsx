@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ShowWifi from "./ShowWifi";
 import { updateMenuSettings } from "@/utils/updateData";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,13 +7,18 @@ import { updateUser } from "@/state/user/userSlice";
 const MenuFeatures = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
+
+  const storedUser = localStorage.getItem("user");
+  const userFromLocalStorage = storedUser ? JSON.parse(storedUser) : null;
+
   const [wifiSettings, setWifiSettings] = useState({
-    userId: user._id || null,
-    wifiSsid: user.wifiSettings.ssid || "",
-    wifiPassword: user.wifiSettings.wifiPassword || "",
-    displayWifi: user.wifiSettings.isEnabled,
+    userId: userFromLocalStorage?._id || user?._id || null,
+    wifiSsid: user?.wifiSettings?.ssid || "",
+    wifiPassword: user?.wifiSettings?.wifiPassword || "",
+    displayWifi: user?.wifiSettings?.isEnabled ?? false,
   });
 
+  useEffect(() => {}, []);
   const handleUpdateSettings = async () => {
     console.log(wifiSettings);
 
@@ -26,7 +31,7 @@ const MenuFeatures = () => {
   };
 
   return (
-    <div className="flex flex-col items-center gap-20">
+    <div className="flex flex-col items-center mb-10 ">
       <ShowWifi wifiSettings={wifiSettings} updateSettings={setWifiSettings} />
       <button
         onClick={handleUpdateSettings}
