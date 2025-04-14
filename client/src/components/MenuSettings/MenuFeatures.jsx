@@ -19,8 +19,7 @@ const MenuFeatures = () => {
       console.log(
         wifiSettings.wifiSsid,
         wifiSettings.wifiPassword,
-
-        wifiSettings.userId,
+        user._id,
         wifiSettings.displayWifi
       );
       await updateMenuSettings(wifiSettings);

@@ -267,9 +267,9 @@ const updateUserMenuSettings = async (req, res) => {
     if (!user.wifiSettings) {
       user.wifiSettings = {};
     }
-    if (!user.addressSettings) {
-      user.addressSettings = {};
-    }
+    // if (!user.addressSettings) {
+    //   user.addressSettings = {};
+    // }
 
     if (wifiSsid) {
       user.wifiSettings.ssid = wifiSsid;
@@ -279,10 +279,10 @@ const updateUserMenuSettings = async (req, res) => {
     }
     user.wifiSettings.isEnabled = isEnabled;
 
-    if (address) {
-      user.addressSettings.address = address;
-    }
-    user.addressSettings.isEnabled = displayAddress;
+    // if (address) {
+    //   user.addressSettings.address = address;
+    // }
+    // user.addressSettings.isEnabled = displayAddress;
 
     await user.save();
 

@@ -18,7 +18,6 @@ const updateMenuSettings = async ({
   userId,
   wifiSsid,
   wifiPassword,
-
   displayWifi,
 }) => {
   try {
@@ -26,7 +25,6 @@ const updateMenuSettings = async ({
       userId,
       wifiSsid,
       wifiPassword,
-
       displayWifi,
     });
 
