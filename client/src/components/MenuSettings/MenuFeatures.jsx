@@ -6,12 +6,10 @@ import { useSelector } from "react-redux";
 const MenuFeatures = () => {
   const user = useSelector((state) => state.user.user);
   const [wifiSettings, setWifiSettings] = useState({
-    wifiSsid: "",
-    wifiPassword: "",
-    address: "",
-    userId: "", // אמור לבוא מהמשתמש המחובר
-    displayWifi: false,
-    displayAddress: false,
+    userId: user._id || null,
+    wifiSsid: user.wifiSettings.ssid || "",
+    wifiPassword: user.wifiSettings.wifiPassword || "",
+    displayWifi: user.wifiSettings.isEnabled || false,
   });
 
   const handleUpdateSettings = async () => {
@@ -21,15 +19,14 @@ const MenuFeatures = () => {
       console.log(
         wifiSettings.wifiSsid,
         wifiSettings.wifiPassword,
-        wifiSettings.address,
+
         wifiSettings.userId,
         wifiSettings.displayWifi
       );
       await updateMenuSettings(
         { userId: user._id },
         wifiSettings.wifiSsid,
-        wifiSettings.wifiPassword,
-        wifiSettings.address,
+
         wifiSettings.userId,
         wifiSettings.displayWifi
       );

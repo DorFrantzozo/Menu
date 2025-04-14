@@ -19,7 +19,7 @@ const updateMenuSettings = async (
   wifiSsid,
   wifiPassword,
   address,
-  displayWifi
+  isEnabled
 ) => {
   try {
     const response = await axiosInstance.put(`/user/updateUserMenuSettings`, {
@@ -27,7 +27,7 @@ const updateMenuSettings = async (
       wifiSsid,
       wifiPassword,
       address,
-      displayWifi,
+      isEnabled,
     });
 
     console.log(response.data);

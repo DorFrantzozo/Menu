@@ -256,22 +256,8 @@ const getAllUsers = async (req, res) => {
   }
 };
 const updateUserMenuSettings = async (req, res) => {
-  const {
-    userId,
-    wifiSsid,
-    wifiPassword,
-    address,
-    displayWifi,
-    displayAddress,
-  } = req.body;
-  console.log(
-    userId,
-    wifiSsid,
-    wifiPassword,
-    address,
-    displayWifi,
-    displayAddress
-  );
+  const { userId, wifiSsid, wifiPassword, isEnabled } = req.body;
+  console.log(userId, wifiSsid, wifiPassword, isEnabled);
   try {
     const user = await User.findById(userId);
     if (!user) {
@@ -291,7 +277,7 @@ const updateUserMenuSettings = async (req, res) => {
     if (wifiPassword) {
       user.wifiSettings.wifiPassword = wifiPassword;
     }
-    user.wifiSettings.isEnabled = displayWifi;
+    user.wifiSettings.isEnabled = isEnabled;
 
     if (address) {
       user.addressSettings.address = address;
