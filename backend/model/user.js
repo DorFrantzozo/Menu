@@ -29,6 +29,28 @@ const userSchema = new mongoose.Schema(
     trialExpiresAt: {
       type: Date,
       default: () => new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+      immutable: true,
+    },
+    wifiSettings: {
+      isEnabled: {
+        type: Boolean,
+        default: false,
+      },
+      ssid: {
+        type: String,
+      },
+      wifiPassword: {
+        type: String,
+      },
+    },
+    addressSettings: {
+      isEnabled: {
+        type: Boolean,
+        default: false,
+      },
+      address: {
+        type: String,
+      },
     },
     role: { type: String, default: "user" },
   },

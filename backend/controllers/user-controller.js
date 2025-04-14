@@ -104,7 +104,7 @@ const loginUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const { email, password, restaurantName, isPaid } = req.body;
- 
+
   const { userId } = req.params;
 
   try {
@@ -185,7 +185,7 @@ const updateUser = async (req, res) => {
   }
 };
 
-const findRestaurantsByname = async (req, res) => {
+const findRestaurantsByName = async (req, res) => {
   const { name } = req.query;
 
   if (!name) {
@@ -255,6 +255,58 @@ const getAllUsers = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+const updateUserMenuSettings = async (req, res) => {
+  const {
+    userId,
+    wifiSsid,
+    wifiPassword,
+    address,
+    displayWifi,
+    displayAddress,
+  } = req.body;
+  console.log(
+    userId,
+    wifiSsid,
+    wifiPassword,
+    address,
+    displayWifi,
+    displayAddress
+  );
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (!user.wifiSettings) {
+      user.wifiSettings = {};
+    }
+    if (!user.addressSettings) {
+      user.addressSettings = {};
+    }
+
+    if (wifiSsid) {
+      user.wifiSettings.ssid = wifiSsid;
+    }
+    if (wifiPassword) {
+      user.wifiSettings.wifiPassword = wifiPassword;
+    }
+    user.wifiSettings.isEnabled = displayWifi;
+
+    if (address) {
+      user.addressSettings.address = address;
+    }
+    user.addressSettings.isEnabled = displayAddress;
+
+    await user.save();
+
+    res
+      .status(200)
+      .json({ message: "User menu settings updated successfully", user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 export {
   getAllUsers,
@@ -262,6 +314,7 @@ export {
   loginUser,
   updateUser,
   deleteUser,
-  findRestaurantsByname,
+  findRestaurantsByName,
   updateDesignByNumber,
+  updateUserMenuSettings,
 };

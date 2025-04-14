@@ -14,4 +14,28 @@ const updatePaidStatus = async (userId, isPaid) => {
   return response.data;
 };
 
-export default updatePaidStatus;
+const updateMenuSettings = async (
+  userId,
+  wifiSsid,
+  wifiPassword,
+  address,
+  displayWifi
+) => {
+  try {
+    const response = await axiosInstance.put(`/user/updateUserMenuSettings`, {
+      userId,
+      wifiSsid,
+      wifiPassword,
+      address,
+      displayWifi,
+    });
+
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating menu settings:", error);
+    return error?.massage;
+  }
+};
+
+export { updatePaidStatus, updateMenuSettings };

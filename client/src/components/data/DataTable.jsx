@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/table";
 import DropDown from "./DefaultDropDown";
 
-import updatePaidStatus from "@/utils/updateData";
+import { updatePaidStatus } from "@/utils/updateData";
 import { useDispatch } from "react-redux";
 import { updateUser } from "@/state/user/userSlice";
 

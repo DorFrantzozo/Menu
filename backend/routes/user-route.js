@@ -5,9 +5,10 @@ import {
   createUser,
   deleteUser,
   updateUser,
-  findRestaurantsByname,
+  findRestaurantsByName,
   updateDesignByNumber,
   getAllUsers,
+  updateUserMenuSettings,
 } from "../controllers/user-controller.js";
 
 const userRouter = express.Router();
@@ -15,8 +16,9 @@ const userRouter = express.Router();
 userRouter.post("/login", loginUser);
 userRouter.post("/signup", upload.single("logo"), createUser);
 userRouter.put("/updateUser/:userId", upload.single("logo"), updateUser);
-userRouter.get("/find", findRestaurantsByname);
+userRouter.get("/find", findRestaurantsByName);
 userRouter.post("/deleteUser", deleteUser);
 userRouter.get("/getAllUsers", getAllUsers);
 userRouter.put("/updateDesign", updateDesignByNumber);
+userRouter.put("/updateMenuSettings", updateUserMenuSettings);
 export default userRouter;
