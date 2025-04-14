@@ -20,5 +20,5 @@ userRouter.get("/find", findRestaurantsByName);
 userRouter.post("/deleteUser", deleteUser);
 userRouter.get("/getAllUsers", getAllUsers);
 userRouter.put("/updateDesign", updateDesignByNumber);
-userRouter.put("/updateMenuSettings", updateUserMenuSettings);
+userRouter.put("/updateUserMenuSettings", updateUserMenuSettings);
 export default userRouter;
