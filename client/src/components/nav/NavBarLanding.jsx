@@ -42,7 +42,7 @@ export default function NavBarLanding() {
             </DisclosureButton>
           </div>
           <div className="flex shrink-0 items-center">
-            <button onClick={() => navigate("/")}>
+            <button aria-label="דף הבית" onClick={() => navigate("/")}>
               <img alt="Menu-logo" src={logo} className="h-18 w-28" />
             </button>
           </div>
@@ -52,11 +52,12 @@ export default function NavBarLanding() {
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
             <div className="hidden sm:block">
               <DefaultButton
+                ariaLable="הרשמה"
                 text="הרשמה"
                 color="white"
                 onClick={() => navigate("/signup")}
               />
-              <Button onClick={() => navigate("/signin")}>
+              <Button aria-label="התחברות" onClick={() => navigate("/signin")}>
                 <ShinyText
                   text="התחברות"
                   disabled={false}
@@ -77,6 +78,7 @@ export default function NavBarLanding() {
               as="a"
               href={item.href}
               aria-current={item.current ? "page" : undefined}
+              aria-label={`לינק למעבר לדף ${item.name}`}
               className={classNames(
                 item.current
                   ? "bg-gray-900 text-white"

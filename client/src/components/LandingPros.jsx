@@ -45,11 +45,18 @@ const LandingPros = () => {
         />
       </div>
       <div className="p-10 mb-60">
-        <h1 className="text-3xl text-center ">
+        <h1
+          className="text-3xl text-center "
+          aria-label="התחילו עכשיו עם 14 ימי התנסות ללא עלות"
+        >
           נסו עכשיו 14 ימי התנסות ללא עלות
         </h1>
         <div className=" mt-10  ">
-          <img src={systemDemo} className="rounded-xl" alt="systemDemo" />
+          <img
+            src={systemDemo}
+            className="rounded-xl"
+            alt="דימוי מערכת המראה את התפריט הדיגיטלי"
+          />
         </div>
       </div>
     </>

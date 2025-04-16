@@ -32,11 +32,6 @@ hr.style-seven:before {
   border-radius: 20px;
 }
 
-.dish-img {
-  /* width: 144px;
-  height: 120px; */
-}
-
 @layer base {
   :root {
     --background: 0 0% 100%;

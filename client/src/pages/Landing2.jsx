@@ -9,7 +9,7 @@ const Landing2 = () => {
       <div className=" min-h-screen">
         <NavBarLanding />
         <Hero />
-        <div className="">
+        <div>
           <LandingPros />
         </div>
         <Contact />

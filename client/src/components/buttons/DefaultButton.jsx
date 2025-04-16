@@ -9,6 +9,7 @@ const DefaultButton = ({
   hover = "",
   hoverTextColor = "",
   width = "80px",
+  ariaLable = "",
 }) => {
   const navigate = useNavigate();
   const handleClick = onClick || (() => navigate("/signin"));
@@ -16,6 +17,7 @@ const DefaultButton = ({
   return (
     <Button
       onClick={handleClick}
+      aria-label={`${ariaLable}`}
       className={`text-${color} font-light rounded p-2 ${hover} ${hoverTextColor} transition duration-500 w-[${width}]  bg-${bg}`}
     >
       {text}
