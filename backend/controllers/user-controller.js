@@ -309,10 +309,10 @@ const SendResetPasswordMail = async (req, res) => {
     // שולח את המייל באמצעות הפונקציה sendEmail
     const result = await sendEmail({
       to,
-      templateId: process.env.RESET_TEMPLATE_ID, // מזהה הטמפלט שלך ב-SendGrid
+      templateId: process.env.TEMPLATEID, // מזהה הטמפלט שלך ב-SendGrid
+      subject, // נושא המייל
       dynamicData: {
         resetLink, // קישור לאיפוס הסיסמה
-        subject, // נושא המייל
         userName, // שם המשתמש (או כל מידע אישי אחר שתרצה לשלב)
       },
     });

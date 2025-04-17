@@ -39,7 +39,7 @@ const updateMenuSettings = async ({
 
 const SendLinkToEmail = async (email) => {
   try {
-    const res = await axiosInstance.post("/sendResetPassword", {
+    const res = await axiosInstance.post("/user/sendResetPassword", {
       to: email,
       subject: "איפוס סיסמה",
       resetLink: `https://menuyou.online/account/resetpassword?email=${email}`,
