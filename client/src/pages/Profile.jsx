@@ -35,7 +35,6 @@ const Profile = () => {
       "restaurantName",
       restaurantName || userFromStorage?.restaurantName
     );
-    formData.append("password", password);
     formData.append("logo", img);
 
     try {
@@ -144,18 +143,6 @@ const Profile = () => {
           <h1 className="text-center text-sm text-gray-500 mb-4">
             * פרטים אלו לא יוצגו באופן ציבורי
           </h1>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-900">
-              סיסמה
-            </label>
-            <input
-              onChange={(e) => setPassword(e.target.value)}
-              type="password"
-              placeholder="הכנס סיסמה"
-              className="w-full mt-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
 
           <div className="text-sm text-center mt-4">
             <p>Id: {userFromStorage?._id}</p>

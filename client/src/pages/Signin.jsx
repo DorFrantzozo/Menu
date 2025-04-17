@@ -43,7 +43,7 @@ const Signin = () => {
           dispatch
         );
 
-         dispatch(setMenuCategories(categoriesWithDishes));
+        dispatch(setMenuCategories(categoriesWithDishes));
         localStorage.setItem(
           "categories",
           JSON.stringify(categoriesWithDishes)
@@ -108,13 +108,13 @@ const Signin = () => {
                 >
                   Password
                 </label>
-                <div className="text-sm">
-                  <a
-                    href="#"
-                    className="font-semibold text-black hover:text-green-400"
+                <div dir="rtl" className="text-sm">
+                  <button
+                    className="hover:text-black text-green-400"
+                    onClick={() => navigate("/account/password/reset")}
                   >
-                    Forgot password?
-                  </a>
+                    שחכתי סיסמה ?
+                  </button>
                 </div>
               </div>
               <div className="mt-2">

@@ -31,6 +31,7 @@ import Design3 from "./designs/Design3/Design3";
 import ScrollToTop from "./components/ScrollToTop";
 import TermsOfService from "./pages/TermsOfService";
 import Settings from "./pages/Settings";
+import SendLinkToEmail from "./pages/SendLinkToEmail";
 
 function App() {
   const dispatch = useDispatch();
@@ -124,6 +125,10 @@ function App() {
             <Route path="/editCategory" element={<EditCategory />} />
             <Route path="/menu" element={<Menu />} />
             <Route path="/termofservice" element={<TermsOfService />} />
+            <Route
+              path="/account/password/reset"
+              element={<SendLinkToEmail />}
+            />
 
             <Route path="/design1" element={<Design1 />} />
             <Route path="/design2" element={<Design2 />} />

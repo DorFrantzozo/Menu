@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import axiosInstance from "./baseUrl";
 
 const updatePaidStatus = async (userId, isPaid) => {
@@ -36,4 +37,24 @@ const updateMenuSettings = async ({
   }
 };
 
-export { updatePaidStatus, updateMenuSettings };
+const SendLinkToEmail = async (email) => {
+  try {
+    const res = await axiosInstance.post("/sendResetPassword", {
+      to: email,
+      subject: "איפוס סיסמה",
+      resetLink: `https://menuyou.online/account/resetpassword?email=${email}`,
+      userName: "לקוח יקר", // אפשר להחליף לפי הצורך
+    });
+
+    if (res.data.success) {
+      toast.success("נשלח קישור לאיפוס הסיסמה למייל שלך.");
+    } else {
+      toast.error("שליחת האימייל נכשלה.");
+    }
+  } catch (err) {
+    toast.error("אירעה שגיאה בשליחת הקישור.");
+    console.error(err);
+  }
+};
+
+export { SendLinkToEmail, updatePaidStatus, updateMenuSettings };
