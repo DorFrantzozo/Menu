@@ -304,7 +304,7 @@ const SendResetPasswordMail = async (req, res) => {
       .status(400)
       .json({ success: false, message: "Missing required fields" });
   }
-  console.log(to + "and " + subject + "and " + resetLink + "and " + userName);
+  // console.log(to + "and " + subject + "and " + resetLink + "and " + userName);
   try {
     // שולח את המייל באמצעות הפונקציה sendEmail
     const result = await sendEmail({
