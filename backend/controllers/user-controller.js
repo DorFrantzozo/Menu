@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import cloudinary from "../utils/cloudinary.js";
 import { expirationTime, generateToken } from "../utils/jwt.js";
 
+//TODO: split logic to different layers (like repository for db accessing) and files (like bcrypt and cloudinary)
 const createUser = async (req, res) => {
   const { email, password, restaurantName } = req.body;
 
@@ -57,6 +58,13 @@ const createUser = async (req, res) => {
     const token = generateToken(newUser);
 
     const { password: _, ...userWithoutPassword } = newUser.toObject();
+
+    //TODO: Token on cookie (because of security)
+    // res.cookie("token", token, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production", // Set to true in production
+    //   sameSite: "strict",
+    // });
 
     res.status(201).json({ user: userWithoutPassword, token: token });
   } catch (error) {

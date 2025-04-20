@@ -15,6 +15,7 @@ app.use(cors());
 
 app.use(express.json());
 
+//TODO: in each route add validations using express-validator (if needed)
 app.use("/api/user", userRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/dish", dishRouter);

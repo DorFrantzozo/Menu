@@ -36,6 +36,7 @@ function App() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
   // const menuCategories = useSelector((state) => state.menuCategories);
+  // TODO: export the logic to different files (useEffect+isTokenExpired) to make the code more readable (Custom Hook or something similar)
 
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
