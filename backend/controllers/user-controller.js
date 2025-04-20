@@ -2,6 +2,7 @@ import User from "../model/user.js";
 import bcrypt from "bcryptjs";
 import cloudinary from "../utils/cloudinary.js";
 import { expirationTime, generateToken } from "../utils/jwt.js";
+import { sendEmail } from "../utils/sendgrid.js";
 
 //TODO: split logic to different layers (like repository for db accessing) and files (like bcrypt and cloudinary)
 const createUser = async (req, res) => {
@@ -302,6 +303,50 @@ const updateUserMenuSettings = async (req, res) => {
   }
 };
 
+const SendResetPasswordMail = async (req, res) => {
+  const { to, subject, resetLink, userName } = req.body; // מקבל את הנתונים מהבקשה
+
+  // בדיקה אם כל השדות קיימים
+  if (!to || !subject || !resetLink || !userName) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Missing required fields" });
+  }
+  // console.log(to + "and " + subject + "and " + resetLink + "and " + userName);
+  try {
+    // שולח את המייל באמצעות הפונקציה sendEmail
+    const result = await sendEmail({
+      to,
+      templateId: process.env.TEMPLATEID, // מזהה הטמפלט שלך ב-SendGrid
+      subject, // נושא המייל
+      dynamicData: {
+        resetLink, // קישור לאיפוס הסיסמה
+        userName, // שם המשתמש (או כל מידע אישי אחר שתרצה לשלב)
+      },
+    });
+
+    if (result.success) {
+      return res.status(200).json({
+        success: true,
+        message: "Reset password email sent successfully",
+      });
+    } else {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to send email",
+        error: result.error,
+      });
+    }
+  } catch (error) {
+    console.error("Error sending email:", error);
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while sending the email",
+      error,
+    });
+  }
+};
+
 export {
   getAllUsers,
   createUser,
@@ -311,4 +356,5 @@ export {
   findRestaurantsByName,
   updateDesignByNumber,
   updateUserMenuSettings,
+  SendResetPasswordMail,
 };

@@ -8,26 +8,6 @@ import BlurText from "./TextAnimations/BlurText/BlurText";
 import StarBorder from "./TextAnimations/StarBorder";
 import { useNavigate } from "react-router-dom";
 
-// const features = [
-//   {
-//     name: "Select Your Design",
-//     description: "Choose from a wide variety of designs to create your own",
-//     icon: PaintBrushIcon,
-//   },
-//   {
-//     name: "Edit Eny Time",
-//     description:
-//       "Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo.",
-//     icon: PencilSquareIcon,
-//   },
-//   {
-//     name: "24/7 Support",
-//     description:
-//       "Our team will help you with any problme or question you might have.",
-//     icon: UserIcon,
-//   },
-// ];
-
 export default function Hero() {
   const navigate = useNavigate();
   return (
@@ -37,6 +17,8 @@ export default function Hero() {
         width={300}
         height={100}
         alt="logo"
+        aria-label="logo"
+        loading="lazy"
         className="w-full hidden lg:block max-w-[300px] mx-auto"
       />
 
@@ -59,7 +41,7 @@ export default function Hero() {
               <br />
               תוך דקות – התפריט שלך באוויר!
             </p>
-            <button onClick={() => navigate("/signin")}>
+            <button aria-label="הרשמה " onClick={() => navigate("/signin")}>
               <StarBorder
                 as="button"
                 className="mt-10"
@@ -73,11 +55,14 @@ export default function Hero() {
         </div>
 
         <div className="lg:w-1/2 mt-10 lg:mt-0">
-          <AnimatedContent distance={400} delay={100}>
+          <AnimatedContent distance={400}>
             <img
               src={iphone}
+              loading="lazy"
+              width={700}
+              height={600}
               className="w-full max-w-[800px] mx-auto -mt-16"
-              alt="Menu"
+              alt="תמונה של המכשיר המציגה את התפריט הדיגיטלי"
             />
           </AnimatedContent>
         </div>
