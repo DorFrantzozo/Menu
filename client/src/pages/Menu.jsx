@@ -45,6 +45,8 @@ const Menu = () => {
           navigate("/design2", { state: menu });
         } else if (menu.designNumber === 3) {
           navigate("/design3", { state: menu });
+        } else if (menu.designNumber === 4) {
+          navigate("/design4", { state: menu });
         }
       } else {
         navigate("/");

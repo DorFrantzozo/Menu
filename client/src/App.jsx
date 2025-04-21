@@ -32,6 +32,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import TermsOfService from "./pages/TermsOfService";
 import Settings from "./pages/Settings";
 import SendLinkToEmail from "./pages/SendLinkToEmail";
+import Design4 from "./designs/Design4/Design4";
 
 function App() {
   const dispatch = useDispatch();
@@ -111,24 +112,50 @@ function App() {
             />
 
             <Route path="/edit" element={<Edit />} />
-            <Route path="/designs" element={<Designs />} />
-            <Route path="/settings" element={<Settings />} />
+            <Route
+              path="/designs"
+              element={user ? <Designs /> : <Landing2 />}
+            />
+            <Route
+              path="/settings"
+              element={user ? <Settings /> : <Landing2 />}
+            />
 
-            <Route path="/add-dish" element={<AddDish />} />
-            <Route path="/add-category" element={<AddCategory />} />
-            <Route path="/add-asset" element={<AddAssetsPage />} />
-            <Route path="/dishesPage" element={<DishPage />} />
+            <Route
+              path="/add-dish"
+              element={user ? <AddDish /> : <Landing2 />}
+            />
+            <Route
+              path="/add-category"
+              element={user ? <AddCategory /> : <Landing2 />}
+            />
+            <Route
+              path="/add-asset"
+              element={user ? <AddAssetsPage /> : <Landing2 />}
+            />
+            <Route
+              path="/dishesPage"
+              element={user ? <DishPage /> : <Landing2 />}
+            />
             <Route
               path="/profile"
               element={user ? <Profile /> : <Landing2 />}
             />
-            <Route path="/editDish" element={<EditDish />} />
-            <Route path="/editCategory" element={<EditCategory />} />
+            <Route
+              path="/editDish"
+              element={user ? <EditDish /> : <Landing2 />}
+            />
+            <Route
+              path="/editCategory"
+              element={user ? <EditCategory /> : <Landing2 />}
+            />
             <Route path="/menu" element={<Menu />} />
             <Route path="/termofservice" element={<TermsOfService />} />
             <Route
               path="/account/password/reset"
-              element={<SendLinkToEmail />}
+              element={
+                user ? <Navigate to="/dashboard" /> : <SendLinkToEmail />
+              }
             />
 
             <Route path="/design1" element={<Design1 />} />
@@ -138,6 +165,7 @@ function App() {
               path="/design1/:categoryName/dishes/:userId/:categoryId"
               element={<Design1Dish />}
             />
+            <Route path="/design4" element={<Design4 />} />
           </Routes>
         </div>
 

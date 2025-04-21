@@ -119,6 +119,28 @@ const Designs = () => {
             />
           </div>
         </div>
+
+        <div className="flex flex-col items-center mb-20">
+          <img
+            src={design3Tambneil}
+            className="shadow-slate-200 h-[700px] mb-10 mt-20 hover:scale-110 transition duration-500 rounded-lg shadow-lg"
+            alt=""
+          />
+          <div className="flex justify-around gap-10 mt-5 w-full sm:w-auto">
+            <DefaultButton
+              text="החל"
+              bg="zinc-800"
+              color="white"
+              onClick={() => handleChangeMenuDesign(4)}
+            />
+            <DefaultButton
+              text="לנסות"
+              bg="zinc-800"
+              color="white"
+              onClick={() => navigate("/design4", { state: menu })}
+            />
+          </div>
+        </div>
       </div>
     </>
   );

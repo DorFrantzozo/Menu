@@ -8,19 +8,21 @@ import {
   getAllDishesAndMapToCategories,
 } from "@/utils/fetchData";
 import { setMenuCategories } from "@/state/menu/menuCategoriesSlice";
-
 import logo from "../assets/img/logoBlack.png";
 import axiosInstance from "../utils/baseUrl";
+import Spinner from "@/components/Spinner";
 const Signin = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
+      setLoading(true);
       const response = await axiosInstance.post("/user/login", {
         email,
         password,
@@ -34,6 +36,7 @@ const Signin = () => {
         localStorage.setItem("token", token);
         localStorage.setItem("expireTime", expireTime);
         localStorage.setItem("user", JSON.stringify(user));
+        setLoading(false);
 
         const categories = await getCategories(user);
         // Get categories with their dishes
@@ -52,9 +55,9 @@ const Signin = () => {
         toast.success("התחברות בהצלחה");
         navigate("/dashboard");
       }
-    } catch (error) {
+    } catch {
+      setLoading(false);
       toast.error("שם המשתמש או הסיסמה אינם תקינים");
-      console.log(error);
     }
   };
 
@@ -67,7 +70,12 @@ const Signin = () => {
             src={logo}
             className="h-[180px] w-[290px]  mx-auto"
           />
-          <h2 className="text-center text-2xl leading-9 tracking-tight text-black">
+          {loading && (
+            <div className="absolute top-0 left-0 right-0 bottom-0 flex  justify-center bg-zinc-900 bg-opacity-50 z-10">
+              <Spinner />
+            </div>
+          )}
+          <h2 className="text-center text-2xl leading-9 tracking-tight  text-black">
             התחברות לחשבון
           </h2>
         </div>

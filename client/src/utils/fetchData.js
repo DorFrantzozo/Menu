@@ -131,6 +131,9 @@ const checkIfUserLoggedIn = async () => {
   return true;
 };
 
+
+
+
 export {
   getAllUsers,
   getCategories,
