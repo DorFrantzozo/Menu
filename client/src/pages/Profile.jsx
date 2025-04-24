@@ -1,23 +1,14 @@
 import { UserCircleIcon } from "@heroicons/react/24/outline";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { updateUser } from "../state/user/userSlice";
-import axiosInstance from "../utils/baseUrl";
+
 import FreeTrailBanner from "@/components/Cards/FreeTrailBanner";
 import QrProfile from "@/components/data/qrCode/QrProfile";
 
 const Profile = () => {
-  const fileInputRef = useRef(null);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [restaurantName, setRestaurantName] = useState("");
-  const [img, setImg] = useState("");
   const navigate = useNavigate();
   const [userFromStorage, setUser] = useState(null);
   const [userName, setUserName] = useState("");
-  const [phone, setPhone] = useState("");
-  const dispatch = useDispatch();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -27,38 +18,6 @@ const Profile = () => {
       setUserName(user.restaurantName);
     }
   }, []);
-
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-  //   const formData = new FormData();
-  //   formData.append("email", email || userFromStorage?.email);
-  //   formData.append(
-  //     "restaurantName",
-  //     restaurantName || userFromStorage?.restaurantName
-  //   );
-  //   formData.append("logo", img);
-
-  //   try {
-  //     const response = await axiosInstance.put(
-  //       `/user/updateUser/${userFromStorage?._id}`,
-  //       formData,
-  //       { headers: { "Content-Type": "multipart/form-data" } }
-  //     );
-
-  //     if (response.status === 200) {
-  //       dispatch(updateUser(response.data.user));
-  //       navigate("/dashboard");
-  //     }
-  //   } catch (error) {
-  //     console.error(error.message);
-  //   }
-  // };
-
-  // const handleButtonClick = () => fileInputRef.current.click();
-  // const handleFileChange = (event) => {
-  //   const file = event.target.files[0];
-  //   if (file) setImg(file);
-  // };
 
   return (
     <>

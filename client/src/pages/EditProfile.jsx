@@ -10,6 +10,8 @@ import { useDispatch, useSelector } from "react-redux";
 import axiosInstance from "@/utils/baseUrl";
 import { updateUser } from "@/state/user/userSlice";
 import { useNavigate } from "react-router-dom";
+import Spinner from "@/components/Spinner";
+import { toast } from "react-toastify";
 
 export default function EditProfile() {
   const [img, setImg] = useState(null);
@@ -18,6 +20,7 @@ export default function EditProfile() {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user.user);
@@ -39,6 +42,7 @@ export default function EditProfile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const formData = new FormData();
     // מוסיף רק את השדות שהמשתמש שינה
     if (restaurantName !== user?.restaurantName)
@@ -59,10 +63,14 @@ export default function EditProfile() {
 
       if (response.status === 200) {
         dispatch(updateUser(response.data.user));
+        toast.success("הפרופיל עודכן בהצלחה!");
         navigate("/dashboard");
+        setIsLoading(false);
       }
     } catch (error) {
       console.error(error.message);
+      toast.error("שגיאה בעדכון הפרופיל. אנא נסה שוב.");
+      setIsLoading(false);
     }
   };
 
@@ -73,6 +81,11 @@ export default function EditProfile() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
+      {isLoading && (
+        <div className="absolute inset-0 ">
+          <Spinner />
+        </div>
+      )}
       <h1 className="text-2xl font-semibold mb-4 text-center">עריכת פרופיל</h1>
 
       <Card className="shadow-sm rounded-2xl">
