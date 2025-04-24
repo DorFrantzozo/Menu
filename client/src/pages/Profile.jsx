@@ -16,6 +16,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const [userFromStorage, setUser] = useState(null);
   const [userName, setUserName] = useState("");
+  const [phone, setPhone] = useState("");
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -27,54 +28,43 @@ const Profile = () => {
     }
   }, []);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const formData = new FormData();
-    formData.append("email", email || userFromStorage?.email);
-    formData.append(
-      "restaurantName",
-      restaurantName || userFromStorage?.restaurantName
-    );
-    formData.append("logo", img);
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   const formData = new FormData();
+  //   formData.append("email", email || userFromStorage?.email);
+  //   formData.append(
+  //     "restaurantName",
+  //     restaurantName || userFromStorage?.restaurantName
+  //   );
+  //   formData.append("logo", img);
 
-    try {
-      const response = await axiosInstance.put(
-        `/user/updateUser/${userFromStorage?._id}`,
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
+  //   try {
+  //     const response = await axiosInstance.put(
+  //       `/user/updateUser/${userFromStorage?._id}`,
+  //       formData,
+  //       { headers: { "Content-Type": "multipart/form-data" } }
+  //     );
 
-      if (response.status === 200) {
-        dispatch(updateUser(response.data.user));
-        navigate("/dashboard");
-      }
-    } catch (error) {
-      console.error(error.message);
-    }
-  };
+  //     if (response.status === 200) {
+  //       dispatch(updateUser(response.data.user));
+  //       navigate("/dashboard");
+  //     }
+  //   } catch (error) {
+  //     console.error(error.message);
+  //   }
+  // };
 
-  const handleButtonClick = () => fileInputRef.current.click();
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) setImg(file);
-  };
+  // const handleButtonClick = () => fileInputRef.current.click();
+  // const handleFileChange = (event) => {
+  //   const file = event.target.files[0];
+  //   if (file) setImg(file);
+  // };
 
   return (
     <>
       <FreeTrailBanner user={userFromStorage} />
       <div className="flex justify-center mt-10 px-4">
-        <form
-          dir="rtl"
-          onSubmit={handleSubmit}
-          className="bg-white  w-full max-w-3xl p-8"
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            onChange={handleFileChange}
-            className="hidden"
-          />
-
+        <div dir="rtl" className="bg-white  w-full max-w-3xl p-8">
           <h2 className="text-3xl font-semibold text-gray-900 text-center mb-4">
             פרופיל
           </h2>
@@ -92,48 +82,37 @@ const Profile = () => {
             ) : (
               <UserCircleIcon className="w-32 h-32 text-gray-400" />
             )}
-
-            <div className="flex gap-4">
-              <button
-                className="border rounded-lg px-6 py-2 text-sm font-medium text-gray-700 border-gray-300 hover:bg-gray-100"
-                onClick={handleButtonClick}
-                type="button"
-              >
-                העלה תמונה חדשה
-              </button>
-              <button
-                className="bg-red-100 text-red-600 hover:bg-red-400 hover:text-white rounded-lg px-6 py-2 text-sm font-medium"
-                onClick={() => setImg(null)}
-                type="button"
-              >
-                הסר תמונה
-              </button>
-            </div>
           </div>
 
           <div className="mt-6 space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-900">
-                שם המסעדה
-              </label>
-              <input
-                onChange={(e) => setRestaurantName(e.target.value)}
-                type="text"
-                placeholder={userFromStorage?.restaurantName || ""}
-                className="w-full mt-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
+            <div className="flex  justify-between items-center gap-2">
+              <label className="  text-gray-900">שם המסעדה</label>
+              <span className="">{userFromStorage?.restaurantName}</span>
             </div>
+            <hr />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-900">
-                מייל
-              </label>
-              <input
-                onChange={(e) => setEmail(e.target.value)}
-                type="email"
-                placeholder={userFromStorage?.email || ""}
-                className="w-full mt-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
+            <div className="flex justify-between   items-center gap-2">
+              <label className="  text-gray-900">שם להצגה </label>
+              <span className="">{userFromStorage?.displayName}</span>
+            </div>
+            <hr />
+            <div className="flex justify-between  gap-2">
+              <label className="  text-gray-900">מייל </label>
+              <span className="">{userFromStorage?.email}</span>
+            </div>
+            <hr />
+            <div className="flex justify-between  items-center gap-2">
+              <label className="  text-gray-900">טלפון </label>
+              <span className="">{userFromStorage?.phone}</span>
+            </div>
+            <div className="flex  justify-center  gap-4">
+              <button
+                onClick={() => navigate("/profile/edit")}
+                className="bg-black text-white px-4 py-2 rounded-full mb-10"
+              >
+                {" "}
+                עריכת פרופיל{" "}
+              </button>
             </div>
 
             <QrProfile userName={userName} />
@@ -152,16 +131,7 @@ const Profile = () => {
             </p>
             <p className="mt-2">עיצוב מספר: {userFromStorage?.designNumber}</p>
           </div>
-
-          <div className="mt-8 flex justify-center">
-            <button
-              type="submit"
-              className="bg-black text-white px-6 py-3 rounded-xl hover:bg-green-500 transition"
-            >
-              שמירה
-            </button>
-          </div>
-        </form>
+        </div>
       </div>
     </>
   );

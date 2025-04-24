@@ -6,7 +6,7 @@ import { sendEmail } from "../utils/sendgrid.js";
 
 //TODO: split logic to different layers (like repository for db accessing) and files (like bcrypt and cloudinary)
 const createUser = async (req, res) => {
-  const { email, password, restaurantName } = req.body;
+  const { email, password, restaurantName, displayName, phone } = req.body;
 
   if (!email || !password || !restaurantName) {
     return res.status(400).json({ message: "All fields are required" });
@@ -52,6 +52,8 @@ const createUser = async (req, res) => {
       restaurantName,
       logo: logoUrl || null,
       designNumber: 1,
+      displayName,
+      phone,
     });
 
     await newUser.save();
@@ -112,8 +114,8 @@ const loginUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const { email, password, restaurantName, isPaid } = req.body;
-
+  const { email, password, restaurantName, isPaid, displayName, phone } =
+    req.body;
   const { userId } = req.params;
 
   try {
@@ -142,6 +144,17 @@ const updateUser = async (req, res) => {
       user.restaurantName = restaurantName;
     }
 
+    // Update displayName if provided
+    if (displayName) {
+      user.displayName = displayName;
+    }
+
+    // Update phone if provided
+    if (phone) {
+      user.phone = phone;
+    }
+
+    // Update payment status if provided
     if (isPaid !== undefined) {
       user.isPaid = isPaid;
     }

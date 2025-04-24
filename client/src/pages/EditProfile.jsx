@@ -1,0 +1,173 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
+import { motion } from "framer-motion";
+
+import { useDispatch, useSelector } from "react-redux";
+
+import axiosInstance from "@/utils/baseUrl";
+import { updateUser } from "@/state/user/userSlice";
+import { useNavigate } from "react-router-dom";
+
+export default function EditProfile() {
+  const [img, setImg] = useState(null);
+  const [restaurantName, setRestaurantName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [displayName, setDisplayName] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.user.user);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImg(URL.createObjectURL(file));
+    }
+  };
+
+  const removeImage = () => setImg(null);
+
+  const handleRestaurantNameChange = (e) => {
+    const value = e.target.value;
+    const englishOnly = value.replace(/[^A-Za-z\s]/g, "");
+    setRestaurantName(englishOnly);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    // מוסיף רק את השדות שהמשתמש שינה
+    if (restaurantName !== user?.restaurantName)
+      formData.append("restaurantName", restaurantName);
+    if (img) formData.append("img", img); // תשלח תמונה אם הועלתה
+    if (email !== user?.email) formData.append("email", email);
+    if (phone !== user?.phone) formData.append("phone", phone);
+    if (password) formData.append("password", password); // רק אם המשתמש שינה סיסמה
+    if (displayName !== user?.displayName)
+      formData.append("displayName", displayName);
+
+    try {
+      const response = await axiosInstance.put(
+        `/user/updateUser/${user?._id}`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+
+      if (response.status === 200) {
+        dispatch(updateUser(response.data.user));
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  return (
+    <motion.div
+      className="max-w-xl mx-auto p-6"
+      dir="rtl"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
+      <h1 className="text-2xl font-semibold mb-4 text-center">עריכת פרופיל</h1>
+
+      <Card className="shadow-sm rounded-2xl">
+        <CardContent className="space-y-4 p-6">
+          {/* תמונת פרופיל */}
+          <div className="flex flex-col items-center space-y-2">
+            {img ? (
+              <img
+                src={img || user?.img}
+                alt="תצוגת פרופיל"
+                className="w-24 h-24 rounded-full object-cover shadow"
+              />
+            ) : (
+              <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+                אין תמונה
+              </div>
+            )}
+            <div className="flex space-x-2 items-center gap-6">
+              <Label className="cursor-pointer">
+                <span className="text-blue-600">העלאה</span>
+                <Input
+                  type="file"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+              </Label>
+              {img && (
+                <Button
+                  variant="ghost"
+                  onClick={removeImage}
+                  className="text-red-500 p-0"
+                >
+                  הסר
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {/* שם מסעדה (אנגלית בלבד) */}
+          <div>
+            <Label>שם מסעדה (אנגלית בלבד)</Label>
+            <Input
+              value={restaurantName}
+              onChange={handleRestaurantNameChange}
+              placeholder={user?.restaurantName || "למשל: MyRestaurant"}
+            />
+          </div>
+
+          {/* שם להצגה */}
+          <div>
+            <Label>שם להצגה</Label>
+            <Input
+              onChange={(e) => setDisplayName(e.target.value)}
+              placeholder={user?.displayName || "למשל: המסעדה של דוד"}
+            />
+          </div>
+
+          {/* אימייל */}
+          <div>
+            <Label>אימייל</Label>
+            <Input
+              onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              placeholder={user?.email || "example@email.com"}
+            />
+          </div>
+
+          {/* טלפון */}
+          <div>
+            <Label>טלפון</Label>
+            <Input
+              onChange={(e) => setPhone(e.target.value)}
+              type="tel"
+              placeholder={user?.phone || "050-1234567"}
+            />
+          </div>
+
+          {/* סיסמה */}
+          <div>
+            <Label>סיסמה</Label>
+            <Input
+              onChange={(e) => setPassword(e.target.value)}
+              type="password"
+            />
+          </div>
+
+          <Button
+            type="submit"
+            onClick={handleSubmit}
+            className="w-full mt-4 rounded-xl"
+          >
+            שמירה
+          </Button>
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+}

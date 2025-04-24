@@ -116,13 +116,13 @@ const Signin = () => {
                 >
                   Password
                 </label>
-                <div dir="rtl" className="text-sm">
-                  <button
+                <div dir="rtl" className="text-sm cursor-pointer">
+                  <span
                     className="hover:text-black text-green-400"
                     onClick={() => navigate("/account/password/reset")}
                   >
                     שחכתי סיסמה ?
-                  </button>
+                  </span>
                 </div>
               </div>
               <div className="mt-2">
