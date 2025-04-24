@@ -3,6 +3,7 @@ import {
   getCategories,
   getRestaurantName,
   fetchRestaurant,
+  fetchCategoriesAndDishes,
 } from "@/utils/fetchData";
 import { useLocation, useNavigate } from "react-router-dom";
 import Allergies from "@/components/sensitivities/Allergies";
@@ -26,6 +27,7 @@ const Design4 = () => {
   const location = useLocation();
   const menu = location.state || {};
   const navigate = useNavigate();
+
   useEffect(() => {
     const name = getRestaurantName(menu);
     setRestaurantName(name);
@@ -37,27 +39,43 @@ const Design4 = () => {
       const allDishes = parsed.flatMap((cat) => cat.menuDishes || []);
       setDishes(allDishes);
     } else {
-      fetchData();
+      if (restaurantName) {
+        fetchData();
+      }
     }
   }, [restaurantName]);
 
   const fetchData = async () => {
     try {
-      console.log(restaurantName);
       const data = await fetchRestaurant(restaurantName);
-      console.log(data);
+
       setRestaurantData(data);
-      const fetchedCategories = await getCategories(data._id);
-      if (Array.isArray(fetchedCategories)) {
-        setCategories(fetchedCategories);
-        setSelectedCategory(fetchedCategories[0]);
-        const allDishes = fetchedCategories.flatMap(
-          (cat) => cat.menuDishes || []
-        );
-        setDishes(allDishes);
-      } else {
-        console.error("Categories fetched are not an array");
-      }
+
+      const { categories, dishes, lastUpdated } =
+        await fetchCategoriesAndDishes(data._id);
+
+      // מיפוי מחדש: הוספת menuDishes לכל קטגוריה
+      const categoriesWithDishes = categories.map((cat) => ({
+        ...cat,
+        menuDishes: dishes[cat._id] || [],
+      }));
+
+      // שמירה ל-state
+      setCategories(categoriesWithDishes);
+      setSelectedCategory(categoriesWithDishes[0]);
+
+      // אם אתה רוצה לאסוף את כל המנות
+      const allDishes = categoriesWithDishes.flatMap((cat) => cat.menuDishes);
+      setDishes(allDishes);
+
+      // שמירה ל-sessionStorage
+      sessionStorage.setItem(
+        "categories",
+        JSON.stringify({
+          categories: categoriesWithDishes,
+          lastUpdated,
+        })
+      );
     } catch (error) {
       console.error("Error fetching restaurant data:", error);
     }
@@ -83,7 +101,8 @@ const Design4 = () => {
       <div className="flex justify-between items-center py-5">
         <h1 className="text-2xl font-bold text-black flex items-center gap-1">
           <span className="text-3xl">🍜</span>
-          {restaurantName}
+          {restaurantData?.displayName ||
+            JSON.parse(localStorage.getItem("user"))?.displayName}
         </h1>
       </div>
 

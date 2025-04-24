@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import design1Tambneil from "../assets/img/design1Tamneil.png";
+import design1Tambneil from "../assets/img/design1Tambneil.png";
 import design2Tambneil from "../assets/img/design2Tambneil.png";
 import design3Tambneil from "../assets/img/design3Tambneil.png";
+import design4Tambneil from "../assets/img/design4Tambneil.png";
 import DefaultButton from "@/components/buttons/DefaultButton";
 import Spinner from "@/components/Spinner";
 import { toast } from "react-toastify";
@@ -53,7 +54,7 @@ const Designs = () => {
   return (
     <>
       {isLoading && <Spinner />}
-      <div className="block md:flex justify-center gap-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         <div className="flex flex-col items-center">
           <img
             src={design1Tambneil}
@@ -122,7 +123,7 @@ const Designs = () => {
 
         <div className="flex flex-col items-center mb-20">
           <img
-            src={design3Tambneil}
+            src={design4Tambneil}
             className="shadow-slate-200 h-[700px] mb-10 mt-20 hover:scale-110 transition duration-500 rounded-lg shadow-lg"
             alt=""
           />

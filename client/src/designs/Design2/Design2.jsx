@@ -100,7 +100,7 @@ const Design2 = () => {
       ) : (
         <div className="min-h-screen flex flex-col p-6">
           <h1 className="text-4xl mb-10 font-bold text-center text-gray-800">
-            {restaurant.restaurantName}
+            {restaurant?.displayName}
           </h1>
           <hr className="style-seven" />
           <div className="mt-10 w-full">

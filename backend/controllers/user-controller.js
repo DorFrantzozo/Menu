@@ -216,16 +216,15 @@ const findRestaurantsByName = async (req, res) => {
 
   try {
     const restaurant = await User.find({
-      restaurantName: { $regex: new RegExp(name, "i") },
+      restaurantName: { $regex: new RegExp(`^${name}$`, "i") },
     });
 
-    if (restaurant[0].restaurantName.toLowerCase() != name) {
+    if (!restaurant || restaurant.length === 0) {
       return res.status(404).json({ message: "Restaurant not found" });
-    } else if (!restaurant) {
-      return res.status(404).json({ message: "Restaurant not found" });
-    } else {
-      res.status(200).json(restaurant[0]);
     }
+
+    const { password: _, ...userWithoutPassword } = restaurant[0].toObject();
+    res.status(200).json(userWithoutPassword);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

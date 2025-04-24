@@ -72,7 +72,7 @@ const QrProfile = ({ userName }) => {
       </div>
       <div className="flex justify-center gap-2">
         <button
-          className="bg-black p-2 flex text-white rounded-lg w-[120px] hover:bg-zinc-800 transition"
+          className="bg-gray-400  p-2 flex text-white rounded-full w-[120px] hover:bg-zinc-800 transition"
           onClick={handleDownloadQr}
         >
           הורד QR{" "}
@@ -81,7 +81,7 @@ const QrProfile = ({ userName }) => {
           </span>
         </button>
         <button
-          className="bg-green-500 p-2 rounded-lg hover:bg-green-700 w-[120px] transition flex text-white"
+          className="bg-green-500 p-2 rounded-full hover:bg-green-700 w-[120px] transition flex text-white"
           onClick={handleShareClick}
         >
           שתף QR{" "}

@@ -43,6 +43,20 @@ const Profile = () => {
             )}
           </div>
 
+          <div className="flex flex-col bg-black text-white rounded-full p-2 w-[fit] items-center mt-4">
+            <button
+              className="w-full"
+              onClick={() =>
+                window.open(
+                  `https://${userFromStorage?.restaurantName.toLowerCase()}.menuyou.online/menu`,
+                  "_blank"
+                )
+              }
+            >
+              אתר המסעדה
+            </button>
+          </div>
+
           <div className="mt-6 space-y-4">
             <div className="flex  justify-between items-center gap-2">
               <label className="  text-gray-900">שם המסעדה</label>
