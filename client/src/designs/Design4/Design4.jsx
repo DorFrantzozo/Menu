@@ -15,8 +15,6 @@ const Design4 = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState("הכל");
-  const [dishes, setDishes] = useState([]);
-  // const [selectedDishes, setSelectedDishes] = useState([]);
   const [filters] = useState([
     "הכל",
     "צמחוני",
@@ -24,62 +22,61 @@ const Design4 = () => {
     "ללא לקטוז",
     "מתאים להריון",
   ]);
+
   const location = useLocation();
-  const menu = location.state || {};
   const navigate = useNavigate();
+  const menu = location.state || {};
 
   useEffect(() => {
     const name = getRestaurantName(menu);
     setRestaurantName(name);
-    const localCategories = localStorage.getItem("categories");
-    if (localCategories) {
-      const parsed = JSON.parse(localCategories);
-      setCategories(parsed);
-      setSelectedCategory(parsed[0]);
-      const allDishes = parsed.flatMap((cat) => cat.menuDishes || []);
-      setDishes(allDishes);
-    } else {
-      if (restaurantName) {
-        fetchData();
+  }, [menu]);
+
+  useEffect(() => {
+    if (!restaurantName) return;
+
+    const loadData = async () => {
+      const localCategories = localStorage.getItem("categories");
+      if (localCategories) {
+        try {
+          const parsed = JSON.parse(localCategories);
+          if (Array.isArray(parsed)) {
+            setCategories(parsed);
+            setSelectedCategory(parsed[0]);
+            return;
+          }
+        } catch (e) {
+          console.error("Failed to parse local categories:", e);
+        }
       }
-    }
+      await fetchData();
+    };
+
+    loadData();
   }, [restaurantName]);
 
   const fetchData = async () => {
     try {
       const data = await fetchRestaurant(restaurantName);
-
       setRestaurantData(data);
 
       const { categories, dishes, lastUpdated } =
         await fetchCategoriesAndDishes(data._id);
 
-      // מיפוי מחדש: הוספת menuDishes לכל קטגוריה
       const categoriesWithDishes = categories.map((cat) => ({
         ...cat,
         menuDishes: dishes[cat._id] || [],
       }));
 
-      // שמירה ל-state
       setCategories(categoriesWithDishes);
       setSelectedCategory(categoriesWithDishes[0]);
 
-      // אם אתה רוצה לאסוף את כל המנות
-      const allDishes = categoriesWithDishes.flatMap((cat) => cat.menuDishes);
-      setDishes(allDishes);
-
-      // שמירה ל-sessionStorage
-      sessionStorage.setItem(
-        "categories",
-        JSON.stringify({
-          categories: categoriesWithDishes,
-          lastUpdated,
-        })
-      );
+      localStorage.setItem("categories", JSON.stringify(categoriesWithDishes));
     } catch (error) {
       console.error("Error fetching restaurant data:", error);
     }
   };
+
   const filterDishes = (dish) => {
     switch (selectedFilter) {
       case "צמחוני":
@@ -95,27 +92,31 @@ const Design4 = () => {
     }
   };
 
+  const dishesToShow = selectedCategory?.menuDishes?.filter(filterDishes) || [];
+
   return (
     <div dir="rtl" className="min-h-screen">
       {/* Header */}
-      <div className="flex justify-between items-center py-5">
-        <h1 className="text-2xl font-bold text-black flex items-center gap-1">
-          <span className="text-3xl">🍜</span>
-          {restaurantData?.displayName ||
-            JSON.parse(localStorage.getItem("user"))?.displayName}
-        </h1>
-      </div>
+      <div className="sticky top-0 z-10 bg-white shadow-lg">
+        <div className="flex justify-between items-center py-5 px-4">
+          <h1 className="text-2xl font-bold text-black flex items-center gap-2">
+            <span className="text-3xl">🍜</span>
+            {restaurantData?.displayName ||
+              JSON.parse(localStorage.getItem("user"))?.displayName ||
+              "מסעדה"}
+          </h1>
+        </div>
 
-      <div
-        className="flex overflow-x-auto max-w-full ms-2 px-4 py-2 mb-3 gap-5 scrollbar-hide scroll-smooth snap-x snap-mandatory"
-        style={{ WebkitOverflowScrolling: "touch" }}
-      >
-        {categories &&
-          categories.map((cat) => (
+        {/* Categories */}
+        <div
+          className="flex overflow-x-auto max-w-full ms-2 px-4 py-2 mb-3 gap-5 scrollbar-hide scroll-smooth snap-x snap-mandatory"
+          style={{ WebkitOverflowScrolling: "touch" }}
+        >
+          {categories.map((cat) => (
             <button
               key={cat._id}
               onClick={() => setSelectedCategory(cat)}
-              className={`flex flex-col items-center shadow-lg  min-w-[64px] px-10 py-4 rounded-xl transition-all snap-start ${
+              className={`flex flex-col items-center min-w-[64px] px-6 py-3 rounded-xl transition-all snap-start ${
                 selectedCategory?._id === cat._id
                   ? "bg-zinc-200 text-black"
                   : "bg-white text-gray-500"
@@ -125,65 +126,62 @@ const Design4 = () => {
               <span className="text-xs font-medium">{cat.name}</span>
             </button>
           ))}
-      </div>
+        </div>
 
-      {/* Filter Buttons */}
-      <div className="flex justify-center   overflow-x-auto  bg-gray-200 p-2 shadow-lg gap-2 mb-5">
-        {filters.map((filter) => (
-          <button
-            key={filter}
-            onClick={() => setSelectedFilter(filter)}
-            className={`p-2 rounded-full text-sm border font-medium transition ${
-              selectedFilter === filter
-                ? "bg-black text-white"
-                : "bg-white text-gray-600"
-            }`}
-          >
-            {filter}
-          </button>
-        ))}
+        {/* Filters */}
+        <div className="flex justify-center overflow-x-auto bg-gray-200 p-2 shadow-lg gap-2 mb-5">
+          {filters.map((filter) => (
+            <button
+              key={filter}
+              onClick={() => setSelectedFilter(filter)}
+              className={`p-2 rounded-full text-sm border font-medium transition ${
+                selectedFilter === filter
+                  ? "bg-black text-white"
+                  : "bg-white text-gray-600"
+              }`}
+            >
+              {filter}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Dishes */}
       <div className="grid mt-10 pb-28 px-4 max-w-6xl mx-auto grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-        {selectedCategory?.menuDishes?.filter(filterDishes).length === 0 ? (
+        {dishesToShow.length === 0 ? (
           <div className="col-span-full text-center text-gray-500 py-10 text-lg">
             אין מנות להצגה
           </div>
         ) : (
-          selectedCategory?.menuDishes
-            ?.filter(filterDishes)
-            .map((dish, index) => (
-              <div
-                key={index}
-                onClick={() =>
-                  navigate(`/design4DishDetails/`, {
-                    state: { dish },
-                  })
-                }
-                className="bg-gray-100 rounded-xl  overflow-hidden relative hover:shadow-lg transition"
-              >
-                <motion.img
-                  src={dish.img}
-                  alt={dish.name}
-                  className="w-full h-32 object-cover"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.3 }}
-                />
-                <div className="p-3">
-                  <p className="text-sm font-semibold truncate">{dish.name}</p>
-                  <p className="text-sm font-light truncate">
-                    {dish.description}
-                  </p>
-                  <p className=" p-1 text-gray-600">
-                    <Allergies dish={dish} />
-                  </p>
-                  <p className="text-sm text-left text-gray-600">
-                    ₪ {dish.price}
-                  </p>
-                </div>
+          dishesToShow.map((dish, index) => (
+            <div
+              key={index}
+              onClick={() =>
+                navigate(`/design4DishDetails/`, { state: { dish } })
+              }
+              className="bg-gray-100 rounded-xl overflow-hidden relative hover:shadow-lg transition"
+            >
+              <motion.img
+                src={dish.img}
+                alt={dish.name}
+                className="w-full h-32 object-cover"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.3 }}
+              />
+              <div className="p-3">
+                <p className="text-sm font-semibold truncate">{dish.name}</p>
+                <p className="text-sm font-light truncate">
+                  {dish.description}
+                </p>
+                <p className="p-1 text-gray-600">
+                  <Allergies dish={dish} />
+                </p>
+                <p className="text-sm text-left text-gray-600">
+                  ₪ {dish.price}
+                </p>
               </div>
-            ))
+            </div>
+          ))
         )}
       </div>
     </div>
