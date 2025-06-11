@@ -45,15 +45,16 @@ const SendLinkToEmail = async (email) => {
       resetLink: `https://menuyou.online/account/resetpassword?email=${email}`,
       userName: "לקוח יקר", // אפשר להחליף לפי הצורך
     });
+    toast.success("נשלח קישור לאיפוס הסיסמה למייל שלך.");
 
-    if (res.data.success) {
-      toast.success("נשלח קישור לאיפוס הסיסמה למייל שלך.");
-    } else {
-      toast.error("שליחת האימייל נכשלה.");
-    }
+    // if (res.data) {
+    // } else {
+    //   toast.error("שליחת האימייל נכשלה "+ res.data.message);
+    //   console.error(err.response?.data || err.message);
+    // }
   } catch (err) {
     toast.error("אירעה שגיאה בשליחת הקישור.");
-    console.error(err);
+    console.error(err.message);
   }
 };
 

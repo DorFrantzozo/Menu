@@ -24,7 +24,7 @@ export default function EditProfile() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user.user);
-
+  console.log(user.logo)
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -92,11 +92,11 @@ export default function EditProfile() {
         <CardContent className="space-y-4 p-6">
           {/* תמונת פרופיל */}
           <div className="flex flex-col items-center space-y-2">
-            {img ? (
+            {user.logo ? (
               <img
-                src={img || user?.img}
+                src={img || user?.logo}
                 alt="תצוגת פרופיל"
-                className="w-24 h-24 rounded-full object-cover shadow"
+                className="w-24 h-24 bg-gray-300 p-2 rounded-full object-cover shadow"
               />
             ) : (
               <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">

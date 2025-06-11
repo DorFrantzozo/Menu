@@ -22,7 +22,7 @@ const DishPage = () => {
       <h1 className="text-center font-semibold text-2xl md:text-3xl mt-6 mb-6 md:mt-10 md:mb-10">
         {title}
       </h1>
-      <div className="flex flex-col items-center md:flex-row md:justify-center gap-4">
+      <div className=" place-items-center grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2md:flex-row gap-4">
         {categoryDishes.map((dish) => (
           <div key={dish._id} className="relative w-full max-w-sm">
             <MenuCard item={dish} />
