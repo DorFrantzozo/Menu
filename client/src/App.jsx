@@ -36,12 +36,14 @@ import Design4 from "./designs/Design4/Design4";
 import { AnimatePresence } from "framer-motion";
 import DishDetails from "./designs/Design4/Design4DishDetails";
 import EditProfile from "./pages/EditProfile";
+import ResetPassword from "./pages/ResetPassword";
+import ManageCategories from "./pages/ManageCategories";
+import ManageDishes from "./pages/ManageDishes";
+import Sidebar from "./components/SideBar";
 
 function App() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
-  // const menuCategories = useSelector((state) => state.menuCategories);
-  // TODO: export the logic to different files (useEffect+isTokenExpired) to make the code more readable (Custom Hook or something similar)
 
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
@@ -59,130 +61,127 @@ function App() {
     const expirationTime = localStorage.getItem("expireTime");
     return expirationTime && Date.now() > Number(expirationTime);
   };
+
   if (isTokenExpired()) {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("expireTime");
     window.location.reload();
-
     return;
   }
+
   return (
-    <div className="flex flex-col min-h-[100svh]">
-      <BrowserRouter
-        future={{
-          v7_startTransition: true,
-          v7_relativeSplatPath: true,
-        }}
-      >
+    <div className="flex flex-col min-h-screen">
+      <BrowserRouter>
         <ScrollToTop />
         <Analytics />
-        {user && <Navbar />}
-        <div className="flex-grow">
-          <AnimatePresence mode="wait">
-            <Routes>
-              <Route
-                path="/"
-                element={user ? <Navigate to="/dashboard" /> : <Landing2 />}
-              />
 
-              {/* Protect Dashboard route for logged-in users only */}
-              <Route
-                path="/dashboard"
-                element={user ? <Dashboard /> : <Navigate to="/signin" />}
-              />
-
-              {/* Protect Signin route - redirect logged-in users to Dashboard */}
-              <Route
-                path="/signin"
-                element={user ? <Navigate to="/dashboard" /> : <Signin />}
-              />
-
-              {/* Protect Signup route - redirect logged-in users to Dashboard */}
-              <Route
-                path="/signup"
-                element={user ? <Navigate to="/dashboard" /> : <Signup />}
-              />
-
-              <Route
-                path="/admin"
-                element={
-                  !user || user.role !== "admin" ? (
-                    <Navigate to="/" />
-                  ) : (
-                    <AdminPage />
-                  )
-                }
-              />
-
-              <Route path="/edit" element={<Edit />} />
-              <Route
-                path="/designs"
-                element={user ? <Designs /> : <Landing2 />}
-              />
-              <Route
-                path="/settings"
-                element={user ? <Settings /> : <Landing2 />}
-              />
-
-              <Route
-                path="/add-dish"
-                element={user ? <AddDish /> : <Landing2 />}
-              />
-              <Route
-                path="/add-category"
-                element={user ? <AddCategory /> : <Landing2 />}
-              />
-              <Route
-                path="/add-asset"
-                element={user ? <AddAssetsPage /> : <Landing2 />}
-              />
-              <Route
-                path="/dishesPage"
-                element={user ? <DishPage /> : <Landing2 />}
-              />
-              <Route
-                path="/profile"
-                element={user ? <Profile /> : <Landing2 />}
-              />
-              <Route
-                path="/profile/edit"
-                element={user ? <EditProfile /> : <Landing2 />}
-              />
-              <Route
-                path="/editDish"
-                element={user ? <EditDish /> : <Landing2 />}
-              />
-              <Route
-                path="/editCategory"
-                element={user ? <EditCategory /> : <Landing2 />}
-              />
-              <Route path="/menu" element={<Menu />} />
-              <Route path="/termofservice" element={<TermsOfService />} />
-              <Route
-                path="/account/password/reset"
-                element={
-                  user ? <Navigate to="/dashboard" /> : <SendLinkToEmail />
-                }
-              />
-
-              <Route path="/design1" element={<Design1 />} />
-              <Route path="/design2" element={<Design2 />} />
-              <Route path="/design3" element={<Design3 />} />
-              <Route
-                path="/design1/:categoryName/dishes/:userId/:categoryId"
-                element={<Design1Dish />}
-              />
-              <Route path="/design4" element={<Design4 />} />
-              <Route path="/design4DishDetails" element={<DishDetails />} />
-            </Routes>
-          </AnimatePresence>
+        <div className="flex flex-grow">
+          <main className="flex-grow">
+            <AnimatePresence mode="wait">
+              <Routes>
+                <Route
+                  path="/"
+                  element={user ? <Navigate to="/dashboard" /> : <Landing2 />}
+                />
+                <Route
+                  path="/dashboard"
+                  element={user ? <Dashboard /> : <Navigate to="/signin" />}
+                />
+                <Route
+                  path="/signin"
+                  element={user ? <Navigate to="/dashboard" /> : <Signin />}
+                />
+                <Route
+                  path="/signup"
+                  element={user ? <Navigate to="/dashboard" /> : <Signup />}
+                />
+                <Route
+                  path="/admin"
+                  element={
+                    !user || user.role !== "admin" ? (
+                      <Navigate to="/" />
+                    ) : (
+                      <AdminPage />
+                    )
+                  }
+                />
+                <Route path="/edit" element={<Edit />} />
+                <Route
+                  path="/designs"
+                  element={user ? <Designs /> : <Landing2 />}
+                />
+                <Route
+                  path="/settings"
+                  element={user ? <Settings /> : <Landing2 />}
+                />
+                <Route
+                  path="/add-dish"
+                  element={user ? <AddDish /> : <Landing2 />}
+                />
+                <Route
+                  path="/manage-categories"
+                  element={user ? <ManageCategories /> : <Landing2 />}
+                />
+                <Route
+                  path="/manage-dishes"
+                  element={user ? <ManageDishes /> : <Landing2 />}
+                />
+                <Route
+                  path="/add-category"
+                  element={user ? <AddCategory /> : <Landing2 />}
+                />
+                <Route
+                  path="/add-asset"
+                  element={user ? <AddAssetsPage /> : <Landing2 />}
+                />
+                <Route
+                  path="/dishesPage"
+                  element={user ? <DishPage /> : <Landing2 />}
+                />
+                <Route
+                  path="/profile"
+                  element={user ? <Profile /> : <Landing2 />}
+                />
+                <Route
+                  path="/profile/edit"
+                  element={user ? <EditProfile /> : <Landing2 />}
+                />
+                <Route
+                  path="/editDish"
+                  element={user ? <EditDish /> : <Landing2 />}
+                />
+                <Route
+                  path="/editCategory"
+                  element={user ? <EditCategory /> : <Landing2 />}
+                />
+                <Route path="/menu" element={<Menu />} />
+                <Route path="/termofservice" element={<TermsOfService />} />
+                <Route
+                  path="/request/resetpassword"
+                  element={
+                    user ? <Navigate to="/dashboard" /> : <SendLinkToEmail />
+                  }
+                />
+                <Route path="/resetpassword" element={<ResetPassword />} />
+                <Route path="/design1" element={<Design1 />} />
+                <Route path="/design2" element={<Design2 />} />
+                <Route path="/design3" element={<Design3 />} />
+                <Route
+                  path="/design1/:categoryName/dishes/:userId/:categoryId"
+                  element={<Design1Dish />}
+                />
+                <Route path="/design4" element={<Design4 />} />
+                <Route path="/design4DishDetails" element={<DishDetails />} />
+              </Routes>
+            </AnimatePresence>
+          </main>
+          {user && <Sidebar user={user} />}
         </div>
 
-        <div className=" z-50">
-          <Footer />
-        </div>
+        <Footer />
       </BrowserRouter>
+
       <ToastContainer position="top-right" autoClose={5000} theme="dark" />
     </div>
   );

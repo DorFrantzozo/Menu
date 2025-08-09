@@ -10,6 +10,9 @@ import Spinner from "@/components/Spinner";
 import { toast } from "react-toastify";
 import { updateUser } from "@/state/user/userSlice";
 import axiosInstance from "../utils/baseUrl";
+import  CardCarousel  from "@/components/Carousel/CardCarousel";
+
+
 const Designs = () => {
   const navigate = useNavigate();
 
@@ -19,6 +22,7 @@ const Designs = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [menu, setMenu] = useState([]);
+  const designs =[{img: design1Tambneil, number: 1,title: "design 1"}, {img: design2Tambneil, number: 2, title: "design 2"}, {img: design3Tambneil, number: 3 , title: "design 3" }, {img: design4Tambneil, number: 4, title: "design 4"}];
   const handleChangeMenuDesign = async (designNumber) => {
     setIsLoading(true);
     try {
@@ -54,94 +58,12 @@ const Designs = () => {
   return (
     <>
       {isLoading && <Spinner />}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        <div className="flex flex-col items-center">
-          <img
-            src={design1Tambneil}
-            className="shadow-slate-200 h-[700px] mb-10 mt-20 hover:scale-110 transition duration-500 rounded-lg shadow-lg"
-            alt=""
-          />
-          <div className="flex gap-10 justify-around mt-5 w-full sm:w-auto">
-            <DefaultButton
-              text="החל"
-              bg="zinc-800"
-              color="white"
-              onClick={() => handleChangeMenuDesign(1)}
-            />
-            <DefaultButton
-              text="לנסות"
-              bg="zinc-800"
-              color="white"
-              onClick={() => navigate("/design1", { state: menu })}
-            />
-          </div>
-        </div>
-
-        <div className="flex flex-col items-center mb-20">
-          <img
-            src={design2Tambneil}
-            className="shadow-slate-200 h-[700px] mb-10 mt-20 hover:scale-110 transition duration-500 rounded-lg shadow-lg"
-            alt=""
-          />
-          <div className="flex justify-around gap-10 mt-5 w-full sm:w-auto">
-            <DefaultButton
-              text="החל"
-              bg="zinc-800"
-              color="white"
-              onClick={() => handleChangeMenuDesign(2)}
-            />
-            <DefaultButton
-              text="לנסות"
-              bg="zinc-800"
-              color="white"
-              onClick={() => navigate("/design2", { state: menu })}
-            />
-          </div>
-        </div>
-
-        <div className="flex flex-col items-center mb-20">
-          <img
-            src={design3Tambneil}
-            className="shadow-slate-200 h-[700px] mb-10 mt-20 hover:scale-110 transition duration-500 rounded-lg shadow-lg"
-            alt=""
-          />
-          <div className="flex justify-around gap-10 mt-5 w-full sm:w-auto">
-            <DefaultButton
-              text="החל"
-              bg="zinc-800"
-              color="white"
-              onClick={() => handleChangeMenuDesign(3)}
-            />
-            <DefaultButton
-              text="לנסות"
-              bg="zinc-800"
-              color="white"
-              onClick={() => navigate("/design3", { state: menu })}
-            />
-          </div>
-        </div>
-
-        <div className="flex flex-col items-center mb-20">
-          <img
-            src={design4Tambneil}
-            className="shadow-slate-200 h-[700px] mb-10 mt-20 hover:scale-110 transition duration-500 rounded-lg shadow-lg"
-            alt=""
-          />
-          <div className="flex justify-around gap-10 mt-5 w-full sm:w-auto">
-            <DefaultButton
-              text="החל"
-              bg="zinc-800"
-              color="white"
-              onClick={() => handleChangeMenuDesign(4)}
-            />
-            <DefaultButton
-              text="לנסות"
-              bg="zinc-800"
-              color="white"
-              onClick={() => navigate("/design4", { state: menu })}
-            />
-          </div>
-        </div>
+      <div className="flex flex-col items-center mt-10 mb-20">
+        <CardCarousel
+          designs={designs}
+          onSelect={handleChangeMenuDesign}
+          onTry={(designNumber) => navigate(`/design${designNumber}`, { state: menu })}
+        />
       </div>
     </>
   );

@@ -6,8 +6,28 @@ const generateToken = (user) => {
   });
 };
 
+const generateResetToken = (user) => {
+  return jwt.sign(
+    { userId: user._id },
+    process.env.JWT_SECRET,
+    { expiresIn: "15m" }
+  );
+};
+
+
 const expirationTime = () => {
   return Date.now() + 60 * 60 * 1000;
+};
+
+const checkTokenValidity = (token) => {
+ try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("Token is valid. Payload:", decoded);
+    return { valid: true, payload: decoded };
+  } catch (err) {
+    console.log("Token is invalid or expired:", err.message);
+    return { valid: false, message: err.message };
+  }
 };
 
 const isAuth = (req, res, next) => {
@@ -46,4 +66,4 @@ const decodeToken = (req, res, next) => {
   }
 };
 
-export { generateToken, isAuth, decodeToken, expirationTime };
+export { generateToken, isAuth, decodeToken, expirationTime,generateResetToken ,checkTokenValidity};

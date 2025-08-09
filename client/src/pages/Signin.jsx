@@ -8,9 +8,10 @@ import {
   getAllDishesAndMapToCategories,
 } from "@/utils/fetchData";
 import { setMenuCategories } from "@/state/menu/menuCategoriesSlice";
-import logo from "../assets/img/logoBlack.png";
+import logo from "../assets/img/logoBlack.avif";
 import axiosInstance from "../utils/baseUrl";
 import Spinner from "@/components/Spinner";
+
 const Signin = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -20,32 +21,26 @@ const Signin = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     try {
       setLoading(true);
       const response = await axiosInstance.post("/user/login", {
         email,
         password,
       });
-
       if (response.status === 200) {
         const { user, token, expireTime } = response.data;
-
         dispatch(setUser(user));
         dispatch(setToken(token));
         localStorage.setItem("token", token);
         localStorage.setItem("expireTime", expireTime);
         localStorage.setItem("user", JSON.stringify(user));
-        setLoading(false);
 
         const categories = await getCategories(user);
-        // Get categories with their dishes
         const categoriesWithDishes = await getAllDishesAndMapToCategories(
           user,
           categories,
           dispatch
         );
-
         dispatch(setMenuCategories(categoriesWithDishes));
         localStorage.setItem(
           "categories",
@@ -56,111 +51,88 @@ const Signin = () => {
         navigate("/dashboard");
       }
     } catch {
-      setLoading(false);
       toast.error("שם המשתמש או הסיסמה אינם תקינים");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <>
-      <div className="flex min-h-full flex-1 flex-col justify-center px-6  lg:px-8  ">
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <img
-            alt="Menu Logo"
-            src={logo}
-            className="h-[180px] w-[290px]  mx-auto"
-          />
-          {loading && (
-            <div className="absolute top-0 left-0 right-0 bottom-0 flex  justify-center bg-zinc-900 bg-opacity-50 z-10">
-              <Spinner />
-            </div>
-          )}
-          <h2 className="text-center text-2xl leading-9 tracking-tight  text-black">
-            התחברות לחשבון
-          </h2>
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
+      <div className="relative w-full max-w-md bg-white shadow-xl rounded-2xl px-8 py-10">
+        {loading && (
+          <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-white/70 z-10 rounded-2xl">
+            <Spinner />
+          </div>
+        )}
+
+        <div className="flex justify-center mb-6">
+          <img src={logo} alt="iMenu Logo" className="h-20" />
         </div>
 
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form
-            action="#"
-            onSubmit={handleSubmit}
-            method="POST"
-            className="space-y-6"
-          >
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium leading-6 text-black"
-              >
-                Email address
-              </label>
-              <div className="mt-2">
-                <input
-                  onChange={(e) => setEmail(e.target.value)}
-                  value={email} //TODO:remove
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-400 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
+        <h2 className="text-center text-2xl font-bold text-gray-800 mb-8">
+          התחברות לחשבון
+        </h2>
 
-            <div>
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium leading-6 text-black"
-                >
-                  Password
-                </label>
-                <div dir="rtl" className="text-sm cursor-pointer">
-                  <span
-                    className="hover:text-black text-green-400"
-                    onClick={() => navigate("/account/password/reset")}
-                  >
-                    שחכתי סיסמה ?
-                  </span>
-                </div>
-              </div>
-              <div className="mt-2">
-                <input
-                  onChange={(e) => setPassword(e.target.value)}
-                  value={password} // TODO:remove
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  autoComplete="current-password"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-400 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
+        <form onSubmit={handleSubmit} className="space-y-5" dir="rtl">
+          <div>
+            <label className="block text-right text-sm font-medium text-gray-600 mb-1">
+              כתובת מייל
+            </label>
+            <input
+              type="email"
+              required
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-black focus:ring-2 outline-none"
+            />
+          </div>
 
-            <div>
+          <div>
+            <label className="block text-right text-sm font-medium text-gray-600 mb-1">
+              סיסמה
+            </label>
+            <input
+              type="password"
+              required
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-black focus:ring-2 outline-none"
+            />
+            <div className="text-left text-sm mt-2">
               <button
-                type="submit"
-                className="flex w-full justify-center rounded-md bg-green-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm   hover:text-black    focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                type="button"
+                className="text-orange-500 hover:text-black"
+                onClick={() => navigate("/request/resetpassword")}
               >
-                התחבר
+                שכחתי סיסמה
               </button>
             </div>
-          </form>
+          </div>
 
-          <p className="mt-10 text-center text-sm text-gray-500">
+          <button
+            type="submit"
+            className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold py-2 rounded-lg transition"
+          >
+            התחבר
+          </button>
+        </form>
+
+        <div dir="rtl" className="text-center ">
+          <p className="text-center text-sm text-gray-500 mt-8">
+            אין לך חשבון?
             <button
               onClick={() => navigate("/signup")}
-              className="font-semibold leading-6 text-green-400 hover:text-black mb-10"
+              className="text-orange-500 hover:text-black font-medium ms-2"
             >
-              הרשמה
+              הירשם עכשיו
             </button>
-            {"   "} ?אין לך חשבון
           </p>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

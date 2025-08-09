@@ -37,25 +37,29 @@ const updateMenuSettings = async ({
   }
 };
 
-const SendLinkToEmail = async (email) => {
+const SendLinkToEmail = async (email) => { 
   try {
-    const res = await axiosInstance.post("/user/sendResetPassword", {
+   
+    const { data } = await axiosInstance.post(`/user/sendResetPasswordLink/`, {
       to: email,
       subject: "איפוס סיסמה",
-      resetLink: `https://menuyou.online/account/resetpassword?email=${email}`,
-      userName: "לקוח יקר", // אפשר להחליף לפי הצורך
+      userName: "לקוח יקר",
     });
-    toast.success("נשלח קישור לאיפוס הסיסמה למייל שלך.");
+    console.log(data)
 
-    // if (res.data) {
-    // } else {
-    //   toast.error("שליחת האימייל נכשלה "+ res.data.message);
-    //   console.error(err.response?.data || err.message);
-    // }
+    if (data?.success) {
+      toast.success("נשלח קישור לאיפוס הסיסמה למייל שלך.");
+    } else {
+      toast.error("שליחת האימייל נכשלה: " + (data?.message || "שגיאה לא ידועה"));
+      console.error("שגיאה מהשרת:", data);
+    }
   } catch (err) {
-    toast.error("אירעה שגיאה בשליחת הקישור.");
-    console.error(err.message);
+    const message = err.response?.data?.message || err.message || "שגיאה לא ידועה";
+    toast.error("אירעה שגיאה בשליחת הקישור: " + err.response.body);
+    console.error("שגיאה מהבקשה:", err);
   }
 };
+
+
 
 export { SendLinkToEmail, updatePaidStatus, updateMenuSettings };

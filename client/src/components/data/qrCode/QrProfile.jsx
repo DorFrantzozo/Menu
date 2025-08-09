@@ -51,9 +51,9 @@ const QrProfile = ({ userName }) => {
   }
 
   return (
-    <>
+    <div className="mb-10 border h-[435px] p-2 rounded-lg shadow-lg">
       <h1 className="text-center mt-6">קוד ה - QR של המסעדה</h1>
-      <div className="flex justify-center gap-0">
+      <div className="flex justify-center ">
         <h1 className="p-1">בחר סוג QR</h1>
         <DefaultDropDown
           dropDownTitle="QR סוג"
@@ -67,30 +67,30 @@ const QrProfile = ({ userName }) => {
         />
       </div>
 
-      <div className="flex justify-center">
+      <div className="flex mb-2 justify-center">
         <img src={qrcode} alt="QR Code" />
       </div>
-      <div className="flex justify-center gap-2">
+      <div className="flex mb-2 pb-2 justify-center gap-4">
         <button
-          className="bg-gray-400  p-2 flex text-white rounded-full w-[120px] hover:bg-zinc-800 transition"
+          className="bg-gray-400  p-2 flex justify-center text-white rounded-full w-[120px] hover:bg-zinc-800 transition"
           onClick={handleDownloadQr}
         >
           הורד QR{" "}
-          <span className="ms-4">
+          <span className="ms-2">
             <DownloadIcon />
           </span>
         </button>
         <button
-          className="bg-green-500 p-2 rounded-full hover:bg-green-700 w-[120px] transition flex text-white"
+          className="bg-green-500 p-2 rounded-full  hover:bg-green-700 w-[120px] transition flex  justify-center text-white"
           onClick={handleShareClick}
         >
           שתף QR{" "}
           <span className="ms-4">
-            <ShareIcon />
+            <ShareIcon className="w-5" />
           </span>
         </button>
       </div>
-    </>
+    </div>
   );
 };
 

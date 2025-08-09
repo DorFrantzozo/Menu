@@ -158,6 +158,7 @@ const deleteDish = async (req, res) => {
   const { userId, dishId } = req.params; // Changed from categoryId to dishId
 
   try {
+
     const dish = await Dish.findOne({ _id: dishId, userId }); // Find by dishId and userId
     if (!dish) {
       return res.status(404).json({ message: "Dish not found" });

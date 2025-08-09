@@ -10,10 +10,12 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
  * @param {string} options.templateId - מזהה טמפלט של SendGrid
  * @param {Object} options.dynamicData - הנתונים הדינמיים להזרקה לטמפלט
  */
-const sendEmail = async ({ to, templateId, dynamicData }) => {
+const sendEmail = async ({ to, templateId, dynamicData,subject  }) => {
+ 
   const msg = {
     to,
-    from: process.env.FROM_EMAIL,
+    from:  process.env.SENDGRID_FROM_EMAIL,
+    subject:subject,
     templateId,
     dynamic_template_data: dynamicData,
   };

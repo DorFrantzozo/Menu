@@ -1,0 +1,88 @@
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { useState } from "react";
+import Modal from "../Modal";
+import EditDishForm from "./EditDishForm";
+
+export default function DishCard({ dish, user }) {
+  const [showDeleteForm, setShowDeleteForm] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
+
+  return (
+    <div className="bg-white border border-slate-200 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col">
+      
+      {/* תמונה עם שכבת "מוסתר" במידת הצורך */}
+      <div className="relative h-40 bg-gradient-to-br from-slate-100 to-slate-200 overflow-hidden">
+        {dish.img ? (
+          <>
+            <img
+              src={dish.img}
+              alt={dish.name}
+              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+            />
+            {dish.hide && (
+              <div className="absolute inset-0 bg-black bg-opacity-70 z-10 flex items-center justify-center">
+                <span className="text-white font-bold text-lg">מוסתר</span>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="flex items-center justify-center h-full text-slate-400 text-4xl select-none">
+            🖼️
+          </div>
+        )}
+      </div>
+
+      {/* תוכן הכרטיס */}
+      <div className="p-4 flex flex-col flex-grow justify-between">
+        <div>
+          <h3 className="text-xl font-bold text-slate-900 mb-1 hover:text-sky-600 transition-colors duration-200">
+            {dish.name}
+          </h3>
+          {dish.description && (
+            <p className="text-sm text-slate-600 mb-2">{dish.description}</p>
+          )}
+          <p className="text-sm text-slate-700 font-semibold">₪{dish.price}</p>
+          <div className="flex flex-wrap gap-2 mt-2 text-xs text-slate-500">
+            {dish.vegi && <span>🌱 צמחוני/טבעוני</span>}
+            {dish.pregnant && <span>🤰 מתאים להריוניות</span>}
+            {dish.lactose && <span>🥛 ללא לקטוז</span>}
+            {dish.gluten && <span>🌾 ללא גלוטן</span>}
+          </div>
+        </div>
+
+        {/* כפתורים */}
+        <div className="flex gap-3 mt-4">
+          <button
+            onClick={() => setShowEditForm(!showEditForm)}
+            className="flex items-center gap-1 text-amber-600 hover:text-amber-700 transition-colors duration-200"
+            aria-label="Edit dish"
+          >
+            <PencilIcon className="w-5 h-5" />
+            <span className="hidden sm:inline">ערוך</span>
+          </button>
+          <button
+            onClick={() => setShowDeleteForm(true)}
+            className="flex items-center gap-1 text-red-500 hover:text-red-600 transition-colors duration-200"
+            aria-label="Delete dish"
+          >
+            <TrashIcon className="w-5 h-5" />
+            <span className="hidden sm:inline">מחק</span>
+          </button>
+
+          {showEditForm && (
+            <EditDishForm dish={dish} setShowEditForm={setShowEditForm} />
+          )}
+          {showDeleteForm && (
+            <Modal
+              open={showDeleteForm}
+              setOpen={setShowDeleteForm}
+              user={user}
+              item={dish}
+              type={"dish"}
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -9,7 +9,7 @@ const ResetForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(email);
+    
     await SendLinkToEmail(email);
   };
   return (

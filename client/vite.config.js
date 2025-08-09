@@ -11,7 +11,14 @@ export default defineConfig({
       "@": dirname(fileURLToPath(import.meta.url)) + "/src",
     },
   },
+  // build: {
+  //   assetsDir: "assets",
+  // }
   build: {
     assetsDir: "assets",
-  }
+    minify: "esbuild", // ברירת מחדל אבל נוודא
+    target: "esnext", // לנצל תכונות מודרניות בדפדפנים
+    cssCodeSplit: true,
+    sourcemap: false,
+  },
 });

@@ -1,8 +1,9 @@
 import User from "../model/user.js";
 import bcrypt from "bcryptjs";
 import cloudinary from "../utils/cloudinary.js";
-import { expirationTime, generateToken } from "../utils/jwt.js";
+import { checkTokenValidity, expirationTime, generateToken } from "../utils/jwt.js";
 import { sendEmail } from "../utils/sendgrid.js";
+
 
 //TODO: split logic to different layers (like repository for db accessing) and files (like bcrypt and cloudinary)
 const createUser = async (req, res) => {
@@ -316,48 +317,122 @@ const updateUserMenuSettings = async (req, res) => {
 };
 
 const SendResetPasswordMail = async (req, res) => {
-  const { to, subject, resetLink, userName } = req.body; // מקבל את הנתונים מהבקשה
+  const { to, userName } = req.body;
+  console.log("קלט שהתקבל:", { to, userName });
 
-  // בדיקה אם כל השדות קיימים
-  if (!to || !subject || !resetLink || !userName) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Missing required fields" });
+  if (!to || !userName) {
+    return res.status(400).json({
+      success: false,
+      message: "חסרים שדות חובה לשליחת האימייל.",
+    });
   }
-  // console.log(to + "and " + subject + "and " + resetLink + "and " + userName);
+
   try {
-    // שולח את המייל באמצעות הפונקציה sendEmail
+    const user = await User.findOne({ email: to });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "משתמש לא נמצא עם כתובת האימייל שסופקה.",
+      });
+    }
+
+    const resetToken = generateToken(user);
+    const resetLink = `${process.env.CLIENT_BASE_URL}/resetpassword?token=${resetToken}`;
+
+    const templateId = process.env.TEMPLATEID;
+    if (!templateId) {
+      console.error("❌ TEMPLATEID חסר או לא מוגדר בקובץ .env");
+      return res.status(500).json({
+        success: false,
+        message: "הגדרת תבנית המייל חסרה בשרת.",
+      });
+    }
+
     const result = await sendEmail({
-      to,
-      templateId: process.env.TEMPLATEID, // מזהה הטמפלט שלך ב-SendGrid
-      subject, // נושא המייל
+      to: user.email,
+      templateId: templateId,
       dynamicData: {
-        resetLink, // קישור לאיפוס הסיסמה
-        userName, // שם המשתמש (או כל מידע אישי אחר שתרצה לשלב)
+        resetLink,
+        userName: user.restaurantName || user.email,
       },
     });
 
-    if (result.success) {
+    if (result?.success) {
       return res.status(200).json({
         success: true,
-        message: "Reset password email sent successfully",
+        message: "נשלח מייל לאיפוס סיסמה בהצלחה.",
       });
     } else {
+      console.error("❌ SendGrid error:", JSON.stringify(result?.error, null, 2));
       return res.status(500).json({
         success: false,
-        message: "Failed to send email",
-        error: result.error,
+        message: "שליחת המייל נכשלה.",
+        error: result?.error,
       });
     }
   } catch (error) {
-    console.error("Error sending email:", error);
+    console.error("שגיאה בשליחת האימייל:", error);
     return res.status(500).json({
       success: false,
-      message: "An error occurred while sending the email",
-      error,
+      message: "אירעה שגיאה בשרת בעת שליחת האימייל.",
     });
   }
 };
+
+
+
+
+
+const resetPassword = async (req, res) => {
+  const { data } = req.body;
+  const { token, newPassword } = data;
+
+  // 1. בדיקת תקינות הטוקן דרך הפונקציה שב־utils
+  const { valid, payload, message } = checkTokenValidity(token);
+
+  if (!valid) {
+    if (message === "jwt expired") {
+      return res.status(401).json({ message: "הקישור לאיפוס הסיסמה פג תוקף" });
+    }
+    return res.status(400).json({ message: "הטוקן לא תקין" });
+  }
+
+  try {
+    console.log(payload.userId)
+    // 2. חיפוש המשתמש
+    const user = await User.findById(payload._id);
+    if (!user) {
+      return res.status(404).json({ message: "המשתמש לא נמצא" });
+    }
+
+    // 3. בדיקת סיסמה זהה
+    const isSamePassword = await bcrypt.compare(newPassword, user.password);
+    if (isSamePassword) {
+      return res.status(400).json({ message: "הסיסמה החדשה לא יכולה להיות זהה לקודמת" });
+    }
+
+    // 4. עידכון הסיסמה
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    return res.status(200).json({ message: "הסיסמה אופסה בהצלחה" });
+  } catch (error) {
+    console.error("Error resetting password:", error.message);
+    return res.status(500).json({ message: "שגיאת שרת פנימית" });
+  }
+};
+
+
+
+
+
+      
+
+
+
+
 
 export {
   getAllUsers,
@@ -369,4 +444,5 @@ export {
   updateDesignByNumber,
   updateUserMenuSettings,
   SendResetPasswordMail,
+  resetPassword
 };

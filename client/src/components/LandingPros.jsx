@@ -5,7 +5,6 @@ import ClockIcon from "./icons/ClockIcon";
 import DefaultCard from "./Cards/DefaultCard";
 import ThumbUpIcon from "./icons/ThumbUpIcon";
 import SensitivityIcon from "./icons/SensitivityIcon";
-import systemDemo from "../assets/img/system-demo-landing.png";
 import TiltedCard from "./TextAnimations/TiltedCard";
 const LandingPros = () => {
   return (
@@ -51,13 +50,6 @@ const LandingPros = () => {
         >
           נסו עכשיו 14 ימי התנסות ללא עלות
         </h1>
-        <div className=" mt-10  ">
-          <img
-            src={systemDemo}
-            className="rounded-xl"
-            alt="דימוי מערכת המראה את התפריט הדיגיטלי"
-          />
-        </div>
       </div>
     </>
   );

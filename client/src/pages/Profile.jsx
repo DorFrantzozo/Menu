@@ -22,8 +22,8 @@ const Profile = () => {
   return (
     <>
       <FreeTrailBanner user={userFromStorage} />
-      <div className="flex justify-center mt-10 px-4">
-        <div dir="rtl" className="bg-white  w-full max-w-3xl p-8">
+      <div className="flex  justify-center  px-4">
+        <div dir="rtl" className="  w-full max-w-3xl p-8">
           <h2 className="text-3xl font-semibold text-gray-900 text-center mb-4">
             פרופיל
           </h2>
@@ -96,9 +96,9 @@ const Profile = () => {
             * פרטים אלו לא יוצגו באופן ציבורי
           </h1>
 
-          <div className="text-sm text-center mt-4">
-            <p>Id: {userFromStorage?._id}</p>
-            <p>סוג מנוי : {userFromStorage?.isPaid ? "פרימיום" : "ניסיון"}</p>
+          <div className="text-sm text-center mt-4 ">
+            <p>Id:  {userFromStorage?._id}</p>
+            <p>סוג מנוי : {userFromStorage?.isPaid ? "Premium" : "Trail"}</p>
             <p className="mt-2">
               חבר מאז: {userFromStorage?.createdAt.split("T")[0]}
             </p>

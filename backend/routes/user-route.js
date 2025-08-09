@@ -10,6 +10,7 @@ import {
   getAllUsers,
   updateUserMenuSettings,
   SendResetPasswordMail,
+  resetPassword,
   
 } from "../controllers/user-controller.js";
 
@@ -23,5 +24,6 @@ userRouter.post("/deleteUser", deleteUser);
 userRouter.get("/getAllUsers", getAllUsers);
 userRouter.put("/updateDesign", updateDesignByNumber);
 userRouter.put("/updateUserMenuSettings", updateUserMenuSettings);
-userRouter.post("/sendResetPassword", SendResetPasswordMail);
+userRouter.post("/sendResetPasswordLink", SendResetPasswordMail);
+userRouter.post("/resetPassword", resetPassword);
 export default userRouter;

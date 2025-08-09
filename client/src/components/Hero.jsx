@@ -1,5 +1,5 @@
-import logo from "../assets/img/logoBlack.png";
-import iphone from "../assets/img/iphone-landing.png";
+import logo from "../assets/img/logoBlack.avif";
+import iphone from "../assets/img/iphone-landing.avif";
 // PaintBrushIcon,
 // UserIcon,
 ("@heroicons/react/20/solid");
@@ -19,7 +19,7 @@ export default function Hero() {
         alt="logo"
         aria-label="logo"
         loading="lazy"
-        className="w-full hidden lg:block max-w-[300px] mx-auto"
+        className="w-full hidden lg:block max-w-[300px] mx-[25%] "
       />
 
       <div className="w-full flex flex-col lg:flex-row justify-around px-4">
@@ -61,7 +61,7 @@ export default function Hero() {
               loading="lazy"
               width={700}
               height={600}
-              className="w-full max-w-[800px] mx-auto -mt-16"
+              className="w-full max-w-[400px]  mx-auto mt-16"
               alt="תמונה של המכשיר המציגה את התפריט הדיגיטלי"
             />
           </AnimatedContent>

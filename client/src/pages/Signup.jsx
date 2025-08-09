@@ -1,12 +1,12 @@
 import { useState } from "react";
-
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setToken, setUser } from "../state/user/userSlice";
 import { PhotoIcon } from "@heroicons/react/24/solid";
-import logo from "../assets/img/logoBlack.png";
+import logo from "../assets/img/logoBlack.avif";
 import axiosInstance from "../utils/baseUrl";
+
 const Signup = () => {
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
@@ -30,9 +30,7 @@ const Signup = () => {
 
     try {
       const response = await axiosInstance.post("/user/signup", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
       if (response.status === 201) {
@@ -48,179 +46,134 @@ const Signup = () => {
         "Error creating user:",
         error.response?.data || error.message
       );
-      toast.error("Failed to create user");
+      toast.error("יצירת המשתמש נכשלה");
     }
   };
+
   return (
-    <div>
-      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <img
-            alt="Your Company"
-            src={logo}
-            className="h-[180px] w-[290px]  mx-auto"
-          />
-          <h2 className="text-center text-black text-2xl  leading-9 tracking-tight ">
-            יצירת חשבון
-          </h2>
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
+      <div className="w-full max-w-md bg-white shadow-xl rounded-2xl px-8 py-10">
+        <div className="flex justify-center mb-6">
+          <img src={logo} alt="iMenu Logo" className="h-20" />
         </div>
 
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form onSubmit={handleSubmit} method="POST" className="space-y-6">
-            <div>
-              <label
-                htmlFor="name"
-                className="block text-lg mb-2 text-end font-medium leading-6 text-black"
-              >
-                שם המסעדה
-              </label>
-              <p className="text-xs font-bold text-end"> באנגלית בלבד *</p>
-              <div className="mt-2">
-                <input
-                  onChange={(e) => setRestaurantName(e.target.value)}
-                  id="name"
-                  name="name"
-                  pattern="[A-Za-z]+"
-                  required
-                  autoComplete="name"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-400 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
+        <h2 className="text-center text-2xl font-bold text-gray-800 mb-8">
+          יצירת חשבון
+        </h2>
 
-            <div>
-              <label
-                htmlFor="name"
-                className="block text-lg mb-2 text-end font-medium leading-6 text-black"
-              >
-                שם להצגה
-              </label>
-              <p className="text-xs font-bold text-end"> ניתן בעברית *</p>
-              <div className="mt-2">
-                <input
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  id="name"
-                  name="name"
-                  required
-                  autoComplete="name"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-400 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
+        <form onSubmit={handleSubmit} className="space-y-5" dir="rtl">
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              שם המסעדה (באנגלית בלבד)
+            </label>
+            <input
+              pattern="[A-Za-z]+"
+              required
+              value={restaurantName}
+              onChange={(e) => setRestaurantName(e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-black focus:ring-2 outline-none"
+            />
+          </div>
 
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm text-end font-medium leading-6 text-black"
-              >
-                כתובת מייל
-              </label>
-              <div className="mt-2">
-                <input
-                  onChange={(e) => setEmail(e.target.value)}
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-400 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              שם להצגה (בעברית)
+            </label>
+            <input
+              required
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-black focus:ring-2 outline-none"
+            />
+          </div>
 
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-end  leading-6  text-black"
-              >
-                סיסמה
-              </label>
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              כתובת מייל
+            </label>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-black focus:ring-2 outline-none"
+            />
+          </div>
 
-              <div className="mt-2">
-                <input
-                  onChange={(e) => setPassword(e.target.value)}
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  autoComplete="current-password"
-                  className="block w-full  rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-400 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              סיסמה
+            </label>
+            <input
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-black focus:ring-2 outline-none"
+            />
+          </div>
 
-            <div>
-              <label className="block text-sm font-medium text-end mb-2  leading-6  text-black">
-                טלפון
-              </label>
-              <input
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              טלפון
+            </label>
+            <input
+              type="tel"
+              required
+              value={phone}
               onChange={(e) => setPhone(e.target.value)}
-                type="tel"
-                name="phone"
-                id="phone"
-                required
-                autoComplete="tel"
-                className="block w-full  rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-400 sm:text-sm sm:leading-6"
-              />
-            </div>
+              className="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-black focus:ring-2 outline-none"
+            />
+          </div>
 
-            <div className="mt-2 flex justify-center rounded-lg border border-dashed border-green-400 px-6 py-10 bg-white">
-              <div className="text-center">
-                <PhotoIcon
-                  aria-hidden="true"
-                  className="mx-auto h-12 w-12 text-gray-300"
-                />
-                {img && (
-                  <p className="mt-2 text-sm text-green-400">
-                    Selected file: {img.name} {/* Display file name */}
-                  </p>
-                )}
-                <div
-                  dir="rtl"
-                  className="mt-4 flex text-sm leading-6 text-gray-600"
-                >
-                  <label
-                    htmlFor="file-upload"
-                    className="relative cursor-pointer me-2 rounded-md bg-black w-[100px] font-semibold text-white focus-within:outline-none focus-within:ring-2 focus-within:ring-green-400 focus-within:ring-offset-2 hover:text-green-400"
-                  >
-                    <span>העלה תמונה</span>
-                    <input
-                      id="file-upload"
-                      name="logo"
-                      type="file"
-                      className="sr-only"
-                      onChange={(e) => setImg(e.target.files[0])} // Assuming you're handling image file upload here
-                    />
-                  </label>
-                  <p className="pl-1 text-black">או גרור לחלונית</p>
-                </div>
-
-                <p className="text-xs leading-5 text-black">
-                  PNG, JPG, GIF up to 10MB
+          <div className="mt-2 flex justify-center rounded-lg border border-dashed border-amber-400 px-6 py-8 bg-white">
+            <div className="text-center">
+              <PhotoIcon className="mx-auto h-10 w-10 text-gray-300" />
+              {img && (
+                <p className="mt-2 text-sm text-amber-500">
+                  Selected file: {img.name}
                 </p>
-              </div>
-            </div>
-
-            <div>
-              <button
-                type="submit"
-                className="flex w-full justify-center rounded-md bg-green-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm   hover:text-black    focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              )}
+              <div
+                dir="rtl"
+                className="mt-4 flex text-sm text-gray-600 justify-center"
               >
-                הירשם
-              </button>
+                <label
+                  htmlFor="file-upload"
+                  className="cursor-pointer bg-black text-white px-3 py-1 rounded-md font-semibold hover:text-amber-400"
+                >
+                  העלה תמונה
+                  <input
+                    id="file-upload"
+                    name="logo"
+                    type="file"
+                    className="sr-only"
+                    onChange={(e) => setImg(e.target.files[0])}
+                  />
+                </label>
+                <span className="mx-2">או גרור לחלונית</span>
+              </div>
+              <p className="text-xs text-black mt-1">PNG, JPG, GIF עד 10MB</p>
             </div>
-          </form>
+          </div>
 
-          <p className="mt-10 text-center text-sm text-gray-500">
-            <button
-              onClick={() => navigate("/signin")}
-              className="font-semibold leading-6 me-2 text-green-400 hover:text-black"
-            >
-              התחבר
-            </button>
-            ? כבר רשום אלינו{" "}
-          </p>
-        </div>
+          <button
+            type="submit"
+            className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold py-2 rounded-lg transition"
+          >
+            הירשם
+          </button>
+        </form>
+
+        <p dir="rtl" className="text-center text-sm text-gray-500 mt-8">
+          כבר רשום?
+          <button
+            onClick={() => navigate("/signin")}
+            className="text-orange-500 hover:text-black font-medium ms-2"
+          >
+            התחבר
+          </button>
+        </p>
       </div>
     </div>
   );

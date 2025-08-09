@@ -100,7 +100,7 @@ const Design4 = () => {
       <div className="sticky top-0 z-10 bg-white shadow-lg">
         <div className="flex justify-between items-center py-5 px-4">
           <h1 className="text-2xl font-bold text-black flex items-center gap-2">
-            <span className="text-3xl">🍜</span>
+            <span className="text-3xl ms-14">🍜</span>
             {restaurantData?.displayName ||
               JSON.parse(localStorage.getItem("user"))?.displayName ||
               "מסעדה"}
@@ -110,20 +110,29 @@ const Design4 = () => {
         {/* Categories */}
         <div
           className="flex overflow-x-auto max-w-full ms-2 px-4 py-2 mb-3 gap-5 scrollbar-hide scroll-smooth snap-x snap-mandatory"
-          style={{ WebkitOverflowScrolling: "touch" }}
+          style={{
+            WebkitOverflowScrolling: "touch",
+            overflowY: "hidden", // שלא יוסיף גלילה מיותרת
+            maxWidth: "100vw", // מגביל לרוחב המסך
+          }}
         >
           {categories.map((cat) => (
             <button
               key={cat._id}
               onClick={() => setSelectedCategory(cat)}
-              className={`flex flex-col items-center min-w-[64px] px-6 py-3 rounded-xl transition-all snap-start ${
+              className={`flex flex-col items-center min-w-[64px] px-4 py-3 rounded-xl transition-all snap-start ${
                 selectedCategory?._id === cat._id
                   ? "bg-zinc-200 text-black"
-                  : "bg-white text-gray-500"
+                  : "bg-white border shadow-md text-gray-500"
               } shadow-sm`}
+              style={{
+                flexShrink: 0, // שלא יתכווץ
+              }}
             >
               <span className="text-xl">{cat.icon}</span>
-              <span className="text-xs font-medium">{cat.name}</span>
+              <span className="text-xs font-medium text-center">
+                {cat.name}
+              </span>
             </button>
           ))}
         </div>

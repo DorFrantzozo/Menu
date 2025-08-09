@@ -10,7 +10,7 @@ import {
   MenuItems,
 } from "@headlessui/react";
 import { BellIcon } from "@heroicons/react/24/outline";
-import logo from "../../assets/img/logo.png";
+import logo from "../../assets/img/logo.avif";
 import NavbarSmall from "./NavbarSmall";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";

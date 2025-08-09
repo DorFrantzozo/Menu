@@ -1,10 +1,14 @@
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import SideBar from "../components/SideBar";
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import AddDataToStart from "../components/Cards/AddDataToStart";
 
 import FreeTrailBanner from "@/components/Cards/FreeTrailBanner";
+import { countActiveItems, countItems } from "@/utils/localFunctions";
+
+import DashboardTitle from "@/components/Dashboard/DashboardTitle";
+import DashboardDataCards from "@/components/Cards/DashboardDataCards";
+import QuickActiionsCards from "@/components/Cards/QuickActiionsCards";
+import QrProfile from "@/components/data/qrCode/QrProfile";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -13,69 +17,44 @@ const Dashboard = () => {
     (state) => state.menuCategories.menuCategories
   );
 
+  const allItems = countItems(menuCategories);
+  const allActiveItems = countActiveItems(menuCategories);
+
   return (
     <div className="flex min-h-screen">
       {/* Main Content */}
-      <div className="flex-1 ">
+      <div className="flex-1">
         <FreeTrailBanner user={user} />
         <div className="mt-10">
+          <DashboardTitle user={user} />
+
           {menuCategories?.length > 0 ? (
-            <div
-              dir="rtl"
-              className="grid lg:grid-cols-3 gap-5 justify-items-center grid-cols-1"
-            >
-              {menuCategories.map((category) => (
-                <div key={category._id} className="m-3 relative">
-                  <button>
-                    <p className="text-black text-2xl mb-3 text-center">
-                      {category.name}
-                    </p>
+            <>
+              <DashboardDataCards
+                menuCategories={menuCategories}
+                allItems={allItems}
+                allActiveItems={allActiveItems}
+              />
 
-                    <PencilSquareIcon
-                      onClick={() =>
-                        navigate("/editCategory", { state: { item: category } })
-                      }
-                      className="absolute -m-2 w-7 rounded-full z-10 bg-gray-300 p-1"
-                    />
-
-                    {/* עטיפת התמונה ב-div */}
-                    <div className="relative">
-                      <img
-                        className="rounded w-[320px] h-[220px] sm:w-[450px] object-cover"
-                        src={category.img}
-                        alt={category.name}
-                        onClick={() =>
-                          navigate("/dishesPage", { state: { item: category } })
-                        }
-                      />
-
-                      {/* שכבת ההסתרה במקרה שהקטגוריה מוסתרת */}
-                      {category.hide && (
-                        <div
-                          onClick={() =>
-                            navigate("/dishesPage", {
-                              state: { item: category },
-                            })
-                          }
-                          className="absolute inset-0 rounded bg-black bg-opacity-60 flex items-center justify-center text-white text-xl font-bold"
-                        >
-                          הקטגוריה מוסתרת
-                        </div>
-                      )}
-                    </div>
-                  </button>
+              <div
+                dir="rtl"
+                className="flex flex-col lg:flex-row items-start justify-between w-full gap-6 px-4 mt-10"
+              >
+                {/* פעולות מהירות */}
+                <div className="w-full lg:w-1/2">
+                  <QuickActiionsCards />
                 </div>
-              ))}
-            </div>
+
+                {/* QR Code */}
+                <div className="w-full lg:w-1/2">
+                  <QrProfile userName={user} />
+                </div>
+              </div>
+            </>
           ) : (
             <AddDataToStart />
           )}
         </div>
-      </div>
-
-      {/* Sidebar on the right */}
-      <div className="min-w-72 h-full hidden sm:block flex-shrink-0 order-last">
-        <SideBar categories={menuCategories} />
       </div>
     </div>
   );
