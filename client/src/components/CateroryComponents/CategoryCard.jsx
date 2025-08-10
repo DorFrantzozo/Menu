@@ -4,10 +4,9 @@ import Modal from "../Modal";
 
 export default function CategoryCard({ category, onEdit, onDelete, user }) {
   const [showDeleteForm, setShowDeleteForm] = useState(false);
-  
+
   return (
     <div className="bg-white border border-slate-200 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col">
-      
       {/* תמונה עם שכבת כיסוי למוסתר */}
       <div className="relative h-40 bg-gradient-to-br from-slate-100 to-slate-200 overflow-hidden">
         {category.img ? (
@@ -37,9 +36,13 @@ export default function CategoryCard({ category, onEdit, onDelete, user }) {
             {category.name}
           </h3>
           {category.description && (
-            <p className="text-sm text-slate-600 mb-2">{category.description}</p>
+            <p className="text-sm text-slate-600 mb-2">
+              {category.description}
+            </p>
           )}
-          <p className="text-xs text-slate-400">מיקום: {category.locationNumber}</p>
+          <p className="text-xs text-slate-400">
+            מיקום: {category.locationNumber}
+          </p>
           <p className="text-xs text-slate-400">ID: {category._id}</p>
         </div>
 

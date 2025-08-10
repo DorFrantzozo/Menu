@@ -62,7 +62,6 @@ export default function DataTable() {
         userId,
         newStatus === "Paid" ? true : false
       );
-      dispatch(updateUser(response.user));
     } catch (error) {
       console.error("Error updating status:", error);
       // Revert the local state if the API call fails

@@ -11,7 +11,7 @@ const DashboardTitle = ({ user }) => {
       {/* טקסט */}
       <div>
         <h1 className="text-2xl lg:text-3xl mb-4">
-          ברוך הבא חזרה מסעדת - {user.displayName} 👋
+          ברוך הבא מסעדת - {user.displayName} 👋
         </h1>
         <p className="text-lg">
           כאן תוכל לנהל את התפריט שלך, להוסיף מנות, קטגוריות ולצפות בסטטיסטיקות.

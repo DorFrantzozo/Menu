@@ -10,7 +10,12 @@ import AddCategoryForm from "@/components/CateroryComponents/AddCategoryForm";
 import EditCategoryForm from "@/components/CateroryComponents/EditCategoryForm";
 import CategoryCard from "@/components/CateroryComponents/CategoryCard";
 
-export default function ManageCategories({ isLoading, onCreate, onDelete, onEdit }) {
+export default function ManageCategories({
+  isLoading,
+  onCreate,
+  onDelete,
+  onEdit,
+}) {
   const [showCreateForm, setShowCreateCategoryForm] = useState(false);
   const [CreatingCategory, setCreatingCategory] = useState(null);
   const [editingCategory, setEditingCategory] = useState(null);
@@ -18,11 +23,13 @@ export default function ManageCategories({ isLoading, onCreate, onDelete, onEdit
   const [showDeleteForm, setShowDeleteForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const categories = localStorage.getItem("categories") ? JSON.parse(localStorage.getItem("categories")) : [];
+  const categories = localStorage.getItem("categories")
+    ? JSON.parse(localStorage.getItem("categories"))
+    : [];
 
   const user = useSelector((state) => state.user.user);
 
-  const filteredCategories = categories.filter(category =>
+  const filteredCategories = categories.filter((category) =>
     category.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -49,9 +56,11 @@ export default function ManageCategories({ isLoading, onCreate, onDelete, onEdit
         <div className="animate-pulse space-y-6">
           <div className="h-8 bg-slate-200 rounded w-64"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array(6).fill(0).map((_, i) => (
-              <div key={i} className="h-48 bg-slate-200 rounded-xl"></div>
-            ))}
+            {Array(6)
+              .fill(0)
+              .map((_, i) => (
+                <div key={i} className="h-48 bg-slate-200 rounded-xl"></div>
+              ))}
           </div>
         </div>
       </div>
@@ -59,7 +68,10 @@ export default function ManageCategories({ isLoading, onCreate, onDelete, onEdit
   }
 
   return (
-    <div dir="rtl" className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-amber-50/30 p-6 md:p-8">
+    <div
+      dir="rtl"
+      className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-amber-50/30 p-6 md:p-8"
+    >
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <motion.div
@@ -68,8 +80,12 @@ export default function ManageCategories({ isLoading, onCreate, onDelete, onEdit
           className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6"
         >
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold text-slate-900">קטגוריות התפריט</h1>
-            <p className="text-slate-600 mt-2">ארגן את הפריטים שלך לפי קטגוריות</p>
+            <h1 className="text-3xl md:text-4xl font-bold text-slate-900">
+              קטגוריות התפריט
+            </h1>
+            <p className="text-slate-600 mt-2">
+              ארגן את הפריטים שלך לפי קטגוריות
+            </p>
           </div>
           <Button
             onClick={() => setShowCreateCategoryForm(!showCreateForm)}
@@ -149,7 +165,9 @@ export default function ManageCategories({ isLoading, onCreate, onDelete, onEdit
             className="text-center py-16"
           >
             <div className="text-slate-400 text-6xl mb-4">📂</div>
-            <h3 className="text-xl font-semibold text-slate-600 mb-2">לא נמצאה קטגוריה</h3>
+            <h3 className="text-xl font-semibold text-slate-600 mb-2">
+              לא נמצאה קטגוריה
+            </h3>
             <p className="text-slate-500">
               {searchTerm
                 ? "נסה לחפש עם מונח אחר"

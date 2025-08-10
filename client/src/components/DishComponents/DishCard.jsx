@@ -9,7 +9,6 @@ export default function DishCard({ dish, user }) {
 
   return (
     <div className="bg-white border border-slate-200 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col">
-      
       {/* תמונה עם שכבת "מוסתר" במידת הצורך */}
       <div className="relative h-40 bg-gradient-to-br from-slate-100 to-slate-200 overflow-hidden">
         {dish.img ? (

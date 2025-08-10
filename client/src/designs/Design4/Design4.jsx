@@ -8,6 +8,7 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import Allergies from "@/components/sensitivities/Allergies";
 import { motion } from "framer-motion";
+import LanguageSelector from "@/components/LanguageSelector/LanguageSelector";
 
 const Design4 = () => {
   const [restaurantName, setRestaurantName] = useState("");
@@ -105,6 +106,9 @@ const Design4 = () => {
               JSON.parse(localStorage.getItem("user"))?.displayName ||
               "מסעדה"}
           </h1>
+          <div>
+            <LanguageSelector />
+          </div>
         </div>
 
         {/* Categories */}
