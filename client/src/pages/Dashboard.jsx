@@ -47,7 +47,7 @@ const Dashboard = () => {
 
                 {/* QR Code */}
                 <div className="w-full lg:w-1/2">
-                  <QrProfile userName={user} />
+                  <QrProfile userName={user.restaurantName} />
                 </div>
               </div>
             </>

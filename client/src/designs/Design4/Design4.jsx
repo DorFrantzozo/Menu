@@ -96,9 +96,9 @@ const Design4 = () => {
   const dishesToShow = selectedCategory?.menuDishes?.filter(filterDishes) || [];
 
   return (
-    <div dir="rtl" className="min-h-screen">
+    <div dir="rtl" className="min-h-screen overflow-x-hidden">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-white shadow-lg">
+      <div className="sticky top-0 z-10 bg-white shadow-lg ">
         <div className="flex justify-between items-center py-5 px-4">
           <h1 className="text-2xl font-bold text-black flex items-center gap-2">
             <span className="text-3xl ms-14">🍜</span>
@@ -106,9 +106,6 @@ const Design4 = () => {
               JSON.parse(localStorage.getItem("user"))?.displayName ||
               "מסעדה"}
           </h1>
-          <div>
-            <LanguageSelector />
-          </div>
         </div>
 
         {/* Categories */}
@@ -117,14 +114,14 @@ const Design4 = () => {
           style={{
             WebkitOverflowScrolling: "touch",
             overflowY: "hidden", // שלא יוסיף גלילה מיותרת
-            maxWidth: "100vw", // מגביל לרוחב המסך
+            maxWidth: "95vw", // מגביל לרוחב המסך
           }}
         >
           {categories.map((cat) => (
             <button
               key={cat._id}
               onClick={() => setSelectedCategory(cat)}
-              className={`flex flex-col items-center min-w-[64px] px-4 py-3 rounded-xl transition-all snap-start ${
+              className={`flex flex-col items-center min-w-[88px] p-3 rounded-xl transition-all snap-start ${
                 selectedCategory?._id === cat._id
                   ? "bg-zinc-200 text-black"
                   : "bg-white border shadow-md text-gray-500"
@@ -140,7 +137,6 @@ const Design4 = () => {
             </button>
           ))}
         </div>
-
         {/* Filters */}
         <div className="flex justify-center overflow-x-auto bg-gray-200 p-2 shadow-lg gap-2 mb-5">
           {filters.map((filter) => (

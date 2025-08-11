@@ -27,7 +27,7 @@ export function UsersCountCard() {
   }, []);
 
   return (
-    <Card className="w-[220px] bg-zinc-900 text-white">
+    <Card className="w-full sm:w-[220px] bg-zinc-900 text-white">
       <CardHeader>
         <CardTitle className="text-white">Users</CardTitle>
         <CardDescription className="text-white">
@@ -44,10 +44,7 @@ export function UsersCountCard() {
         />
       </CardContent>
       <CardFooter className="flex justify-between">
-        {/* <Button className="text-black" variant="outline">
-          Cancel
-        </Button>
-        <Button>Deploy</Button> */}
+        {/* אם תרצה כפתורים בעתיד */}
       </CardFooter>
     </Card>
   );

@@ -57,19 +57,6 @@ function App() {
     }
   }, [dispatch]);
 
-  const isTokenExpired = () => {
-    const expirationTime = localStorage.getItem("expireTime");
-    return expirationTime && Date.now() > Number(expirationTime);
-  };
-
-  if (isTokenExpired()) {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("expireTime");
-    window.location.reload();
-    return;
-  }
-
   return (
     <div className="flex flex-col min-h-screen">
       <BrowserRouter>

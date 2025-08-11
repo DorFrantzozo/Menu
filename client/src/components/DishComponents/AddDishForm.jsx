@@ -37,7 +37,6 @@ export default function AddDishForm({ closeModal }) {
     const formData = new FormData();
     formData.append("userId", user._id);
     formData.append("name", name);
-    formData.append("img", img);
     formData.append("description", description);
     formData.append("price", price);
     formData.append("category", category);
@@ -45,9 +44,15 @@ export default function AddDishForm({ closeModal }) {
     formData.append("gluten", gluten);
     formData.append("vegi", vegi);
     formData.append("lactose", lactose);
+    formData.append("img", img);
+    if (!img) {
+      toast.error("חובה להעלות תמונה");
+      return;
+    }
 
     try {
       setIsLoading(true);
+      console.log(formData);
       await axiosInstance.post(`/dish/createDish/${user._id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -92,7 +97,7 @@ export default function AddDishForm({ closeModal }) {
   return (
     <>
       {isLoading && (
-        <div className="absolute top-0 right-0 w-full h-full bg-black/40 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
           <Spinner />
         </div>
       )}
@@ -122,6 +127,7 @@ export default function AddDishForm({ closeModal }) {
               <input
                 type="number"
                 value={price}
+                required
                 onChange={(e) => setPrice(e.target.value)}
                 className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800 shadow-sm focus:ring-sky-200 focus:border-sky-200"
               />

@@ -106,7 +106,7 @@ export default function DataTable() {
         const userId = row.original._id;
 
         return (
-          <div className="flex gap-2">
+          <div className="flex overflow-x-auto gap-2">
             <div
               className={`px-2 py-1 rounded-md text-white text-center ${
                 isPaid ? "bg-green-500" : "bg-red-200"
@@ -206,7 +206,7 @@ export default function DataTable() {
   });
 
   return (
-    <div className="w-full mt-10 bg-zinc-900 rounded-lg p-6">
+    <div className=" mt-10 bg-zinc-900 rounded-lg p-6">
       <div className="flex items-center py-4 space-x-4">
         <Input
           placeholder="Search users..."
