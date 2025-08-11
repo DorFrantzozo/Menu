@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Navbar from "./components/nav/Navbar";
 import Signup from "./pages/Signup";
 import Footer from "./components/Footer";
 import { ToastContainer } from "react-toastify";
