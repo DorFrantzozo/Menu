@@ -41,6 +41,7 @@ export default function Modal({ open, setOpen, user, item, type }) {
           user,
           categories
         );
+
         dispatch(setMenuCategories(categoriesWithDishes));
       } else {
         await axiosInstance.delete(
@@ -53,6 +54,13 @@ export default function Modal({ open, setOpen, user, item, type }) {
         );
         const updatedCategories = await getCategories(user);
         dispatch(updateMenuCategories(updatedCategories));
+
+        const categoriesWithDishes = await getAllDishesAndMapToCategories(
+          user,
+          updatedCategories
+        );
+
+        dispatch(setMenuCategories(categoriesWithDishes));
       }
       setOpen(false);
       navigate("/dashboard");

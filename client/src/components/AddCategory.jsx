@@ -5,7 +5,10 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Spinner from "./Spinner";
 import axiosInstance from "../utils/baseUrl";
-import { updateMenuCategories } from "@/state/menu/menuCategoriesSlice";
+import {
+  setMenuCategories,
+  updateMenuCategories,
+} from "@/state/menu/menuCategoriesSlice";
 import { getCategories } from "@/utils/fetchData";
 
 export default function AddCategory() {
@@ -32,8 +35,16 @@ export default function AddCategory() {
       await axiosInstance.post(`/category/createCategory`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      const updatedCategories = await getCategories(user);
+      const updatedCategories = await getCategories(user); //sets categories
+      //now handle dishes too
       dispatch(updateMenuCategories(updatedCategories));
+      const categoriesWithDishes = await getAllDishesAndMapToCategories(
+        user,
+        updatedCategories
+      );
+      dispatch(setMenuCategories(categoriesWithDishes));
+      console.log(categoriesWithDishes);
+
       setIsLoading(false);
       toast.success("הקטגוריה נוספה בהצלחה");
       navigate("/dashboard");
@@ -98,7 +109,8 @@ export default function AddCategory() {
         {/* תיאור */}
         <div>
           <label className="block text-sm font-medium text-slate-700">
-            תיאור הקטגוריה <span className="text-xs text-slate-400">(אופציונלי)</span>
+            תיאור הקטגוריה{" "}
+            <span className="text-xs text-slate-400">(אופציונלי)</span>
           </label>
           <textarea
             rows={3}
@@ -110,11 +122,15 @@ export default function AddCategory() {
 
         {/* העלאת תמונה */}
         <div>
-          <label className="block text-sm font-medium text-slate-700">תמונה</label>
+          <label className="block text-sm font-medium text-slate-700">
+            תמונה
+          </label>
           <div className="mt-2 flex flex-col items-center justify-center border-2 border-dashed border-slate-300 p-6 rounded-lg bg-slate-50">
             <PhotoIcon className="h-12 w-12 text-slate-400" />
             {img && (
-              <p className="mt-2 text-sm text-green-600">קובץ שנבחר: {img.name}</p>
+              <p className="mt-2 text-sm text-green-600">
+                קובץ שנבחר: {img.name}
+              </p>
             )}
             <label className="mt-4 inline-block cursor-pointer rounded bg-gradient-to-r from-green-400 to-green-600 px-4 py-2 text-white shadow hover:from-green-500 hover:to-green-700 transition">
               העלה תמונה

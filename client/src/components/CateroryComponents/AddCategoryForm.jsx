@@ -4,8 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Spinner from "../Spinner";
 import axiosInstance from "@/utils/baseUrl";
-import { updateMenuCategories } from "@/state/menu/menuCategoriesSlice";
-import { getCategories } from "@/utils/fetchData";
+import {
+  setMenuCategories,
+  updateMenuCategories,
+} from "@/state/menu/menuCategoriesSlice";
+import {
+  getAllDishesAndMapToCategories,
+  getCategories,
+} from "@/utils/fetchData";
 
 export default function AddCategoryForm({ onCancel }) {
   const user = useSelector((state) => state.user.user);
@@ -34,6 +40,12 @@ export default function AddCategoryForm({ onCancel }) {
       });
       const updatedCategories = await getCategories(user);
       dispatch(updateMenuCategories(updatedCategories));
+      const categoriesWithDishes = await getAllDishesAndMapToCategories(
+        user,
+        updatedCategories
+      );
+
+      dispatch(setMenuCategories(categoriesWithDishes));
       setIsLoading(false);
       toast.success("הקטגוריה נוספה בהצלחה");
       // אם תרצה כאן ניתן להוסיף פעולה לסגירת הטופס
@@ -66,7 +78,9 @@ export default function AddCategoryForm({ onCancel }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {/* שם הקטגוריה */}
           <div>
-            <label className="block text-sm font-medium text-slate-700">שם הקטגוריה</label>
+            <label className="block text-sm font-medium text-slate-700">
+              שם הקטגוריה
+            </label>
             <input
               type="text"
               required
@@ -78,7 +92,9 @@ export default function AddCategoryForm({ onCancel }) {
 
           {/* מספר מיקום */}
           <div>
-            <label className="block text-sm font-medium text-slate-700">מספר מיקום</label>
+            <label className="block text-sm font-medium text-slate-700">
+              מספר מיקום
+            </label>
             <span className="text-xs text-slate-500 block mb-1">
               מייצג את הסדר בתפריט (מתחיל מ־0)
             </span>
@@ -95,7 +111,8 @@ export default function AddCategoryForm({ onCancel }) {
         {/* תיאור */}
         <div>
           <label className="block text-sm font-medium text-slate-700">
-            תיאור הקטגוריה <span className="text-xs text-slate-400">(אופציונלי)</span>
+            תיאור הקטגוריה{" "}
+            <span className="text-xs text-slate-400">(אופציונלי)</span>
           </label>
           <textarea
             rows={3}
@@ -107,28 +124,29 @@ export default function AddCategoryForm({ onCancel }) {
 
         {/* העלאת תמונה */}
         <div>
-          <label className="block text-sm font-medium text-slate-700">תמונה</label>
+          <label className="block text-sm font-medium text-slate-700">
+            תמונה
+          </label>
           <div className="mt-2 flex flex-col items-center justify-center border-2 border-dashed border-slate-300 p-6 rounded-lg bg-slate-50">
-            
             <PhotoIcon className="h-12 w-12 text-slate-400" />
-            {img && <p className="mt-2 text-sm text-green-600">קובץ שנבחר: {img.name}</p>}
+            {img && (
+              <p className="mt-2 text-sm text-green-600">
+                קובץ שנבחר: {img.name}
+              </p>
+            )}
             <label className="mt-4 inline-block cursor-pointer rounded bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2 text-white shadow hover:from-amber-600 hover:to-orange-600 transition">
               העלה תמונה
-             
               <input
                 type="file"
                 name="img"
-                onChange={(e) =>{ setImg(e.target.files[0]);
-                     if (img) {
-                  
+                onChange={(e) => {
+                  setImg(e.target.files[0]);
+                  if (img) {
                     setPreviewUrl(URL.createObjectURL(img));
                   }
                 }}
                 className="sr-only"
-
-                
               />
-               
             </label>
             <p className="mt-1 text-xs text-slate-500">PNG, JPG, GIF עד 10MB</p>
           </div>
@@ -136,7 +154,7 @@ export default function AddCategoryForm({ onCancel }) {
 
         {/* כפתורים */}
         <div className="flex justify-center gap-6 pt-6">
-           <button
+          <button
             type="button"
             onClick={onCancel}
             className="rounded-md border border-amber-500 px-6 py-2 text-amber-600 hover:bg-zinc-100 transition"
@@ -149,7 +167,6 @@ export default function AddCategoryForm({ onCancel }) {
           >
             שמור
           </button>
-         
         </div>
       </form>
     </>
