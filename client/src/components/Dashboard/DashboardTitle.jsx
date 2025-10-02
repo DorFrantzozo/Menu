@@ -8,7 +8,6 @@ const DashboardTitle = ({ user }) => {
       className="flex flex-col md:flex-row md:items-center md:justify-between ms-[10%] me-[10%] mb-10 gap-4"
       dir="rtl"
     >
-      {/* טקסט */}
       <div>
         <h1 className="text-2xl lg:text-3xl mb-4">
           ברוך הבא מסעדת - {user.displayName} 👋
@@ -18,7 +17,6 @@ const DashboardTitle = ({ user }) => {
         </p>
       </div>
 
-      {/* כפתור */}
       <DefaultButton
         onClick={() =>
           window.open(

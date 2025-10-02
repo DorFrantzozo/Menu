@@ -15,11 +15,15 @@ const Signup = () => {
   const [img, setImg] = useState("");
   const [phone, setPhone] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const [agree, setAgree] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    if (!agree) {
+      toast("חובה לאשר את התקנון כדי ליצור חשבון");
+      return;
+    }
     const formData = new FormData();
     formData.append("email", email);
     formData.append("restaurantName", restaurantName);
@@ -155,6 +159,20 @@ const Signup = () => {
               </div>
               <p className="text-xs text-black mt-1">PNG, JPG, GIF עד 10MB</p>
             </div>
+          </div>
+
+          <div>
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={agree}
+                onChange={(e) => setAgree(e.target.checked)}
+                className="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded"
+              />
+              <span className="text-sm p-2 text-gray-600">
+                קראתי את תנאי השימוש ואני מסכים לתקנון
+              </span>
+            </label>
           </div>
 
           <button

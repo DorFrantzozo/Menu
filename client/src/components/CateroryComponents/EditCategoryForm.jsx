@@ -5,20 +5,26 @@ import { toast } from "react-toastify";
 import axiosInstance from "@/utils/baseUrl";
 import { useDispatch, useSelector } from "react-redux";
 import { updateMenuCategories } from "@/state/menu/menuCategoriesSlice";
-import { getCategories, getAllDishesAndMapToCategories } from "@/utils/fetchData";
+import {
+  getCategories,
+  getAllDishesAndMapToCategories,
+} from "@/utils/fetchData";
+import { useNavigate } from "react-router-dom";
 
 const EditCategoryForm = ({ category, isOpen, setIsOpen }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   // השתמש ב-props שמגיעים
   const item = category || {};
-
   const [img, setImg] = useState(null);
   const [hide, setHide] = useState(item.hide || false);
   const [name, setName] = useState(item.name || "");
-  const [locationNumber, setLocationNumber] = useState(item.locationNumber || 0);
+  const [locationNumber, setLocationNumber] = useState(
+    item.locationNumber || 0
+  );
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (event) => {
@@ -44,10 +50,14 @@ const EditCategoryForm = ({ category, isOpen, setIsOpen }) => {
       );
 
       const categories = await getCategories(user);
-      const categoriesWithDishes = await getAllDishesAndMapToCategories(user, categories);
+      const categoriesWithDishes = await getAllDishesAndMapToCategories(
+        user,
+        categories
+      );
       dispatch(updateMenuCategories(categoriesWithDishes));
 
       toast.success("קטגוריה עודכנה בהצלחה");
+      navigate("/dashboard");
       setIsOpen(false);
     } catch (error) {
       console.error(error);

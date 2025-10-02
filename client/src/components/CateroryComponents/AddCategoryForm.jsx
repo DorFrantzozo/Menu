@@ -61,7 +61,7 @@ export default function AddCategoryForm({ onCancel }) {
   return (
     <>
       {isLoading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+        <div className="fixed -inset-full z-50 flex items-center justify-center bg-black/40">
           <Spinner />
         </div>
       )}

@@ -188,12 +188,40 @@ const deleteCategory = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+const reorderCategories = async (req, res) => {
+  const { userId } = req.params;
+  const { categories } = req.body;
+  // expected: [{ _id: "123", locationNumber: 1 }, { _id: "456", locationNumber: 2 }]
 
-export default deleteCategory;
+  if (!Array.isArray(categories)) {
+    return res.status(400).json({ message: "Invalid categories data" });
+  }
+
+  try {
+    const bulkOps = categories.map((cat) => ({
+      updateOne: {
+        filter: { _id: cat._id, userId },
+        update: { $set: { locationNumber: cat.locationNumber } },
+      },
+    }));
+
+    await Category.bulkWrite(bulkOps);
+
+    const updatedCategories = await Category.find({ userId }).sort(
+      "locationNumber"
+    );
+
+    res.status(200).json({ categories: updatedCategories });
+  } catch (error) {
+    console.error("Error reordering categories:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
 
 export {
   createCategoryByUserId,
   getCategoriesByUserId,
   updateCategoryByUserId,
   deleteCategory,
+  reorderCategories,
 };

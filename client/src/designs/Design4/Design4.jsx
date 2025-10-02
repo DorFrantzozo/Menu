@@ -93,7 +93,10 @@ const Design4 = () => {
     }
   };
 
-  const dishesToShow = selectedCategory?.menuDishes?.filter(filterDishes) || [];
+  const dishesToShow =
+    selectedCategory?.menuDishes?.filter(
+      (dish) => !dish.hide && filterDishes(dish)
+    ) || [];
 
   return (
     <div dir="rtl" className="min-h-screen overflow-x-hidden">
@@ -101,10 +104,10 @@ const Design4 = () => {
       <div className="sticky top-0 z-10 bg-white shadow-lg ">
         <div className="flex justify-between items-center py-5 px-4">
           <h1 className="text-2xl font-bold text-black flex items-center gap-2">
-            <span className="text-3xl ms-14">🍜</span>
+            <span className="text-3xl ms-14">🛎️</span>
             {restaurantData?.displayName ||
               JSON.parse(localStorage.getItem("user"))?.displayName ||
-              "מסעדה"}
+              restaurantName}
           </h1>
         </div>
 
@@ -117,25 +120,27 @@ const Design4 = () => {
             maxWidth: "95vw", // מגביל לרוחב המסך
           }}
         >
-          {categories.map((cat) => (
-            <button
-              key={cat._id}
-              onClick={() => setSelectedCategory(cat)}
-              className={`flex flex-col items-center min-w-[88px] p-3 rounded-xl transition-all snap-start ${
-                selectedCategory?._id === cat._id
-                  ? "bg-zinc-200 text-black"
-                  : "bg-white border shadow-md text-gray-500"
-              } shadow-sm`}
-              style={{
-                flexShrink: 0, // שלא יתכווץ
-              }}
-            >
-              <span className="text-xl">{cat.icon}</span>
-              <span className="text-xs font-medium text-center">
-                {cat.name}
-              </span>
-            </button>
-          ))}
+          {categories
+            .filter((cat) => !cat.hide)
+            .map((cat) => (
+              <button
+                key={cat._id}
+                onClick={() => setSelectedCategory(cat)}
+                className={`flex flex-col items-center min-w-[88px] p-3 rounded-xl transition-all snap-start ${
+                  selectedCategory?._id === cat._id
+                    ? "bg-zinc-200 text-black"
+                    : "bg-white border shadow-md text-gray-500"
+                } shadow-sm`}
+                style={{
+                  flexShrink: 0, // שלא יתכווץ
+                }}
+              >
+                <span className="text-xl">{cat.icon}</span>
+                <span className="text-xs font-medium text-center">
+                  {cat.name}
+                </span>
+              </button>
+            ))}
         </div>
         {/* Filters */}
         <div className="flex justify-center overflow-x-auto bg-gray-200 p-2 shadow-lg gap-2 mb-5">

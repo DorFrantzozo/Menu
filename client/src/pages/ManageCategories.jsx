@@ -1,14 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-
+import { useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useSelector } from "react-redux";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import AddCategoryForm from "@/components/CateroryComponents/AddCategoryForm";
 import EditCategoryForm from "@/components/CateroryComponents/EditCategoryForm";
-import CategoryCard from "@/components/CateroryComponents/CategoryCard";
+import SortableCategoryCard from "@/components/CateroryComponents/SortableCategoryCard"; // חדש
+
+// DnD Kit imports
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove,
+} from "@dnd-kit/sortable";
+import axiosInstance from "@/utils/baseUrl";
 
 export default function ManageCategories({
   isLoading,
@@ -17,38 +30,75 @@ export default function ManageCategories({
   onEdit,
 }) {
   const [showCreateForm, setShowCreateCategoryForm] = useState(false);
-  const [CreatingCategory, setCreatingCategory] = useState(null);
+  const [creatingCategory, setCreatingCategory] = useState(null);
   const [editingCategory, setEditingCategory] = useState(null);
   const [showEditForm, setShowEditForm] = useState(false);
-  const [showDeleteForm, setShowDeleteForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-
-  const categories = localStorage.getItem("categories")
-    ? JSON.parse(localStorage.getItem("categories"))
-    : [];
+  const [categories, setCategories] = useState([]);
 
   const user = useSelector((state) => state.user.user);
 
-  const filteredCategories = categories.filter((category) =>
-    category.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Load categories from localStorage initially
+  useEffect(() => {
+    const stored = localStorage.getItem("categories");
+    if (stored) setCategories(JSON.parse(stored));
+  }, []);
 
+  // Filtered categories for search
+  const filteredCategories = categories
+    .filter((c) => c.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    .sort((a, b) => a.locationNumber - b.locationNumber);
+
+  // DnD sensors
+  const sensors = useSensors(useSensor(PointerSensor));
+
+  // Handle new category creation
   const handleSubmit = (data) => {
     onCreate(data);
     setShowCreateCategoryForm(false);
     setCreatingCategory(null);
   };
 
+  // Handle edit
   const handleEditCategory = (category) => {
     setEditingCategory(category);
     setShowEditForm(true);
   };
 
-  if (showEditForm) {
-    document.body.classList.add("overflow-hidden");
-  } else {
-    document.body.classList.remove("overflow-hidden");
-  }
+  // Handle drag and drop
+  const handleDragEnd = async (event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = categories.findIndex((cat) => cat._id === active.id);
+    const newIndex = categories.findIndex((cat) => cat._id === over.id);
+
+    const newCategories = arrayMove(categories, oldIndex, newIndex).map(
+      (cat, idx) => ({
+        ...cat,
+        locationNumber: idx + 1,
+      })
+    );
+
+    setCategories(newCategories);
+
+    // Update backend
+    try {
+      await axiosInstance.put(`/category/reorderCategories/${user._id}`, {
+        categories: newCategories,
+      });
+      localStorage.setItem("categories", JSON.stringify(newCategories));
+      console.log("successfully reordered categories");
+    } catch (err) {
+      console.error("Error reordering categories:", err);
+    }
+  };
+
+  // Lock scroll when editing
+  useEffect(() => {
+    if (showEditForm) document.body.classList.add("overflow-hidden");
+    else document.body.classList.remove("overflow-hidden");
+  }, [showEditForm]);
 
   if (isLoading) {
     return (
@@ -114,11 +164,11 @@ export default function ManageCategories({
           </div>
         </motion.div>
 
-        {/* Form */}
+        {/* Add Form */}
         <AnimatePresence>
           {showCreateForm && (
             <AddCategoryForm
-              category={CreatingCategory}
+              category={creatingCategory}
               onSubmit={handleSubmit}
               onCancel={() => {
                 setShowCreateCategoryForm(false);
@@ -128,34 +178,43 @@ export default function ManageCategories({
           )}
         </AnimatePresence>
 
-        {/* Categories Grid */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        {/* Categories Drag & Drop */}
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
         >
-          <AnimatePresence>
-            {filteredCategories.map((category, index) => (
-              <CategoryCard
-                key={category._id}
-                user={user}
-                category={category}
-                index={index}
-                onEdit={handleEditCategory}
-                onDelete={onDelete}
-              />
-            ))}
-            {showEditForm && editingCategory && (
-              <EditCategoryForm
-                key={editingCategory._id || editingCategory.id}
-                category={editingCategory}
-                isOpen={showEditForm}
-                setIsOpen={setShowEditForm}
-              />
-            )}
-          </AnimatePresence>
-        </motion.div>
+          <SortableContext
+            items={filteredCategories.map((c) => c._id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+              {filteredCategories.map((category) => (
+                <SortableCategoryCard
+                  key={category._id}
+                  id={category._id}
+                  user={user}
+                  category={category}
+                  onEdit={handleEditCategory}
+                  onDelete={onDelete}
+                />
+              ))}
+              {showEditForm && editingCategory && (
+                <EditCategoryForm
+                  key={editingCategory._id || editingCategory.id}
+                  category={editingCategory}
+                  isOpen={showEditForm}
+                  setIsOpen={setShowEditForm}
+                />
+              )}
+            </motion.div>
+          </SortableContext>
+        </DndContext>
 
         {/* Empty State */}
         {filteredCategories.length === 0 && !isLoading && (

@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+
 import AddDataToStart from "../components/Cards/AddDataToStart";
 
 import FreeTrailBanner from "@/components/Cards/FreeTrailBanner";
@@ -7,11 +7,10 @@ import { countActiveItems, countItems } from "@/utils/localFunctions";
 
 import DashboardTitle from "@/components/Dashboard/DashboardTitle";
 import DashboardDataCards from "@/components/Cards/DashboardDataCards";
-import QuickActiionsCards from "@/components/Cards/QuickActiionsCards";
+import QuickActionsCards from "@/components/Cards/QuickActiionsCards";
 import QrProfile from "@/components/data/qrCode/QrProfile";
 
 const Dashboard = () => {
-  const navigate = useNavigate();
   const user = useSelector((state) => state.user.user);
   const menuCategories = useSelector(
     (state) => state.menuCategories.menuCategories
@@ -42,7 +41,7 @@ const Dashboard = () => {
               >
                 {/* פעולות מהירות */}
                 <div className="w-full lg:w-1/2">
-                  <QuickActiionsCards />
+                  <QuickActionsCards />
                 </div>
 
                 {/* QR Code */}
