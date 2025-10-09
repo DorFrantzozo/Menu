@@ -9,6 +9,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Allergies from "@/components/sensitivities/Allergies";
 import { motion } from "framer-motion";
 import LanguageSelector from "@/components/LanguageSelector/LanguageSelector";
+import Spinner from "@/components/Spinner";
 
 const Design4 = () => {
   const [restaurantName, setRestaurantName] = useState("");
@@ -172,7 +173,7 @@ const Design4 = () => {
       <div className="grid mt-10 pb-28 px-4 max-w-6xl mx-auto grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {dishesToShow.length === 0 ? (
           <div className="col-span-full text-center text-gray-500 py-10 text-lg">
-            אין מנות להצגה
+            <Spinner />
           </div>
         ) : (
           dishesToShow.map((dish, index) => (
