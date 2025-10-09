@@ -40,9 +40,18 @@ export default function ManageCategories({
 
   // Load categories from localStorage initially
   useEffect(() => {
-    const stored = localStorage.getItem("categories");
-    if (stored) setCategories(JSON.parse(stored));
-  }, []);
+    const fetchCategories = async () => {
+      try {
+        const res = await axiosInstance.get(`/category/${user._id}`);
+        setCategories(res.data.categories);
+        localStorage.setItem("categories", JSON.stringify(res.data.categories));
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchCategories();
+  }, [user._id]);
 
   // Filtered categories for search
   const filteredCategories = categories
@@ -82,18 +91,21 @@ export default function ManageCategories({
 
     setCategories(newCategories);
 
-    // Update backend
     try {
-      await axiosInstance.put(`/category/reorderCategories/${user._id}`, {
-        categories: newCategories,
-      });
-      localStorage.removeItem("categories");
-      localStorage.setItem("categories", JSON.stringify(newCategories));
+      const res = await axiosInstance.put(
+        `/category/reorderCategories/${user._id}`,
+        { categories: newCategories }
+      );
+
+      const updated = res.data.categories; // ← מגיע מהשרת
+      setCategories(updated);
+      localStorage.setItem("categories", JSON.stringify(updated));
+
+      console.log("✅ successfully reordered categories", updated);
     } catch (err) {
-      console.error("Error reordering categories:", err);
+      console.error("❌ Error reordering categories:", err);
     }
   };
-
   // Lock scroll when editing
   useEffect(() => {
     if (showEditForm) document.body.classList.add("overflow-hidden");
