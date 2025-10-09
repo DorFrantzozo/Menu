@@ -37,26 +37,29 @@ export default function ManageCategories({ isLoading, onCreate, onDelete }) {
   useEffect(() => {
     if (!user?._id) return;
 
+    // Load from localStorage first
     const stored = localStorage.getItem("categories");
     if (stored) setCategories(JSON.parse(stored));
 
     const fetchCategories = async () => {
       try {
         const res = await axiosInstance.post(`/category/getCategories`, {
-          userId: user._id, // <-- שולח ב-body
+          userId: user._id, // שולח ב-body
         });
-        const cats = res.data.categories || [];
-        setCategories(cats);
-        localStorage.setItem("categories", JSON.stringify(cats));
+
+        const cats = res?.data?.categories || [];
+        if (cats.length > 0) {
+          setCategories(cats);
+          localStorage.setItem("categories", JSON.stringify(cats));
+        }
       } catch (err) {
         console.error("Error fetching categories:", err);
-        setCategories([]); // תמיד מערך
+        // לא משנה את המערך אם fetch נכשל
       }
     };
 
     fetchCategories();
   }, [user?._id]);
-
   // Filtered categories for search
   const filteredCategories = (categories || [])
     .filter((c) => c.name.toLowerCase().includes(searchTerm.toLowerCase()))
