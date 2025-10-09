@@ -42,7 +42,7 @@ export default function ManageCategories({
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axiosInstance.get(`/category/getCategories`, {
+        const res = await axiosInstance.post(`/category/getCategories`, {
           params: {
             userId: user._id,
           },
