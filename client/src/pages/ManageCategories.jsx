@@ -87,8 +87,8 @@ export default function ManageCategories({
       await axiosInstance.put(`/category/reorderCategories/${user._id}`, {
         categories: newCategories,
       });
+      localStorage.removeItem("categories");
       localStorage.setItem("categories", JSON.stringify(newCategories));
-      console.log("successfully reordered categories");
     } catch (err) {
       console.error("Error reordering categories:", err);
     }
