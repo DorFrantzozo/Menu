@@ -37,23 +37,23 @@ const Design4 = () => {
     if (!restaurantName) return;
 
     const loadData = async () => {
-      const localCategories = localStorage.getItem("categories");
-      if (localCategories) {
-        try {
-          const parsed = JSON.parse(localCategories);
-          if (Array.isArray(parsed)) {
-            // מיין לפי locationNumber
-            const sortedCategories = parsed.sort(
-              (a, b) => a.locationNumber - b.locationNumber
-            );
-            setCategories(sortedCategories);
-            setSelectedCategory(sortedCategories[0]);
-            return;
-          }
-        } catch (e) {
-          console.error("Failed to parse local categories:", e);
-        }
-      }
+      // const localCategories = localStorage.getItem("categories");
+      // if (localCategories) {
+      //   try {
+      //     const parsed = JSON.parse(localCategories);
+      //     if (Array.isArray(parsed)) {
+      //       // מיין לפי locationNumber
+      //       const sortedCategories = parsed.sort(
+      //         (a, b) => a.locationNumber - b.locationNumber
+      //       );
+      //       setCategories(sortedCategories);
+      //       setSelectedCategory(sortedCategories[0]);
+      //       return;
+      //     }
+      //   } catch (e) {
+      //     console.error("Failed to parse local categories:", e);
+      //   }
+      // }
       await fetchData();
     };
 
