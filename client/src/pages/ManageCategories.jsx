@@ -42,7 +42,11 @@ export default function ManageCategories({
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axiosInstance.get(`/category/getCategories/${user._id}`);
+        const res = await axiosInstance.get(`/category/getCategories`, {
+          params: {
+            userId: user._id,
+          },
+        });
         setCategories(res.data.categories);
         localStorage.setItem("categories", JSON.stringify(res.data.categories));
       } catch (err) {
