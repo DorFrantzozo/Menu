@@ -6,9 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import AddCategoryForm from "@/components/CateroryComponents/AddCategoryForm";
 import EditCategoryForm from "@/components/CateroryComponents/EditCategoryForm";
-import SortableCategoryCard from "@/components/CateroryComponents/SortableCategoryCard"; // חדש
+import SortableCategoryCard from "@/components/CateroryComponents/SortableCategoryCard";
 
-// DnD Kit imports
 import {
   DndContext,
   closestCenter,
@@ -21,14 +20,10 @@ import {
   verticalListSortingStrategy,
   arrayMove,
 } from "@dnd-kit/sortable";
+
 import axiosInstance from "@/utils/baseUrl";
 
-export default function ManageCategories({
-  isLoading,
-  onCreate,
-  onDelete,
-  onEdit,
-}) {
+export default function ManageCategories({ isLoading, onCreate, onDelete }) {
   const [showCreateForm, setShowCreateCategoryForm] = useState(false);
   const [creatingCategory, setCreatingCategory] = useState(null);
   const [editingCategory, setEditingCategory] = useState(null);
@@ -40,23 +35,30 @@ export default function ManageCategories({
 
   // Load categories from localStorage initially
   useEffect(() => {
+    if (!user?._id) return;
+
+    const stored = localStorage.getItem("categories");
+    if (stored) setCategories(JSON.parse(stored));
+
     const fetchCategories = async () => {
       try {
         const res = await axiosInstance.post(`/category/getCategories`, {
-          userId: user._id,
+          userId: user._id, // <-- שולח ב-body
         });
-        setCategories(res.data.categories);
-        localStorage.setItem("categories", JSON.stringify(res.data.categories));
+        const cats = res.data.categories || [];
+        setCategories(cats);
+        localStorage.setItem("categories", JSON.stringify(cats));
       } catch (err) {
-        console.error(err);
+        console.error("Error fetching categories:", err);
+        setCategories([]); // תמיד מערך
       }
     };
 
     fetchCategories();
-  }, [user._id]);
+  }, [user?._id]);
 
   // Filtered categories for search
-  const filteredCategories = categories
+  const filteredCategories = (categories || [])
     .filter((c) => c.name.toLowerCase().includes(searchTerm.toLowerCase()))
     .sort((a, b) => a.locationNumber - b.locationNumber);
 
@@ -99,7 +101,7 @@ export default function ManageCategories({
         { categories: newCategories }
       );
 
-      const updated = res.data.categories; // ← מגיע מהשרת
+      const updated = res.data.categories || newCategories;
       setCategories(updated);
       localStorage.setItem("categories", JSON.stringify(updated));
 
@@ -108,6 +110,7 @@ export default function ManageCategories({
       console.error("❌ Error reordering categories:", err);
     }
   };
+
   // Lock scroll when editing
   useEffect(() => {
     if (showEditForm) document.body.classList.add("overflow-hidden");
@@ -199,7 +202,7 @@ export default function ManageCategories({
           onDragEnd={handleDragEnd}
         >
           <SortableContext
-            items={filteredCategories.map((c) => c._id)}
+            items={(filteredCategories || []).map((c) => c._id)}
             strategy={verticalListSortingStrategy}
           >
             <motion.div
@@ -208,7 +211,7 @@ export default function ManageCategories({
               transition={{ delay: 0.2 }}
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
             >
-              {filteredCategories.map((category) => (
+              {(filteredCategories || []).map((category) => (
                 <SortableCategoryCard
                   key={category._id}
                   id={category._id}
@@ -231,7 +234,7 @@ export default function ManageCategories({
         </DndContext>
 
         {/* Empty State */}
-        {filteredCategories.length === 0 && !isLoading && (
+        {(filteredCategories || []).length === 0 && !isLoading && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
