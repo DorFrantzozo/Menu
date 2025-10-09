@@ -42,8 +42,12 @@ const Design4 = () => {
         try {
           const parsed = JSON.parse(localCategories);
           if (Array.isArray(parsed)) {
-            setCategories(parsed);
-            setSelectedCategory(parsed[0]);
+            // מיין לפי locationNumber
+            const sortedCategories = parsed.sort(
+              (a, b) => a.locationNumber - b.locationNumber
+            );
+            setCategories(sortedCategories);
+            setSelectedCategory(sortedCategories[0]);
             return;
           }
         } catch (e) {
@@ -68,10 +72,15 @@ const Design4 = () => {
         menuDishes: dishes[cat._id] || [],
       }));
 
-      setCategories(categoriesWithDishes);
-      setSelectedCategory(categoriesWithDishes[0]);
+      // מיין לפי locationNumber
+      const sortedCategories = categoriesWithDishes.sort(
+        (a, b) => a.locationNumber - b.locationNumber
+      );
 
-      localStorage.setItem("categories", JSON.stringify(categoriesWithDishes));
+      setCategories(sortedCategories);
+      setSelectedCategory(sortedCategories[0]);
+
+      localStorage.setItem("categories", JSON.stringify(sortedCategories));
     } catch (error) {
       console.error("Error fetching restaurant data:", error);
     }
@@ -115,8 +124,8 @@ const Design4 = () => {
           className="flex overflow-x-auto max-w-full ms-2 px-4 py-2 mb-3 gap-5 scrollbar-hide scroll-smooth snap-x snap-mandatory"
           style={{
             WebkitOverflowScrolling: "touch",
-            overflowY: "hidden", // שלא יוסיף גלילה מיותרת
-            maxWidth: "95vw", // מגביל לרוחב המסך
+            overflowY: "hidden",
+            maxWidth: "95vw",
           }}
         >
           {categories
@@ -131,9 +140,7 @@ const Design4 = () => {
                     ? "bg-zinc-200 text-black"
                     : "bg-white border shadow-md text-gray-500"
                 } shadow-sm`}
-                style={{
-                  flexShrink: 0, // שלא יתכווץ
-                }}
+                style={{ flexShrink: 0 }}
               >
                 <span className="text-xl">{cat.icon}</span>
                 <span className="text-xs font-medium text-center">
@@ -142,6 +149,7 @@ const Design4 = () => {
               </button>
             ))}
         </div>
+
         {/* Filters */}
         <div className="flex justify-center overflow-x-auto bg-gray-200 p-2 shadow-lg gap-2 mb-5">
           {filters.map((filter) => (
