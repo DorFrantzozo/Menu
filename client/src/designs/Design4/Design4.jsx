@@ -61,8 +61,7 @@ const Design4 = () => {
       const data = await fetchRestaurant(restaurantName);
       setRestaurantData(data);
 
-      const { categories, dishes, lastUpdated } =
-        await fetchCategoriesAndDishes(data._id);
+      const { categories, dishes } = await fetchCategoriesAndDishes(data._id);
 
       const categoriesWithDishes = categories.map((cat) => ({
         ...cat,
@@ -122,6 +121,7 @@ const Design4 = () => {
         >
           {categories
             .filter((cat) => !cat.hide)
+            .sort((a, b) => a.locationNumber - b.locationNumber)
             .map((cat) => (
               <button
                 key={cat._id}
