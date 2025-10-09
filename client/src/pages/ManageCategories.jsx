@@ -43,9 +43,7 @@ export default function ManageCategories({
     const fetchCategories = async () => {
       try {
         const res = await axiosInstance.post(`/category/getCategories`, {
-          params: {
-            userId: user._id,
-          },
+          userId: user._id,
         });
         setCategories(res.data.categories);
         localStorage.setItem("categories", JSON.stringify(res.data.categories));
