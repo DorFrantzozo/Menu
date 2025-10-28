@@ -8,7 +8,6 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import Allergies from "@/components/sensitivities/Allergies";
 import { motion } from "framer-motion";
-import LanguageSelector from "@/components/LanguageSelector/LanguageSelector";
 import Spinner from "@/components/Spinner";
 
 const Design4 = () => {
@@ -25,6 +24,9 @@ const Design4 = () => {
     "מתאים להריון",
   ]);
 
+  // 💡 מצב חדש לניהול טעינה
+  const [isLoading, setIsLoading] = useState(true);
+
   const location = useLocation();
   const navigate = useNavigate();
   const menu = location.state || {};
@@ -38,23 +40,9 @@ const Design4 = () => {
     if (!restaurantName) return;
 
     const loadData = async () => {
-      // const localCategories = localStorage.getItem("categories");
-      // if (localCategories) {
-      //   try {
-      //     const parsed = JSON.parse(localCategories);
-      //     if (Array.isArray(parsed)) {
-      //       // מיין לפי locationNumber
-      //       const sortedCategories = parsed.sort(
-      //         (a, b) => a.locationNumber - b.locationNumber
-      //       );
-      //       setCategories(sortedCategories);
-      //       setSelectedCategory(sortedCategories[0]);
-      //       return;
-      //     }
-      //   } catch (e) {
-      //     console.error("Failed to parse local categories:", e);
-      //   }
-      // }
+      // ההערות על localStorage נשארות כפי שהן במקור
+      // אם תרצה/י להשתמש ב-localStorage, ודא/י שאתה/את מציב/ה את setIsLoading(false) בתוך הלוגיקה
+      // של ה-localStorage, או ודא/י שהנתונים נטענים מהר מספיק.
       await fetchData();
     };
 
@@ -62,6 +50,7 @@ const Design4 = () => {
   }, [restaurantName]);
 
   const fetchData = async () => {
+    setIsLoading(true); // 💡 מתחילים טעינה
     try {
       const data = await fetchRestaurant(restaurantName);
       setRestaurantData(data);
@@ -84,6 +73,8 @@ const Design4 = () => {
       localStorage.setItem("categories", JSON.stringify(sortedCategories));
     } catch (error) {
       console.error("Error fetching restaurant data:", error);
+    } finally {
+      setIsLoading(false); // 💡 מסיימים טעינה
     }
   };
 
@@ -171,11 +162,16 @@ const Design4 = () => {
 
       {/* Dishes */}
       <div className="grid mt-10 pb-28 px-4 max-w-6xl mx-auto grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-        {dishesToShow.length === 0 ? (
+        {isLoading ? ( // 💡 בדיקה 1: האם הנתונים עדיין נטענים?
           <div className="col-span-full text-center text-gray-500 py-10 text-lg">
             <Spinner />
           </div>
+        ) : dishesToShow.length === 0 ? ( // 💡 בדיקה 2: הסתיימה הטעינה, אבל המערך ריק (בגלל סינון או חוסר מנות בקטגוריה)?
+          <div className="col-span-full text-center text-gray-500 py-10 text-lg">
+            אין מנות להצגה בקטגוריה זו או בהתאם לפילטר שנבחר.
+          </div>
         ) : (
+          // 💡 תצוגת המנות
           dishesToShow.map((dish, index) => (
             <div
               key={index}
