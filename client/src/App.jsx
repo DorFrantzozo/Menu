@@ -13,6 +13,10 @@ import DishPage from "./pages/DishPage";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setUser } from "./state/user/userSlice";
+import {
+  getCategories,
+  getAllDishesAndMapToCategories,
+} from "@/utils/fetchData";
 import Profile from "./pages/Profile";
 import EditDish from "./pages/EditDish";
 import Menu from "./pages/Menu";
@@ -49,10 +53,53 @@ function App() {
     const savedCategories = localStorage.getItem("categories");
 
     if (savedUser) {
-      dispatch(setUser(JSON.parse(savedUser)));
-    }
-    if (savedCategories) {
-      dispatch(setMenuCategories(JSON.parse(savedCategories)));
+      const parsedUser = JSON.parse(savedUser);
+      dispatch(setUser(parsedUser));
+      
+      if (savedCategories) {
+        const parsedCategories = JSON.parse(savedCategories);
+        if (Array.isArray(parsedCategories) && parsedCategories.length > 0) {
+           dispatch(setMenuCategories(parsedCategories));
+        } else {
+           // Fetch data if localStorage is empty array
+           const fetchData = async () => {
+            try {
+              const categories = await getCategories(parsedUser._id);
+              const categoriesWithDishes = await getAllDishesAndMapToCategories(
+                parsedUser,
+                categories
+              );
+              dispatch(setMenuCategories(categoriesWithDishes));
+              localStorage.setItem(
+                "categories",
+                JSON.stringify(categoriesWithDishes)
+              );
+            } catch (error) {
+              console.error("Error fetching data in App.jsx:", error);
+            }
+          };
+          fetchData();
+        }
+      } else {
+        // Fetch data if missing in localStorage but user exists
+        const fetchData = async () => {
+          try {
+            const categories = await getCategories(parsedUser._id);
+            const categoriesWithDishes = await getAllDishesAndMapToCategories(
+              parsedUser,
+              categories
+            );
+            dispatch(setMenuCategories(categoriesWithDishes));
+            localStorage.setItem(
+              "categories",
+              JSON.stringify(categoriesWithDishes)
+            );
+          } catch (error) {
+            console.error("Error fetching data in App.jsx:", error);
+          }
+        };
+        fetchData();
+      }
     }
   }, [dispatch]);
 

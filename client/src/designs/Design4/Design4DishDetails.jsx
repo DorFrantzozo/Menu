@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import useTrackDishView from "@/hooks/useTrackDishView";
 import Allergies from "@/components/sensitivities/Allergies";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
@@ -6,7 +7,10 @@ import { motion } from "framer-motion";
 const Design4DishDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
   const dish = location.state?.dish;
+
+  useTrackDishView(dish?._id);
 
   if (!dish) {
     return (
@@ -18,7 +22,6 @@ const Design4DishDetails = () => {
 
   return (
     <div
-      dir="rtl"
       className="min-h-screen bg-white  pb-20 relative flex flex-col items-center"
     >
       <motion.div
@@ -37,8 +40,12 @@ const Design4DishDetails = () => {
           transition={{ duration: 0.5, ease: "easeOut" }}
         />
         <div className="space-y-3 px-2">
-          <h2 className="text-2xl font-bold text-gray-900">{dish.name}</h2>
-          <h2 className="text-xl  text-gray-900">{dish.description}</h2>
+          <h2 className="text-2xl font-bold text-gray-900">
+            {dish.name}
+          </h2>
+          <h2 className="text-xl  text-gray-900">
+            {dish.description}
+          </h2>
           <p className="text-lg text-gray-700 font-semibold">{dish.price} ₪</p>
           <div className="text-gray-600 flex justify-center leading-relaxed ">
             <Allergies dish={dish} />

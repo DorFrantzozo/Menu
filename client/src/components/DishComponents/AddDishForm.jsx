@@ -21,9 +21,11 @@ export default function AddDishForm({ closeModal }) {
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
+
   const [img, setImg] = useState("");
   const [previewUrl, setPreviewUrl] = useState(null);
   const [description, setDescription] = useState("");
+
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("");
   const [pregnant, setPregnant] = useState(false);
@@ -37,7 +39,9 @@ export default function AddDishForm({ closeModal }) {
     const formData = new FormData();
     formData.append("userId", user._id);
     formData.append("name", name);
+
     formData.append("description", description);
+
     formData.append("price", price);
     formData.append("category", category);
     formData.append("pregnant", pregnant);
@@ -52,7 +56,12 @@ export default function AddDishForm({ closeModal }) {
 
     try {
       setIsLoading(true);
-      console.log(formData);
+      
+      // Debugging: Log all FormData entries
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
+
       await axiosInstance.post(`/dish/createDish/${user._id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -60,7 +69,7 @@ export default function AddDishForm({ closeModal }) {
         },
       });
 
-      const categories = await getCategories(user);
+      const categories = await getCategories(user._id);
       const categoriesWithDishes = await getAllDishesAndMapToCategories(
         user,
         categories
@@ -79,6 +88,7 @@ export default function AddDishForm({ closeModal }) {
       setIsLoading(false);
       closeModal();
     } catch (error) {
+     
       toast.error("שגיאה בעת הוספת המנה");
       setIsLoading(false);
     } finally {
@@ -112,7 +122,7 @@ export default function AddDishForm({ closeModal }) {
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block font-medium mb-1">שם המנה</label>
+              <label className="block font-medium mb-1">שם המנה (עברית)</label>
               <input
                 type="text"
                 required
@@ -121,6 +131,8 @@ export default function AddDishForm({ closeModal }) {
                 className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800 shadow-sm focus:ring-sky-200 focus:border-sky-200"
               />
             </div>
+
+
 
             <div>
               <label className="block font-medium mb-1">מחיר</label>
@@ -133,16 +145,20 @@ export default function AddDishForm({ closeModal }) {
               />
             </div>
 
-            <div className="col-span-1 md:col-span-2">
+            <div className="col-span-1 md:col-span-1">
               <DropDown setCategory={setCategory} />
             </div>
           </div>
-          <div>
-            <label className="block font-medium mb-1">תיאור</label>
-            <textarea
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full rounded-xl h-28 focus:ring-sky-200 focus:border-sky-200"
-            ></textarea>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block font-medium mb-1">תיאור (עברית)</label>
+              <textarea
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full rounded-xl h-28 focus:ring-sky-200 focus:border-sky-200"
+              ></textarea>
+            </div>
+
           </div>
 
           <div>

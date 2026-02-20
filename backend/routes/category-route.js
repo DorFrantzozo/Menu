@@ -16,7 +16,7 @@ categoryRouter.post(
   upload.single("img"),
   createCategoryByUserId
 );
-categoryRouter.post("/getCategories", getCategoriesByUserId);
+categoryRouter.get("/getCategories/:userId", getCategoriesByUserId);
 categoryRouter.put(
   "/updateCategory/:userId/:categoryId",
   upload.single("img"),

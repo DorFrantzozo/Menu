@@ -13,9 +13,9 @@ import { getCategories } from "@/utils/fetchData";
 
 export default function AddCategory() {
   const user = useSelector((state) => state.user.user);
+  const menuCategories = useSelector((state) => state.menuCategories.menuCategories);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [locationNumber, setLocationNumber] = useState(0);
   const [img, setImg] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -23,10 +23,18 @@ export default function AddCategory() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    // Calculate new location number
+    const maxLocation = menuCategories.reduce(
+      (max, cat) => (cat.locationNumber > max ? cat.locationNumber : max),
+      0
+    );
+    const newLocationNumber = menuCategories.length > 0 ? maxLocation + 1 : 0;
+
     const formData = new FormData();
     formData.append("userId", user._id);
     formData.append("name", name);
-    formData.append("locationNumber", locationNumber);
+    formData.append("locationNumber", newLocationNumber);
     formData.append("description", description);
     formData.append("img", img);
 
@@ -35,7 +43,7 @@ export default function AddCategory() {
       await axiosInstance.post(`/category/createCategory`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      const updatedCategories = await getCategories(user); //sets categories
+      const updatedCategories = await getCategories(user._id); //sets categories
       //now handle dishes too
       dispatch(updateMenuCategories(updatedCategories));
       const categoriesWithDishes = await getAllDishesAndMapToCategories(
@@ -73,7 +81,7 @@ export default function AddCategory() {
           יצירת קטגוריה חדשה
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6">
           {/* שם הקטגוריה */}
           <div>
             <label className="block text-sm font-medium text-slate-700">
@@ -84,23 +92,6 @@ export default function AddCategory() {
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 shadow-sm focus:ring-2 focus:ring-green-300 focus:outline-none"
-            />
-          </div>
-
-          {/* מספר מיקום */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700">
-              מספר מיקום
-            </label>
-            <span className="text-xs text-slate-500 block mb-1">
-              מייצג את הסדר בתפריט (מתחיל מ־0)
-            </span>
-            <input
-              type="number"
-              required
-              value={locationNumber}
-              onChange={(e) => setLocationNumber(Number(e.target.value))}
               className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 shadow-sm focus:ring-2 focus:ring-green-300 focus:outline-none"
             />
           </div>

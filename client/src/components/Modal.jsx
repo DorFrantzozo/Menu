@@ -36,7 +36,7 @@ export default function Modal({ open, setOpen, user, item, type }) {
           },
         });
 
-        const categories = await getCategories(user);
+        const categories = await getCategories(user._id);
         const categoriesWithDishes = await getAllDishesAndMapToCategories(
           user,
           categories

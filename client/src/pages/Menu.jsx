@@ -1,18 +1,25 @@
 import { useEffect, useState } from "react";
-
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/baseUrl";
 import Spinner from "@/components/Spinner";
+import useTrackMenuView from "@/hooks/useTrackMenuView";
+
+// Import Designs
+import Design1 from "../designs/Design1/Design1";
+import Design2 from "../designs/Design2/Design2";
+import Design3 from "../designs/Design3/Design3";
+import Design4 from "../designs/Design4/Design4";
 
 const Menu = () => {
-  const [menu, setMenu] = useState(null); // התחלה עם null במקום מערך ריק
+  const [menu, setMenu] = useState(null);
   const navigate = useNavigate();
-  const url = window.location.href;
-  const hostname = window.location.hostname; // למשל: "restaurant-name.menu-seven-amber.vercel.app"
-  const selectedBuisness = hostname.split(".")[0]; // מחלץ רק את "restaurant-name"
+  const hostname = window.location.hostname;
+  const selectedBuisness = hostname.split(".")[0];
+
+  // Track view if we have a menu and it has an ID
+  useTrackMenuView(menu?._id);
 
   const fetchData = async (name) => {
-    console.log(name);
     try {
       const response = await axiosInstance.get("/user/find", {
         params: { name },
@@ -20,7 +27,6 @@ const Menu = () => {
 
       if (response.data) {
         setMenu(response.data);
-        console.log(response.data);
       } else {
         console.error("Restaurant not found");
       }
@@ -33,30 +39,30 @@ const Menu = () => {
     fetchData(selectedBuisness);
   }, [selectedBuisness]);
 
-  useEffect(() => {
-    if (menu !== null) {
-      if (
-        menu.isPaid ||
-        (menu.trialExpiresAt && new Date(menu.trialExpiresAt) > new Date())
-      ) {
-        if (menu.designNumber === 1) {
-          navigate("/design1", { state: menu });
-        } else if (menu.designNumber === 2) {
-          navigate("/design2", { state: menu });
-        } else if (menu.designNumber === 3) {
-          navigate("/design3", { state: menu });
-        } else if (menu.designNumber === 4) {
-          navigate("/design4", { state: menu });
-        }
-      } else {
-        navigate("/");
-      }
-    }
-  }, [menu, navigate]);
+  if (!menu) {
+    return (
+      <div>
+        <Spinner />
+      </div>
+    );
+  }
+
+  // Check for trial/payment status
+  if (
+    !menu.isPaid &&
+    menu.trialExpiresAt &&
+    new Date(menu.trialExpiresAt) <= new Date()
+  ) {
+    navigate("/"); // Or some "Plan Expired" page
+    return null;
+  }
 
   return (
-    <div>
-      <Spinner />
+    <div className="relative">
+      {menu.designNumber === 1 && <Design1 menu={menu} />}
+      {menu.designNumber === 2 && <Design2 menu={menu} />}
+      {menu.designNumber === 3 && <Design3 menu={menu} />}
+      {menu.designNumber === 4 && <Design4 menu={menu} />}
     </div>
   );
 };

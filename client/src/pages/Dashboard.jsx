@@ -9,6 +9,7 @@ import DashboardTitle from "@/components/Dashboard/DashboardTitle";
 import DashboardDataCards from "@/components/Cards/DashboardDataCards";
 import QuickActionsCards from "@/components/Cards/QuickActiionsCards";
 import QrProfile from "@/components/data/qrCode/QrProfile";
+import StatsDashboard from "@/components/Dashboard/StatsDashboard";
 
 const Dashboard = () => {
   const user = useSelector((state) => state.user.user);
@@ -24,7 +25,7 @@ const Dashboard = () => {
       {/* Main Content */}
       <div className="flex-1">
         <FreeTrailBanner user={user} />
-        <div className="mt-10">
+        <div className="mt-10 px-4 flex flex-col gap-6">
           <DashboardTitle user={user} />
 
           {menuCategories?.length > 0 ? (
@@ -35,17 +36,22 @@ const Dashboard = () => {
                 allActiveItems={allActiveItems}
               />
 
+              <div className="w-full">
+                <StatsDashboard userId={user._id} />
+              </div>
+
+              {/* Bottom Section: Quick Actions & QR Code */}
               <div
                 dir="rtl"
-                className="flex flex-col lg:flex-row items-start justify-between w-full gap-6 px-4 mt-10"
+                className="grid grid-cols-1 xl:grid-cols-2 gap-6 items-stretch w-full"
               >
-                {/* פעולות מהירות */}
-                <div className="w-full lg:w-1/2">
+                {/* Quick Actions */}
+                <div className="w-full h-full">
                   <QuickActionsCards />
                 </div>
 
                 {/* QR Code */}
-                <div className="w-full lg:w-1/2">
+                <div className="w-full h-full">
                   <QrProfile userName={user.restaurantName} />
                 </div>
               </div>

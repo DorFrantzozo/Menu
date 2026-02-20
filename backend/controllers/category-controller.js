@@ -1,4 +1,5 @@
 import Category from "../model/category.js";
+import Dish from "../model/dish.js";
 import cloudinary from "../utils/cloudinary.js";
 
 const createCategoryByUserId = async (req, res) => {
@@ -55,6 +56,7 @@ const createCategoryByUserId = async (req, res) => {
     const newCategory = new Category({
       userId,
       name,
+
       img: imgUrl || "", // Default to empty string if no image is uploaded
       locationNumber,
     });
@@ -72,7 +74,13 @@ const createCategoryByUserId = async (req, res) => {
 
 const getCategoriesByUserId = async (req, res) => {
   try {
-    const { userId } = req.body;
+    const { userId } = req.params;
+    
+    // STRICT FILTERING: Ensure userId is present
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+
     const categories = await Category.find({ userId });
 
     res.status(200).json(categories);
@@ -152,6 +160,7 @@ const updateCategoryByUserId = async (req, res) => {
     if (newName && category.name !== newName) {
       category.name = newName;
     }
+
     if (hide !== undefined) {
       category.hide = hide === "true" || hide === true;
     }
@@ -165,7 +174,6 @@ const updateCategoryByUserId = async (req, res) => {
   }
 };
 
-//TODO: function needs category id!!!
 const deleteCategory = async (req, res) => {
   const { userId, categoryId } = req.params;
 
@@ -177,13 +185,20 @@ const deleteCategory = async (req, res) => {
         .json({ message: "Category not found for this user" });
     }
 
+    // Delete associated dishes
+    const deleteResult = await Dish.deleteMany({ category: categoryId });
+
     if (category.img) {
       const publicId = category.img.split("/").pop().split(".")[0];
       await cloudinary.uploader.destroy(`categories/${publicId}`);
     }
 
     await category.deleteOne();
-    res.status(200).json({ message: "Category deleted successfully" });
+    
+    res.status(200).json({ 
+      message: `Category and ${deleteResult.deletedCount} associated dishes deleted successfully`,
+      deletedDishesCount: deleteResult.deletedCount 
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

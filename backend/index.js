@@ -7,6 +7,7 @@ import cors from "cors";
 
 import dotenv from "dotenv";
 import assetRouter from "./routes/asset-route.js";
+import analyticsRouter from "./routes/analyticsRoute.js";
 dotenv.config();
 
 const app = express();
@@ -20,6 +21,7 @@ app.use("/api/user", userRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/dish", dishRouter);
 app.use("/api/asset", assetRouter);
+app.use("/api/analytics", analyticsRouter);
 try {
   await connect();
   app.listen(process.env.PORT, () => {

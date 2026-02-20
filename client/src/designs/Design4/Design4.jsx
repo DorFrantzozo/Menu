@@ -10,7 +10,9 @@ import Allergies from "@/components/sensitivities/Allergies";
 import { motion } from "framer-motion";
 import Spinner from "@/components/Spinner";
 
-const Design4 = () => {
+import useTrackMenuView from "@/hooks/useTrackMenuView";
+
+const Design4 = ({ menu: menuProp }) => {
   const [restaurantName, setRestaurantName] = useState("");
   const [restaurantData, setRestaurantData] = useState(null);
   const [categories, setCategories] = useState([]);
@@ -29,7 +31,10 @@ const Design4 = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const menu = location.state || {};
+  
+  const menu = menuProp || location.state || {};
+
+  useTrackMenuView(restaurantData?._id || menu?._id);
 
   useEffect(() => {
     const name = getRestaurantName(menu);
@@ -40,9 +45,22 @@ const Design4 = () => {
     if (!restaurantName) return;
 
     const loadData = async () => {
-      // ההערות על localStorage נשארות כפי שהן במקור
-      // אם תרצה/י להשתמש ב-localStorage, ודא/י שאתה/את מציב/ה את setIsLoading(false) בתוך הלוגיקה
-      // של ה-localStorage, או ודא/י שהנתונים נטענים מהר מספיק.
+      // 💡 נסה לטעון מה-localStorage קודם
+      const cachedData = localStorage.getItem(`menu_${restaurantName}`);
+      if (cachedData) {
+        try {
+          const parsedData = JSON.parse(cachedData);
+          setRestaurantData(parsedData.restaurantData);
+          setCategories(parsedData.categories);
+          if (parsedData.categories.length > 0) {
+            setSelectedCategory(parsedData.categories[0]);
+          }
+          setIsLoading(false); // הצג מיד את הנתונים מהקאש
+        } catch (e) {
+          console.error("Error parsing cached menu data", e);
+        }
+      }
+
       await fetchData();
     };
 
@@ -50,7 +68,8 @@ const Design4 = () => {
   }, [restaurantName]);
 
   const fetchData = async () => {
-    setIsLoading(true); // 💡 מתחילים טעינה
+    // רק אם אין לנו כבר קטגוריות (מהקאש), נציג טעינה
+    if (categories.length === 0) setIsLoading(true);
     try {
       const data = await fetchRestaurant(restaurantName);
       setRestaurantData(data);
@@ -68,9 +87,23 @@ const Design4 = () => {
       );
 
       setCategories(sortedCategories);
-      setSelectedCategory(sortedCategories[0]);
 
-      localStorage.setItem("categories", JSON.stringify(sortedCategories));
+      // Update selectedCategory to point to the new object with fresh dishes
+      if (selectedCategory) {
+        const freshSelected = sortedCategories.find(c => c._id === selectedCategory._id);
+        setSelectedCategory(freshSelected || sortedCategories[0]);
+      } else {
+        setSelectedCategory(sortedCategories[0]);
+      }
+
+      // שמור את הנתונים ב-localStorage עם מפתח ייחודי למסעדה
+      localStorage.setItem(
+        `menu_${restaurantName}`,
+        JSON.stringify({
+          restaurantData: data,
+          categories: sortedCategories,
+        })
+      );
     } catch (error) {
       console.error("Error fetching restaurant data:", error);
     } finally {
@@ -99,7 +132,7 @@ const Design4 = () => {
     ) || [];
 
   return (
-    <div dir="rtl" className="min-h-screen overflow-x-hidden">
+    <div className="min-h-screen overflow-x-hidden" dir="rtl">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-white shadow-lg ">
         <div className="flex justify-between items-center py-5 px-4">
@@ -188,14 +221,16 @@ const Design4 = () => {
                 transition={{ duration: 0.3 }}
               />
               <div className="p-3">
-                <p className="text-sm font-semibold truncate">{dish.name}</p>
+                <p className="text-sm font-semibold truncate">
+                  {dish.name}
+                </p>
                 <p className="text-sm font-light truncate">
-                  {dish.description}
+                    {dish.description}
                 </p>
                 <p className="p-1 text-gray-600">
                   <Allergies dish={dish} />
                 </p>
-                <p className="text-sm text-left text-gray-600">
+                <p className="text-sm text-gray-600">
                   ₪ {dish.price}
                 </p>
               </div>

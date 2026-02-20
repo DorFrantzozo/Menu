@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+// ✅ תיקון: הוספת useNavigate לייבוא
+import { useLocation, useNavigate } from "react-router-dom"; 
 import { toast } from "react-toastify";
 import Spinner from "../../components/Spinner";
 import AccordionMenu from "@/components/data/AccordionMenu";
+import useTrackMenuView from "@/hooks/useTrackMenuView";
 
 import {
   fetchCategoriesAndDishes,
@@ -10,20 +12,24 @@ import {
   getRestaurantName,
 } from "@/utils/fetchData";
 
-const Design3 = () => {
+const Design3 = ({ menu: menuProp }) => {
   const [restaurant, setRestaurant] = useState(null);
   const [categories, setCategories] = useState([]);
   const [dishes, setDishes] = useState({});
   const [restaurantName, setRestaurantName] = useState(null);
   const [restaurantData, setRestaurantData] = useState(null);
   const location = useLocation();
-  const menu = location.state || {};
+  const navigate = useNavigate(); // ✅ עכשיו זה יעבוד כי הייבוא תוקן
+  
+  const menu = menuProp || location.state || {};
+
+  // מעקב צפיות - משתמש ב-ID בבטחה
+  useTrackMenuView(restaurantData?._id || menu?._id);
 
   const fetchMenuData = async (restaurantId) => {
     try {
-      // Always fetch fresh data from server
-      const { categories, dishes } =
-        await fetchCategoriesAndDishes(restaurantId);
+      // ✅ שימוש ב-ID נקי כדי למנוע שגיאת [object Object]
+      const { categories, dishes } = await fetchCategoriesAndDishes(restaurantId);
       setCategories(categories);
       setDishes(dishes);
     } catch (error) {
@@ -42,12 +48,12 @@ const Design3 = () => {
     if (restaurantName) {
       const fetchData = async () => {
         try {
-          const restaurantData = await fetchRestaurant(restaurantName);
-          setRestaurantData(restaurantData);
+          const data = await fetchRestaurant(restaurantName);
+          setRestaurantData(data);
 
-          if (restaurantData) {
-            setRestaurant(restaurantData);
-            await fetchMenuData(restaurantData._id);
+          if (data) {
+            setRestaurant(data);
+            await fetchMenuData(data._id);
           } else {
             toast.error("מסעדה לא נמצאה");
           }
@@ -71,13 +77,16 @@ const Design3 = () => {
       }}
     >
       <div className="flex flex-col w-full max-w-2xl py-4">
-        <div className="flex justify-center">
-          <img
-            src={restaurantData.logo}
-            className="w-[200px] rounded shadow-lg"
-            alt="restaurant logo"
-          />
-        </div>
+        {/* ✅ הוספת סימן שאלה למניעת קריסה אם הסטייט עוד לא התעדכן */}
+        {restaurantData?.logo && (
+          <div className="flex justify-center">
+            <img
+              src={restaurantData.logo}
+              className="w-[200px] rounded shadow-lg"
+              alt="restaurant logo"
+            />
+          </div>
+        )}
 
         <div className="mt-6 w-[80%] mx-auto">
           <AccordionMenu

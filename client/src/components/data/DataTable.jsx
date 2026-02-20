@@ -244,7 +244,7 @@ export default function DataTable() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="">
+      <div className="w-full overflow-x-auto">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

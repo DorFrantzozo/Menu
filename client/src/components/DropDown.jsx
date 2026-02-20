@@ -15,9 +15,8 @@ export default function DropDown({ setCategory }) {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axiosInstance.post(
-          "/category/getCategories",
-          { userId: user._id },
+        const response = await axiosInstance.get(
+          `/category/getCategories/${user._id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

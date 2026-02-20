@@ -22,7 +22,9 @@ const EditDishForm = ({dish,setShowEditForm}) => {
 //   const dish = item?.item;
 
   const [dishName, setDishName] = useState(dish?.name || "");
+
   const [description, setDescription] = useState(dish?.description || "");
+
   const [price, setPrice] = useState(dish?.price || "");
   const [img, setImg] = useState(null);
   const [gluten, setGluten] = useState(dish?.gluten || false);
@@ -38,7 +40,9 @@ const EditDishForm = ({dish,setShowEditForm}) => {
 
     const formData = new FormData();
     formData.append("name", dishName);
+
     formData.append("description", description);
+
     formData.append("price", price);
     formData.append("gluten", gluten);
     formData.append("pregnant", pregnant);
@@ -96,7 +100,7 @@ const EditDishForm = ({dish,setShowEditForm}) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
-              שם המנה
+              שם המנה (עברית)
             </label>
             <input
               type="text"
@@ -106,6 +110,8 @@ const EditDishForm = ({dish,setShowEditForm}) => {
               className="w-full rounded-md border border-slate-300 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none"
             />
           </div>
+
+
 
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
@@ -121,16 +127,19 @@ const EditDishForm = ({dish,setShowEditForm}) => {
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">
-            תיאור המנה
-          </label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            rows={4}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none resize-y"
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              תיאור המנה (עברית)
+            </label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={4}
+              className="w-full rounded-md border border-slate-300 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none resize-y"
+            />
+          </div>
+
         </div>
 
         {/* תכונות המנה */}

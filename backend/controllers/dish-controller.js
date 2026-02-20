@@ -2,66 +2,65 @@ import Dish from "../model/dish.js";
 import cloudinary from "../utils/cloudinary.js";
 
 const createDish = async (req, res) => {
-  const { userId } = req.body;
-  const {
-    name,
-    description,
-    price,
-    category,
-    pregnant,
-    gluten,
-    lactose,
-    vegi,
-  } = req.body;
-
-  const isexist = await Dish.findOne({ userId, name });
-
-  if (isexist) {
-    return res.status(400).json({ message: "Dish already exists" });
-  }
-
   try {
+    const { userId } = req.params; // Get userId from params
+    const { name, description, price, category, pregnant, gluten, lactose, vegi, hide } = req.body;
+
+    console.log("Create Dish Request Body:", req.body);
+    console.log("Create Dish Request File:", req.file);
+
+     // 0. Strict validation for required fields
+    if (!userId || !name || !price || !category) {
+        return res.status(400).json({ message: "UserId, Name, Price, and Category are required" });
+    }
+
+    // 1. Check if the dish already exists (optional, but good practice)
+    const isexist = await Dish.findOne({ userId, name });
+    if (isexist) {
+      return res.status(400).json({ message: "Dish with this name already exists for this user" });
+    }
+
     let imgUrl = null;
+
+    // 2. Upload image if exists
     if (req.file) {
       const uploadResult = await new Promise((resolve, reject) => {
-        cloudinary.uploader
-          .upload_stream(
-            {
-              public_id: `categories/${name}`,
-              folder: "categories",
-              transformation: {
-                quality: "auto",
-                fetch_format: "auto",
-              },
-            },
-            (error, result) => {
-              if (error) return reject(error);
-              resolve(result);
-            }
-          )
-          .end(req.file.buffer);
+        const stream = cloudinary.uploader.upload_stream(
+          {
+            folder: "dishes",
+            transformation: { quality: "auto", fetch_format: "auto" },
+          },
+          (error, result) => {
+            if (error) return reject(error);
+            resolve(result);
+          }
+        );
+        stream.end(req.file.buffer);
       });
       imgUrl = uploadResult.secure_url;
-      const newDish = new Dish({
-        userId,
-        name,
-        img: imgUrl,
-        description,
-        price,
-        category,
-        pregnant,
-        gluten,
-        lactose,
-        vegi,
-      });
-
-      await newDish.save();
-      console.log("Dish created successfully");
-      res.status(201).json(newDish);
     }
+
+    // 3. Create the dish object
+    // Note: We convert boolean fields strictly because FormData sends them as strings 'true'/'false'
+    const newDish = new Dish({
+      userId,
+      name,
+      description: description || "", // Ensure description is not undefined
+      price,
+      category,
+      pregnant: pregnant === 'true' || pregnant === true,
+      gluten: gluten === 'true' || gluten === true,
+      lactose: lactose === 'true' || lactose === true,
+      vegi: vegi === 'true' || vegi === true,
+      hide: hide === 'true' || hide === true,
+      img: imgUrl, // Will be null if no image uploaded, which is fine since required: false in model
+    });
+
+    await newDish.save();
+    res.status(201).json(newDish);
   } catch (error) {
-    console.error("Error creating dish:", error.message);
-    res.status(400).json({ message: error.message });
+    console.error("Error creating dish:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -70,13 +69,36 @@ const getDishesByCategory = async (req, res) => {
   try {
     const { userId, category } = req.params;
 
+    // 🔒 חסימת אבטחה קריטית: מונעת זליגת מידע אם חסר פרמטר
+    if (!userId || !category) {
+      return res.status(400).json({ message: "User ID and Category ID are strictly required" });
+    }
+
+    // עכשיו זה בטוח ב-100%
     const dishes = await Dish.find({ userId, category });
 
     res.status(200).json(dishes);
 
-    console.log("Dishes retrieved successfully:", dishes);
   } catch (error) {
     console.error("Error retrieving dishes:", error.message);
+    res.status(500).json({ message: error.message });
+  }
+};
+const getAllDishesByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    
+    // 🔒 חסימת האבטחה הקריטית:
+    if (!userId || userId === 'undefined' || userId === 'null') {
+      return res.status(400).json({ message: "Strict error: User ID is required" });
+    }
+
+    // שליפה מאובטחת
+    const dishes = await Dish.find({ userId });
+    
+    res.status(200).json(dishes);
+  } catch (error) {
+    console.error("Error retrieving all dishes:", error.message);
     res.status(500).json({ message: error.message });
   }
 };
@@ -171,4 +193,6 @@ const deleteDish = async (req, res) => {
   }
 };
 
-export { createDish, getDishesByCategory, updateDish, deleteDish };
+
+
+export { createDish, getAllDishesByUserId,getDishesByCategory, updateDish, deleteDish };

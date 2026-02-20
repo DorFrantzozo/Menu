@@ -3,18 +3,14 @@ import {
   TrashIcon,
   EllipsisHorizontalIcon,
 } from "@heroicons/react/24/outline";
-import { useState } from "react";
-import Modal from "../Modal";
 import PropTypes from "prop-types";
 export default function CategoryCard({
   category,
   onEdit,
-  // onDelete,
+  onDelete,
   user,
   dragHandle,
 }) {
-  const [showDeleteForm, setShowDeleteForm] = useState(false);
-
   return (
     <div className="relative bg-white border border-slate-200 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col">
       {/* Drag handle – שלוש נקודות */}
@@ -64,7 +60,7 @@ export default function CategoryCard({
           </p>
         </div>
 
-        {/* כפתורים */}
+      {/* כפתורים */}
         <div className="flex gap-3 mt-4">
           <button
             onClick={() => onEdit(category)}
@@ -74,7 +70,7 @@ export default function CategoryCard({
             <span className="hidden sm:inline">ערוך</span>
           </button>
           <button
-            onClick={() => setShowDeleteForm(true)}
+            onClick={() => onDelete(category)}
             className="flex items-center gap-1 text-red-500 hover:text-red-600 transition-colors duration-200"
           >
             <TrashIcon className="w-5 h-5" />
@@ -82,16 +78,6 @@ export default function CategoryCard({
           </button>
         </div>
       </div>
-
-      {showDeleteForm && (
-        <Modal
-          open={showDeleteForm}
-          setOpen={setShowDeleteForm}
-          user={user}
-          item={category}
-          type={false}
-        />
-      )}
     </div>
   );
 }

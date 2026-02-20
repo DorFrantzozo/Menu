@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { useSelector } from "react-redux";
+import { PlusIcon, MagnifyingGlassIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { useSelector, useDispatch } from "react-redux";
+import { setMenuCategories } from "@/state/menu/menuCategoriesSlice";
 import { Button } from "@/components/ui/button";
+import { toast } from "react-toastify";
 import { Input } from "@/components/ui/input";
 import AddCategoryForm from "@/components/CateroryComponents/AddCategoryForm";
 import EditCategoryForm from "@/components/CateroryComponents/EditCategoryForm";
@@ -15,13 +17,15 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  DragOverlay,
 } from "@dnd-kit/core";
 import {
   SortableContext,
-  verticalListSortingStrategy,
+  rectSortingStrategy,
   arrayMove,
 } from "@dnd-kit/sortable";
 import axiosInstance from "@/utils/baseUrl";
+import CategoryCard from "@/components/CateroryComponents/CategoryCard";
 
 export default function ManageCategories({
   isLoading,
@@ -31,18 +35,26 @@ export default function ManageCategories({
 }) {
   const [showCreateForm, setShowCreateCategoryForm] = useState(false);
   const [creatingCategory, setCreatingCategory] = useState(null);
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
   const [editingCategory, setEditingCategory] = useState(null);
   const [showEditForm, setShowEditForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [categories, setCategories] = useState([]);
+  const [activeId, setActiveId] = useState(null);
 
   const user = useSelector((state) => state.user.user);
+  const dispatch = useDispatch();
 
-  // Load categories from localStorage initially
+  const menuCategories = useSelector(
+    (state) => state.menuCategories.menuCategories
+  );
+
+  // Sync categories with Redux state
   useEffect(() => {
-    const stored = localStorage.getItem("categories");
-    if (stored) setCategories(JSON.parse(stored));
-  }, []);
+    if (menuCategories && Array.isArray(menuCategories)) {
+      setCategories(menuCategories);
+    }
+  }, [menuCategories]);
 
   // Filtered categories for search
   const filteredCategories = categories
@@ -50,7 +62,13 @@ export default function ManageCategories({
     .sort((a, b) => a.locationNumber - b.locationNumber);
 
   // DnD sensors
-  const sensors = useSensors(useSensor(PointerSensor));
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    })
+  );
 
   // Handle new category creation
   const handleSubmit = (data) => {
@@ -66,8 +84,19 @@ export default function ManageCategories({
   };
 
   // Handle drag and drop
+  const handleDragStart = (event) => {
+    setActiveId(event.active.id);
+  };
+
+  const handleDragCancel = () => {
+    setActiveId(null);
+  };
+
   const handleDragEnd = async (event) => {
     const { active, over } = event;
+    
+    setActiveId(null);
+
     if (!over || active.id === over.id) return;
 
     const oldIndex = categories.findIndex((cat) => cat._id === active.id);
@@ -81,6 +110,9 @@ export default function ManageCategories({
     );
 
     setCategories(newCategories);
+    
+    // Update Redux state
+    dispatch(setMenuCategories(newCategories));
 
     // Update backend
     try {
@@ -99,6 +131,31 @@ export default function ManageCategories({
     if (showEditForm) document.body.classList.add("overflow-hidden");
     else document.body.classList.remove("overflow-hidden");
   }, [showEditForm]);
+
+  // Delete handling
+  const executeDelete = async () => {
+    if (!categoryToDelete) return;
+
+    try {
+      const response = await axiosInstance.delete(
+        `/category/deleteCategory/${user._id}/${categoryToDelete._id}`
+      );
+      
+      const { deletedDishesCount } = response.data;
+      
+      // Update local state
+      const newCategories = categories.filter(c => c._id !== categoryToDelete._id);
+      setCategories(newCategories); 
+      dispatch(setMenuCategories(newCategories)); // Sync Redux
+
+      toast.success(`הקטגוריה נמחקה ו-${deletedDishesCount} מנות הוסרו בהצלחה`);
+      
+      setCategoryToDelete(null);
+    } catch (error) {
+      console.error("Error deleting category:", error);
+      toast.error("שגיאה במחיקת הקטגוריה");
+    }
+  };
 
   if (isLoading) {
     return (
@@ -182,11 +239,13 @@ export default function ManageCategories({
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
+          onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
+          onDragCancel={handleDragCancel}
         >
           <SortableContext
             items={filteredCategories.map((c) => c._id)}
-            strategy={verticalListSortingStrategy}
+            strategy={rectSortingStrategy}
           >
             <motion.div
               initial={{ opacity: 0 }}
@@ -201,7 +260,7 @@ export default function ManageCategories({
                   user={user}
                   category={category}
                   onEdit={handleEditCategory}
-                  onDelete={onDelete}
+                  onDelete={setCategoryToDelete}
                 />
               ))}
               {showEditForm && editingCategory && (
@@ -214,6 +273,22 @@ export default function ManageCategories({
               )}
             </motion.div>
           </SortableContext>
+          <DragOverlay>
+            {activeId ? (
+              <CategoryCard
+                category={categories.find((c) => c._id === activeId)}
+                user={user}
+                dragHandle={{
+                  listeners: {},
+                  attributes: {},
+                  onDelete: () => {}, // Disable delete during drag
+                  onEdit: () => {}
+                }}
+                onEdit={() => {}} 
+                onDelete={() => {}} 
+              />
+            ) : null}
+          </DragOverlay>
         </DndContext>
 
         {/* Empty State */}
@@ -234,6 +309,46 @@ export default function ManageCategories({
             </p>
           </motion.div>
         )}
+
+        {/* Delete Confirmation Modal */}
+        <AnimatePresence>
+          {categoryToDelete && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setCategoryToDelete(null)}>
+               <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden"
+              >
+                <div className="p-6 text-center">
+                  <div className="mx-auto w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                    <TrashIcon className="w-6 h-6 text-red-600" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">אתה בטוח?</h3>
+                  <p className="text-gray-500 mb-6">
+                    פעולה זו תמחק לצמיתות את הקטגוריה <strong>"{categoryToDelete.name}"</strong> ואת כל המנות שבתוכה. לא ניתן לבטל פעולה זו.
+                  </p>
+                  
+                  <div className="flex gap-3 justify-center">
+                    <button
+                      onClick={() => setCategoryToDelete(null)}
+                      className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition-colors"
+                    >
+                      ביטול
+                    </button>
+                    <button
+                      onClick={executeDelete}
+                      className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold shadow-md hover:shadow-lg transition-all"
+                    >
+                      כן, מחק הכל
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

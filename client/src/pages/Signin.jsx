@@ -35,7 +35,7 @@ const Signin = () => {
         localStorage.setItem("expireTime", expireTime);
         localStorage.setItem("user", JSON.stringify(user));
 
-        const categories = await getCategories(user);
+        const categories = await getCategories(user._id);
         const categoriesWithDishes = await getAllDishesAndMapToCategories(
           user,
           categories,

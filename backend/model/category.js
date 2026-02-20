@@ -1,23 +1,23 @@
 import mongoose from "mongoose";
 
-const CategorySchema = new mongoose.Schema({
+const Category = new mongoose.Schema({
   userId: {
-    type: String,
-    required: true, // Makes userId a required field
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
   },
   name: {
     type: String,
-    required: true, // Makes name a required field
+    required: true,
   },
+
   img: {
     type: String,
+    required: false,
   },
   locationNumber: {
     type: Number,
     required: true,
-  },
-  description: {
-    type: String,
   },
   hide: {
     type: Boolean,
@@ -25,4 +25,4 @@ const CategorySchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model("Category", CategorySchema);
+export default mongoose.model("Category", Category);

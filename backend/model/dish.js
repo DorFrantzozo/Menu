@@ -10,13 +10,15 @@ const Dish = new mongoose.Schema({
     type: String,
     required: true,
   },
+
   img: {
     type: String,
-    required: true,
+    required: false,
   },
   description: {
     type: String,
   },
+
   price: {
     type: Number,
     required: true,

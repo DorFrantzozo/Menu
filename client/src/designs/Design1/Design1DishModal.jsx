@@ -3,8 +3,11 @@ import { Dialog } from "@/components/ui/dialog";
 import { X } from "lucide-react";
 import Alergies from "../../components/sensitivities/Allergies";
 import { Button } from "@/components/ui/button";
+import useTrackDishView from "@/hooks/useTrackDishView";
 
 const Design1DishModal = ({ dish, isOpen, onClose }) => {
+  useTrackDishView(isOpen ? dish?._id : null);
+
   if (!dish) return null; // אם אין מנה, לא נטען שום דבר
 
   return (
@@ -19,7 +22,9 @@ const Design1DishModal = ({ dish, isOpen, onClose }) => {
             <X size={24} />
           </Button>
 
-          <div className="flex flex-col items-center text-center">
+          <div
+            className="flex flex-col items-center text-center"
+          >
             <div className="relative w-full">
               <img
                 src={dish.img}
@@ -32,7 +37,9 @@ const Design1DishModal = ({ dish, isOpen, onClose }) => {
             <h2 className="text-2xl font-bold text-gray-900 mt-8">
               {dish.name}
             </h2>
-            <p className="text-gray-500 mt-2 text-lg">{dish.description}</p>
+            <p className="text-gray-500 mt-2 text-lg">
+              {dish.description}
+            </p>
             <p className="text-xl font-semibold text-gray-800 mt-4">
               {dish.price} ₪
             </p>

@@ -1,44 +1,47 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import useTrackMenuView from "@/hooks/useTrackMenuView";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import axiosInstance from "../../utils/baseUrl";
 import Spinner from "@/components/Spinner";
+// ✅ ייבוא הפונקציה המסודרת שיצרנו ב-fetchData
+import { getCategories } from "@/utils/fetchData";
 
-const Design1 = () => {
+const Design1 = ({ menu: menuProp }) => {
   const [restaurant, setRestaurant] = useState(null);
   const [categories, setCategories] = useState([]);
-  const [restaurantName, setRestaurantName] = useState(null); // ניהול שם המסעדה כסטייט
+  const [restaurantName, setRestaurantName] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const menu = location.state || {};
-  const restaurantNameFromState = menu?.restaurantName?.toLowerCase();
+  
+  const menu = menuProp || location.state || {};
 
-  // חילוץ הסאב-דומיין אם יש
+  // ✅ תיקון המעקב - שימוש בסטייט הקיים
+  useTrackMenuView(restaurant?._id || menu?._id);
+
+  const restaurantNameFromState = menu?.restaurantName?.toLowerCase();
   const hostname = window.location.hostname;
   const parts = hostname.split(".");
   const restaurantNameFromSubdomain = parts.length >= 3 ? parts[0] : null;
 
   useEffect(() => {
-    try {
-      if (menu?.restaurantName) {
-        setRestaurantName(menu?.restaurantName?.toLowerCase());
-      } else if (restaurantNameFromSubdomain) {
-        setRestaurantName(restaurantNameFromSubdomain);
-      }
-    } catch (error) {
-      console.log(error);
+    if (menu?.restaurantName) {
+      setRestaurantName(menu.restaurantName.toLowerCase());
+    } else if (restaurantNameFromSubdomain) {
+      setRestaurantName(restaurantNameFromSubdomain);
     }
   }, [restaurantNameFromSubdomain, restaurantNameFromState]);
 
   useEffect(() => {
-    const fetchRestaurant = async () => {
+    const fetchRestaurantDetails = async () => {
       try {
         const res = await axiosInstance.get(
           `/user/find?name=${restaurantName}`
         );
         if (res.data) {
           setRestaurant(res.data);
-          fetchCategories(res.data._id);
+          // ✅ קריאה לפונקציית הטעינה עם ה-ID שחזר
+          loadCategories(res.data._id);
         } else {
           toast.error("מסעדה לא נמצאה");
         }
@@ -48,19 +51,18 @@ const Design1 = () => {
     };
 
     if (restaurantName) {
-      fetchRestaurant();
+      fetchRestaurantDetails();
     }
-  }, [restaurantName]); // כל פעם שהשם משתנה, הרץ את הפונקציה
+  }, [restaurantName]);
 
-  // פונקציה לטעינת הקטגוריות
-  const fetchCategories = async (userId) => {
+  // ✅ פונקציה מעודכנת שמשתמשת ב-GET ובנתיב הנכון
+  const loadCategories = async (userId) => {
     if (!userId) return;
     try {
-      const response = await axiosInstance.post("/category/getCategories", {
-        userId,
-      });
-      if (response.data) {
-        setCategories(response.data);
+      // משתמשים בפונקציה הגלובלית שסידרנו כדי למנוע כפילויות קוד ובאגים
+      const data = await getCategories(userId);
+      if (data) {
+        setCategories(data);
       } else {
         toast.error("טעינת הקטגוריות נכשלה");
       }
@@ -74,7 +76,7 @@ const Design1 = () => {
       {!restaurant ? (
         <Spinner />
       ) : (
-        <div className="min-h-screen  p-6">
+        <div className="min-h-screen p-6">
           <h1 className="text-4xl font-bold text-center text-gray-800">
             {restaurant.displayName || restaurant.restaurantName}
           </h1>
@@ -93,12 +95,12 @@ const Design1 = () => {
                     )
                   }
                 >
-                  <h2 className="text-xl font-semibold text-center text-gray-700">
+                  <h2 className="text-xl font-semibold text-center text-gray-800">
                     {category.name}
                   </h2>
                   <img
                     src={category.img}
-                    className="w-full h-[200px] object-cover mt-4 rounded-lg"
+                    className="w-full h-[200px] object-cover mt-4 rounded-lg shadow-md"
                     alt={category.name}
                   />
                 </div>

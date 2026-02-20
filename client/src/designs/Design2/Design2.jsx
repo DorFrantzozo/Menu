@@ -1,28 +1,34 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import useTrackMenuView from "@/hooks/useTrackMenuView";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import Spinner from "../../components/Spinner";
 import Allergies from "../../components/sensitivities/Allergies";
 import IconDescription from "../../components/sensitivities/IconDescription";
 import axiosInstance from "@/utils/baseUrl";
+import { fetchCategoriesAndDishes } from "@/utils/fetchData";
+import { useNavigate } from "react-router-dom";
 
-const Design2 = () => {
+const Design2 = ({ menu: menuProp }) => {
   const [restaurant, setRestaurant] = useState(null);
   const [categories, setCategories] = useState([]);
   const [dishes, setDishes] = useState({});
   const [restaurantName, setRestaurantName] = useState(null);
   const location = useLocation();
-  const menu = location.state || {};
+  const navigate = useNavigate();
+  
+  const menu = menuProp || location.state || {};
 
-  // Extract restaurant name from subdomain
+  // ✅ תיקון: שימוש ב-restaurant במקום restaurantData שלא קיים
+  // ושימוש ב-ID מה-menu כגיבוי עד שהמסעדה נטענת
+  const trackId = restaurant?._id || menu?._id;
+  useTrackMenuView(trackId);
+
   const hostname = window.location.hostname;
   const parts = hostname.split(".");
   const restaurantNameFromSubdomain = parts.length >= 3 ? parts[0] : null;
-
-  // Extract restaurant name from state if available
   const restaurantNameFromState = menu?.restaurantName?.toLowerCase();
 
-  // Set the restaurant name depending on the available values
   useEffect(() => {
     if (restaurantNameFromState) {
       setRestaurantName(restaurantNameFromState);
@@ -31,7 +37,6 @@ const Design2 = () => {
     }
   }, [restaurantNameFromState, restaurantNameFromSubdomain]);
 
-  // Fetch restaurant details based on the name
   useEffect(() => {
     if (restaurantName) {
       const fetchRestaurant = async () => {
@@ -41,6 +46,7 @@ const Design2 = () => {
           );
           if (res.data) {
             setRestaurant(res.data);
+            // ✅ וידוא ששולחים רק את ה-ID (סטרינג) ולא את האובייקט
             fetchCategories(res.data._id);
           } else {
             toast.error("מסעדה לא נמצאה");
@@ -51,45 +57,19 @@ const Design2 = () => {
       };
       fetchRestaurant();
     }
-  }, [restaurantName]); // Run this effect when restaurantName changes
+  }, [restaurantName]);
 
-  // Fetch categories based on restaurant ID
   const fetchCategories = async (userId) => {
-    if (!userId) return;
-    try {
-      const response = await axiosInstance.post(`/category/getCategories`, {
-        userId,
-      });
-      if (response.data) {
-        setCategories(response.data);
-        // Fetch dishes for each category
-        response.data.forEach((category) => {
-          fetchDishes(userId, category._id);
-        });
-      } else {
-        toast.error("טעינת הקטגוריות נכשלה");
-      }
-    } catch (error) {
-      toast.error("שגיאה בטעינת הקטגוריות: " + error.message);
-    }
-  };
+    // ✅ הגנה: אם userId הוא אובייקט בטעות, נחלץ את ה-ID
+    const cleanId = typeof userId === 'object' ? userId._id : userId;
+    if (!cleanId) return;
 
-  // Fetch dishes for a specific category
-  const fetchDishes = async (userId, categoryId) => {
     try {
-      const response = await axiosInstance.get(
-        `/dish/getDish/${userId}/${categoryId}`
-      );
-      if (response.data) {
-        setDishes((prevDishes) => ({
-          ...prevDishes,
-          [categoryId]: response.data,
-        }));
-      } else {
-        toast.error("לא נמצאו מנות");
-      }
+      const { categories, dishes } = await fetchCategoriesAndDishes(cleanId);
+      setCategories(categories);
+      setDishes(dishes);
     } catch (error) {
-      toast.error("שגיאה בטעינת המנות: " + error.message);
+      toast.error("שגיאה בטעינת התפריט: " + error.message);
     }
   };
 
@@ -127,8 +107,8 @@ const Design2 = () => {
                             <p className="font-semibold text-gray-800 ms-2">
                               {dish.price}₪
                             </p>
-                            <p className="whitespace-normal ms-10 break-words text-right text-sm sm:text-base md:text-lg lg:text-xl">
-                              {dish.description}
+                            <p className="whitespace-normal break-words text-sm sm:text-base md:text-lg lg:text-xl text-right ms-10">
+                                {dish.description}
                             </p>
                           </div>
                         </div>

@@ -22,6 +22,7 @@ const EditCategoryForm = ({ category, isOpen, setIsOpen }) => {
   const [img, setImg] = useState(null);
   const [hide, setHide] = useState(item.hide || false);
   const [name, setName] = useState(item.name || "");
+
   const [locationNumber, setLocationNumber] = useState(
     item.locationNumber || 0
   );
@@ -33,6 +34,7 @@ const EditCategoryForm = ({ category, isOpen, setIsOpen }) => {
 
     const formData = new FormData();
     formData.append("newName", name);
+
     formData.append("locationNumber", locationNumber);
     formData.append("hide", hide);
     if (img) formData.append("img", img);
@@ -90,7 +92,7 @@ const EditCategoryForm = ({ category, isOpen, setIsOpen }) => {
           {/* שדות טקסט */}
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
-              שם הקטגוריה
+              שם הקטגוריה (עברית)
             </label>
             <input
               type="text"
@@ -100,6 +102,8 @@ const EditCategoryForm = ({ category, isOpen, setIsOpen }) => {
               className="w-full rounded-md border border-slate-300 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none"
             />
           </div>
+
+
 
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
