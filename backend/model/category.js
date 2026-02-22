@@ -23,6 +23,22 @@ const Category = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  hasTimeLimit: {
+    type: Boolean,
+    default: false,
+  },
+  startTime: {
+    type: String,
+    required: false,
+  },
+  endTime: {
+    type: String,
+    required: false,
+  },
+  activeDays: {
+    type: [Number],
+    required: false,
+  },
 });
 
 export default mongoose.model("Category", Category);

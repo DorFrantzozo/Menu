@@ -3,6 +3,7 @@ import connect from "./connections/connect.js";
 import userRouter from "./routes/user-route.js";
 import categoryRouter from "./routes/category-route.js";
 import dishRouter from "./routes/dish-route.js";
+import { handleQrRedirect } from "./controllers/user-controller.js";
 import cors from "cors";
 
 import dotenv from "dotenv";
@@ -22,6 +23,10 @@ app.use("/api/category", categoryRouter);
 app.use("/api/dish", dishRouter);
 app.use("/api/asset", assetRouter);
 app.use("/api/analytics", analyticsRouter);
+
+// Dynamic QR Redirect Route
+app.get("/go/:slug", handleQrRedirect);
+
 try {
   await connect();
   app.listen(process.env.PORT, () => {

@@ -14,7 +14,8 @@ import Spinner from "@/components/Spinner";
 import { toast } from "react-toastify";
 
 export default function EditProfile() {
-  const [img, setImg] = useState(null);
+  const [img, setImg] = useState(null); // הלינק לתצוגה המקדימה
+  const [imgFile, setImgFile] = useState(null); // הקובץ האמיתי שיישלח לשרת!
   const [restaurantName, setRestaurantName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -24,15 +25,19 @@ export default function EditProfile() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user.user);
-  console.log(user.logo)
+  
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setImg(URL.createObjectURL(file));
+      setImgFile(file); // שומרים את הקובץ הפיזי לשליחה לשרת
+      setImg(URL.createObjectURL(file)); // שומרים לינק רק בשביל להציג למשתמש
     }
   };
 
-  const removeImage = () => setImg(null);
+  const removeImage = () => {
+    setImg(null);
+    setImgFile(null); // מוחקים גם את הקובץ הפיזי
+  };
 
   const handleRestaurantNameChange = (e) => {
     const value = e.target.value;
@@ -44,15 +49,17 @@ export default function EditProfile() {
     e.preventDefault();
     setIsLoading(true);
     const formData = new FormData();
+    
     // מוסיף רק את השדות שהמשתמש שינה
-    if (restaurantName !== user?.restaurantName)
-      formData.append("restaurantName", restaurantName);
-    if (img) formData.append("img", img); // תשלח תמונה אם הועלתה
+    if (restaurantName !== user?.restaurantName) formData.append("restaurantName", restaurantName);
+    
+    // שינוי קריטי: שולחים את הקובץ (imgFile) ולא את הלינק הוירטואלי (img)
+    if (imgFile) formData.append("logo", imgFile); 
+    
     if (email !== user?.email) formData.append("email", email);
     if (phone !== user?.phone) formData.append("phone", phone);
-    if (password) formData.append("password", password); // רק אם המשתמש שינה סיסמה
-    if (displayName !== user?.displayName)
-      formData.append("displayName", displayName);
+    if (password) formData.append("password", password);
+    if (displayName !== user?.displayName) formData.append("displayName", displayName);
 
     try {
       const response = await axiosInstance.put(
@@ -65,11 +72,11 @@ export default function EditProfile() {
         dispatch(updateUser(response.data.user));
         toast.success("הפרופיל עודכן בהצלחה!");
         navigate("/dashboard");
-        setIsLoading(false);
       }
     } catch (error) {
       console.error(error.message);
       toast.error("שגיאה בעדכון הפרופיל. אנא נסה שוב.");
+    } finally {
       setIsLoading(false);
     }
   };
@@ -92,7 +99,7 @@ export default function EditProfile() {
         <CardContent className="space-y-4 p-6">
           {/* תמונת פרופיל */}
           <div className="flex flex-col items-center space-y-2">
-            {user.logo ? (
+            {user.logo || img ? (
               <img
                 src={img || user?.logo}
                 alt="תצוגת פרופיל"

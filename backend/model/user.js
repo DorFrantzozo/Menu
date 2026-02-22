@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { nanoid } from "nanoid";
 
 const userSchema = new mongoose.Schema(
   {
@@ -61,8 +62,37 @@ const userSchema = new mongoose.Schema(
       },
     },
     role: { type: String, default: "user" },
+    qrSlug: {
+      type: String,
+      unique: true,
+      index: true,
+    },
+    totalQrScans: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 ); // Automatically adds createdAt and updatedAt fields
+
+userSchema.pre("save", async function (next) {
+  if (this.isNew || !this.qrSlug) {
+    let slugExists = true;
+    let newSlug = "";
+
+    while (slugExists) {
+      // Generate an 8-character long URL-friendly slug
+      newSlug = nanoid(8);
+      // Check if this slug already exists in the database
+      const existingUser = await mongoose.models.User.findOne({ qrSlug: newSlug });
+      if (!existingUser) {
+        slugExists = false;
+      }
+    }
+    
+    this.qrSlug = newSlug;
+  }
+  next();
+});
 
 export default mongoose.model("User", userSchema);

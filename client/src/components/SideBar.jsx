@@ -1,37 +1,30 @@
 import { useState, useEffect } from "react";
-import {
-  LayoutDashboard,
-  Folder,
-  Utensils,
-  Globe,
-  Settings,
-  ChevronLeft,
-  ChevronRight,
-  LogOut,
-  Menu,
-  BrushIcon,
-} from "lucide-react";
-import logo from "../assets/img/logoBlack.avif";
 import { useNavigate } from "react-router-dom";
-import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "@/state/user/userSlice";
 import { logoutMenuCategories } from "@/state/menu/menuCategoriesSlice";
 import { logoutDishes } from "@/state/menu/menuDishes";
+import { Menu, X } from "lucide-react";
 
 const Sidebar = ({ user }) => {
-  const [collapsed, setCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [active, setActive] = useState("Dashboard");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024); // lg breakpoint in tailwind
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const toggleSidebar = () => {
     if (isMobile) {
       setMobileOpen(!mobileOpen);
-    } else {
-      setCollapsed(!collapsed);
     }
   };
 
@@ -48,183 +41,197 @@ const Sidebar = ({ user }) => {
     {
       name: "לוח ניהול",
       key: "Dashboard",
-      icon: <LayoutDashboard size={20} />,
+      icon: "dashboard",
       navigate: "/dashboard",
-    },
-    {
-      name: "קטגוריות",
-      key: "Categories",
-      icon: <Folder size={20} />,
-      navigate: "/manage-categories",
     },
     {
       name: "מנות",
       key: "Dishes",
-      icon: <Utensils size={20} />,
+      icon: "list_alt",
       navigate: "/manage-dishes",
     },
     {
-      name: "תפריט",
+      name: "קטגוריות",
+      key: "Categories",
+      icon: "category",
+      navigate: "/manage-categories",
+    },
+    {
+      name: "תפריט חי",
       key: "PublicMenu",
-      icon: <Globe size={20} />,
-      customNavigate: () =>
-        navigate(`/design${user.designNumber}`, { state: user }),
+      icon: "restaurant_menu",
+      customNavigate: () => navigate(`/design${user?.designNumber || 1}`, { state: user }),
     },
     {
       name: "עיצוב",
       key: "Design",
-      icon: <BrushIcon size={20} />,
+      icon: "palette",
       navigate: "/designs",
-    },
-    {
-      name: "הגדרות",
-      key: "Settings",
-      icon: <Settings size={20} />,
-      navigate: "/profile",
     },
   ];
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  const settingsItems = [
+    {
+      name: "הגדרות",
+      key: "Settings",
+      icon: "settings",
+      navigate: "/profile",
+    },
+    {
+      name: "התנתקות",
+      key: "Logout",
+      icon: "logout",
+      customNavigate: handleLogOut,
+    },
+  ];
 
   const sidebarContent = (
-    <div
+    <aside
       dir="rtl"
-      className={`min-h-screen sticky top-0 overflow-y-auto bg-white shadow-lg flex flex-col justify-between transition-all duration-300 ease-in-out ${
-        collapsed ? "w-16" : "w-64"
-      }`}
+      className="w-64 bg-surface-light dark:bg-surface-dark border-l border-zinc-200 dark:border-zinc-700 flex flex-col h-full shrink-0 z-20 transition-all duration-300"
     >
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-4 border-b">
+      <div className="h-16 flex items-center px-6 border-b border-zinc-100 dark:border-zinc-700/50 justify-between">
         <div className="flex items-center gap-2">
-          {!collapsed && (
-            <img
-              src={logo}
-              alt="logo"
-              className="w-16 h-16 rounded-md object-cover"
-            />
-          )}
+          <span className="material-icons-round text-primary text-3xl">restaurant_menu</span>
+          <span className="font-bold text-xl tracking-tight text-zinc-800 dark:text-white">MenuYou</span>
         </div>
-        <button
-          onClick={toggleSidebar}
-          className="text-gray-500 hover:text-black"
-        >
-          {collapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
-        </button>
-      </div>
-
-      <hr />
-
-      {/* Menu Items */}
-      <nav className="flex-1 mt-4 space-y-1">
-        {!collapsed && user?.role === "admin" && (
-          <button
-            onClick={() => navigate("/admin")}
-            className="flex hover:bg-gray-200 w-full px-4 py-2 items-center"
-          >
-            <UserCircleIcon className="w-6 h-6 text-black" />
-            <p className="px-2 cursor-pointer py-4 flex items-center gap-2">
-              Admin
-            </p>
+        {isMobile && (
+          <button onClick={toggleSidebar} className="text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-white">
+            <X size={24} />
           </button>
         )}
+      </div>
 
-        {menuItems.map((item) => (
-          <button
-            key={item.name}
-            className={`flex gap-2 px-4 py-3 transition rounded w-full items-center
-              ${
-                active === item.name
-                  ? "bg-gray-100 text-gray-900"
-                  : "text-gray-700 hover:bg-gray-100"
-              }`}
-            onClick={() => {
-              setActive(item.name);
-              if (item.customNavigate) {
-                item.customNavigate();
-              } else if (item.navigate) {
-                navigate(item.navigate);
-              }
-              if (isMobile) setMobileOpen(false);
-            }}
-          >
-            {item.icon}
-            {!collapsed && <span>{item.name}</span>}
-          </button>
-        ))}
-
-        <hr className="my-2" />
-
-        {!collapsed && user && (
-          <div className="px-4 pb-4">
-            <h1 className="text-sm font-semibold text-center">
-              מידע על המסעדה
-            </h1>
-            <div className="flex gap-3 mt-2" dir="ltr">
-              <img
-                src={user.logo}
-                className="w-12 h-12 rounded-xl bg-gray-400 p-2 shadow-sm object-cover"
-                alt="user logo"
-              />
-              <div>
-                <h2 className="text-sm font-medium">{user.restaurantName}</h2>
-                <h3 className="text-xs text-gray-500">{user.email}</h3>
-              </div>
-            </div>
+      <div className="flex-1 overflow-y-auto py-4">
+        {user?.role === "admin" && (
+          <div className="px-4 mb-4">
+            <button
+              onClick={() => {
+                setActive("Admin");
+                navigate("/admin");
+                if (isMobile) setMobileOpen(false);
+              }}
+              className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg bg-red-50 text-red-600 font-medium hover:bg-red-100 transition-colors"
+            >
+              <span className="material-icons-round text-xl">admin_panel_settings</span>
+              ניהול Admin
+            </button>
           </div>
         )}
-      </nav>
 
-      {/* Logout */}
-      <div className="py-2">
-        <button
-          onClick={handleLogOut}
-          className="w-full flex items-center gap-2 text-gray-700 hover:bg-gray-100 px-3 py-2 rounded transition"
-        >
-          <LogOut size={20} />
-          {!collapsed && <span>התנתקות</span>}
-        </button>
+        <nav className="px-4 space-y-1">
+          {menuItems.map((item) => {
+            const isActive = active === item.key;
+            return (
+              <button
+                key={item.key}
+                className={`flex items-center w-full gap-3 px-3 py-2.5 rounded-lg transition-colors group ${
+                  isActive
+                    ? "bg-primary/10 text-primary font-medium"
+                    : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-700/50 hover:text-zinc-900 dark:hover:text-white"
+                }`}
+                onClick={() => {
+                  setActive(item.key);
+                  if (item.customNavigate) {
+                    item.customNavigate();
+                  } else if (item.navigate) {
+                    navigate(item.navigate);
+                  }
+                  if (isMobile) setMobileOpen(false);
+                }}
+              >
+                <span
+                  className={`material-icons-round text-xl transition-colors ${
+                    isActive ? "" : "group-hover:text-primary"
+                  }`}
+                >
+                  {item.icon}
+                </span>
+                <span>{item.name}</span>
+              </button>
+            );
+          })}
+        </nav>
+
+        <div className="px-4 mt-8">
+          <div className="text-xs font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-2 px-3">
+            הגדרות
+          </div>
+          <nav className="space-y-1">
+            {settingsItems.map((item) => (
+              <button
+                key={item.key}
+                className="flex items-center w-full gap-3 px-3 py-2.5 rounded-lg text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-700/50 hover:text-zinc-900 dark:hover:text-white transition-colors group"
+                onClick={() => {
+                  setActive(item.key);
+                  if (item.customNavigate) {
+                    item.customNavigate();
+                  } else if (item.navigate) {
+                    navigate(item.navigate);
+                  }
+                  if (isMobile) setMobileOpen(false);
+                }}
+              >
+                <span className="material-icons-round text-xl group-hover:text-primary transition-colors">
+                  {item.icon}
+                </span>
+                <span>{item.name}</span>
+              </button>
+            ))}
+          </nav>
+        </div>
       </div>
-    </div>
+
+      <div className="p-4 border-t border-zinc-100 dark:border-zinc-700/50">
+        <div className="flex items-center gap-3 p-2 rounded-lg bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-700/50">
+          <img
+            alt="User Logo"
+            className="w-10 h-10 rounded-full object-cover bg-zinc-200"
+            src={user?.logo || "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"}
+          />
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-zinc-900 dark:text-white truncate">
+              {user?.restaurantName || "מסעדה"}
+            </p>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 truncate">
+              {user?.email || "email@example.com"}
+            </p>
+          </div>
+        </div>
+      </div>
+    </aside>
   );
 
   return (
     <>
-      {/* Mobile sidebar */}
-      {isMobile && (
-        <>
-          <button
-            className="fixed top-4 right-4 z-50 bg-white p-2 rounded-full shadow-md md:hidden"
-            onClick={toggleSidebar}
-          >
-            <Menu />
-          </button>
+      <button
+        className={`fixed top-4 left-4 z-50 p-2 rounded-lg bg-surface-light dark:bg-surface-dark soft-shadow border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300 ${
+          isMobile ? "block" : "hidden"
+        }`}
+        onClick={toggleSidebar}
+      >
+        <Menu size={24} />
+      </button>
 
-          <div
-            className={`fixed inset-0 bg-black bg-opacity-40 z-40 transition-opacity duration-300 ${
-              mobileOpen ? "opacity-100 visible" : "opacity-0 invisible"
-            }`}
-            onClick={() => setMobileOpen(false)}
-          />
+      {/* Mobile Drawer Overlay */}
+      <div
+        className={`fixed inset-0 bg-black/40 z-40 transition-opacity duration-300 lg:hidden ${
+          mobileOpen ? "opacity-100 visible" : "opacity-0 invisible"
+        }`}
+        onClick={() => setMobileOpen(false)}
+      />
 
-          <div
-            className={`fixed top-0 right-0 h-full z-50 bg-white shadow-lg transition-transform duration-300 ease-in-out ${
-              mobileOpen ? "translate-x-0" : "translate-x-full"
-            }`}
-          >
-            {sidebarContent}
-          </div>
-        </>
-      )}
-
-      {/* Desktop sidebar */}
-      {!isMobile && <div>{sidebarContent}</div>}
+      <div
+        className={`fixed inset-y-0 right-0 z-50 lg:static lg:block transition-transform duration-300 ease-in-out ${
+          isMobile
+            ? mobileOpen
+              ? "translate-x-0"
+              : "translate-x-full"
+            : "translate-x-0"
+        }`}
+      >
+        {sidebarContent}
+      </div>
     </>
   );
 };

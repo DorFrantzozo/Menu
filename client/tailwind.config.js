@@ -66,6 +66,7 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        DEFAULT: "1rem",
       },
       colors: {
         background: "hsl(var(--background))",
@@ -108,6 +109,22 @@ export default {
           4: "hsl(var(--chart-4))",
           5: "hsl(var(--chart-5))",
         },
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+          500: "#10b981", // Emerald-500
+        },
+        "primary-dark": "#059669", // Emerald-600
+        "background-light": "#f4f4f5", // Zinc-100
+        "background-dark": "#18181b", // Zinc-900
+        "surface-light": "#ffffff",
+        "surface-dark": "#27272a", // Zinc-800
+        "text-light": "#3f3f46", // Zinc-700
+        "text-dark": "#d4d4d8", // Zinc-300
+      },
+      fontFamily: {
+        display: ["Inter", "sans-serif"],
+        sans: ["Inter", "sans-serif"],
       },
     },
   },

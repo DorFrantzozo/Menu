@@ -4,18 +4,15 @@ import MenuViewsChart from '@/components/Cards/MenuViewsChart';
 
 const StatsDashboard = ({ userId }) => {
   return (
-    <div className="w-full space-y-6">
-   
-
-      {/* Main Content Area: Chart + Leaderboard */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 items-start">
-        {/* Left Column (Chart) - 40% */}
-        <div className="w-full h-full">
+    <div dir="rtl" className="w-full flex-1 flex flex-col h-full">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch flex-1 h-full">
+        {/* Right Column (Chart) - spans 2 columns on large screens */}
+        <div className="lg:col-span-2 h-full flex flex-col min-h-[300px]">
           <MenuViewsChart />
         </div>
 
-        {/* Right Column (Leaderboard) - 60% */}
-        <div className="w-full h-full">
+        {/* Left Column (Leaderboard) - 1 column */}
+        <div className="h-full flex flex-col min-h-[300px]">
           <TopDishes userId={userId} />
         </div>
       </div>

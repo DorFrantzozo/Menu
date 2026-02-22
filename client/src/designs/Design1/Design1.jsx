@@ -6,6 +6,7 @@ import axiosInstance from "../../utils/baseUrl";
 import Spinner from "@/components/Spinner";
 // ✅ ייבוא הפונקציה המסודרת שיצרנו ב-fetchData
 import { getCategories } from "@/utils/fetchData";
+import { isCategoryActive } from "@/utils/isCategoryActive";
 
 const Design1 = ({ menu: menuProp }) => {
   const [restaurant, setRestaurant] = useState(null);
@@ -83,7 +84,7 @@ const Design1 = ({ menu: menuProp }) => {
 
           <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {categories
-              .filter((category) => !category.hide)
+              .filter((category) => !category.hide && isCategoryActive(category))
               .sort((a, b) => a.locationNumber - b.locationNumber)
               .map((category) => (
                 <div

@@ -1,28 +1,41 @@
-import React from 'react'
-import { motion } from 'framer-motion'
+import React from 'react';
 
-const DashboardCard = ({ array, name, icon, bgColor = "bg-zinc-100", iconColor = "text-zinc-700" }) => {
+const DashboardCard = ({ 
+  value, 
+  name, 
+  iconName, 
+  iconColorClass, 
+  bgIconColorClass, 
+  bgIconName,
+  badge,
+  subtext
+}) => {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.1, ease: "easeOut" }}
-      whileHover={{ scale: 1.05  }}
-      className={`relative mt-10 w-[80%] h-40 p-5 rounded-xl shadow-md ${bgColor} border hover:shadow-xl transition-transform duration-300 ease-in-out`}
-    >
-      <div className="absolute top-4 left-4 hover:scale-105 transition-transform  bg-white rounded-full p-2 shadow-sm">
-        {React.cloneElement(icon, { className: `w-6 h-6 md:w-10 md:h-10 ${iconColor}` })}
+    <div className="bg-surface-light dark:bg-surface-dark p-5 rounded-2xl soft-shadow border border-zinc-100 dark:border-zinc-700/50 flex flex-col justify-between h-32 relative overflow-hidden transition-transform duration-300 hover:scale-[1.02] hover:shadow-md group">
+      <div className="flex justify-between items-start z-10 relative">
+        <div className="text-right">
+          <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">{name}</p>
+          <div className="flex items-center gap-2 mt-1">
+            <h3 className="text-3xl font-bold text-zinc-900 dark:text-white">
+              {value}
+            </h3>
+            {badge && badge}
+          </div>
+        </div>
+        
+        {/* Top left small icon container (RTL flipped) */}
+        <div className={`${bgIconColorClass} p-2 rounded-lg ${iconColorClass}`}>
+          <span className="material-icons-round">{iconName}</span>
+        </div>
       </div>
-      <div className="absolute top-4 right-4">
-        <h1 className="text-black text-xl font-semibold">{name}</h1>
-      </div>
-      <div className="absolute top-1/2 right-4 transform -translate-y-1/2">
-        <h2 className="text-3xl text-black font-bold">
-          {Array.isArray(array) ? array.length : array}
-        </h2>
-      </div>
-    </motion.div>
-  )
-}
 
-export default DashboardCard
+      {subtext && (
+        <div className="flex items-center text-xs text-zinc-400 font-medium z-10 relative text-right">
+          {subtext}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default DashboardCard;

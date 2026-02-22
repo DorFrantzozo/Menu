@@ -4,7 +4,7 @@ import cloudinary from "../utils/cloudinary.js";
 
 const createCategoryByUserId = async (req, res) => {
   try {
-    const { userId, name, locationNumber } = req.body;
+    const { userId, name, locationNumber, hasTimeLimit, startTime, endTime, activeDays } = req.body;
 
     if (!userId || !name || !locationNumber) {
       return res.status(400).json({ message: "All fields are required" });
@@ -23,7 +23,7 @@ const createCategoryByUserId = async (req, res) => {
     });
     if (existCategoryLocationNumber) {
       return res
-        .status(400)
+        .status(200)
         .json({ message: "Category Location is already used " });
     }
 
@@ -56,9 +56,12 @@ const createCategoryByUserId = async (req, res) => {
     const newCategory = new Category({
       userId,
       name,
-
-      img: imgUrl || "", // Default to empty string if no image is uploaded
+      img: imgUrl || "",
       locationNumber,
+      hasTimeLimit: hasTimeLimit === "true" || hasTimeLimit === true || false,
+      startTime: startTime || null,
+      endTime: endTime || null,
+      activeDays: activeDays ? (typeof activeDays === "string" ? JSON.parse(activeDays) : activeDays) : [],
     });
 
     await newCategory.save();
@@ -92,7 +95,7 @@ const getCategoriesByUserId = async (req, res) => {
 //TODO: function needs category id!!!
 const updateCategoryByUserId = async (req, res) => {
   const { userId, categoryId } = req.params;
-  const { newName, locationNumber, hide } = req.body;
+  const { newName, locationNumber, hide, hasTimeLimit, startTime, endTime, activeDays } = req.body;
 
   try {
     // Ensure categoryId is provided
@@ -163,6 +166,22 @@ const updateCategoryByUserId = async (req, res) => {
 
     if (hide !== undefined) {
       category.hide = hide === "true" || hide === true;
+    }
+
+    if (hasTimeLimit !== undefined) {
+      category.hasTimeLimit = hasTimeLimit === "true" || hasTimeLimit === true;
+    }
+
+    if (startTime !== undefined) {
+      category.startTime = startTime || null;
+    }
+
+    if (endTime !== undefined) {
+      category.endTime = endTime || null;
+    }
+
+    if (activeDays !== undefined) {
+      category.activeDays = typeof activeDays === "string" ? JSON.parse(activeDays) : activeDays;
     }
 
     // Save updated category

@@ -11,6 +11,7 @@ import {
   fetchRestaurant,
   getRestaurantName,
 } from "@/utils/fetchData";
+import { isCategoryActive } from "@/utils/isCategoryActive";
 
 const Design3 = ({ menu: menuProp }) => {
   const [restaurant, setRestaurant] = useState(null);
@@ -30,7 +31,7 @@ const Design3 = ({ menu: menuProp }) => {
     try {
       // ✅ שימוש ב-ID נקי כדי למנוע שגיאת [object Object]
       const { categories, dishes } = await fetchCategoriesAndDishes(restaurantId);
-      setCategories(categories);
+      setCategories(categories.filter((cat) => !cat.hide && isCategoryActive(cat)));
       setDishes(dishes);
     } catch (error) {
       toast.error("שגיאה בטעינת התפריט: " + error.message);

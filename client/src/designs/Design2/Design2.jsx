@@ -7,6 +7,7 @@ import Allergies from "../../components/sensitivities/Allergies";
 import IconDescription from "../../components/sensitivities/IconDescription";
 import axiosInstance from "@/utils/baseUrl";
 import { fetchCategoriesAndDishes } from "@/utils/fetchData";
+import { isCategoryActive } from "@/utils/isCategoryActive";
 import { useNavigate } from "react-router-dom";
 
 const Design2 = ({ menu: menuProp }) => {
@@ -86,7 +87,7 @@ const Design2 = ({ menu: menuProp }) => {
           <div className="mt-10 w-full">
             {categories
               .sort((a, b) => a.locationNumber - b.locationNumber)
-              .filter((category) => !category.hide)
+              .filter((category) => !category.hide && isCategoryActive(category))
               .map((category) => (
                 <div key={category._id} className="mb-6">
                   <h2 className="text-2xl font-semibold flex justify-center text-gray-700 border-b pb-2 mb-4">

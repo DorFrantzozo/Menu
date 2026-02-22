@@ -434,6 +434,38 @@ const resetPassword = async (req, res) => {
 
 
 
+const handleQrRedirect = async (req, res) => {
+  const { slug } = req.params;
+
+  try {
+    const user = await User.findOne({ qrSlug: slug });
+    
+    // Construct default frontend URL, or fallback to localhost if not set in environment
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+
+    if (!user) {
+      // Redirect to a 404/not-found page on the frontend
+      return res.redirect(302, `${frontendUrl}/not-found`);
+    }
+
+    // Increment scan counter asynchronously
+    // We execute this without awaiting it so it won't block the redirect response
+    User.updateOne({ qrSlug: slug }, { $inc: { totalQrScans: 1 } }).catch(err => {
+      console.error(`Failed to increment scan counter for slug ${slug}:`, err.message);
+    });
+
+    // Construct the target URL for the menu
+    // Assuming the main route for a menu is the design specific URL, like /design<number>?userId=<_id>
+    const redirectUrl = `${frontendUrl}/design${user.designNumber || 1}?userId=${user._id}`;
+    
+    return res.redirect(302, redirectUrl);
+  } catch (error) {
+    console.error("Error handling QR redirect:", error.message);
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+    return res.redirect(302, `${frontendUrl}/not-found`);
+  }
+};
+
 export {
   getAllUsers,
   createUser,
@@ -444,5 +476,6 @@ export {
   updateDesignByNumber,
   updateUserMenuSettings,
   SendResetPasswordMail,
-  resetPassword
+  resetPassword,
+  handleQrRedirect
 };

@@ -21,11 +21,10 @@ const Design4DishDetails = () => {
   }
 
   return (
-    <div
-      className="min-h-screen bg-white  pb-20 relative flex flex-col items-center"
-    >
+    <div className="min-h-screen bg-white pb-20 relative flex flex-col items-center">
       <motion.div
-        className="w-full  "
+        // הוספנו הגבלת רוחב למסכים גדולים: max-w-4xl כדי שלא יימרח על כל המסך
+        className="w-full max-w-4xl mx-auto"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -34,31 +33,38 @@ const Design4DishDetails = () => {
         <motion.img
           src={dish.img}
           alt={dish.name}
-          className="w-full h-72 md:h-[800px] md:object-fill object-cover  shadow-md mb-6"
+          // מחקנו את ה-md:object-fill. הוספנו עיגול פינות עדין במסכים גדולים (md:rounded-b-2xl)
+          // והקטנו טיפה את הגובה במסך גדול מ-800 ל-500 כדי שזה לא יתפוס את כל הגלילה
+          className="w-full h-72 md:h-[500px] object-cover shadow-md mb-6 md:rounded-b-3xl"
           initial={{ scale: 0.9 }}
           animate={{ scale: 1 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
         />
-        <div className="space-y-3 px-2">
-          <h2 className="text-2xl font-bold text-gray-900">
+        
+        {/* עטפנו את התוכן עם padding שונה למובייל ומחשב */}
+        <div className="space-y-4 px-4 md:px-8 text-center md:text-right">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
             {dish.name}
           </h2>
-          <h2 className="text-xl  text-gray-900">
+          <p className="text-xl text-gray-700 leading-relaxed">
             {dish.description}
-          </h2>
-          <p className="text-lg text-gray-700 font-semibold">{dish.price} ₪</p>
-          <div className="text-gray-600 flex justify-center leading-relaxed ">
+          </p>
+          <p className="text-2xl text-gray-900 font-bold">{dish.price} ₪</p>
+          
+          <div className="text-gray-600 flex justify-center md:justify-start pt-2">
             <Allergies dish={dish} />
           </div>
         </div>
       </motion.div>
-      <hr className="text-black h-2 w-[80%] mt-10" />
+      
+      <hr className="border-gray-300 h-px w-[80%] max-w-4xl mt-10" />
+      
       <button
         onClick={() => navigate(-1)}
-        className=" text-black flex items-center gap-1 mt-20"
+        className="text-black flex items-center gap-2 mt-10 hover:text-gray-600 transition-colors font-medium text-lg"
       >
-        <ArrowRight size={20} />
-        חזרה
+        <ArrowRight size={24} />
+        חזרה לתפריט
       </button>
     </div>
   );

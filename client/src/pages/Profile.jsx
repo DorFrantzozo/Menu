@@ -8,14 +8,14 @@ import QrProfile from "@/components/data/qrCode/QrProfile";
 const Profile = () => {
   const navigate = useNavigate();
   const [userFromStorage, setUser] = useState(null);
-  const [userName, setUserName] = useState("");
+  const [qrSlug, setQrSlug] = useState("");
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       const user = JSON.parse(storedUser);
       setUser(user);
-      setUserName(user.restaurantName);
+      setQrSlug(user.qrSlug);
     }
   }, []);
 
@@ -88,7 +88,7 @@ const Profile = () => {
               </button>
             </div>
 
-            <QrProfile userName={userName} />
+            <QrProfile qrSlug={qrSlug} />
           </div>
 
           <hr className="my-6 border-t border-gray-300" />

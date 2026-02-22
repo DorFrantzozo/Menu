@@ -1,7 +1,9 @@
 import QRCode from "qrcode";
 
-export const generateQRCode = async (userName, qrColor) => {
-  const url = `${userName}.menuyou.online/menu`;
+export const generateQRCode = async (qrSlug, qrColor) => {
+  // Use VITE_BASE_URL but remove the /api suffix to point to the root backend URL, then append /go/<slug>
+  const baseUrl = import.meta.env.VITE_BASE_URL.replace(/\/api$/, "");
+  const url = `${baseUrl}/go/${qrSlug}`;
 
   try {
     const qrOptions = {

@@ -5,6 +5,7 @@ import {
   fetchRestaurant,
   fetchCategoriesAndDishes,
 } from "@/utils/fetchData";
+import { isCategoryActive } from "@/utils/isCategoryActive";
 import { useLocation, useNavigate } from "react-router-dom";
 import Allergies from "@/components/sensitivities/Allergies";
 import { motion } from "framer-motion";
@@ -76,10 +77,12 @@ const Design4 = ({ menu: menuProp }) => {
 
       const { categories, dishes } = await fetchCategoriesAndDishes(data._id);
 
-      const categoriesWithDishes = categories.map((cat) => ({
-        ...cat,
-        menuDishes: dishes[cat._id] || [],
-      }));
+      const categoriesWithDishes = categories
+        .filter((cat) => !cat.hide && isCategoryActive(cat))
+        .map((cat) => ({
+          ...cat,
+          menuDishes: dishes[cat._id] || [],
+        }));
 
       // מיין לפי locationNumber
       const sortedCategories = categoriesWithDishes.sort(
@@ -154,7 +157,6 @@ const Design4 = ({ menu: menuProp }) => {
           }}
         >
           {categories
-            .filter((cat) => !cat.hide)
             .sort((a, b) => a.locationNumber - b.locationNumber)
             .map((cat) => (
               <button
