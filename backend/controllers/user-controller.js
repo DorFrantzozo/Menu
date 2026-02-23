@@ -31,6 +31,8 @@ const createUser = async (req, res) => {
               transformation: {
                 quality: "auto",
                 fetch_format: "auto",
+                width: 1000,
+                crop: "limit",
               },
             },
             (error, result) => {
@@ -178,6 +180,8 @@ const updateUser = async (req, res) => {
               transformation: {
                 quality: "auto",
                 fetch_format: "auto",
+                width: 1000,
+                crop: "limit",
               },
             },
             (error, result) => {
@@ -440,29 +444,27 @@ const handleQrRedirect = async (req, res) => {
   try {
     const user = await User.findOne({ qrSlug: slug });
     
-    // Construct default frontend URL, or fallback to localhost if not set in environment
-    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+    // הדומיין הראשי שלך
+    const baseDomain = process.env.MAIN_DOMAIN || "menuyou.online";
 
     if (!user) {
-      // Redirect to a 404/not-found page on the frontend
-      return res.redirect(302, `${frontendUrl}/not-found`);
+      // הפניה לעמוד שגיאה בדומיין הראשי
+      return res.redirect(302, `https://${baseDomain}/not-found`);
     }
 
-    // Increment scan counter asynchronously
-    // We execute this without awaiting it so it won't block the redirect response
+    // עדכון מונה הסריקות (רץ ברקע)
     User.updateOne({ qrSlug: slug }, { $inc: { totalQrScans: 1 } }).catch(err => {
       console.error(`Failed to increment scan counter for slug ${slug}:`, err.message);
     });
 
-    // Construct the target URL for the menu
-    // Assuming the main route for a menu is the design specific URL, like /design<number>?userId=<_id>
-    const redirectUrl = `${frontendUrl}/design${user.designNumber || 1}?userId=${user._id}`;
+    // בניית הכתובת: https://slug.menuyou.online/menu
+    const redirectUrl = `https://${slug}.${baseDomain}/menu`;
     
     return res.redirect(302, redirectUrl);
   } catch (error) {
     console.error("Error handling QR redirect:", error.message);
-    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
-    return res.redirect(302, `${frontendUrl}/not-found`);
+    const baseDomain = process.env.MAIN_DOMAIN || "menuyou.online";
+    return res.redirect(302, `https://${baseDomain}/not-found`);
   }
 };
 

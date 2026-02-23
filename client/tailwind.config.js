@@ -123,8 +123,8 @@ export default {
         "text-dark": "#d4d4d8", // Zinc-300
       },
       fontFamily: {
-        display: ["Inter", "sans-serif"],
-        sans: ["Inter", "sans-serif"],
+        display: ["Heebo", "Inter", "sans-serif"],
+        sans: ["Heebo", "Inter", "sans-serif"],
       },
     },
   },

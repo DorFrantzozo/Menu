@@ -28,7 +28,12 @@ const createDish = async (req, res) => {
         const stream = cloudinary.uploader.upload_stream(
           {
             folder: "dishes",
-            transformation: { quality: "auto", fetch_format: "auto" },
+            transformation: { 
+              quality: "auto", 
+              fetch_format: "auto",
+              width: 1000,
+              crop: "limit"
+            },
           },
           (error, result) => {
             if (error) return reject(error);
@@ -142,6 +147,8 @@ const updateDish = async (req, res) => {
               transformation: {
                 quality: "auto",
                 fetch_format: "auto",
+                width: 1000,
+                crop: "limit"
               },
             },
             (error, result) => {

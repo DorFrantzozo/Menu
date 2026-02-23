@@ -1,94 +1,92 @@
-import ShinyText from "../TextAnimations/ShinyText/ShinyText";
-import DefaultButton from "../buttons/DefaultButton";
-import {
-  Button,
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-} from "@headlessui/react";
-import logo from "../../assets/img/logo.avif";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import logo from '../../assets/img/logo.avif';
 
 const navigation = [
-  { name: "עלינו", href: "/", current: false },
-  { name: "צור קשר", href: "/contact", current: false },
-  { name: "התחברות", href: "/signin", current: false },
+  { name: 'ניתוח נתונים', href: '#features' },
+  { name: 'מחירים', href: '#pricing' },
+  { name: 'לקוחות', href: '#customers' },
 ];
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
 
 export default function NavBarLanding() {
   const navigate = useNavigate();
+
   return (
-    <Disclosure as="nav" className="bg-black" dir="rtl">
-      <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-        <div className="relative flex h-16 items-center justify-between">
-          <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-            {/* Mobile menu button*/}
-            <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:outline-hidden focus:ring-inset">
-              <span className="absolute -inset-0.5" />
-              <span className="sr-only">Open main menu</span>
-              <Bars3Icon
-                aria-hidden="true"
-                className="block size-6 group-data-open:hidden"
-              />
-              <XMarkIcon
-                aria-hidden="true"
-                className="hidden size-6 group-data-open:block"
-              />
-            </DisclosureButton>
-          </div>
+    <Disclosure as="nav" className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-zinc-100" dir="rtl">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="relative flex h-20 items-center justify-between">
+          
+          {/* Right: Logo */}
           <div className="flex shrink-0 items-center">
-            <button aria-label="דף הבית" onClick={() => navigate("/")}>
-              <img alt="Menu-logo" src={logo} className="h-18 w-28" />
+            <button onClick={() => navigate('/')} className="flex items-center gap-2.5 transition-opacity hover:opacity-80">
+              <span className="text-3xl">🍱</span>
+              <span className="text-2xl font-black text-zinc-900 tracking-tighter">MenuYou</span>
             </button>
           </div>
-          <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-            <div className="hidden sm:ml-6 sm:block ms-10"></div>
+
+          {/* Center: Navigation Links */}
+          <div className="hidden md:flex flex-1 justify-center items-center">
+             <div className="flex space-x-10 space-x-reverse">
+                {navigation.map((item) => (
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    className="text-sm font-bold text-zinc-500 hover:text-zinc-900 transition-colors"
+                  >
+                    {item.name}
+                  </a>
+                ))}
+             </div>
           </div>
-          <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-            <div className="hidden sm:block">
-              <DefaultButton
-                ariaLable="הרשמה"
-                text="הרשמה"
-                color="white"
-                onClick={() => navigate("/signup")}
-              />
-              <Button aria-label="התחברות" onClick={() => navigate("/signin")}>
-                <ShinyText
-                  text="התחברות"
-                  disabled={false}
-                  speed={2}
-                  className="rounded-3xl border border-zinc-600 px-3 py-2 text-sm font-medium "
-                />
-              </Button>
-            </div>
+
+          {/* Left: Actions */}
+          <div className="flex items-center gap-4">
+             <button
+               onClick={() => navigate('/signin')}
+               className="hidden sm:block text-sm font-bold text-zinc-900 hover:text-emerald-600 transition-colors"
+             >
+               כניסה למערכת
+             </button>
+             <button
+               onClick={() => navigate('/signup')}
+               className="bg-zinc-900 text-white px-4 py-2 md:px-6 md:py-2.5 rounded-xl text-sm md:text-base font-black transition-all hover:bg-emerald-600 hover:scale-105 active:scale-95 shadow-lg shadow-zinc-200"
+             >
+               הרשמה חינם
+             </button>
+             
+             {/* Mobile menu button */}
+             <div className="flex items-center md:hidden ms-2">
+                <DisclosureButton className="group relative inline-flex items-center justify-center rounded-xl p-2 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 focus:outline-none">
+                  <Bars3Icon className="block h-6 w-6 group-open:hidden" />
+                  <XMarkIcon className="hidden h-6 w-6 group-open:block" />
+                </DisclosureButton>
+             </div>
           </div>
         </div>
       </div>
 
-      <DisclosurePanel className="sm:hidden">
-        <div className="space-y-1 px-2 pt-2 pb-3">
+      <DisclosurePanel className="md:hidden bg-white border-b border-zinc-100">
+        <div className="space-y-1 px-4 pb-6 pt-2">
           {navigation.map((item) => (
             <DisclosureButton
               key={item.name}
               as="a"
               href={item.href}
-              aria-current={item.current ? "page" : undefined}
-              aria-label={`לינק למעבר לדף ${item.name}`}
-              className={classNames(
-                item.current
-                  ? "bg-gray-900 text-white"
-                  : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                "block rounded-md px-3 py-2 text-base font-medium"
-              )}
+              className="block rounded-xl px-4 py-3 text-base font-bold text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900 transition-all"
             >
               {item.name}
             </DisclosureButton>
           ))}
+          <div className="pt-4 mt-4 border-t border-zinc-100 space-y-3">
+             <button
+               onClick={() => navigate('/signin')}
+               className="block w-full text-right px-4 py-3 text-base font-bold text-zinc-500"
+             >
+               כניסה למערכת
+             </button>
+          </div>
         </div>
       </DisclosurePanel>
     </Disclosure>

@@ -37,7 +37,12 @@ const createCategoryByUserId = async (req, res) => {
             {
               folder: "categories",
               public_id: `categories/${name}`,
-              transformation: { quality: "auto", fetch_format: "auto" },
+              transformation: { 
+                quality: "auto", 
+                fetch_format: "auto",
+                width: 1000,
+                crop: "limit"
+              },
             },
             (error, result) => {
               if (error) return reject(error);
