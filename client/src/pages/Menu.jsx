@@ -9,40 +9,70 @@ import Design1 from "../designs/Design1/Design1";
 import Design2 from "../designs/Design2/Design2";
 import Design3 from "../designs/Design3/Design3";
 import Design4 from "../designs/Design4/Design4";
+import Design5 from "../designs/Design5/Design5";
 
 const Menu = () => {
   const [menu, setMenu] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  // Extract slug from subdomain (e.g. "aB3x_9Qz" from "aB3x_9Qz.menuyou.online")
   const hostname = window.location.hostname;
-  const selectedBuisness = hostname.split(".")[0];
+  const parts = hostname.split(".");
+  // Only treat as a subdomain slug if there are 3+ parts (slug.domain.tld)
+  const slug = parts.length >= 3 ? parts[0] : null;
 
   // Track view if we have a menu and it has an ID
   useTrackMenuView(menu?._id);
 
-  const fetchData = async (name) => {
+  const fetchData = async (slugParam) => {
     try {
-      const response = await axiosInstance.get("/user/find", {
-        params: { name },
-      });
+      setLoading(true);
+      setError(null);
+
+      const response = await axiosInstance.get(`/user/slug/${slugParam}`);
 
       if (response.data) {
         setMenu(response.data);
       } else {
-        console.error("Restaurant not found");
+        setError("התפריט לא נמצא");
       }
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.error("Error fetching menu:", err);
+      if (err.response?.status === 404) {
+        setError("התפריט לא נמצא");
+      } else {
+        setError("אירעה שגיאה בטעינת התפריט");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchData(selectedBuisness);
-  }, [selectedBuisness]);
+    if (slug) {
+      fetchData(slug);
+    } else {
+      // No valid subdomain slug — not a menu page
+      setError("התפריט לא נמצא");
+      setLoading(false);
+    }
+  }, [slug]);
 
-  if (!menu) {
+  if (loading) {
     return (
       <div>
         <Spinner />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen text-center px-4" dir="rtl">
+        <h1 className="text-2xl font-bold text-gray-800 mb-2">😕</h1>
+        <p className="text-lg text-gray-600">{error}</p>
       </div>
     );
   }
@@ -63,8 +93,10 @@ const Menu = () => {
       {menu.designNumber === 2 && <Design2 menu={menu} />}
       {menu.designNumber === 3 && <Design3 menu={menu} />}
       {menu.designNumber === 4 && <Design4 menu={menu} />}
+      {menu.designNumber === 5 && <Design5 menu={menu} />}
     </div>
   );
 };
 
 export default Menu;
+

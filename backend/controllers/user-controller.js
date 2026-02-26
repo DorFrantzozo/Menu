@@ -438,6 +438,27 @@ const resetPassword = async (req, res) => {
 
 
 
+const findBySlug = async (req, res) => {
+  const { slug } = req.params;
+
+  if (!slug) {
+    return res.status(400).json({ message: "Slug parameter is required" });
+  }
+
+  try {
+    const user = await User.findOne({ qrSlug: slug });
+
+    if (!user) {
+      return res.status(404).json({ message: "Menu not found" });
+    }
+
+    const { password: _, ...userWithoutPassword } = user.toObject();
+    res.status(200).json(userWithoutPassword);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const handleQrRedirect = async (req, res) => {
   const { slug } = req.params;
 
@@ -479,5 +500,6 @@ export {
   updateUserMenuSettings,
   SendResetPasswordMail,
   resetPassword,
-  handleQrRedirect
+  handleQrRedirect,
+  findBySlug
 };

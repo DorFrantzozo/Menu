@@ -13,7 +13,22 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, server-to-server)
+    if (!origin) return callback(null, true);
+    // Allow menuyou.online and all its subdomains
+    if (/^https?:\/\/(?:[a-z0-9-]+\.)?menuyou\.online$/.test(origin)) {
+      return callback(null, true);
+    }
+    // Allow localhost for development
+    if (/^http:\/\/localhost(:\d+)?$/.test(origin)) {
+      return callback(null, true);
+    }
+    callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+}));
 
 app.use(express.json());
 

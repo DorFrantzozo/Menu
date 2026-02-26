@@ -22,7 +22,7 @@ const Designs = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [menu, setMenu] = useState([]);
-  const designs =[{img: design1Tambneil, number: 1,title: "design 1"}, {img: design2Tambneil, number: 2, title: "design 2"}, {img: design3Tambneil, number: 3 , title: "design 3" }, {img: design4Tambneil, number: 4, title: "design 4"}];
+  const designs =[{img: design1Tambneil, number: 1,title: "design 1"}, {img: design2Tambneil, number: 2, title: "design 2"}, {img: design3Tambneil, number: 3 , title: "design 3" }, {img: design4Tambneil, number: 4, title: "design 4"}, {img: design4Tambneil, number: 5, title: "design 5"}];
   const handleChangeMenuDesign = async (designNumber) => {
     setIsLoading(true);
     try {

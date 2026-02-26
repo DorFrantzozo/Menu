@@ -1,0 +1,303 @@
+import { useEffect, useState } from "react";
+import {
+  getRestaurantName,
+  fetchRestaurant,
+  fetchCategoriesAndDishes,
+  getTopDishes,
+} from "@/utils/fetchData";
+import { isCategoryActive } from "@/utils/isCategoryActive";
+import { useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
+import Spinner from "@/components/Spinner";
+import useTrackMenuView from "@/hooks/useTrackMenuView";
+import DishCardDesign5 from "./DishCardDesign5";
+import DishModalDesign5 from "./DishModalDesign5";
+
+const Design5 = ({ menu: menuProp }) => {
+  const [restaurantName, setRestaurantName] = useState("");
+  const [restaurantData, setRestaurantData] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [heroImage, setHeroImage] = useState("");
+  const [popularDishIds, setPopularDishIds] = useState(new Set());
+  const [selectedDish, setSelectedDish] = useState(null);
+
+  // Filters & Sorting
+  const [selectedFilter, setSelectedFilter] = useState("הכל");
+  const [sortOrder, setSortOrder] = useState(""); // "", "asc", "desc"
+
+  const location = useLocation();
+  const menu = menuProp || location.state || {};
+
+  // Analytics - track menu view once
+  useTrackMenuView(restaurantData?._id || menu?._id);
+
+  const filters = [
+    { label: "הכל", value: "all" },
+    { label: "צמחוני", value: "vegi" },
+    { label: "ללא גלוטן", value: "gluten" },
+    { label: "מתאים להריון", value: "pregnant" },
+    { label: "ללא לקטוז", value: "lactose" },
+  ];
+
+  const sortOptions = [
+    { label: "מחיר: מהזול ליקר", value: "asc" },
+    { label: "מחיר: מהיקר לזול", value: "desc" },
+  ];
+
+  // ─── Get restaurant name ───
+  useEffect(() => {
+    const name = getRestaurantName(menu);
+    setRestaurantName(name);
+  }, [menu]);
+
+  // ─── Fetch data ───
+  useEffect(() => {
+    if (!restaurantName) return;
+
+    const loadData = async () => {
+      // Try localStorage cache first
+      const cachedData = localStorage.getItem(`menu_${restaurantName}`);
+      if (cachedData) {
+        try {
+          const parsedData = JSON.parse(cachedData);
+          setRestaurantData(parsedData.restaurantData);
+          setCategories(parsedData.categories);
+          if (parsedData.categories.length > 0) {
+            setSelectedCategory(parsedData.categories[0]);
+          }
+          setIsLoading(false);
+        } catch (e) {
+          console.error("Error parsing cached menu data", e);
+        }
+      }
+      await fetchData();
+    };
+
+    loadData();
+  }, [restaurantName]);
+
+  const fetchData = async () => {
+    if (categories.length === 0) setIsLoading(true);
+    try {
+      const data = await fetchRestaurant(restaurantName);
+      setRestaurantData(data);
+
+      const { categories: cats, dishes } = await fetchCategoriesAndDishes(data._id);
+
+      const categoriesWithDishes = cats
+        .filter((cat) => !cat.hide && isCategoryActive(cat))
+        .map((cat) => ({
+          ...cat,
+          menuDishes: dishes[cat._id] || [],
+        }));
+
+      const sortedCategories = categoriesWithDishes.sort(
+        (a, b) => a.locationNumber - b.locationNumber
+      );
+
+      setCategories(sortedCategories);
+
+      if (selectedCategory) {
+        const freshSelected = sortedCategories.find(
+          (c) => c._id === selectedCategory._id
+        );
+        setSelectedCategory(freshSelected || sortedCategories[0]);
+      } else {
+        setSelectedCategory(sortedCategories[0]);
+      }
+
+      // Compute hero image from popular dishes or random
+      const allDishes = sortedCategories.flatMap((c) => c.menuDishes || []);
+      try {
+        const topDishes = await getTopDishes(data._id, "month");
+        if (topDishes?.length > 0) {
+          // Limit popular badge to top 3 most-viewed dishes only
+          const top3 = topDishes.slice(0, 3);
+          const topIds = new Set(top3.map((d) => d.dishId));
+          setPopularDishIds(topIds);
+          const topDish = allDishes.find((d) => topIds.has(d._id));
+          setHeroImage(topDish?.img || allDishes[0]?.img || "");
+        } else {
+          const randomDish = allDishes[Math.floor(Math.random() * allDishes.length)];
+          setHeroImage(randomDish?.img || "");
+        }
+      } catch {
+        const randomDish = allDishes[Math.floor(Math.random() * allDishes.length)];
+        setHeroImage(randomDish?.img || "");
+      }
+
+      localStorage.setItem(
+        `menu_${restaurantName}`,
+        JSON.stringify({ restaurantData: data, categories: sortedCategories })
+      );
+    } catch (error) {
+      console.error("Error fetching restaurant data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // ─── Filter logic ───
+  const filterDishes = (dish) => {
+    switch (selectedFilter) {
+      case "צמחוני": return dish.vegi;
+      case "ללא גלוטן": return dish.gluten;
+      case "ללא לקטוז": return dish.lactose;
+      case "מתאים להריון": return dish.pregnant;
+      default: return true;
+    }
+  };
+
+  // ─── Sort logic ───
+  const sortDishes = (dishes) => {
+    if (!sortOrder) return dishes;
+    return [...dishes].sort((a, b) =>
+      sortOrder === "asc" ? a.price - b.price : b.price - a.price
+    );
+  };
+
+  const filteredDishes =
+    selectedCategory?.menuDishes?.filter(
+      (dish) => !dish.hide && filterDishes(dish)
+    ) || [];
+
+  const dishesToShow = sortDishes(filteredDishes);
+
+  // ─── Loading state ───
+  if (isLoading && !categories.length) {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center bg-slate-50">
+        <Spinner />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-slate-50 font-sans w-full overflow-x-hidden" dir="rtl">
+      {/* ══════════ Hero Section ══════════ */}
+      <div className="relative w-full h-60 sm:h-72 overflow-hidden rounded-b-3xl">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent z-10" />
+        {heroImage && (
+          <img
+            src={heroImage}
+            alt="Cover"
+            className="w-full h-full object-cover"
+          />
+        )}
+        <div className="absolute inset-0 z-20 flex flex-col justify-end p-5 pb-6">
+          <motion.h1
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="text-3xl sm:text-4xl font-black text-white drop-shadow-lg leading-tight"
+          >
+            {restaurantData?.displayName || restaurantName}
+          </motion.h1>
+          <p className="text-white/70 text-sm mt-1 font-medium">
+            ברוכים הבאים לחוויה קולינרית
+          </p>
+        </div>
+      </div>
+
+      {/* ══════════ Sticky Controls ══════════ */}
+      <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-md shadow-sm">
+        {/* Categories Strip */}
+        <div
+          className="flex gap-3 px-4 py-3 overflow-x-auto scrollbar-hide"
+          style={{ WebkitOverflowScrolling: "touch" }}
+        >
+          {categories.map((cat) => (
+            <button
+              key={cat._id}
+              onClick={() => setSelectedCategory(cat)}
+              className={`flex-shrink-0 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                selectedCategory?._id === cat._id
+                  ? "bg-slate-900 text-white shadow-md"
+                  : "bg-white text-slate-700 border border-slate-200 hover:border-slate-300"
+              }`}
+            >
+              {cat.name}
+            </button>
+          ))}
+        </div>
+
+        {/* Filters + Sort Strip */}
+        <div
+          className="flex gap-2 px-4 pb-3 overflow-x-auto scrollbar-hide"
+          style={{ WebkitOverflowScrolling: "touch" }}
+        >
+          {/* Filters */}
+          {filters.map((f) => (
+            <button
+              key={f.value}
+              onClick={() => setSelectedFilter(f.label)}
+              className={`flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium border transition-all duration-200 ${
+                selectedFilter === f.label
+                  ? "bg-emerald-50 border-emerald-300 text-emerald-700"
+                  : "bg-white border-slate-200 text-slate-500 hover:border-slate-300"
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
+
+          {/* Separator */}
+          <div className="flex-shrink-0 w-px bg-slate-200 mx-1"></div>
+
+          {/* Sort */}
+          {sortOptions.map((s) => (
+            <button
+              key={s.value}
+              onClick={() => setSortOrder(sortOrder === s.value ? "" : s.value)}
+              className={`flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium border transition-all duration-200 ${
+                sortOrder === s.value
+                  ? "bg-blue-50 border-blue-300 text-blue-700"
+                  : "bg-white border-slate-200 text-slate-500 hover:border-slate-300"
+              }`}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ══════════ Section Title ══════════ */}
+      <div className="flex items-center justify-between px-4 pt-4 pb-2">
+        <h2 className="text-lg font-bold text-slate-900">
+          {selectedCategory?.name || "כל המנות"}
+        </h2>
+      </div>
+
+      {/* ══════════ Dish Grid ══════════ */}
+      <div className="px-4 pb-24">
+        {dishesToShow.length === 0 ? (
+          <div className="text-center text-slate-400 py-16 text-sm">
+            אין מנות להצגה בקטגוריה זו
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-3.5">
+            {dishesToShow.map((dish) => (
+              <DishCardDesign5
+                key={dish._id}
+                dish={dish}
+                isPopular={popularDishIds.has(dish._id)}
+                onClick={() => setSelectedDish(dish)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* ══════════ Dish Modal ══════════ */}
+      <DishModalDesign5
+        dish={selectedDish}
+        isOpen={!!selectedDish}
+        onClose={() => setSelectedDish(null)}
+      />
+    </div>
+  );
+};
+
+export default Design5;

@@ -43,6 +43,7 @@ import ResetPassword from "./pages/ResetPassword";
 import ManageCategories from "./pages/ManageCategories";
 import ManageDishes from "./pages/ManageDishes";
 import Sidebar from "./components/SideBar";
+import Design5 from "./designs/Design5/Design5";
 
 function App() {
   const dispatch = useDispatch();
@@ -109,8 +110,8 @@ function App() {
         <ScrollToTop />
         <Analytics />
 
-        <div className="flex flex-grow">
-          <main className="flex-grow">
+        <div className="flex flex-grow overflow-hidden">
+          <main className="flex-grow min-w-0 overflow-x-hidden">
             <AnimatePresence mode="wait">
               <Routes>
                 <Route
@@ -206,6 +207,7 @@ function App() {
                 />
                 <Route path="/design4" element={<Design4 />} />
                 <Route path="/design4DishDetails" element={<DishDetails />} />
+                <Route path="/design5" element={<Design5 />} />
               </Routes>
             </AnimatePresence>
           </main>

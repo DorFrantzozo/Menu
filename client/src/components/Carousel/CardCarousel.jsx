@@ -27,6 +27,7 @@ const Designs = () => {
     { img: design2Tambneil, number: 2, title: "Design 2", desc: "תצוגה קלאסית נקייה" },
     { img: design3Tambneil, number: 3, title: "Design 3", desc: "עיצוב כהה יוקרתי" },
     { img: design4Tambneil, number: 4, title: "Design 4", desc: "עיצוב צבעוני ודינאמי" },
+    { img: design4Tambneil, number: 5, title: "Design 5", desc: "עיצוב פרימיום מודרני" },
   ];
 
   const handleChangeMenuDesign = async (designNumber) => {
