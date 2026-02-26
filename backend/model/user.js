@@ -1,5 +1,19 @@
 import mongoose from "mongoose";
-import { nanoid } from "nanoid";
+
+/**
+ * Convert a restaurant name to a URL-friendly slug.
+ * Lowercase, replace spaces/underscores with hyphens, strip non-alphanumeric chars.
+ */
+function slugify(name) {
+  return name
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/[\s_]+/g, "-")       // spaces & underscores → hyphens
+    .replace(/[^a-z0-9-]/g, "")    // strip everything except letters, digits, hyphens
+    .replace(/-+/g, "-")           // collapse consecutive hyphens
+    .replace(/^-|-$/g, "");        // trim leading/trailing hyphens
+}
 
 const userSchema = new mongoose.Schema(
   {
@@ -77,20 +91,23 @@ const userSchema = new mongoose.Schema(
 
 userSchema.pre("save", async function (next) {
   if (this.isNew || !this.qrSlug) {
-    let slugExists = true;
-    let newSlug = "";
+    // Build a branded slug from the restaurant name
+    let baseSlug = slugify(this.restaurantName || "");
 
-    while (slugExists) {
-      // Generate an 8-character long URL-friendly slug
-      newSlug = nanoid(8);
-      // Check if this slug already exists in the database
-      const existingUser = await mongoose.models.User.findOne({ qrSlug: newSlug });
-      if (!existingUser) {
-        slugExists = false;
-      }
+    // Fallback if restaurantName produces an empty slug (e.g. only Hebrew chars)
+    if (!baseSlug) {
+      baseSlug = `menu-${Date.now()}`;
     }
-    
-    this.qrSlug = newSlug;
+
+    // Check uniqueness and append suffix if needed
+    let candidate = baseSlug;
+    let counter = 1;
+    while (await mongoose.models.User.findOne({ qrSlug: candidate })) {
+      candidate = `${baseSlug}-${counter}`;
+      counter++;
+    }
+
+    this.qrSlug = candidate;
   }
   next();
 });
