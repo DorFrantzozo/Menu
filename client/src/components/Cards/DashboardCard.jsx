@@ -1,4 +1,5 @@
 import React from 'react';
+import CountUp from '../TextAnimations/CountUp/CountUp';
 
 const DashboardCard = ({ 
   value, 
@@ -8,7 +9,8 @@ const DashboardCard = ({
   bgIconColorClass, 
   bgIconName,
   badge,
-  subtext
+  subtext,
+  animateValue = false,
 }) => {
   return (
     <div className="bg-surface-light dark:bg-surface-dark p-5 rounded-2xl soft-shadow border border-zinc-100 dark:border-zinc-700/50 flex flex-col justify-between h-32 relative overflow-hidden transition-transform duration-300 hover:scale-[1.02] hover:shadow-md group">
@@ -17,7 +19,11 @@ const DashboardCard = ({
           <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">{name}</p>
           <div className="flex items-center gap-2 mt-1">
             <h3 className="text-3xl font-bold text-zinc-900 dark:text-white">
-              {value}
+              {animateValue ? (
+                <CountUp from={0} to={typeof value === 'number' ? value : 0} duration={2} separator="," />
+              ) : (
+                value
+              )}
             </h3>
             {badge && badge}
           </div>
@@ -39,3 +45,4 @@ const DashboardCard = ({
 };
 
 export default DashboardCard;
+

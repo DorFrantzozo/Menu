@@ -6,6 +6,7 @@ import {
   getTopDishes,
 } from "@/utils/fetchData";
 import { isCategoryActive } from "@/utils/isCategoryActive";
+import { toWebP } from "@/utils/cloudinaryUrl";
 import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import Spinner from "@/components/Spinner";
@@ -181,9 +182,12 @@ const Design5 = ({ menu: menuProp }) => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent z-10" />
         {heroImage && (
           <img
-            src={heroImage}
+            src={toWebP(heroImage)}
             alt="Cover"
             className="w-full h-full object-cover"
+            fetchpriority="high"
+            loading="eager"
+            style={{ aspectRatio: '16/9' }}
           />
         )}
         <div className="absolute inset-0 z-20 flex flex-col justify-end p-5 pb-6">

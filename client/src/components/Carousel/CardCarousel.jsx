@@ -11,6 +11,7 @@ import design1Tambneil from "../../assets/img/design1Tambneil.png";
 import design2Tambneil from "../../assets/img/design2Tambneil.png";
 import design3Tambneil from "../../assets/img/design3Tambneil.png";
 import design4Tambneil from "../../assets/img/design4Tambneil.png";
+import design5Tambneil from "../../assets/img/design5Tambneil.png";
 
 const Designs = () => {
   const navigate = useNavigate();
@@ -24,10 +25,12 @@ const Designs = () => {
 
   const designs = [
     { img: design1Tambneil, number: 1, title: "Design 1", desc: "עיצוב מודרני ובהיר" },
-    { img: design2Tambneil, number: 2, title: "Design 2", desc: "תצוגה קלאסית נקייה" },
-    { img: design3Tambneil, number: 3, title: "Design 3", desc: "עיצוב כהה יוקרתי" },
-    { img: design4Tambneil, number: 4, title: "Design 4", desc: "עיצוב צבעוני ודינאמי" },
-    { img: design4Tambneil, number: 5, title: "Design 5", desc: "עיצוב פרימיום מודרני" },
+    { img: design5Tambneil, number: 2, title: "Design 5", desc: "עיצוב פרימיום מודרני" },
+      { img: design4Tambneil, number: 3, title: "Design 4", desc: "עיצוב צבעוני ודינאמי" },
+    { img: design2Tambneil, number: 4, title: "Design 2", desc: "תצוגה קלאסית נקייה" },
+    { img: design3Tambneil, number: 5, title: "Design 3", desc: "עיצוב כהה יוקרתי" },
+  ,
+   ,
   ];
 
   const handleChangeMenuDesign = async (designNumber) => {

@@ -7,6 +7,7 @@ import DashboardDataCards from "@/components/Cards/DashboardDataCards";
 import QuickActionsCards from "@/components/Cards/QuickActiionsCards";
 import QrProfile from "@/components/data/qrCode/QrProfile";
 import StatsDashboard from "@/components/Dashboard/StatsDashboard";
+import useQrScanPolling from "@/hooks/useQrScanPolling";
 
 const Dashboard = () => {
   const user = useSelector((state) => state.user.user);
@@ -18,6 +19,7 @@ const Dashboard = () => {
   const allActiveItems = countActiveItems(menuCategories);
 
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const liveQrScans = useQrScanPolling(user?._id, user?.totalQrScans || 0);
 
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
@@ -33,7 +35,6 @@ const Dashboard = () => {
         <div className="w-12 flex shrink-0 lg:hidden">
             {/* Spacer for mobile sidebar toggle */}
         </div>
-        
         <div className="hidden lg:flex flex-col">
           <h1 className="text-xl font-bold text-zinc-800 dark:text-white flex items-center gap-2">
             ברוך שובך, {user?.restaurantName || "מסעדה"} <span className="text-2xl">👋</span>
@@ -48,8 +49,9 @@ const Dashboard = () => {
             onClick={toggleDarkMode}
             className="p-2 rounded-full text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors shrink-0"
           >
-            <span className="material-icons-round dark:hidden">dark_mode</span>
-            <span className="material-icons-round hidden dark:block">light_mode</span>
+            <span className="material-icons-round">
+              {isDarkMode ? 'light_mode' : 'dark_mode'}
+            </span>
           </button>
           
           <button 
@@ -72,12 +74,12 @@ const Dashboard = () => {
                 menuCategories={menuCategories}
                 allItems={allItems}
                 allActiveItems={allActiveItems}
-                totalQrScans={user?.totalQrScans || 0}
+                totalQrScans={liveQrScans}
               />
             </div>
 
             {/* Middle Section: Chart & Dishes */}
-            <div className="flex-1 min-h-[300px] flex flex-col">
+            <div className="lg:flex-1 lg:min-h-[300px] flex flex-col">
               <StatsDashboard userId={user?._id} />
             </div>
 

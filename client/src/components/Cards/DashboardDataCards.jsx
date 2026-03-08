@@ -11,6 +11,7 @@ const DashboardDataCards = ({ menuCategories, allActiveItems, allItems, totalQrS
         bgIconName="qr_code_scanner"
         iconColorClass="text-purple-600 dark:text-purple-400"
         bgIconColorClass="bg-purple-100 dark:bg-purple-900/30"
+        animateValue
         subtext={
           <>
             <span className="material-icons-round text-sm ml-1 text-green-500">trending_up</span>

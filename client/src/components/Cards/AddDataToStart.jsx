@@ -9,7 +9,7 @@ const AddDataToStart = () => {
       </h1>
       <div className=" flex   justify-center">
         <button
-          onClick={() => navigate("/edit")}
+          onClick={() => navigate("/manage-categories")}
           className=" text-green-500 hover:text-green-600 hover:scale-150 transition-all duration-300"
         >
           <PlusCircleIcon />

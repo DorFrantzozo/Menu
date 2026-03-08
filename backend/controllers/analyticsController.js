@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import DishStats from "../model/dishStats.js";
 import Dish from "../model/dish.js";
 import MenuStats from "../model/menuStats.js";
+import cache from "../utils/cache.js";
 
 export const trackView = async (req, res) => {
   try {
@@ -48,6 +49,13 @@ export const getTopDishes = async (req, res) => {
 
     if (!restaurantId) {
       return res.status(400).json({ message: "Restaurant ID is required" });
+    }
+
+    // ── Cache check ──
+    const cacheKey = `topDishes_${restaurantId}_${period || "all"}`;
+    const cached = cache.get(cacheKey);
+    if (cached) {
+      return res.status(200).json(cached);
     }
 
     let dateFilter = {};
@@ -106,6 +114,9 @@ export const getTopDishes = async (req, res) => {
         },
       },
     ]);
+
+    // ── Store in cache (TTL from shared cache instance – 5 min) ──
+    cache.set(cacheKey, stats);
 
     res.status(200).json(stats);
   } catch (error) {

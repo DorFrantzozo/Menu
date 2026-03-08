@@ -171,6 +171,17 @@ const getMenuStats = async (restaurantIdOrUser, days = 30) => {
   }
 };
 
+const fetchQrScanCount = async (userIdOrUser) => {
+  const userId = getSafeId(userIdOrUser);
+  try {
+    const response = await axiosInstance.get(`/user/qr-scan-count/${userId}`);
+    return response.data.totalQrScans;
+  } catch (error) {
+    console.error('Error fetching QR scan count:', error);
+    return null;
+  }
+};
+
 export {
   getAllUsers,
   getCategories,
@@ -183,4 +194,5 @@ export {
   getTopDishes,
   recordMenuView,
   getMenuStats,
+  fetchQrScanCount,
 };

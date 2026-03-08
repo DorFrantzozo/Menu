@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { toWebP } from "@/utils/cloudinaryUrl";
 
 const dietaryBadge = (dish) => {
   const tags = [];
@@ -23,7 +24,7 @@ const DishCardDesign5 = ({ dish, isPopular, onClick }) => {
       {/* Image Container */}
       <div className="relative w-full aspect-[4/3] overflow-hidden">
         <img
-          src={dish.img}
+          src={toWebP(dish.img)}
           alt={dish.name}
           className="w-full h-full object-cover"
           loading="lazy"

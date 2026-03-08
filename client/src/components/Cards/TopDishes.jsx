@@ -86,7 +86,7 @@ const TopDishes = ({ userId }) => {
           <p>אין נתונים להצגה בתקופה זו</p>
         </div>
       ) : (
-        <div className="flex-1 overflow-y-auto space-y-4 pl-2 min-h-0 custom-scrollbar relative">
+        <div className="flex-1 overflow-y-auto space-y-4 pl-2 min-h-0 max-h-[370px] lg:max-h-none custom-scrollbar relative">
           {dishes.map((dish, index) => {
             const views = dish.totalViews || 0;
             const percentage = maxViews > 0 ? (views / maxViews) * 100 : 0;

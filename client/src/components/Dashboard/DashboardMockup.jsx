@@ -33,7 +33,7 @@ const DashboardMockup = () => {
           </div>
           <p className="text-zinc-400 text-[9px] font-bold mb-0.5 uppercase tracking-wider">סריקות QR</p>
           <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-black text-zinc-900">3</span>
+            <span className="text-2xl font-black text-zinc-900">472</span>
             <span className="text-emerald-500 text-[9px] font-black">✓ פועל כעת</span>
           </div>
         </div>

@@ -205,7 +205,7 @@ const Sidebar = ({ user }) => {
   return (
     <>
       <button
-        className={`fixed top-4 left-4 z-50 p-2 rounded-lg bg-surface-light dark:bg-surface-dark soft-shadow border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300 ${
+        className={`fixed top-4 right-4 z-50 p-2 rounded-lg bg-surface-light dark:bg-surface-dark soft-shadow border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300 ${
           isMobile ? "block" : "hidden"
         }`}
         onClick={toggleSidebar}
