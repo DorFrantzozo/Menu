@@ -1,5 +1,5 @@
 import VercelAnalytics from "@/components/data/VercelAnalytics";
-import DataTable from "../components/data/DataTable";
+import AdminUsersTable from "../components/admin/AdminUsersTable";
 import { UsersCountCard } from "@/components/Cards/UsersCountCard";
 const AdminPage = () => {
   return (
@@ -10,7 +10,7 @@ const AdminPage = () => {
           <UsersCountCard />
         </div>
         <div className="">
-          <DataTable />
+          <AdminUsersTable />
         </div>
         {/* <div className="mt-2">
           <VercelAnalytics />

@@ -54,7 +54,7 @@ export default function Hero() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-            <span className="text-emerald-700 text-[10px] lg:text-[11px] font-black tracking-widest uppercase">סנכרון בזמן אמת</span>
+            <span className="text-emerald-700 text-[10px] lg:text-[11px] font-black tracking-widest uppercase">הצטרפו למהפכה הדיגיטלית</span>
           </div>
         </motion.div>
 
@@ -62,11 +62,11 @@ export default function Hero() {
         <div className="text-center max-w-4xl mx-auto mb-8 lg:mb-10 px-4 md:px-0" dir="rtl">
           <motion.h1 
             variants={itemVariants}
-            className="text-4xl md:text-6xl lg:text-[5.5rem] font-black text-zinc-900 mb-4 lg:mb-5 tracking-tighter leading-tight lg:leading-[0.8]"
+            className="text-4xl md:text-5xl lg:text-[5rem] font-black text-zinc-900 mb-4 lg:mb-5 tracking-tighter leading-tight lg:leading-[1.1]"
           >
-            נהל את המסעדה שלך <br />
+            קחו שליטה מלאה על התפריט, <br />
             <span className="bg-gradient-to-l from-emerald-600 via-emerald-500 to-emerald-400 bg-clip-text text-transparent">
-              בחכמה ובקלות
+              והגדילו רווחים מיד
             </span>
           </motion.h1>
           
@@ -74,7 +74,7 @@ export default function Hero() {
             variants={itemVariants}
             className="text-zinc-500 text-lg md:text-2xl font-medium max-w-2xl mx-auto mb-6 lg:mb-7 leading-relaxed"
           >
-            מערכת ניהול מתקדמת שמתעדכנת בזמן אמת בתפריט הדיגיטלי. עקוב אחר ביצועים, נהל מלאי וצור חווית לקוח מושלמת.
+            פלטפורמת התפריטים הדיגיטליים שחוסכת לכם זמן, מורידה עלויות הדפסה, ומגדילה את ממוצע ההזמנות - בלי אפליקציות ובלי המתנה לגרפיקאי.
           </motion.p>
           
           <motion.div 
@@ -83,9 +83,9 @@ export default function Hero() {
           >
             <button 
               onClick={() => navigate("/signup")}
-              className="group me-24  mb-6 relative px-8 py-4 lg:px-9 lg:py-4 bg-zinc-900 text-white rounded-[2rem] font-black text-lg transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-emerald-500/10 overflow-hidden"
+              className="group mx-auto mb-6 relative px-8 py-4 lg:px-10 lg:py-4 bg-zinc-900 text-white rounded-[2rem] font-black text-lg transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-emerald-500/10 overflow-hidden"
             >
-              <span className="relative z-10">התחל ניסיון חינם</span>
+              <span className="relative z-10">התחילו עכשיו</span>
               <div className="absolute inset-0 bg-gradient-to-r from-emerald-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </button>
        

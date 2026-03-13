@@ -63,11 +63,15 @@ const Design5 = ({ menu: menuProp }) => {
       if (cachedData) {
         try {
           const parsedData = JSON.parse(cachedData);
-          setRestaurantData(parsedData.restaurantData);
-          setCategories(parsedData.categories);
-          if (parsedData.categories.length > 0) {
-            setSelectedCategory(parsedData.categories[0]);
+          if (parsedData.restaurantData) setRestaurantData(parsedData.restaurantData);
+          if (parsedData.categories) {
+            setCategories(parsedData.categories);
+            if (parsedData.categories.length > 0) {
+              setSelectedCategory(parsedData.categories[0]);
+            }
           }
+          if (parsedData.heroImage) setHeroImage(parsedData.heroImage);
+          if (parsedData.popularDishIds) setPopularDishIds(new Set(parsedData.popularDishIds));
           setIsLoading(false);
         } catch (e) {
           console.error("Error parsing cached menu data", e);
@@ -111,28 +115,78 @@ const Design5 = ({ menu: menuProp }) => {
 
       // Compute hero image from popular dishes or random
       const allDishes = sortedCategories.flatMap((c) => c.menuDishes || []);
+      
+      // Preserve existing cache fields if they exist to avoid overwriting them
+      let currentHeroImage = "";
+      let currentPopularIds = [];
       try {
-        const topDishes = await getTopDishes(data._id, "month");
-        if (topDishes?.length > 0) {
-          // Limit popular badge to top 3 most-viewed dishes only
-          const top3 = topDishes.slice(0, 3);
-          const topIds = new Set(top3.map((d) => d.dishId));
-          setPopularDishIds(topIds);
-          const topDish = allDishes.find((d) => topIds.has(d._id));
-          setHeroImage(topDish?.img || allDishes[0]?.img || "");
-        } else {
-          const randomDish = allDishes[Math.floor(Math.random() * allDishes.length)];
-          setHeroImage(randomDish?.img || "");
-        }
-      } catch {
-        const randomDish = allDishes[Math.floor(Math.random() * allDishes.length)];
-        setHeroImage(randomDish?.img || "");
-      }
+        const cached = JSON.parse(localStorage.getItem(`menu_${restaurantName}`) || "{}");
+        currentHeroImage = cached.heroImage || "";
+        currentPopularIds = cached.popularDishIds || [];
+      } catch (e) {}
 
+      // Set a fallback image immediately so the banner doesn't wait for getTopDishes
+      const fallbackImage = currentHeroImage || allDishes[0]?.img || "";
+      setHeroImage(fallbackImage);
+
+      // Save base data to cache immediately
       localStorage.setItem(
         `menu_${restaurantName}`,
-        JSON.stringify({ restaurantData: data, categories: sortedCategories })
+        JSON.stringify({
+          restaurantData: data,
+          categories: sortedCategories,
+          heroImage: fallbackImage,
+          popularDishIds: currentPopularIds,
+        })
       );
+
+      // Fetch top dishes asynchronously without blocking the render
+      getTopDishes(data._id, "month")
+        .then((topDishes) => {
+          let newHeroImage = fallbackImage;
+          let newPopularIds = [];
+
+          if (topDishes?.length > 0) {
+            const top3 = topDishes.slice(0, 3);
+            newPopularIds = top3.map((d) => d.dishId);
+            setPopularDishIds(new Set(newPopularIds));
+
+            const topDish = allDishes.find((d) => newPopularIds.includes(d._id));
+            if (topDish?.img) {
+              newHeroImage = topDish.img;
+              setHeroImage(newHeroImage);
+            }
+          } else {
+            const randomDish = allDishes[Math.floor(Math.random() * allDishes.length)];
+            newHeroImage = randomDish?.img || "";
+            setHeroImage(newHeroImage);
+          }
+
+          localStorage.setItem(
+            `menu_${restaurantName}`,
+            JSON.stringify({
+              restaurantData: data,
+              categories: sortedCategories,
+              heroImage: newHeroImage,
+              popularDishIds: newPopularIds,
+            })
+          );
+        })
+        .catch(() => {
+          const randomDish = allDishes[Math.floor(Math.random() * allDishes.length)];
+          const newHeroImage = randomDish?.img || "";
+          setHeroImage(newHeroImage);
+
+          localStorage.setItem(
+            `menu_${restaurantName}`,
+            JSON.stringify({
+              restaurantData: data,
+              categories: sortedCategories,
+              heroImage: newHeroImage,
+              popularDishIds: [],
+            })
+          );
+        });
     } catch (error) {
       console.error("Error fetching restaurant data:", error);
     } finally {

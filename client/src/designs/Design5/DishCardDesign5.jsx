@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { toWebP } from "@/utils/cloudinaryUrl";
+import { useState } from "react";
 
 const dietaryBadge = (dish) => {
   const tags = [];
@@ -11,6 +12,7 @@ const dietaryBadge = (dish) => {
 };
 
 const DishCardDesign5 = ({ dish, isPopular, onClick }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
   const tags = dietaryBadge(dish);
 
   return (
@@ -22,12 +24,19 @@ const DishCardDesign5 = ({ dish, isPopular, onClick }) => {
       className="bg-white rounded-2xl shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-shadow duration-200"
     >
       {/* Image Container */}
-      <div className="relative w-full aspect-[4/3] overflow-hidden">
+      <div className="relative w-full aspect-[4/3] overflow-hidden bg-slate-200">
+        {/* Optional simple pulse effect while loading */}
+        {!isLoaded && (
+          <div className="absolute inset-0 animate-pulse bg-slate-300"></div>
+        )}
         <img
           src={toWebP(dish.img)}
           alt={dish.name}
-          className="w-full h-full object-cover"
+          className={`w-full h-full object-cover transition-opacity duration-500 ease-in-out ${
+            isLoaded ? "opacity-100" : "opacity-0"
+          }`}
           loading="lazy"
+          onLoad={() => setIsLoaded(true)}
         />
 
         {/* Popular Badge */}

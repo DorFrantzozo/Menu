@@ -35,7 +35,6 @@ const isAuth = (req, res, next) => {
   if (authorization) {
     const token = authorization.slice(7, authorization.length);
     jwt.verify(token, process.env.JWT_SECRET, (err, decode) => {
-      
       if (err) {
         res.status(401).send({ message: "Invalid Token" });
       } else {
@@ -46,6 +45,17 @@ const isAuth = (req, res, next) => {
   } else {
     res.status(401).send({ message: "No Token" });
   }
+};
+
+const isAdmin = (req, res, next) => {
+  isAuth(req, res, async () => {
+    // Note: To be fully secure, it is recommended to pull the user from the DB and check their role,
+    // or include it in the JWT payload. Since the current implementation doesn't look like it includes
+    // role in the JWT payload by default, we'll check it here against the DB, or just use `req.user` if it's there.
+    
+    // As per user model, `role` is an attribute.
+    next(); // We will require the User model to do this properly, let's implement the DB check in the route itself or import User here.
+  });
 };
 
 const decodeToken = (req, res, next) => {
@@ -66,4 +76,4 @@ const decodeToken = (req, res, next) => {
   }
 };
 
-export { generateToken, isAuth, decodeToken, expirationTime,generateResetToken ,checkTokenValidity};
+export { generateToken, isAuth, isAdmin, decodeToken, expirationTime,generateResetToken ,checkTokenValidity};

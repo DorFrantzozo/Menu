@@ -1,5 +1,6 @@
 import React from 'react';
 import Hero from "../components/Hero";
+import HowItWorks from "../components/HowItWorks";
 import LandingPros from "../components/LandingPros";
 import NavBarLanding from "../components/nav/NavBarLanding";
 import Contact from "./Contact";
@@ -12,6 +13,8 @@ const Landing2 = () => {
       <main>
         <Hero />
         
+        <HowItWorks />
+
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
