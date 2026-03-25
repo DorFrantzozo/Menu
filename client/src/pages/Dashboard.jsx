@@ -5,7 +5,7 @@ import FreeTrailBanner from "@/components/Cards/FreeTrailBanner";
 import { countActiveItems, countItems } from "@/utils/localFunctions";
 import DashboardDataCards from "@/components/Cards/DashboardDataCards";
 import QrProfile from "@/components/data/qrCode/QrProfile";
-import PeakActivityWidget from "@/components/dashboard/PeakActivityWidget";
+import PeakActivityWidget from "@/components/Dashboard/PeakActivityWidget";
 import StatsDashboard from "@/components/Dashboard/StatsDashboard";
 import useQrScanPolling from "@/hooks/useQrScanPolling";
 
