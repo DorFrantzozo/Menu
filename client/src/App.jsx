@@ -46,7 +46,7 @@ import Sidebar from "./components/SideBar";
 import SupportPage from "./pages/SupportPage";
 import Design5 from "./designs/Design5/Design5";
 import GlobalErrorBoundary from "./components/GlobalErrorBoundary";
-import OnboardingTour from "./components/dashboard/OnboardingTour";
+import OnboardingTour from "./components/Dashboard/TourFix";
 
 function App() {
   const dispatch = useDispatch();
