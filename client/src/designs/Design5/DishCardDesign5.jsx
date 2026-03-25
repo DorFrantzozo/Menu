@@ -69,9 +69,18 @@ const DishCardDesign5 = ({ dish, isPopular, onClick }) => {
         <p className="text-[11px] text-slate-400 mt-1 line-clamp-2 leading-snug min-h-[28px]">
           {dish.description}
         </p>
-        <p className="text-sm font-bold text-slate-900 mt-2">
-          ₪{dish.price}
-        </p>
+        <div className="flex items-center gap-2 mt-2">
+          {dish.salePrice && Number(dish.salePrice) > 0 && Number(dish.salePrice) !== dish.price ? (
+            <>
+              <p className="text-lg font-bold text-emerald-600">₪{dish.salePrice}</p>
+              <p className="text-sm font-bold text-red-500 line-through opacity-70">₪{dish.price}</p>
+            </>
+          ) : (
+            <p className="text-sm font-bold text-slate-900">
+              ₪{dish.price}
+            </p>
+          )}
+        </div>
       </div>
     </motion.div>
   );

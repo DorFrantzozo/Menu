@@ -78,9 +78,18 @@ const Design1Dish = () => {
                       {dish.description}
                     </p>
                     <Alergies dish={dish} />
-                    <p className="font-bold text-lg text-gray-900 mt-2">
-                      {dish.price} ₪
-                    </p>
+                    <div className="flex items-center justify-end gap-2 mt-2">
+                      {dish.salePrice && Number(dish.salePrice) > 0 && Number(dish.salePrice) !== dish.price ? (
+                        <>
+                          <p className="font-bold text-xl text-emerald-600">{dish.salePrice} ₪</p>
+                          <p className="font-bold text-sm text-red-500 line-through opacity-70">{dish.price} ₪</p>
+                        </>
+                      ) : (
+                        <p className="font-bold text-lg text-gray-900">
+                          {dish.price} ₪
+                        </p>
+                      )}
+                    </div>
                   </div>
                   <img
                     src={dish.img}

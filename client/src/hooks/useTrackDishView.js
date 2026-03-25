@@ -1,18 +1,25 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import axiosInstance from '@/utils/baseUrl';
 
-const useTrackDishView = (dishId) => {
-  const hasTrackedRef = useRef(new Set());
+const SESSION_KEY = 'tracked_dish_views';
 
+const useTrackDishView = (dishId) => {
   useEffect(() => {
-    if (!dishId || hasTrackedRef.current.has(dishId)) return;
+    if (!dishId) return;
+
+    // Use sessionStorage so deduplication persists across
+    // modal open/close cycles within the same browser tab,
+    // but resets naturally when the tab is closed.
+    const tracked = JSON.parse(sessionStorage.getItem(SESSION_KEY) || '[]');
+    if (tracked.includes(dishId)) return;
 
     const trackView = async () => {
       try {
         await axiosInstance.post('/analytics/view', { dishId });
-        hasTrackedRef.current.add(dishId);
+        // Mark as tracked AFTER a successful request
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify([...tracked, dishId]));
       } catch (error) {
-        // Silent catch as per requirements
+        // Silent catch – analytics failure must never affect UX
         console.error('Failed to track dish view', error);
       }
     };

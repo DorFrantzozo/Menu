@@ -232,9 +232,18 @@ const Design4 = ({ menu: menuProp }) => {
                 <p className="p-1 text-gray-600">
                   <Allergies dish={dish} />
                 </p>
-                <p className="text-sm text-gray-600">
-                  ₪ {dish.price}
-                </p>
+                <div className="flex items-center gap-2">
+                  {dish.salePrice && Number(dish.salePrice) > 0 && Number(dish.salePrice) !== dish.price ? (
+                    <>
+                      <p className="text-lg font-bold text-emerald-600">₪ {dish.salePrice}</p>
+                      <p className="text-sm font-bold text-red-500 line-through opacity-70">₪ {dish.price}</p>
+                    </>
+                  ) : (
+                    <p className="text-sm text-gray-600">
+                      ₪ {dish.price}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           ))

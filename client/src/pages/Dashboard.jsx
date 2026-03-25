@@ -4,8 +4,8 @@ import AddDataToStart from "../components/Cards/AddDataToStart";
 import FreeTrailBanner from "@/components/Cards/FreeTrailBanner";
 import { countActiveItems, countItems } from "@/utils/localFunctions";
 import DashboardDataCards from "@/components/Cards/DashboardDataCards";
-import QuickActionsCards from "@/components/Cards/QuickActiionsCards";
 import QrProfile from "@/components/data/qrCode/QrProfile";
+import PeakActivityWidget from "@/components/dashboard/PeakActivityWidget";
 import StatsDashboard from "@/components/Dashboard/StatsDashboard";
 import useQrScanPolling from "@/hooks/useQrScanPolling";
 
@@ -55,7 +55,7 @@ const Dashboard = () => {
           </button>
           
           <button 
-            onClick={() => window.open(`https://${user?.restaurantName?.toLowerCase()}.menuyou.online/menu`, '_blank')}
+            onClick={() => window.open(`https://${user?.restaurantName?.toLowerCase()}.imenu-il.online/menu`, '_blank')}
             className="bg-primary hover:bg-primary-dark text-white px-3 md:px-5 py-2 md:py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 shadow-lg shadow-primary/20 transition-all active:scale-95 shrink-0"
           >
             <span className="material-icons-round text-base">launch</span>
@@ -84,9 +84,9 @@ const Dashboard = () => {
             </div>
 
             {/* Bottom Section: QR & Actions */}
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 items-stretch w-full shrink-0">
+            <div data-tour="stats" className="grid grid-cols-1 xl:grid-cols-2 gap-6 items-stretch w-full shrink-0">
               <QrProfile qrSlug={user?.qrSlug} />
-              <QuickActionsCards />
+              <PeakActivityWidget />
             </div>
           </>
         ) : (

@@ -50,9 +50,16 @@ const AccordionMenu = ({ categories, dishes, textColor = "white" }) => {
                         {dish.description}
                       </li>
                       <li className="flex justify-center items-center gap-2">
-                        <span className={`text-${textColor}`}>
-                          ₪ {dish.price}
-                        </span>
+                        {dish.salePrice && Number(dish.salePrice) > 0 && Number(dish.salePrice) !== dish.price ? (
+                          <>
+                            <span className="text-lg text-emerald-600 font-bold">₪ {dish.salePrice}</span>
+                            <span className={`text-sm text-red-500 line-through opacity-70`}>₪ {dish.price}</span>
+                          </>
+                        ) : (
+                          <span className={`text-${textColor}`}>
+                            ₪ {dish.price}
+                          </span>
+                        )}
                       </li>
                     </div>
                   ))}

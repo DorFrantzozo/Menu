@@ -23,6 +23,10 @@ const Dish = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  salePrice: {
+    type: Number,
+    required: false,
+  },
   category: {
     type: Schema.Types.ObjectId,
     ref: "Category",

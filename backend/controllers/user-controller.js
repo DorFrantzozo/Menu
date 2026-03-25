@@ -3,6 +3,8 @@ import bcrypt from "bcryptjs";
 import cloudinary from "../utils/cloudinary.js";
 import { checkTokenValidity, expirationTime, generateToken } from "../utils/jwt.js";
 import { sendEmail } from "../utils/sendgrid.js";
+import ActivityLog from "../model/activityLog.js";
+import sendDiscordAlert from "../utils/discordAlert.js";
 
 
 //TODO: split logic to different layers (like repository for db accessing) and files (like bcrypt and cloudinary)
@@ -60,17 +62,16 @@ const createUser = async (req, res) => {
     });
 
     await newUser.save();
-
+    await sendDiscordAlert(
+  `לקוח חדש פתח תפריט!\n**אימייל:** ${newUser.email}`, 
+  "🎉 משתמש חדש ב-MenuYou!", 
+  3066993 // צבע ירוק להצלחה
+);
     const token = generateToken(newUser);
 
     const { password: _, ...userWithoutPassword } = newUser.toObject();
 
-    //TODO: Token on cookie (because of security)
-    // res.cookie("token", token, {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === "production", // Set to true in production
-    //   sameSite: "strict",
-    // });
+ 
 
     res.status(201).json({ user: userWithoutPassword, token: token });
   } catch (error) {
@@ -117,8 +118,7 @@ const loginUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const { email, password, restaurantName, isPaid, displayName, phone } =
-    req.body;
+  const { email, password, restaurantName, isPaid, role, displayName, phone } = req.body;
   const { userId } = req.params;
 
   try {
@@ -142,72 +142,75 @@ const updateUser = async (req, res) => {
       user.password = hashedPassword;
     }
 
-    // Update restaurant name if provided
-    if (restaurantName) {
-      user.restaurantName = restaurantName;
+    if (restaurantName) user.restaurantName = restaurantName;
+    if (displayName) user.displayName = displayName;
+    if (phone) user.phone = phone;
+
+    // --- לוגיקת אדמין ותשלומים ---
+    if (isPaid !== undefined || role !== undefined) {
+      if (!req.user || req.user.role !== "admin") {
+        return res.status(403).json({ message: "Forbidden: Admin privileges required" });
+      }
+
+      if (isPaid !== undefined) {
+        const previousStatus = user.isPaid;
+        user.isPaid = isPaid;
+
+        // אם הסטטוס שונה ל-true (שולם)
+        if (isPaid === true || isPaid === "true") {
+          // הגדרת תאריך לתשלום הבא - 30 יום מהיום
+          const nextMonth = new Date();
+          nextMonth.setDate(nextMonth.getDate() + 30);
+          user.nextPaymentDate = nextMonth;
+
+          // שליחת התראה לדיסקורד (רק אם זה באמת השתנה לחיוב)
+          if (previousStatus !== true) {
+            sendDiscordAlert(
+              `המנוי של **${user.restaurantName}** חודש ידנית.\nתאריך תשלום הבא: ${nextMonth.toLocaleDateString('he-IL')}`,
+              "💰 עדכון תשלום ידני",
+              3066993, // ירוק
+              "activity"
+            );
+          }
+        }
+      }
+
+      if (role !== undefined) user.role = role;
     }
 
-    // Update displayName if provided
-    if (displayName) {
-      user.displayName = displayName;
-    }
-
-    // Update phone if provided
-    if (phone) {
-      user.phone = phone;
-    }
-
-    // Update payment status if provided
-    if (isPaid !== undefined) {
-      user.isPaid = isPaid;
-    }
-
-    // Handle image upload to Cloudinary if a new file is present
+    // Handle image upload
     if (req.file) {
       if (user.logo) {
-        // If the user already has a logo, delete it from Cloudinary
         const publicId = user.logo.split("/").pop().split(".")[0];
         await cloudinary.uploader.destroy(`users/${publicId}`);
       }
 
-      // Upload new logo to Cloudinary
       const uploadResult = await new Promise((resolve, reject) => {
-        cloudinary.uploader
-          .upload_stream(
-            {
-              public_id: `users/${user.email}_logo`,
-              folder: "users",
-              transformation: {
-                quality: "auto",
-                fetch_format: "auto",
-                width: 1000,
-                crop: "limit",
-              },
-            },
-            (error, result) => {
-              if (error) return reject(error);
-              resolve(result);
-            }
-          )
-          .end(req.file.buffer);
+        cloudinary.uploader.upload_stream(
+          {
+            public_id: `users/${user.email}_logo`,
+            folder: "users",
+            transformation: { quality: "auto", fetch_format: "auto", width: 1000, crop: "limit" },
+          },
+          (error, result) => {
+            if (error) return reject(error);
+            resolve(result);
+          }
+        ).end(req.file.buffer);
       });
-
-      user.logo = uploadResult.secure_url; // Update user logo URL with the new one
+      user.logo = uploadResult.secure_url;
     }
 
-    // Save the updated user
+    // שמירה סופית של כל השינויים
     await user.save();
 
-    // Generate a new token if the user updated their email or password
     const token = generateToken(user);
+    const { password: _, ...userResponse } = user.toObject();
 
-    // Exclude the password before sending the response
-    const { password: _, ...updatedUser } = user.toObject();
+    res.status(200).json({ user: userResponse, token });
 
-    res.status(200).json({ user: updatedUser, token });
   } catch (error) {
     console.error("Error updating user:", error.message);
-    console.error(error); // Log the entire error object for more details
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -385,9 +388,6 @@ const SendResetPasswordMail = async (req, res) => {
 };
 
 
-
-
-
 const resetPassword = async (req, res) => {
   const { data } = req.body;
   const { token, newPassword } = data;
@@ -430,14 +430,6 @@ const resetPassword = async (req, res) => {
 
 
 
-
-
-      
-
-
-
-
-
 const findBySlug = async (req, res) => {
   const { slug } = req.params;
 
@@ -477,7 +469,7 @@ const handleQrRedirect = async (req, res) => {
     const user = await User.findOne({ qrSlug: slug });
     
     // הדומיין הראשי שלך
-    const baseDomain = process.env.MAIN_DOMAIN || "menuyou.online";
+    const baseDomain = process.env.MAIN_DOMAIN || "imenu-il.online";
 
     if (!user) {
       // הפניה לעמוד שגיאה בדומיין הראשי
@@ -489,14 +481,41 @@ const handleQrRedirect = async (req, res) => {
       console.error(`Failed to increment scan counter for slug ${slug}:`, err.message);
     });
 
-    // בניית הכתובת: https://slug.menuyou.online/menu
+    // תיעוד סריקה באנליטיקות שעות עומס (רץ ברקע)
+    ActivityLog.create({ restaurantId: user._id, type: "qr_scan" }).catch(err => {
+      console.error(`Failed to log QR scan activity for slug ${slug}:`, err.message);
+    });
+
+    // בניית הכתובת: https://slug.imenu-il.online/menu
     const redirectUrl = `https://${slug}.${baseDomain}/menu`;
     
     return res.redirect(302, redirectUrl);
   } catch (error) {
     console.error("Error handling QR redirect:", error.message);
-    const baseDomain = process.env.MAIN_DOMAIN || "menuyou.online";
+    const baseDomain = process.env.MAIN_DOMAIN || "imenu-il.online";
     return res.redirect(302, `https://${baseDomain}/not-found`);
+  }
+};
+
+const completeTour = async (req, res) => {
+  const { userId } = req.body;
+  
+  // Ensure the user is updating their own record or is an admin
+  if (req.user._id !== userId && req.user.role !== 'admin') {
+    return res.status(403).json({ message: "Forbidden" });
+  }
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    user.hasCompletedTour = true;
+    await user.save();
+    res.status(200).json({ message: "Tour completed successfully", hasCompletedTour: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -513,5 +532,6 @@ export {
   resetPassword,
   handleQrRedirect,
   findBySlug,
-  getQrScanCount
+  getQrScanCount,
+  completeTour
 };

@@ -1,6 +1,7 @@
 import Category from "../model/category.js";
 import Dish from "../model/dish.js";
 import cloudinary from "../utils/cloudinary.js";
+import { PUBLIC_MENU_PROJECTION } from "../utils/projections.js";
 
 const createCategoryByUserId = async (req, res) => {
   try {
@@ -89,7 +90,7 @@ const getCategoriesByUserId = async (req, res) => {
       return res.status(400).json({ message: "User ID is required" });
     }
 
-    const categories = await Category.find({ userId });
+    const categories = await Category.find({ userId }).select(PUBLIC_MENU_PROJECTION);
 
     res.status(200).json(categories);
   } catch (error) {

@@ -1,53 +1,36 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { PlusIcon, MagnifyingGlassIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { useSelector, useDispatch } from "react-redux";
-import { setMenuCategories } from "@/state/menu/menuCategoriesSlice";
+import { PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
-import { toast } from "react-toastify";
 import { Input } from "@/components/ui/input";
+
+// Component imports
 import AddCategoryForm from "@/components/CateroryComponents/AddCategoryForm";
 import EditCategoryForm from "@/components/CateroryComponents/EditCategoryForm";
-import SortableCategoryCard from "@/components/CateroryComponents/SortableCategoryCard"; // חדש
+import SortableCategoryCard from "@/components/CateroryComponents/SortableCategoryCard";
+import CategoryCard from "@/components/CateroryComponents/CategoryCard";
+import CategoryDeleteModal from "@/components/CateroryComponents/CategoryDeleteModal";
+
+// Custom Hooks for SRP
+import { useCategoryLogic } from "@/hooks/useCategoryLogic";
+import { useCategoryDnD } from "@/hooks/useCategoryDnD";
 
 // DnD Kit imports
-import {
-  DndContext,
-  closestCenter,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  DragOverlay,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  rectSortingStrategy,
-  arrayMove,
-} from "@dnd-kit/sortable";
-import axiosInstance from "@/utils/baseUrl";
-import CategoryCard from "@/components/CateroryComponents/CategoryCard";
+import { DndContext, closestCenter, DragOverlay } from "@dnd-kit/core";
+import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 
-export default function ManageCategories({
-  isLoading,
-  onCreate,
-  onDelete,
-  onEdit,
-}) {
+export default function ManageCategories({ isLoading, onCreate }) {
   const [showCreateForm, setShowCreateCategoryForm] = useState(false);
   const [creatingCategory, setCreatingCategory] = useState(null);
-  const [categoryToDelete, setCategoryToDelete] = useState(null);
   const [editingCategory, setEditingCategory] = useState(null);
   const [showEditForm, setShowEditForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [categories, setCategories] = useState([]);
-  const [activeId, setActiveId] = useState(null);
 
+  // Redux state
   const user = useSelector((state) => state.user.user);
-  const dispatch = useDispatch();
-
-  const menuCategories = useSelector(
-    (state) => state.menuCategories.menuCategories
-  );
+  const menuCategories = useSelector((state) => state.menuCategories.menuCategories);
 
   // Sync categories with Redux state
   useEffect(() => {
@@ -56,75 +39,44 @@ export default function ManageCategories({
     }
   }, [menuCategories]);
 
-  // Filtered categories for search
-  const filteredCategories = categories
-    .filter((c) => c.name.toLowerCase().includes(searchTerm.toLowerCase()))
-    .sort((a, b) => a.locationNumber - b.locationNumber);
-
-  // DnD sensors
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8,
-      },
-    })
+  // SRP 1: Extracted API Logic
+  const { categoryToDelete, setCategoryToDelete, executeDelete } = useCategoryLogic(
+    user,
+    categories,
+    setCategories
   );
 
-  // Handle new category creation
-  const handleSubmit = (data) => {
+  // SRP 2: Extracted Drag & Drop mechanics
+  const { sensors, activeId, handleDragStart, handleDragCancel, handleDragEnd } = useCategoryDnD(
+    user,
+    categories,
+    setCategories
+  );
+
+  // Efficiency: useMemo prevents recalculating filters/sorts on unrelated renders
+  const filteredCategories = useMemo(() => {
+    if (!categories) return [];
+    return categories
+      .filter((c) => c.name.toLowerCase().includes(searchTerm.toLowerCase()))
+      .sort((a, b) => a.locationNumber - b.locationNumber);
+  }, [categories, searchTerm]);
+
+  // Efficiency: useCallback prevents props passing down causing child re-renders
+  const handleSubmit = useCallback((data) => {
     onCreate(data);
     setShowCreateCategoryForm(false);
     setCreatingCategory(null);
-  };
+  }, [onCreate]);
 
-  // Handle edit
-  const handleEditCategory = (category) => {
+  const handleEditCategory = useCallback((category) => {
     setEditingCategory(category);
     setShowEditForm(true);
-  };
+  }, []);
 
-  // Handle drag and drop
-  const handleDragStart = (event) => {
-    setActiveId(event.active.id);
-  };
-
-  const handleDragCancel = () => {
-    setActiveId(null);
-  };
-
-  const handleDragEnd = async (event) => {
-    const { active, over } = event;
-    
-    setActiveId(null);
-
-    if (!over || active.id === over.id) return;
-
-    const oldIndex = categories.findIndex((cat) => cat._id === active.id);
-    const newIndex = categories.findIndex((cat) => cat._id === over.id);
-
-    const newCategories = arrayMove(categories, oldIndex, newIndex).map(
-      (cat, idx) => ({
-        ...cat,
-        locationNumber: idx + 1,
-      })
-    );
-
-    setCategories(newCategories);
-    
-    // Update Redux state
-    dispatch(setMenuCategories(newCategories));
-
-    // Update backend
-    try {
-      await axiosInstance.put(`/category/reorderCategories/${user._id}`, {
-        categories: newCategories,
-      });
-      localStorage.setItem("categories", JSON.stringify(newCategories));
-      console.log("successfully reordered categories");
-    } catch (err) {
-      console.error("Error reordering categories:", err);
-    }
-  };
+  const handleCancelCreate = useCallback(() => {
+    setShowCreateCategoryForm(false);
+    setCreatingCategory(null);
+  }, []);
 
   // Lock scroll when editing
   useEffect(() => {
@@ -132,42 +84,15 @@ export default function ManageCategories({
     else document.body.classList.remove("overflow-hidden");
   }, [showEditForm]);
 
-  // Delete handling
-  const executeDelete = async () => {
-    if (!categoryToDelete) return;
-
-    try {
-      const response = await axiosInstance.delete(
-        `/category/deleteCategory/${user._id}/${categoryToDelete._id}`
-      );
-      
-      const { deletedDishesCount } = response.data;
-      
-      // Update local state
-      const newCategories = categories.filter(c => c._id !== categoryToDelete._id);
-      setCategories(newCategories); 
-      dispatch(setMenuCategories(newCategories)); // Sync Redux
-
-      toast.success(`הקטגוריה נמחקה ו-${deletedDishesCount} מנות הוסרו בהצלחה`);
-      
-      setCategoryToDelete(null);
-    } catch (error) {
-      console.error("Error deleting category:", error);
-      toast.error("שגיאה במחיקת הקטגוריה");
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="p-8">
         <div className="animate-pulse space-y-6">
           <div className="h-8 bg-slate-200 rounded w-64"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array(6)
-              .fill(0)
-              .map((_, i) => (
-                <div key={i} className="h-48 bg-slate-200 rounded-xl"></div>
-              ))}
+            {Array(6).fill(0).map((_, i) => (
+              <div key={i} className="h-48 bg-slate-200 rounded-xl"></div>
+            ))}
           </div>
         </div>
       </div>
@@ -175,11 +100,9 @@ export default function ManageCategories({
   }
 
   return (
-    <div
-      dir="rtl"
-      className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-amber-50/30 p-6 md:p-8"
-    >
+    <div dir="rtl" className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-amber-50/30 p-6 md:p-8">
       <div className="max-w-7xl mx-auto space-y-8">
+        
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -187,12 +110,8 @@ export default function ManageCategories({
           className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6"
         >
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold text-slate-900">
-              קטגוריות התפריט
-            </h1>
-            <p className="text-slate-600 mt-2">
-              ארגן את הפריטים שלך לפי קטגוריות
-            </p>
+            <h1 className="text-3xl md:text-4xl font-bold text-slate-900">קטגוריות התפריט</h1>
+            <p className="text-slate-600 mt-2">ארגן את הפריטים שלך לפי קטגוריות</p>
           </div>
           <Button
             onClick={() => setShowCreateCategoryForm(!showCreateForm)}
@@ -227,10 +146,7 @@ export default function ManageCategories({
             <AddCategoryForm
               category={creatingCategory}
               onSubmit={handleSubmit}
-              onCancel={() => {
-                setShowCreateCategoryForm(false);
-                setCreatingCategory(null);
-              }}
+              onCancel={handleCancelCreate}
             />
           )}
         </AnimatePresence>
@@ -243,10 +159,7 @@ export default function ManageCategories({
           onDragEnd={handleDragEnd}
           onDragCancel={handleDragCancel}
         >
-          <SortableContext
-            items={filteredCategories.map((c) => c._id)}
-            strategy={rectSortingStrategy}
-          >
+          <SortableContext items={filteredCategories.map((c) => c._id)} strategy={rectSortingStrategy}>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -273,6 +186,7 @@ export default function ManageCategories({
               )}
             </motion.div>
           </SortableContext>
+
           <DragOverlay>
             {activeId ? (
               <CategoryCard
@@ -281,7 +195,7 @@ export default function ManageCategories({
                 dragHandle={{
                   listeners: {},
                   attributes: {},
-                  onDelete: () => {}, // Disable delete during drag
+                  onDelete: () => {}, 
                   onEdit: () => {}
                 }}
                 onEdit={() => {}} 
@@ -293,62 +207,22 @@ export default function ManageCategories({
 
         {/* Empty State */}
         {filteredCategories.length === 0 && !isLoading && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-16"
-          >
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
             <div className="text-slate-400 text-6xl mb-4">📂</div>
-            <h3 className="text-xl font-semibold text-slate-600 mb-2">
-              לא נמצאה קטגוריה
-            </h3>
+            <h3 className="text-xl font-semibold text-slate-600 mb-2">לא נמצאה קטגוריה</h3>
             <p className="text-slate-500">
-              {searchTerm
-                ? "נסה לחפש עם מונח אחר"
-                : "הוסף קטגוריה חדשה כדי להתחיל"}
+              {searchTerm ? "נסה לחפש עם מונח אחר" : "הוסף קטגוריה חדשה כדי להתחיל"}
             </p>
           </motion.div>
         )}
 
-        {/* Delete Confirmation Modal */}
-        <AnimatePresence>
-          {categoryToDelete && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setCategoryToDelete(null)}>
-               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                onClick={(e) => e.stopPropagation()}
-                className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden"
-              >
-                <div className="p-6 text-center">
-                  <div className="mx-auto w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
-                    <TrashIcon className="w-6 h-6 text-red-600" />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">אתה בטוח?</h3>
-                  <p className="text-gray-500 mb-6">
-                    פעולה זו תמחק לצמיתות את הקטגוריה <strong>"{categoryToDelete.name}"</strong> ואת כל המנות שבתוכה. לא ניתן לבטל פעולה זו.
-                  </p>
-                  
-                  <div className="flex gap-3 justify-center">
-                    <button
-                      onClick={() => setCategoryToDelete(null)}
-                      className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition-colors"
-                    >
-                      ביטול
-                    </button>
-                    <button
-                      onClick={executeDelete}
-                      className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold shadow-md hover:shadow-lg transition-all"
-                    >
-                      כן, מחק הכל
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          )}
-        </AnimatePresence>
+        {/* SRP 3: Extracted UI Delete Confirmation Modal */}
+        <CategoryDeleteModal 
+          categoryToDelete={categoryToDelete}
+          onCancel={() => setCategoryToDelete(null)}
+          onConfirm={executeDelete}
+        />
+        
       </div>
     </div>
   );

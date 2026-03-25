@@ -25,7 +25,7 @@ export default function EditProfile() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user.user);
-  
+  const token = localStorage.getItem("token");
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -65,7 +65,7 @@ export default function EditProfile() {
       const response = await axiosInstance.put(
         `/user/updateUser/${user?._id}`,
         formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
+        { headers: { "Content-Type": "multipart/form-data" , Authorization: `Bearer ${token}`,} }
       );
 
       if (response.status === 200) {

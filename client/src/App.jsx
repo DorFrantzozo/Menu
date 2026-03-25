@@ -43,7 +43,10 @@ import ResetPassword from "./pages/ResetPassword";
 import ManageCategories from "./pages/ManageCategories";
 import ManageDishes from "./pages/ManageDishes";
 import Sidebar from "./components/SideBar";
+import SupportPage from "./pages/SupportPage";
 import Design5 from "./designs/Design5/Design5";
+import GlobalErrorBoundary from "./components/GlobalErrorBoundary";
+import OnboardingTour from "./components/dashboard/OnboardingTour";
 
 function App() {
   const dispatch = useDispatch();
@@ -112,107 +115,120 @@ function App() {
 
         <div className="flex flex-grow overflow-hidden">
           <main className="flex-grow min-w-0 overflow-x-hidden">
-            <AnimatePresence mode="wait">
-              <Routes>
-                <Route
-                  path="/"
-                  element={user ? <Navigate to="/dashboard" /> : <Landing2 />}
-                />
-                <Route
-                  path="/dashboard"
-                  element={user ? <Dashboard /> : <Navigate to="/signin" />}
-                />
-                <Route
-                  path="/signin"
-                  element={user ? <Navigate to="/dashboard" /> : <Signin />}
-                />
-                <Route
-                  path="/signup"
-                  element={user ? <Navigate to="/dashboard" /> : <Signup />}
-                />
-                <Route
-                  path="/admin"
-                  element={
-                    !user || user.role !== "admin" ? (
-                      <Navigate to="/" />
-                    ) : (
-                      <AdminPage />
-                    )
-                  }
-                />
-                <Route path="/edit" element={<Edit />} />
-                <Route
-                  path="/designs"
-                  element={user ? <Designs /> : <Landing2 />}
-                />
-                <Route
-                  path="/settings"
-                  element={user ? <Settings /> : <Landing2 />}
-                />
-                <Route
-                  path="/add-dish"
-                  element={user ? <AddDish /> : <Landing2 />}
-                />
-                <Route
-                  path="/manage-categories"
-                  element={user ? <ManageCategories /> : <Landing2 />}
-                />
-                <Route
-                  path="/manage-dishes"
-                  element={user ? <ManageDishes /> : <Landing2 />}
-                />
-                <Route
-                  path="/add-category"
-                  element={user ? <AddCategory /> : <Landing2 />}
-                />
-                <Route
-                  path="/add-asset"
-                  element={user ? <AddAssetsPage /> : <Landing2 />}
-                />
-                <Route
-                  path="/dishesPage"
-                  element={user ? <DishPage /> : <Landing2 />}
-                />
-                <Route
-                  path="/profile"
-                  element={user ? <Profile /> : <Landing2 />}
-                />
-                <Route
-                  path="/profile/edit"
-                  element={user ? <EditProfile /> : <Landing2 />}
-                />
-                <Route
-                  path="/editDish"
-                  element={user ? <EditDish /> : <Landing2 />}
-                />
-                <Route
-                  path="/editCategory"
-                  element={user ? <EditCategory /> : <Landing2 />}
-                />
-                <Route path="/menu" element={<Menu />} />
-                <Route path="/termofservice" element={<TermsOfService />} />
-                <Route
-                  path="/request/resetpassword"
-                  element={
-                    user ? <Navigate to="/dashboard" /> : <SendLinkToEmail />
-                  }
-                />
-                <Route path="/resetpassword" element={<ResetPassword />} />
-                <Route path="/design1" element={<Design1 />} />
-                <Route path="/design2" element={<Design2 />} />
-                <Route path="/design3" element={<Design3 />} />
-                <Route
-                  path="/design1/:categoryName/dishes/:userId/:categoryId"
-                  element={<Design1Dish />}
-                />
-                <Route path="/design4" element={<Design4 />} />
-                <Route path="/design4DishDetails" element={<DishDetails />} />
-                <Route path="/design5" element={<Design5 />} />
-              </Routes>
-            </AnimatePresence>
+            <GlobalErrorBoundary>
+              <AnimatePresence mode="wait">
+                <Routes>
+                  <Route
+                    path="/"
+                    element={user ? <Navigate to="/dashboard" /> : <Landing2 />}
+                  />
+                  <Route
+                    path="/dashboard"
+                    element={user ? <Dashboard /> : <Navigate to="/signin" />}
+                  />
+                  <Route
+                    path="/signin"
+                    element={user ? <Navigate to="/dashboard" /> : <Signin />}
+                  />
+                  <Route
+                    path="/signup"
+                    element={user ? <Navigate to="/dashboard" /> : <Signup />}
+                  />
+                  <Route
+                    path="/admin"
+                    element={
+                      !user || user.role !== "admin" ? (
+                        <Navigate to="/" />
+                      ) : (
+                        <AdminPage />
+                      )
+                    }
+                  />
+                  <Route path="/edit" element={<Edit />} />
+                  <Route
+                    path="/designs"
+                    element={user ? <Designs /> : <Landing2 />}
+                  />
+                  <Route
+                    path="/settings"
+                    element={user ? <Settings /> : <Landing2 />}
+                  />
+                  <Route
+                    path="/add-dish"
+                    element={user ? <AddDish /> : <Landing2 />}
+                  />
+                  <Route
+                    path="/manage-categories"
+                    element={user ? <ManageCategories /> : <Landing2 />}
+                  />
+                  <Route
+                    path="/manage-dishes"
+                    element={user ? <ManageDishes /> : <Landing2 />}
+                  />
+                  <Route
+                    path="/add-category"
+                    element={user ? <AddCategory /> : <Landing2 />}
+                  />
+                  <Route
+                    path="/add-asset"
+                    element={user ? <AddAssetsPage /> : <Landing2 />}
+                  />
+                  <Route
+                    path="/dishesPage"
+                    element={user ? <DishPage /> : <Landing2 />}
+                  />
+                   <Route
+                    path="/profile"
+                    element={user ? <Profile /> : <Landing2 />}
+                  />
+                  <Route
+                    path="/support"
+                    element={user ? <SupportPage /> : <Landing2 />}
+                  />
+                  <Route
+                    path="/profile/edit"
+                    element={user ? <EditProfile /> : <Landing2 />}
+                  />
+                  <Route
+                    path="/editDish"
+                    element={user ? <EditDish /> : <Landing2 />}
+                  />
+                  <Route
+                    path="/editCategory"
+                    element={user ? <EditCategory /> : <Landing2 />}
+                  />
+                  <Route path="/menu" element={<Menu />} />
+                  <Route path="/termofservice" element={<TermsOfService />} />
+                  <Route
+                    path="/request/resetpassword"
+                    element={
+                      user ? <Navigate to="/dashboard" /> : <SendLinkToEmail />
+                    }
+                  />
+                  <Route path="/resetpassword" element={<ResetPassword />} />
+                  <Route path="/design1" element={<Design1 />} />
+                  <Route path="/design2" element={<Design2 />} />
+                  <Route path="/design3" element={<Design3 />} />
+                  <Route
+                    path="/design1/:categoryName/dishes/:userId/:categoryId"
+                    element={<Design1Dish />}
+                  />
+                  <Route path="/design4" element={<Design4 />} />
+                  <Route path="/design4DishDetails" element={<DishDetails />} />
+                  <Route path="/design5" element={<Design5 />} />
+                </Routes>
+              </AnimatePresence>
+            </GlobalErrorBoundary>
           </main>
           {user && <Sidebar user={user} />}
         </div>
+
+        {user && (
+          <OnboardingTour 
+            user={user} 
+            onStatusChange={(updatedUser) => dispatch(setUser(updatedUser))} 
+          />
+        )}
 
         <Footer />
       </BrowserRouter>

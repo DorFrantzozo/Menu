@@ -17,77 +17,39 @@ function slugify(name) {
 
 const userSchema = new mongoose.Schema(
   {
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    password: {
-      type: String,
-      required: true,
-      minlength: 6, // You can set the minimum password length
-    },
-    restaurantName: {
-      type: String,
-      required: true,
-    },
-    displayName: {
-      type: String,
-      required: true,
-    },
-    phone: {
-      type: String,
-      required: true,
-    },
-    logo: {
-      type: String,
-    },
-    designNumber: {
-      type: Number,
-    },
-    isPaid: {
-      type: Boolean,
-      default: false,
-    },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true, minlength: 6 },
+    restaurantName: { type: String, required: true },
+    displayName: { type: String, required: true },
+    phone: { type: String, required: true },
+    logo: { type: String },
+    designNumber: { type: Number },
+    isPaid: { type: Boolean, default: false },
     trialExpiresAt: {
       type: Date,
       default: () => new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
       immutable: true,
     },
+    // שדה חדש לניהול הגבייה הידנית שלך
+    nextPaymentDate: {
+      type: Date,
+    },
     wifiSettings: {
-      isEnabled: {
-        type: Boolean,
-        default: false,
-      },
-      ssid: {
-        type: String,
-      },
-      wifiPassword: {
-        type: String,
-      },
+      isEnabled: { type: Boolean, default: false },
+      ssid: { type: String },
+      wifiPassword: { type: String },
     },
     addressSettings: {
-      isEnabled: {
-        type: Boolean,
-        default: false,
-      },
-      address: {
-        type: String,
-      },
+      isEnabled: { type: Boolean, default: false },
+      address: { type: String },
     },
     role: { type: String, default: "user" },
-    qrSlug: {
-      type: String,
-      unique: true,
-      index: true,
-    },
-    totalQrScans: {
-      type: Number,
-      default: 0,
-    },
+    qrSlug: { type: String, unique: true, index: true },
+    totalQrScans: { type: Number, default: 0 },
+    hasCompletedTour: { type: Boolean, default: false },
   },
   { timestamps: true }
-); // Automatically adds createdAt and updatedAt fields
+);
 
 userSchema.pre("save", async function (next) {
   if (this.isNew || !this.qrSlug) {

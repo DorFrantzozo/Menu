@@ -7,6 +7,7 @@ import { generateToken } from "../utils/jwt.js";
 export const isAdminMiddleware = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id);
+   
     if (!user || user.role !== "admin") {
       return res.status(403).json({ message: "Forbidden: Admins only" });
     }

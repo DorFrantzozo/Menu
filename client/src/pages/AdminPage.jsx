@@ -1,4 +1,3 @@
-import VercelAnalytics from "@/components/data/VercelAnalytics";
 import AdminUsersTable from "../components/admin/AdminUsersTable";
 import { UsersCountCard } from "@/components/Cards/UsersCountCard";
 const AdminPage = () => {

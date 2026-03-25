@@ -68,7 +68,10 @@ export default function AddCategoryForm({ onCancel }) {
     try {
       setIsLoading(true);
       await axiosInstance.post(`/category/createCategory`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: { 
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        },
       });
       const updatedCategories = await getCategories(user._id);
       dispatch(updateMenuCategories(updatedCategories));

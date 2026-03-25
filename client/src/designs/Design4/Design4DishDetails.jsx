@@ -49,7 +49,16 @@ const Design4DishDetails = () => {
           <p className="text-xl text-gray-700 leading-relaxed">
             {dish.description}
           </p>
-          <p className="text-2xl text-gray-900 font-bold">{dish.price} ₪</p>
+          <div className="flex items-center justify-center md:justify-start gap-3">
+            {dish.salePrice && Number(dish.salePrice) > 0 && Number(dish.salePrice) !== dish.price ? (
+              <>
+                <p className="text-3xl text-emerald-600 font-bold">{dish.salePrice} ₪</p>
+                <p className="text-xl text-red-500 line-through opacity-70 font-bold">{dish.price} ₪</p>
+              </>
+            ) : (
+              <p className="text-2xl text-gray-900 font-bold">{dish.price} ₪</p>
+            )}
+          </div>
           
           <div className="text-gray-600 flex justify-center md:justify-start pt-2">
             <Allergies dish={dish} />

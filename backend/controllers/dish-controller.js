@@ -1,20 +1,18 @@
 import Dish from "../model/dish.js";
 import cloudinary from "../utils/cloudinary.js";
+import { PUBLIC_MENU_PROJECTION } from "../utils/projections.js";
 
 const createDish = async (req, res) => {
   try {
-    const { userId } = req.params; // Get userId from params
+    const { userId } = req.params;
     const { name, description, price, category, pregnant, gluten, lactose, vegi, hide } = req.body;
 
-    console.log("Create Dish Request Body:", req.body);
-    console.log("Create Dish Request File:", req.file);
-
-     // 0. Strict validation for required fields
+    // 0. וולידציה בסיסית
     if (!userId || !name || !price || !category) {
-        return res.status(400).json({ message: "UserId, Name, Price, and Category are required" });
+      return res.status(400).json({ message: "UserId, Name, Price, and Category are required" });
     }
 
-    // 1. Check if the dish already exists (optional, but good practice)
+    // 1. בדיקת כפילות
     const isexist = await Dish.findOne({ userId, name });
     if (isexist) {
       return res.status(400).json({ message: "Dish with this name already exists for this user" });
@@ -22,21 +20,24 @@ const createDish = async (req, res) => {
 
     let imgUrl = null;
 
-    // 2. Upload image if exists
+    // 2. העלאה ל-Cloudinary
     if (req.file) {
       const uploadResult = await new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
           {
             folder: "dishes",
-            transformation: { 
-              quality: "auto", 
+            transformation: {
+              quality: "auto",
               fetch_format: "auto",
               width: 1000,
-              crop: "limit"
+              crop: "limit",
             },
           },
           (error, result) => {
-            if (error) return reject(error);
+            if (error) {
+              console.error("Cloudinary Upload Error:", error);
+              return reject(error);
+            }
             resolve(result);
           }
         );
@@ -45,29 +46,31 @@ const createDish = async (req, res) => {
       imgUrl = uploadResult.secure_url;
     }
 
-    // 3. Create the dish object
-    // Note: We convert boolean fields strictly because FormData sends them as strings 'true'/'false'
+    // 3. יצירת המנה
     const newDish = new Dish({
       userId,
       name,
-      description: description || "", // Ensure description is not undefined
-      price,
+      description: description || "",
+      price: Number(price),
       category,
-      pregnant: pregnant === 'true' || pregnant === true,
-      gluten: gluten === 'true' || gluten === true,
-      lactose: lactose === 'true' || lactose === true,
-      vegi: vegi === 'true' || vegi === true,
-      hide: hide === 'true' || hide === true,
-      img: imgUrl, // Will be null if no image uploaded, which is fine since required: false in model
+      pregnant: pregnant === "true" || pregnant === true,
+      gluten: gluten === "true" || gluten === true,
+      lactose: lactose === "true" || lactose === true,
+      vegi: vegi === "true" || vegi === true,
+      hide: hide === "true" || hide === true,
+      img: imgUrl,
     });
 
     await newDish.save();
     res.status(201).json(newDish);
   } catch (error) {
     console.error("Error creating dish:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 };
+
+
+
 
 // Get dishes by category and userId
 const getDishesByCategory = async (req, res) => {
@@ -80,7 +83,7 @@ const getDishesByCategory = async (req, res) => {
     }
 
     // עכשיו זה בטוח ב-100%
-    const dishes = await Dish.find({ userId, category });
+    const dishes = await Dish.find({ userId, category }).select(PUBLIC_MENU_PROJECTION);
 
     res.status(200).json(dishes);
 
@@ -99,7 +102,7 @@ const getAllDishesByUserId = async (req, res) => {
     }
 
     // שליפה מאובטחת
-    const dishes = await Dish.find({ userId });
+    const dishes = await Dish.find({ userId }).select(PUBLIC_MENU_PROJECTION);
     
     res.status(200).json(dishes);
   } catch (error) {
@@ -121,6 +124,7 @@ const updateDish = async (req, res) => {
     lactose,
     vegi,
     hide,
+    salePrice,
   } = req.body;
 
   try {
@@ -173,6 +177,7 @@ const updateDish = async (req, res) => {
     dish.gluten = gluten;
     dish.lactose = lactose;
     dish.vegi = vegi;
+    dish.salePrice = salePrice;
 
     await dish.save();
     res.status(200).json(dish);
@@ -199,6 +204,8 @@ const deleteDish = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+
 
 
 

@@ -10,16 +10,21 @@ import cors from "cors";
 import dotenv from "dotenv";
 import assetRouter from "./routes/asset-route.js";
 import analyticsRouter from "./routes/analyticsRoute.js";
+import supportRouter from "./routes/supportRoute.js";
+import { generalLimiter } from "./middlewares/rateLimiter.js";
+import { globalErrorHandler } from "./middlewares/errorHandler.js";
+import { initPaymentReminders } from "./utils/paymentReminders.js"; 
+
 dotenv.config();
 
 const app = express();
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (mobile apps, curl, server-to-server)
     if (!origin) return callback(null, true);
-    // Allow menuyou.online and all its subdomains
-    if (/^https?:\/\/(?:[a-z0-9-]+\.)?menuyou\.online$/.test(origin)) {
+    // Strict CORS: Allow frontend URL from env or fallback base domain
+    const allowedClientUrl = process.env.CLIENT_BASE_URL || "https://imenu-il.online";
+    if (origin === allowedClientUrl || /^https?:\/\/(?:[a-z0-9-]+\.)?imenu-il\.online$/.test(origin)) {
       return callback(null, true);
     }
     // Allow localhost for development
@@ -33,21 +38,31 @@ app.use(cors({
 
 app.use(express.json());
 
-//TODO: in each route add validations using express-validator (if needed)
+// Apply general rate limiter to all API routes
+app.use("/api", generalLimiter);
+
 app.use("/api/user", userRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/dish", dishRouter);
 app.use("/api/asset", assetRouter);
 app.use("/api/analytics", analyticsRouter);
+app.use("/api/support", supportRouter);
 app.use("/api/admin", adminRouter);
 
-// Dynamic QR Redirect Route
+// Dynamic QR Redirect Route (no global rate limiter applied here because QR scans can be frequent)
 app.get("/go/:slug", handleQrRedirect);
 
+// Global Error Handling Middleware (Must be the last app.use!)
+app.use(globalErrorHandler);
+
 try {
+ 
   await connect();
   app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);
+    initPaymentReminders();
+    console.log("✅ Payment reminders cron job initialized");
+
   });
 } catch (error) {
   console.error("Failed to connect to the database", error);

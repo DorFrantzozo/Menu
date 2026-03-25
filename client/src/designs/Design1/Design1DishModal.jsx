@@ -40,9 +40,18 @@ const Design1DishModal = ({ dish, isOpen, onClose }) => {
             <p className="text-gray-500 mt-2 text-lg">
               {dish.description}
             </p>
-            <p className="text-xl font-semibold text-gray-800 mt-4">
-              {dish.price} ₪
-            </p>
+            <div className="flex items-center justify-center gap-3 mt-4">
+              {dish.salePrice && Number(dish.salePrice) > 0 && Number(dish.salePrice) !== dish.price ? (
+                <>
+                  <p className="text-2xl font-bold text-emerald-600">{dish.salePrice} ₪</p>
+                  <p className="text-lg font-semibold text-red-500 line-through opacity-70">{dish.price} ₪</p>
+                </>
+              ) : (
+                <p className="text-xl font-semibold text-gray-800">
+                  {dish.price} ₪
+                </p>
+              )}
+            </div>
             <Alergies dish={dish} className="mt-4" />
           </div>
         </div>

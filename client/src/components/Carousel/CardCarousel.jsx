@@ -25,10 +25,10 @@ const Designs = () => {
 
   const designs = [
     { img: design1Tambneil, number: 1, title: "Design 1", desc: "עיצוב מודרני ובהיר" },
-    { img: design5Tambneil, number: 2, title: "Design 5", desc: "עיצוב פרימיום מודרני" },
-      { img: design4Tambneil, number: 3, title: "Design 4", desc: "עיצוב צבעוני ודינאמי" },
-    { img: design2Tambneil, number: 4, title: "Design 2", desc: "תצוגה קלאסית נקייה" },
-    { img: design3Tambneil, number: 5, title: "Design 3", desc: "עיצוב כהה יוקרתי" },
+    { img: design5Tambneil, number: 5, title: "Design 2", desc: "עיצוב פרימיום מודרני" },
+      { img: design4Tambneil, number: 4, title: "Design 3", desc: "עיצוב צבעוני ודינאמי" },
+    { img: design2Tambneil, number: 2, title: "Design 4", desc: "תצוגה קלאסית נקייה" },
+    { img: design3Tambneil, number: 3, title: "Design 5", desc: "עיצוב כהה יוקרתי" },
   ,
    ,
   ];
@@ -39,7 +39,12 @@ const Designs = () => {
       const response = await axiosInstance.put(
         `/user/updateDesign`,
         { number: designNumber, userId: user._id },
-        { headers: { "Content-Type": "application/json" } }
+        { 
+          headers: { 
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          } 
+        }
       );
       toast.success("העיצוב שונה בהצלחה");
       dispatch(updateUser(response.data.user));

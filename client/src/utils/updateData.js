@@ -8,6 +8,7 @@ const updatePaidStatus = async (userId, isPaid) => {
     {
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`
       },
     }
   );
@@ -22,12 +23,20 @@ const updateMenuSettings = async ({
   displayWifi,
 }) => {
   try {
-    const response = await axiosInstance.put(`/user/updateUserMenuSettings`, {
-      userId,
-      wifiSsid,
-      wifiPassword,
-      displayWifi,
-    });
+    const response = await axiosInstance.put(
+      `/user/updateUserMenuSettings`, 
+      {
+        userId,
+        wifiSsid,
+        wifiPassword,
+        displayWifi,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      }
+    );
 
     console.log(response.data);
     return response.data;

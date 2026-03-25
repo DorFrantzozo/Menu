@@ -105,9 +105,18 @@ const Design2 = ({ menu: menuProp }) => {
                           </div>
 
                           <div className="flex justify-between text-gray-600 text-sm mt-2">
-                            <p className="font-semibold text-gray-800 ms-2">
-                              {dish.price}₪
-                            </p>
+                            <div className="flex items-center gap-2 ms-2">
+                              {dish.salePrice && Number(dish.salePrice) > 0 && Number(dish.salePrice) !== dish.price ? (
+                                <>
+                                  <p className="font-bold text-emerald-600 text-lg">{dish.salePrice}₪</p>
+                                  <p className="font-semibold text-red-500 line-through opacity-70 text-sm">{dish.price}₪</p>
+                                </>
+                              ) : (
+                                <p className="font-semibold text-gray-800">
+                                  {dish.price}₪
+                                </p>
+                              )}
+                            </div>
                             <p className="whitespace-normal break-words text-sm sm:text-base md:text-lg lg:text-xl text-right ms-10">
                                 {dish.description}
                             </p>

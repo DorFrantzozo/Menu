@@ -20,7 +20,7 @@ const DashboardTitle = ({ user }) => {
       <DefaultButton
         onClick={() =>
           window.open(
-            `https://${user?.restaurantName.toLowerCase()}.menuyou.online/menu`,
+            `https://${user?.restaurantName.toLowerCase()}.imenu-il.online/menu`,
             "_blank"
           )
         }

@@ -70,9 +70,18 @@ const DishModalDesign5 = ({ dish, isOpen, onClose }) => {
 
               {/* Price */}
               <div className="flex items-center justify-between mb-5">
-                <span className="text-2xl font-bold text-slate-900">
-                  ₪{dish.price}
-                </span>
+                <div className="flex items-center gap-3">
+                  {dish.salePrice && Number(dish.salePrice) > 0 && Number(dish.salePrice) !== dish.price ? (
+                    <>
+                      <span className="text-3xl font-bold text-emerald-600">₪{dish.salePrice}</span>
+                      <span className="text-xl font-bold text-red-500 line-through opacity-70 border-none">₪{dish.price}</span>
+                    </>
+                  ) : (
+                    <span className="text-2xl font-bold text-slate-900">
+                      ₪{dish.price}
+                    </span>
+                  )}
+                </div>
               </div>
 
               {/* Allergies/Sensitivities */}

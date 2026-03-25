@@ -130,9 +130,18 @@ const TopDishes = ({ userId }) => {
                   </div>
                 </div>
                 
-                <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300">
-                  ₪{dish.price}
-                </span>
+                <div className="flex items-center gap-2">
+                  {dish.salePrice && Number(dish.salePrice) > 0 && Number(dish.salePrice) !== dish.price ? (
+                    <>
+                      <span className="text-lg font-bold text-emerald-600">₪{dish.salePrice}</span>
+                      <span className="text-sm text-red-500 line-through opacity-70 border-none">₪{dish.price}</span>
+                    </>
+                  ) : (
+                    <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300">
+                      ₪{dish.price}
+                    </span>
+                  )}
+                </div>
               </div>
             );
           })}

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://menuyou.online/sitemap.xml
+Sitemap: https://imenu-il.online/sitemap.xml

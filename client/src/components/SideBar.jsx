@@ -49,12 +49,14 @@ const Sidebar = ({ user }) => {
       key: "Dishes",
       icon: "list_alt",
       navigate: "/manage-dishes",
+      tourKey: "dishes",
     },
     {
       name: "קטגוריות",
       key: "Categories",
       icon: "category",
       navigate: "/manage-categories",
+      tourKey: "categories",
     },
     {
       name: "תפריט חי",
@@ -67,6 +69,7 @@ const Sidebar = ({ user }) => {
       key: "Design",
       icon: "palette",
       navigate: "/designs",
+      tourKey: "design",
     },
   ];
 
@@ -76,6 +79,12 @@ const Sidebar = ({ user }) => {
       key: "Settings",
       icon: "settings",
       navigate: "/profile",
+    },
+    {
+      name: "מרכז תמיכה",
+      key: "Support",
+      icon: "contact_support",
+      navigate: "/support",
     },
     {
       name: "התנתקות",
@@ -139,6 +148,7 @@ const Sidebar = ({ user }) => {
                   }
                   if (isMobile) setMobileOpen(false);
                 }}
+                data-tour={item.tourKey}
               >
                 <span
                   className={`material-icons-round text-xl transition-colors ${

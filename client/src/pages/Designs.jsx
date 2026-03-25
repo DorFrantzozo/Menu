@@ -29,7 +29,12 @@ const Designs = () => {
       const response = await axiosInstance.put(
         `/user/updateDesign`,
         { number: designNumber, userId: user._id },
-        { headers: { "Content-Type": "application/json" } }
+        { 
+          headers: { 
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          } 
+        }
       );
       toast.success("העיצוב שונה בהצלחה");
       dispatch(updateUser(response.data.user));

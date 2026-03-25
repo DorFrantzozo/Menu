@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import DishStats from "../model/dishStats.js";
 import Dish from "../model/dish.js";
 import MenuStats from "../model/menuStats.js";
+import ActivityLog from "../model/activityLog.js";
 import cache from "../utils/cache.js";
 
 export const trackView = async (req, res) => {
@@ -35,6 +36,11 @@ export const trackView = async (req, res) => {
       },
       { upsert: true, new: true }
     );
+
+    // Track detailed timestamp log for peak activity reporting (runs in background)
+    ActivityLog.create({ restaurantId: dish.userId, type: "dish_view" }).catch(err => {
+      console.error("Failed to log detailed dish view activity:", err.message);
+    });
 
     res.status(200).json({ message: "View tracked successfully" });
   } catch (error) {
@@ -150,6 +156,11 @@ export const trackMenuView = async (req, res) => {
       { upsert: true, new: true }
     );
 
+    // Track detailed timestamp log for peak activity reporting (runs in background)
+    ActivityLog.create({ restaurantId, type: "menu_view" }).catch(err => {
+      console.error("Failed to log detailed menu view activity:", err.message);
+    });
+
     res.status(200).json({ message: "Menu view tracked successfully" });
   } catch (error) {
     console.error("Error tracking menu view:", error);
@@ -183,6 +194,124 @@ export const getMenuStats = async (req, res) => {
     res.status(200).json(formattedStats);
   } catch (error) {
     console.error("Error fetching menu stats:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getPeakActivity = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+
+    // ── Fetch user to get the account creation date ──
+    const User = (await import("../model/user.js")).default;
+    const user = await User.findById(userId).select("createdAt").lean();
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    // Dynamic divisor: how many full weeks since account creation (clamped 1–4).
+    // This ensures a new account sees accurate data from day one, while the
+    // graph stabilises into a true 30-day weekday average after ~4 weeks.
+    const msPerWeek = 7 * 24 * 60 * 60 * 1000;
+    const weeksSinceCreation = (Date.now() - new Date(user.createdAt).getTime()) / msPerWeek;
+    const divisor = Math.min(4, Math.max(1, Math.floor(weeksSinceCreation)));
+
+    const matchStage = {
+      $match: {
+        restaurantId: new mongoose.Types.ObjectId(userId),
+        timestamp: { $gte: thirtyDaysAgo }
+      }
+    };
+
+    const daysAggregation = await ActivityLog.aggregate([
+      matchStage,
+      {
+        $project: {
+          dayOfWeek: { $dayOfWeek: { date: "$timestamp", timezone: "Asia/Jerusalem" } }
+        }
+      },
+      {
+        $group: {
+          _id: "$dayOfWeek",
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { _id: 1 } }
+    ]);
+
+    const hoursAggregation = await ActivityLog.aggregate([
+      matchStage,
+      {
+        $project: {
+          hourOfDay: { $hour: { date: "$timestamp", timezone: "Asia/Jerusalem" } }
+        }
+      },
+      {
+        $group: {
+          _id: "$hourOfDay",
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { _id: 1 } }
+    ]);
+
+    const dayNames = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
+
+    const daysData = Array.from({ length: 7 }, (_, i) => {
+      const dayIndex = i + 1; // $dayOfWeek: 1=Sunday … 7=Saturday
+      const found = daysAggregation.find(d => d._id === dayIndex);
+      const rawCount = found ? found.count : 0;
+      return {
+        name: dayNames[i],
+        // Round to one decimal so small values are still legible
+        uv: Math.round((rawCount / divisor) * 10) / 10
+      };
+    });
+
+    const hoursData = Array.from({ length: 24 }, (_, i) => {
+      const found = hoursAggregation.find(h => h._id === i);
+      const rawCount = found ? found.count : 0;
+      return {
+        name: `${i.toString().padStart(2, '0')}:00`,
+        uv: Math.round((rawCount / divisor) * 10) / 10
+      };
+    });
+
+    res.status(200).json({ daysData, hoursData });
+  } catch (error) {
+    console.error("Error generating peak activity metrics:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+/**
+ * POST /api/analytics/clear-my-data
+ * Wipes all ActivityLog entries for the authenticated user.
+ * Intended for development / QA use only.
+ */
+export const clearMyData = async (req, res) => {
+  try {
+    const userId = req.user?._id;
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const result = await ActivityLog.deleteMany({
+      restaurantId: new mongoose.Types.ObjectId(userId),
+    });
+
+    res.status(200).json({
+      message: `נמחקו ${result.deletedCount} רשומות בהצלחה.`,
+      deletedCount: result.deletedCount,
+    });
+  } catch (error) {
+    console.error("Error clearing activity data:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };

@@ -9,7 +9,14 @@ const getSafeId = (idOrObject) => {
 };
 
 const getAllUsers = async () => {
-  const response = await axiosInstance.get("/user/getAllUsers");
+  const token = localStorage.getItem("token"); // וודא שזה השם שבו אתה שומר את הטוקן
+  
+  const response = await axiosInstance.get("/user/getAllUsers", {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+  
   return response.data;
 };
 

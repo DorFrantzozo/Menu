@@ -47,7 +47,16 @@ const MenuCard = (item) => {
         <div className="mt-4 h-24 overflow-hidden">
           <p className="text-slate-900 text-base">{item.item.description}</p>
           {item.item.price && (
-            <p className="text-slate-900 text-base mt-1">{item.item.price} ₪</p>
+            <div className="flex items-center gap-2 mt-1">
+              {item.item.salePrice && Number(item.item.salePrice) > 0 && Number(item.item.salePrice) !== item.item.price ? (
+                <>
+                  <p className="text-emerald-600 font-bold text-lg">{item.item.salePrice} ₪</p>
+                  <p className="text-red-500 line-through opacity-70 text-sm">{item.item.price} ₪</p>
+                </>
+              ) : (
+                <p className="text-slate-900 text-base">{item.item.price} ₪</p>
+              )}
+            </div>
           )}
         </div>
 

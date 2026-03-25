@@ -1,9 +1,12 @@
-import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-
 import FreeTrailBanner from "@/components/Cards/FreeTrailBanner";
-import QrProfile from "@/components/data/qrCode/QrProfile";
+import ProfileHeader from "@/components/Profile/ProfileHeader";
+import BusinessInfoCard from "@/components/Profile/BusinessInfoCard";
+import SubscriptionCard from "@/components/Profile/SubscriptionCard";
+import QRCodeManager from "@/components/Profile/QRCodeManager";
+
+import { useNavigate } from "react-router-dom";
+import { PencilSquareIcon } from "@heroicons/react/24/outline";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -20,93 +23,54 @@ const Profile = () => {
   }, []);
 
   return (
-    <>
+    <div className="min-h-screen bg-zinc-50/50 pb-16" dir="rtl">
       <FreeTrailBanner user={userFromStorage} />
-      <div className="flex  justify-center  px-4">
-        <div dir="rtl" className="  w-full max-w-3xl p-8">
-          <h2 className="text-3xl font-semibold text-gray-900 text-center mb-4">
-            פרופיל
-          </h2>
-          <p className="text-sm text-gray-600 text-center mb-6">
-            המידע הזה יוצג באופן ציבורי, לכן שים לב מה אתה משתף.
-          </p>
+      
+      {/* Profile Header section */}
+      <ProfileHeader user={userFromStorage} />
 
-          <div className="flex flex-col items-center space-y-6 b">
-            {userFromStorage?.logo ? (
-              <img
-                className="w-32 h-32 rounded-full bg-gray-200 border-4 border-gray-200"
-                src={userFromStorage.logo}
-                alt="logo"
-              />
-            ) : (
-              <UserCircleIcon className="w-32 h-32 text-gray-400" />
-            )}
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+          
+          {/* Main Column (Right Side - 8 Columns) */}
+          <div className="md:col-span-12 lg:col-span-8 flex flex-col gap-6">
+            <BusinessInfoCard user={userFromStorage} />
+            <SubscriptionCard user={userFromStorage} />
+            
+            {/* Quick Actions / Redesigned Quick Links */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+               <h3 className="text-[11px] font-black text-zinc-400 uppercase tracking-[0.2em] mb-4">קישורים מהירים</h3>
+               <div className="flex flex-col sm:flex-row gap-4">
+                  <button
+                    onClick={() =>
+                      window.open(
+                        `https://${userFromStorage?.restaurantName?.toLowerCase()}.imenu-il.online/menu`,
+                        "_blank"
+                      )
+                    }
+                    className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-6 rounded-2xl transition-all text-center shadow-lg shadow-emerald-100 active:scale-[0.98]"
+                  >
+                    צפייה בתפריט החי
+                  </button>
+                  <button
+                    onClick={() => navigate("/profile/edit")}
+                    className="flex-1 bg-white hover:bg-zinc-50 text-zinc-900 font-bold py-3.5 px-6 rounded-2xl transition-all text-center border-2 border-zinc-200 active:scale-[0.98] flex items-center justify-center gap-2"
+                  >
+                    <PencilSquareIcon className="w-5 h-5" />
+                    עריכת פרופיל
+                  </button>
+               </div>
+            </div>
           </div>
 
-          <div className="flex flex-col bg-black text-white rounded-full p-2 w-[fit] items-center mt-4">
-            <button
-              className="w-full"
-              onClick={() =>
-                window.open(
-                  `https://${userFromStorage?.restaurantName.toLowerCase()}.menuyou.online/menu`,
-                  "_blank"
-                )
-              }
-            >
-              אתר המסעדה
-            </button>
+          {/* Side Column (Left Side - 4 Columns) - Strictly QRCodeManager */}
+          <div className="md:col-span-12 lg:col-span-4">
+            <QRCodeManager qrSlug={qrSlug} />
           </div>
 
-          <div className="mt-6 space-y-4">
-            <div className="flex  justify-between items-center gap-2">
-              <label className="  text-gray-900">שם המסעדה</label>
-              <span className="">{userFromStorage?.restaurantName}</span>
-            </div>
-            <hr />
-
-            <div className="flex justify-between   items-center gap-2">
-              <label className="  text-gray-900">שם להצגה </label>
-              <span className="">{userFromStorage?.displayName}</span>
-            </div>
-            <hr />
-            <div className="flex justify-between  gap-2">
-              <label className="  text-gray-900">מייל </label>
-              <span className="">{userFromStorage?.email}</span>
-            </div>
-            <hr />
-            <div className="flex justify-between  items-center gap-2">
-              <label className="  text-gray-900">טלפון </label>
-              <span className="">{userFromStorage?.phone}</span>
-            </div>
-            <div className="flex  justify-center  gap-4">
-              <button
-                onClick={() => navigate("/profile/edit")}
-                className="bg-black text-white px-4 py-2 rounded-full mb-10"
-              >
-                {" "}
-                עריכת פרופיל{" "}
-              </button>
-            </div>
-
-            <QrProfile qrSlug={qrSlug} />
-          </div>
-
-          <hr className="my-6 border-t border-gray-300" />
-          <h1 className="text-center text-sm text-gray-500 mb-4">
-            * פרטים אלו לא יוצגו באופן ציבורי
-          </h1>
-
-          <div className="text-sm text-center mt-4 ">
-            <p>Id:  {userFromStorage?._id}</p>
-            <p>סוג מנוי : {userFromStorage?.isPaid ? "Premium" : "Trail"}</p>
-            <p className="mt-2">
-              חבר מאז: {userFromStorage?.createdAt.split("T")[0]}
-            </p>
-            <p className="mt-2">עיצוב מספר: {userFromStorage?.designNumber}</p>
-          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -40,7 +40,16 @@ export default function DishCard({ dish, user }) {
           {dish.description && (
             <p className="text-sm text-slate-600 mb-2">{dish.description}</p>
           )}
-          <p className="text-sm text-slate-700 font-semibold">₪{dish.price}</p>
+       <div className="flex items-center gap-2 mb-2">
+      {dish.salePrice && Number(dish.salePrice) > 0 && Number(dish.salePrice) !== dish.price ? (
+        <>
+          <p className="text-lg text-emerald-600 font-bold">₪{dish.salePrice}</p>
+          <p className="text-sm text-red-500 line-through decoration-red-500 opacity-70">₪{dish.price}</p>
+        </>
+      ) : (
+        <p className="text-lg text-slate-700 font-bold">₪{dish.price}</p>
+      )}
+    </div>
           <div className="flex flex-wrap gap-2 mt-2 text-xs text-slate-500">
             {dish.vegi && <span>🌱 צמחוני/טבעוני</span>}
             {dish.pregnant && <span>🤰 מתאים להריוניות</span>}
