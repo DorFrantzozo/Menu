@@ -1,10 +1,11 @@
-import React from 'react';
+import React from "react";
 import Hero from "../components/Hero";
 import HowItWorks from "../components/HowItWorks";
 import LandingPros from "../components/LandingPros";
 import NavBarLanding from "../components/nav/NavBarLanding";
 import Contact from "./Contact";
-import { motion } from "framer-motion";
+import FAQ from "../components/Landing/FAQ";
+import {motion} from "framer-motion";
 
 const Landing2 = () => {
   return (
@@ -12,19 +13,28 @@ const Landing2 = () => {
       <NavBarLanding />
       <main>
         <Hero />
-        
+
         <HowItWorks />
 
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-          viewport={{ once: true }}
+          initial={{opacity: 0}}
+          whileInView={{opacity: 1}}
+          transition={{duration: 1}}
+          viewport={{once: true}}
         >
           <LandingPros />
         </motion.div>
 
-        {/* Optional separator or transition section can go here */}
+        <HowItWorks />
+
+        <motion.div
+          initial={{opacity: 0}}
+          whileInView={{opacity: 1}}
+          transition={{duration: 1}}
+          viewport={{once: true}}
+        >
+          <FAQ />
+        </motion.div>
 
         <div id="contact">
           <Contact />
