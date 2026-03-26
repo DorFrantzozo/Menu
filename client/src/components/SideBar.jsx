@@ -97,7 +97,7 @@ const Sidebar = ({ user }) => {
   const sidebarContent = (
     <aside
       dir="rtl"
-      className="w-64 bg-surface-light dark:bg-surface-dark border-l border-zinc-200 dark:border-zinc-700 flex flex-col h-full shrink-0 z-20 transition-all duration-300"
+      className="w-64 bg-surface-light dark:bg-zinc-950 border-l border-zinc-200 dark:border-zinc-800 flex flex-col h-full shrink-0 z-20 transition-all duration-300"
     >
       <div className="h-16 flex items-center px-6 border-b border-zinc-100 dark:border-zinc-700/50 justify-between">
         <div className="flex items-center gap-2">
@@ -136,8 +136,8 @@ const Sidebar = ({ user }) => {
                 key={item.key}
                 className={`flex items-center w-full gap-3 px-3 py-2.5 rounded-lg transition-colors group ${
                   isActive
-                    ? "bg-primary/10 text-primary font-medium"
-                    : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-700/50 hover:text-zinc-900 dark:hover:text-white"
+                    ? "bg-primary/10 dark:bg-emerald-950/50 text-primary dark:text-emerald-400 font-medium"
+                    : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/80 hover:text-zinc-900 dark:hover:text-zinc-50"
                 }`}
                 onClick={() => {
                   setActive(item.key);
@@ -171,7 +171,7 @@ const Sidebar = ({ user }) => {
             {settingsItems.map((item) => (
               <button
                 key={item.key}
-                className="flex items-center w-full gap-3 px-3 py-2.5 rounded-lg text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-700/50 hover:text-zinc-900 dark:hover:text-white transition-colors group"
+                className="flex items-center w-full gap-3 px-3 py-2.5 rounded-lg text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/80 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors group"
                 onClick={() => {
                   setActive(item.key);
                   if (item.customNavigate) {
@@ -200,7 +200,7 @@ const Sidebar = ({ user }) => {
             src={user?.logo || "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"}
           />
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-zinc-900 dark:text-white truncate">
+            <p className="text-sm font-medium text-zinc-900 dark:text-zinc-50 truncate">
               {user?.restaurantName || "מסעדה"}
             </p>
             <p className="text-xs text-zinc-500 dark:text-zinc-400 truncate">

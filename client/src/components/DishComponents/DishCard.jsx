@@ -8,7 +8,7 @@ export default function DishCard({ dish, user }) {
   const [showEditForm, setShowEditForm] = useState(false);
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col">
+    <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700/80 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col">
       {/* תמונה עם שכבת "מוסתר" במידת הצורך */}
       <div className="relative h-40 bg-gradient-to-br from-slate-100 to-slate-200 overflow-hidden">
         {dish.img ? (
@@ -34,11 +34,11 @@ export default function DishCard({ dish, user }) {
       {/* תוכן הכרטיס */}
       <div className="p-4 flex flex-col flex-grow justify-between">
         <div>
-          <h3 className="text-xl font-bold text-slate-900 mb-1 hover:text-sky-600 transition-colors duration-200">
+          <h3 className="text-xl font-bold text-slate-900 dark:text-zinc-50 mb-1 hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200">
             {dish.name}
           </h3>
           {dish.description && (
-            <p className="text-sm text-slate-600 mb-2">{dish.description}</p>
+            <p className="text-sm text-slate-600 dark:text-zinc-300 mb-2">{dish.description}</p>
           )}
        <div className="flex items-center gap-2 mb-2">
       {dish.salePrice && Number(dish.salePrice) > 0 && Number(dish.salePrice) !== dish.price ? (
@@ -47,10 +47,10 @@ export default function DishCard({ dish, user }) {
           <p className="text-sm text-red-500 line-through decoration-red-500 opacity-70">₪{dish.price}</p>
         </>
       ) : (
-        <p className="text-lg text-slate-700 font-bold">₪{dish.price}</p>
+        <p className="text-lg text-slate-700 dark:text-zinc-200 font-bold">₪{dish.price}</p>
       )}
     </div>
-          <div className="flex flex-wrap gap-2 mt-2 text-xs text-slate-500">
+          <div className="flex flex-wrap gap-2 mt-2 text-xs text-slate-500 dark:text-zinc-400">
             {dish.vegi && <span>🌱 צמחוני/טבעוני</span>}
             {dish.pregnant && <span>🤰 מתאים להריוניות</span>}
             {dish.lactose && <span>🥛 ללא לקטוז</span>}

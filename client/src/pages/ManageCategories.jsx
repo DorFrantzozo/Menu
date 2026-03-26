@@ -100,7 +100,7 @@ export default function ManageCategories({ isLoading, onCreate }) {
   }
 
   return (
-    <div dir="rtl" className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-amber-50/30 p-6 md:p-8">
+    <div dir="rtl" className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-amber-50/30 dark:bg-none dark:bg-zinc-950 transition-colors duration-200 p-6 md:p-8">
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Header */}
@@ -110,8 +110,8 @@ export default function ManageCategories({ isLoading, onCreate }) {
           className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6"
         >
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold text-slate-900">קטגוריות התפריט</h1>
-            <p className="text-slate-600 mt-2">ארגן את הפריטים שלך לפי קטגוריות</p>
+            <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-zinc-50">קטגוריות התפריט</h1>
+            <p className="text-slate-600 dark:text-zinc-300 mt-2">ארגן את הפריטים שלך לפי קטגוריות</p>
           </div>
           <Button
             onClick={() => setShowCreateCategoryForm(!showCreateForm)}
@@ -135,7 +135,7 @@ export default function ManageCategories({ isLoading, onCreate }) {
               placeholder="חפש קטגוריה ..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 bg-white border-slate-200 focus:border-amber-300"
+              className="pl-10 bg-white dark:bg-zinc-800/80 dark:text-zinc-100 border-slate-200 dark:border-zinc-700 focus:border-amber-300 dark:placeholder:text-zinc-500 shadow-sm dark:shadow-none"
             />
           </div>
         </motion.div>
@@ -209,8 +209,8 @@ export default function ManageCategories({ isLoading, onCreate }) {
         {filteredCategories.length === 0 && !isLoading && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
             <div className="text-slate-400 text-6xl mb-4">📂</div>
-            <h3 className="text-xl font-semibold text-slate-600 mb-2">לא נמצאה קטגוריה</h3>
-            <p className="text-slate-500">
+            <h3 className="text-xl font-semibold text-slate-600 dark:text-zinc-300 mb-2">לא נמצאה קטגוריה</h3>
+            <p className="text-slate-500 dark:text-zinc-400">
               {searchTerm ? "נסה לחפש עם מונח אחר" : "הוסף קטגוריה חדשה כדי להתחיל"}
             </p>
           </motion.div>

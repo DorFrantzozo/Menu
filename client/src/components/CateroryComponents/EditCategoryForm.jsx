@@ -91,10 +91,10 @@ const EditCategoryForm = ({ category, isOpen, setIsOpen }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black/60 dark:bg-zinc-950/80 flex items-center justify-center z-50 p-4 transition-colors duration-200">
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-2xl shadow-lg max-w-3xl w-full p-6 space-y-6 overflow-auto max-h-[90vh]"
+        className="bg-white dark:bg-zinc-900 rounded-2xl shadow-lg border dark:border-zinc-700/80 max-w-3xl w-full p-6 space-y-6 overflow-auto max-h-[90vh]"
         dir="rtl"
       >
         {isLoading && (
@@ -103,13 +103,13 @@ const EditCategoryForm = ({ category, isOpen, setIsOpen }) => {
           </div>
         )}
 
-        <h2 className="text-2xl font-bold text-center text-slate-800">
+        <h2 className="text-2xl font-bold text-center text-slate-800 dark:text-zinc-50">
           עריכת קטגוריה: {item.name}
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
+            <label className="block text-sm font-medium text-slate-700 dark:text-zinc-100 mb-1">
               שם הקטגוריה (עברית)
             </label>
             <input
@@ -117,12 +117,12 @@ const EditCategoryForm = ({ category, isOpen, setIsOpen }) => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="w-full rounded-md border border-slate-300 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none"
+              className="w-full rounded-md border border-slate-300 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
+            <label className="block text-sm font-medium text-slate-700 dark:text-zinc-100 mb-1">
               מיקום בתפריט
             </label>
             <input
@@ -130,7 +130,7 @@ const EditCategoryForm = ({ category, isOpen, setIsOpen }) => {
               value={locationNumber}
               onChange={(e) => setLocationNumber(Number(e.target.value))}
               required
-              className="w-full rounded-md border border-slate-300 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none"
+              className="w-full rounded-md border border-slate-300 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none"
             />
           </div>
         </div>
@@ -144,13 +144,13 @@ const EditCategoryForm = ({ category, isOpen, setIsOpen }) => {
             onChange={(e) => setHide(e.target.checked)}
             className="rounded border-gray-300 text-amber-600 focus:ring-amber-400"
           />
-          <label htmlFor="hide" className="text-slate-700 font-medium">
+          <label htmlFor="hide" className="text-slate-700 dark:text-zinc-100 font-medium">
             הסתר קטגוריה
           </label>
         </div>
 
         {/* ── הגבלת שעות/ימים ──────────────────────────────────────────────── */}
-        <div className="border border-slate-200 rounded-xl p-5 space-y-4 bg-slate-50">
+        <div className="border border-slate-200 dark:border-zinc-700/80 rounded-xl p-5 space-y-4 bg-slate-50 dark:bg-zinc-800/20">
           {/* Toggle */}
           <label className="flex items-center gap-3 cursor-pointer select-none">
             <div
@@ -165,7 +165,7 @@ const EditCategoryForm = ({ category, isOpen, setIsOpen }) => {
                 }`}
               />
             </div>
-            <span className="text-sm font-medium text-slate-700">
+            <span className="text-sm font-medium text-slate-700 dark:text-zinc-100">
               הגבל שעות/ימי פעילות
             </span>
           </label>
@@ -175,7 +175,7 @@ const EditCategoryForm = ({ category, isOpen, setIsOpen }) => {
             <div className="space-y-5 pt-2">
               {/* ימים פעילים */}
               <div>
-                <p className="text-sm font-medium text-slate-700 mb-2">ימים פעילים</p>
+                <p className="text-sm font-medium text-slate-700 dark:text-zinc-100 mb-2">ימים פעילים</p>
                 <div className="flex gap-2 flex-wrap">
                   {DAY_LABELS.map((label, idx) => {
                     const dayIndex = idx;
@@ -188,7 +188,7 @@ const EditCategoryForm = ({ category, isOpen, setIsOpen }) => {
                         className={`w-9 h-9 rounded-full text-sm font-semibold border transition ${
                           checked
                             ? "bg-amber-500 text-white border-amber-500"
-                            : "bg-white text-slate-600 border-slate-300 hover:border-amber-300"
+                            : "bg-white text-slate-600 border-slate-300 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 hover:border-amber-300"
                         }`}
                       >
                         {label}
@@ -201,25 +201,25 @@ const EditCategoryForm = ({ category, isOpen, setIsOpen }) => {
               {/* טווח שעות */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-zinc-100 mb-1">
                     שעת התחלה
                   </label>
                   <input
                     type="time"
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none"
+                    className="w-full rounded-md border border-slate-300 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-zinc-100 mb-1">
                     שעת סיום
                   </label>
                   <input
                     type="time"
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none"
+                    className="w-full rounded-md border border-slate-300 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none"
                   />
                 </div>
               </div>
@@ -232,10 +232,10 @@ const EditCategoryForm = ({ category, isOpen, setIsOpen }) => {
 
         {/* העלאת תמונה */}
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">
+          <label className="block text-sm font-medium text-slate-700 dark:text-zinc-100 mb-1">
             תמונה
           </label>
-          <div className="flex flex-col items-center justify-center border-2 border-dashed border-slate-300 p-6 rounded-lg bg-slate-50">
+          <div className="flex flex-col items-center justify-center border-2 border-dashed border-slate-300 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 p-6 rounded-lg bg-slate-50">
             {item.img || img ? (
               <img
                 src={img ? URL.createObjectURL(img) : item.img}

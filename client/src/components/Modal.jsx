@@ -84,7 +84,7 @@ export default function Modal({ open, setOpen, user, item, type }) {
         <div className="flex min-h-full items-center justify-center p-4 text-center">
           <DialogPanel
             transition
-            className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:w-full sm:max-w-lg data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
+            className="relative transform overflow-hidden rounded-lg bg-white dark:bg-zinc-900 text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:w-full sm:max-w-lg data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
           >
             <div className="flex flex-col p-12 sm:flex-row items-center sm:items-start">
               <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
@@ -96,12 +96,12 @@ export default function Modal({ open, setOpen, user, item, type }) {
               <div className="mt-3 p-4 text-center sm:ml-4 sm:mt-0 sm:text-right w-full">
                 <DialogTitle
                   as="h3"
-                  className="text-lg font-semibold leading-6 text-gray-900"
+                  className="text-lg font-semibold leading-6 text-gray-900 dark:text-zinc-50"
                 >
                   אזהרת מחיקה
                 </DialogTitle>
                 <div className="mt-2">
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-500 dark:text-zinc-300">
                     ? האם אתה בטוח שאתה רוצה למחוק את המנה
                   </p>
                 </div>
@@ -119,7 +119,7 @@ export default function Modal({ open, setOpen, user, item, type }) {
                   <button
                     type="button"
                     onClick={() => setOpen(false)}
-                    className="w-full sm:w-auto rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 mb-2 sm:mb-0 shadow-sm ring-1 ring-gray-300 hover:bg-gray-50"
+                    className="w-full sm:w-auto rounded-md bg-white dark:bg-zinc-800 px-4 py-2 text-sm font-semibold text-gray-900 dark:text-zinc-100 mb-2 sm:mb-0 shadow-sm ring-1 ring-gray-300 dark:ring-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-700"
                   >
                     ביטול
                   </button>

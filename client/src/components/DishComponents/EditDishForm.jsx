@@ -103,10 +103,10 @@ const EditDishForm = ({ dish, setShowEditForm }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black/60 dark:bg-zinc-950/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-colors duration-200">
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full p-6 space-y-6 overflow-auto max-h-[90vh] relative"
+        className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl max-w-3xl w-full p-6 space-y-6 overflow-auto max-h-[90vh] relative border dark:border-zinc-700/50"
         dir="rtl"
       >
         {isLoading && (
@@ -115,9 +115,9 @@ const EditDishForm = ({ dish, setShowEditForm }) => {
           </div>
         )}
 
-        <div className="flex justify-between items-center border-b pb-4">
-          <h2 className="text-2xl font-bold text-slate-800">עריכת מנה: {dish?.name}</h2>
-          <button type="button" onClick={() => setShowEditForm(false)} className="text-slate-400 hover:text-slate-600">
+        <div className="flex justify-between items-center border-b dark:border-zinc-700/50 pb-4">
+          <h2 className="text-2xl font-bold text-slate-800 dark:text-zinc-50">עריכת מנה: {dish?.name}</h2>
+          <button type="button" onClick={() => setShowEditForm(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-zinc-300">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
         </div>
@@ -125,31 +125,31 @@ const EditDishForm = ({ dish, setShowEditForm }) => {
         {/* פרטים בסיסיים */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div className="space-y-1">
-            <label className="text-sm font-semibold text-slate-700">שם המנה</label>
+            <label className="text-sm font-semibold text-slate-700 dark:text-zinc-100">שם המנה</label>
             <input
               type="text"
               value={dishName}
               onChange={(e) => setDishName(e.target.value)}
               required
-              className="w-full rounded-xl border border-slate-200 px-4 py-2.5 focus:ring-2 focus:ring-amber-400 focus:outline-none transition-all"
+              className="w-full rounded-xl border border-slate-200 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 px-4 py-2.5 focus:ring-2 focus:ring-amber-400 focus:outline-none transition-all"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="text-sm font-semibold text-slate-700">מחיר מקורי (₪)</label>
+            <label className="text-sm font-semibold text-slate-700 dark:text-zinc-100">מחיר מקורי (₪)</label>
             <input
               type="number"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
               required
-              className="w-full rounded-xl border border-slate-200 px-4 py-2.5 focus:ring-2 focus:ring-amber-400 focus:outline-none transition-all"
+              className="w-full rounded-xl border border-slate-200 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 px-4 py-2.5 focus:ring-2 focus:ring-amber-400 focus:outline-none transition-all"
             />
           </div>
         </div>
 
         {/* אזור הנחות - מעוצב מחדש */}
-        <div className="bg-amber-50/50 p-4 rounded-2xl border border-amber-100">
-          <label className="block text-sm font-bold text-amber-800 mb-3">ניהול מבצע והנחה</label>
+        <div className="bg-amber-50/50 dark:bg-zinc-800/80 p-4 rounded-2xl border border-amber-100 dark:border-zinc-700/50">
+          <label className="block text-sm font-bold text-amber-800 dark:text-amber-400 mb-3">ניהול מבצע והנחה</label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="relative">
               <label className="text-xs font-medium text-amber-700 mb-1 block">אחוז הנחה (%)</label>
@@ -158,7 +158,7 @@ const EditDishForm = ({ dish, setShowEditForm }) => {
                 value={discountPercent}
                 onChange={(e) => handlePercentChange(e.target.value)}
                 placeholder="0"
-                className="w-full rounded-xl border border-amber-200 px-4 py-2 focus:ring-2 focus:ring-amber-400 focus:outline-none"
+                className="w-full rounded-xl border border-amber-200 dark:bg-zinc-900 dark:border-zinc-700 dark:text-zinc-100 px-4 py-2 focus:ring-2 focus:ring-amber-400 focus:outline-none"
               />
               <span className="absolute left-3 top-9 text-amber-400">%</span>
             </div>
@@ -169,7 +169,7 @@ const EditDishForm = ({ dish, setShowEditForm }) => {
                 value={salePrice}
                 onChange={(e) => handleSalePriceChange(e.target.value)}
                 placeholder="מחיר לאחר הנחה"
-                className="w-full rounded-xl border border-amber-200 px-4 py-2 font-bold text-amber-600 focus:ring-2 focus:ring-amber-400 focus:outline-none"
+                className="w-full rounded-xl border border-amber-200 dark:bg-zinc-900 dark:border-zinc-700 dark:text-zinc-100 px-4 py-2 font-bold text-amber-600 focus:ring-2 focus:ring-amber-400 focus:outline-none"
               />
               <span className="absolute left-3 top-9 text-amber-400">₪</span>
             </div>
@@ -183,12 +183,12 @@ const EditDishForm = ({ dish, setShowEditForm }) => {
 
         {/* תיאור */}
         <div className="space-y-1">
-          <label className="text-sm font-semibold text-slate-700">תיאור המנה</label>
+          <label className="text-sm font-semibold text-slate-700 dark:text-zinc-100">תיאור המנה</label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={3}
-            className="w-full rounded-xl border border-slate-200 px-4 py-2.5 focus:ring-2 focus:ring-amber-400 focus:outline-none resize-none transition-all"
+            className="w-full rounded-xl border border-slate-200 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 px-4 py-2.5 focus:ring-2 focus:ring-amber-400 focus:outline-none resize-none transition-all"
           />
         </div>
 
@@ -207,14 +207,14 @@ const EditDishForm = ({ dish, setShowEditForm }) => {
                 onChange={(e) => item.setter(e.target.checked)}
                 className="w-5 h-5 rounded border-slate-300 text-amber-500 focus:ring-amber-400 transition-all"
               />
-              <span className="text-sm text-slate-600 group-hover:text-slate-900 transition-colors">{item.label}</span>
+              <span className="text-sm text-slate-600 dark:text-zinc-300 group-hover:text-slate-900 dark:group-hover:text-zinc-50 transition-colors">{item.label}</span>
             </label>
           ))}
         </div>
 
         {/* הסתרה והעלאת תמונה */}
         <div className="flex flex-col sm:flex-row gap-6 items-start">
-           <div className="flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-xl">
+           <div className="flex items-center gap-2 bg-slate-100 dark:bg-zinc-800 px-4 py-2 rounded-xl border dark:border-zinc-700">
             <input
               type="checkbox"
               checked={hide}
@@ -225,7 +225,7 @@ const EditDishForm = ({ dish, setShowEditForm }) => {
           </div>
         </div>
 
-        <div className="border-2 border-dashed border-slate-200 rounded-2xl p-4 bg-slate-50 hover:bg-slate-100 transition-colors">
+        <div className="border-2 border-dashed border-slate-200 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 rounded-2xl p-4 bg-slate-50 hover:bg-slate-100 transition-colors">
           <div className="flex flex-col items-center">
             {dish?.img || img ? (
               <img
@@ -246,7 +246,7 @@ const EditDishForm = ({ dish, setShowEditForm }) => {
         </div>
 
         {/* כפתורי פעולה */}
-        <div className="flex justify-end gap-3 pt-4 border-t">
+        <div className="flex justify-end gap-3 pt-4 border-t dark:border-zinc-700/50">
           <button
             type="button"
             onClick={() => setShowEditForm(false)}

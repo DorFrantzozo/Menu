@@ -63,12 +63,17 @@ const Designs = () => {
   return (
     <>
       {isLoading && <Spinner />}
-      <div className="flex flex-col items-center mt-10 mb-20">
+      <div className="min-h-screen dark:bg-zinc-950 transition-colors duration-200 pt-10">
+        <h1 className="text-center text-3xl font-bold text-slate-900 dark:text-zinc-100 mb-8">
+          בחר עיצוב לתפריט הדיגיטלי
+        </h1>
+        <div className="flex flex-col items-center mb-20">
         <CardCarousel
           designs={designs}
           onSelect={handleChangeMenuDesign}
           onTry={(designNumber) => navigate(`/design${designNumber}`, { state: menu })}
         />
+        </div>
       </div>
     </>
   );

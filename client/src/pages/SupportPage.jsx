@@ -65,21 +65,21 @@ const SupportPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900/50 p-4 lg:p-8" dir="rtl">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 p-4 lg:p-8 transition-colors duration-200" dir="rtl">
       <div className="max-w-2xl mx-auto mt-10">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white dark:bg-surface-dark rounded-2xl shadow-sm border border-zinc-100 dark:border-zinc-700/50 overflow-hidden"
+          className="bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-zinc-100 dark:border-zinc-700/80 overflow-hidden"
         >
           {/* Header */}
-          <div className="p-6 border-b border-zinc-100 dark:border-zinc-700/50 bg-zinc-50/50 dark:bg-zinc-800/50">
+          <div className="p-6 border-b border-zinc-100 dark:border-zinc-700/80 bg-zinc-50/50 dark:bg-zinc-900">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
                 <LifeBuoy size={28} />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-zinc-900 dark:text-white">מרכז תמיכה</h1>
+                <h1 className="text-xl font-bold text-zinc-900 dark:text-zinc-50">מרכז תמיכה</h1>
                 <p className="text-sm text-zinc-500 dark:text-zinc-400">אנחנו כאן כדי לעזור בכל נושא</p>
               </div>
             </div>
@@ -96,7 +96,7 @@ const SupportPage = () => {
                 <select
                   value={formData.subject}
                   onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                  className="w-full px-4 pr-16 pl-10 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-transparent focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all dark:text-white outline-none cursor-pointer !appearance-none !bg-none"
+                  className="w-full px-4 pr-16 pl-10 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-transparent dark:bg-zinc-800 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all dark:text-white outline-none cursor-pointer !appearance-none !bg-none"
                   style={{
                     backgroundImage: 'none',
                     WebkitAppearance: 'none',
@@ -130,7 +130,7 @@ const SupportPage = () => {
                     className={`py-2.5 px-4 rounded-xl text-sm font-medium border-2 transition-all ${
                       formData.urgency === u.id
                         ? u.activeClass
-                        : "border-zinc-100 dark:border-zinc-800 text-zinc-400 hover:border-zinc-200 dark:hover:border-zinc-700"
+                        : "border-zinc-100 dark:border-zinc-700/80 text-zinc-400 hover:border-zinc-200 dark:hover:border-zinc-500 hover:bg-zinc-50 dark:hover:bg-zinc-800"
                     }`}
                   >
                     {u.label}
@@ -149,7 +149,7 @@ const SupportPage = () => {
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 placeholder="ספר לנו במה אפשר לעזור..."
-                className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-transparent focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all dark:text-white outline-none resize-none"
+                className="w-full px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-transparent dark:bg-zinc-800 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all dark:text-white outline-none resize-none"
               ></textarea>
             </div>
 
@@ -172,7 +172,7 @@ const SupportPage = () => {
         </motion.div>
 
         {/* Info */}
-        <div className="mt-8 text-center bg-zinc-100 dark:bg-zinc-800/50 p-4 rounded-xl">
+        <div className="mt-8 text-center bg-zinc-100 dark:bg-zinc-900 p-4 rounded-xl border dark:border-zinc-700/80">
           <p className="text-sm text-zinc-500 dark:text-zinc-400">
             מענה ממוצע לקריאות תמיכה הוא פחות מ-24 שעות. 
           </p>

@@ -27,13 +27,12 @@ export default function DishFilters({
         
              <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
     
-      <input
-        type="search"
-        placeholder={`חפש מנה... `}
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className=" w-full appirance-none py-2 pr-4 pl-10 border border-gray-300 rounded-md bg-white text-right focus:outline-none focus:ring-2 focus:ring-amber-400"
-       
+        <input
+          type="search"
+          placeholder={`חפש מנה... `}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className=" w-full appearance-none py-2 pr-4 pl-10 border border-gray-300 dark:border-zinc-700 rounded-md bg-white dark:bg-zinc-800/80 text-right focus:outline-none focus:ring-2 focus:ring-amber-400 dark:text-zinc-100 dark:placeholder:text-zinc-500 shadow-sm dark:shadow-none"
         />
         </div>
 
@@ -41,9 +40,7 @@ export default function DishFilters({
       <select
         value={filterCategory}
         onChange={(e) => setFilterCategory(e.target.value)}
-        className="w-full appearance-none py-2 border border-gray-300 rounded-md bg-white text-right focus:outline-none focus:ring-2 focus:ring-amber-400"
-       
-      
+        className="w-full appearance-none py-2 border border-gray-300 dark:border-zinc-700 rounded-md bg-white dark:bg-zinc-800/80 text-right focus:outline-none focus:ring-2 focus:ring-amber-400 dark:text-zinc-100 shadow-sm dark:shadow-none"
       >
         <option value="">כל הקטגוריות</option>
         {categories.map((cat) => (
@@ -57,8 +54,7 @@ export default function DishFilters({
       <select
         value={filterSensitivity}
         onChange={(e) => setFilterSensitivity(e.target.value)}
-        className=" w-full appearance-none py-2 border border-gray-300 rounded-md bg-white text-right focus:outline-none focus:ring-2 focus:ring-amber-400"
-        
+        className=" w-full appearance-none py-2 border border-gray-300 dark:border-zinc-700 rounded-md bg-white dark:bg-zinc-800/80 text-right focus:outline-none focus:ring-2 focus:ring-amber-400 dark:text-zinc-100 shadow-sm dark:shadow-none"
       >
         {sensitivityOptions.map(({ label, value }) => (
           <option key={value} value={value}>

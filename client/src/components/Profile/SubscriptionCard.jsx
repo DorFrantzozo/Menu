@@ -17,37 +17,37 @@ const SubscriptionCard = ({ user }) => {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex flex-col h-full">
-      <h3 className="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
-        <CreditCardIcon className="w-5 h-5 text-gray-400" />
+    <div className="bg-white dark:bg-surface-dark rounded-2xl shadow-sm border border-gray-100 dark:border-zinc-700/50 p-4 flex flex-col h-full transition-colors duration-200">
+      <h3 className="text-base font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+        <CreditCardIcon className="w-5 h-5 text-gray-400 dark:text-zinc-500" />
         חשבון ומנוי
       </h3>
 
       <div className="space-y-3 flex-grow">
-        <div className="flex justify-between items-center p-2.5 bg-gray-50/50 rounded-xl border border-gray-50">
+        <div className="flex justify-between items-center p-2.5 bg-gray-50/50 dark:bg-zinc-800/50 rounded-xl border border-gray-50 dark:border-zinc-700/50">
           <div className="flex items-center gap-2">
             <CreditCardIcon className="w-4 h-4 text-emerald-500" />
-            <span className="text-xs text-gray-600 font-bold">סוג מנוי</span>
+            <span className="text-xs text-gray-600 dark:text-zinc-300 font-bold">סוג מנוי</span>
           </div>
           <span className={`text-[10px] font-black px-2 py-0.5 rounded-lg ${user?.isPaid ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-200 text-gray-700'}`}>
             {user?.isPaid ? "PREMIUM" : "FREE TRIAL"}
           </span>
         </div>
 
-        <div className="flex justify-between items-center p-2.5 bg-gray-50/50 rounded-xl border border-gray-50">
+        <div className="flex justify-between items-center p-2.5 bg-gray-50/50 dark:bg-zinc-800/50 rounded-xl border border-gray-50 dark:border-zinc-700/50">
           <div className="flex items-center gap-2">
             <CalendarIcon className="w-4 h-4 text-emerald-500" />
-            <span className="text-xs text-gray-600 font-bold">חבר מאז</span>
+            <span className="text-xs text-gray-600 dark:text-zinc-300 font-bold">חבר מאז</span>
           </div>
-          <span className="text-xs font-bold text-gray-800">
+          <span className="text-xs font-bold text-gray-800 dark:text-zinc-200">
             {user?.createdAt?.split("T")[0]}
           </span>
         </div>
 
-        <div className="flex justify-between items-center p-2.5 bg-gray-50/50 rounded-xl border border-gray-50">
+        <div className="flex justify-between items-center p-2.5 bg-gray-50/50 dark:bg-zinc-800/50 rounded-xl border border-gray-50 dark:border-zinc-700/50">
           <div className="flex items-center gap-2">
             <FingerPrintIcon className="w-4 h-4 text-emerald-500" />
-            <span className="text-xs text-gray-600 font-bold">מזהה משתמש</span>
+            <span className="text-xs text-gray-600 dark:text-zinc-300 font-bold">מזהה משתמש</span>
           </div>
           <div className="flex items-center gap-1.5 direction-ltr">
             <button 
@@ -64,11 +64,11 @@ const SubscriptionCard = ({ user }) => {
         </div>
 
         {user?.designNumber && (
-          <div className="flex justify-between items-center p-2.5 bg-gray-50/50 rounded-xl border border-gray-50">
+          <div className="flex justify-between items-center p-2.5 bg-gray-50/50 dark:bg-zinc-800/50 rounded-xl border border-gray-50 dark:border-zinc-700/50">
             <div className="flex items-center gap-2">
-               <span className="text-xs text-gray-600 font-bold">עיצוב נבחר</span>
+               <span className="text-xs text-gray-600 dark:text-zinc-300 font-bold">עיצוב נבחר</span>
             </div>
-            <span className="text-xs font-bold text-gray-800">
+            <span className="text-xs font-bold text-gray-800 dark:text-zinc-200">
               #{user?.designNumber}
             </span>
           </div>

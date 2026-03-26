@@ -47,6 +47,7 @@ import SupportPage from "./pages/SupportPage";
 import Design5 from "./designs/Design5/Design5";
 import GlobalErrorBoundary from "./components/GlobalErrorBoundary";
 import OnboardingTour from "./components/Dashboard/TourFix";
+import { ThemeProvider } from "./context/ThemeContext";
 
 function App() {
   const dispatch = useDispatch();
@@ -110,8 +111,9 @@ function App() {
   return (
     <div className="flex flex-col min-h-screen">
       <BrowserRouter>
-        <ScrollToTop />
-        <Analytics />
+        <ThemeProvider>
+          <ScrollToTop />
+          <Analytics />
 
         <div className="flex flex-grow overflow-hidden">
           <main className="flex-grow min-w-0 overflow-x-hidden">
@@ -231,6 +233,7 @@ function App() {
         )}
 
         <Footer />
+        </ThemeProvider>
       </BrowserRouter>
 
       <ToastContainer position="top-right" autoClose={5000} theme="dark" />

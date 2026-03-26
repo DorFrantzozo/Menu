@@ -12,7 +12,7 @@ export default function CategoryCard({
   dragHandle,
 }) {
   return (
-    <div className="relative bg-white border border-slate-200 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col">
+    <div className="relative bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700/80 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col">
       {/* Drag handle – שלוש נקודות */}
       <button
         className="absolute top-2 left-2 cursor-grab rounded-t-lg rounded-b-lg py-1   bg-white/90 shadow-md  z-10"
@@ -20,7 +20,7 @@ export default function CategoryCard({
         {...dragHandle.attributes}
         aria-label="גרור לשינוי מיקום"
       >
-        <EllipsisHorizontalIcon className="w-6 h-6 rotate-90 text-black" />
+        <EllipsisHorizontalIcon className="w-6 h-6 rotate-90 text-black dark:text-zinc-50" />
       </button>
 
       {/* תמונה */}
@@ -47,15 +47,15 @@ export default function CategoryCard({
       {/* תוכן */}
       <div className="p-4 flex flex-col flex-grow justify-between">
         <div>
-          <h3 className="text-xl font-bold text-slate-900 mb-1 hover:text-amber-600 transition-colors duration-200">
+          <h3 className="text-xl font-bold text-slate-900 dark:text-zinc-50 mb-1 hover:text-amber-600 transition-colors duration-200">
             {category.name}
           </h3>
           {category.description && (
-            <p className="text-sm text-slate-600 mb-2">
+            <p className="text-sm text-slate-600 dark:text-zinc-300 mb-2">
               {category.description}
             </p>
           )}
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-400 dark:text-zinc-400">
             מיקום: {category.locationNumber}
           </p>
         </div>

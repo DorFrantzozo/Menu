@@ -7,9 +7,9 @@ import {
 
 const BusinessInfoCard = ({ user }) => {
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-4">
-      <h3 className="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
-        <BuildingStorefrontIcon className="w-5 h-5 text-gray-400" />
+    <div className="bg-white dark:bg-surface-dark rounded-2xl shadow-sm border border-gray-100 dark:border-zinc-700/50 p-4 mb-4 transition-colors duration-200">
+      <h3 className="text-base font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+        <BuildingStorefrontIcon className="w-5 h-5 text-gray-400 dark:text-zinc-500" />
         פרטי העסק
       </h3>
 
@@ -45,11 +45,11 @@ const BusinessInfoCard = ({ user }) => {
 
 const InfoItem = ({ icon, label, value }) => (
   <div className="flex flex-col space-y-1">
-    <div className="flex items-center gap-1.5 text-[11px] font-bold text-gray-500">
+    <div className="flex items-center gap-1.5 text-[11px] font-bold text-gray-500 dark:text-zinc-400">
       {icon}
       <span>{label}</span>
     </div>
-    <div className="text-sm font-semibold text-gray-800 bg-gray-50/50 p-2.5 rounded-xl border border-gray-50">
+    <div className="text-sm font-semibold text-gray-800 dark:text-zinc-200 bg-gray-50/50 dark:bg-zinc-800/50 p-2.5 rounded-xl border border-gray-50 dark:border-zinc-700/50">
       {value || "לא הוגדר"}
     </div>
   </div>

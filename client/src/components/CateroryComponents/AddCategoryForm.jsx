@@ -102,16 +102,16 @@ export default function AddCategoryForm({ onCancel }) {
       <form
         onSubmit={handleSubmit}
         dir="rtl"
-        className="max-w-3xl mx-auto mt-12 p-8 bg-white rounded-2xl shadow-lg space-y-8"
+        className="max-w-3xl mx-auto mt-12 p-8 bg-white dark:bg-zinc-900 rounded-2xl shadow-lg border dark:border-zinc-700/80 space-y-8 transition-colors duration-200"
       >
-        <h2 className="text-2xl font-bold text-center text-slate-800">
+        <h2 className="text-2xl font-bold text-center text-slate-800 dark:text-zinc-50">
           יצירת קטגוריה חדשה
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* שם הקטגוריה */}
           <div>
-            <label className="block text-sm font-medium text-slate-700">
+            <label className="block text-sm font-medium text-slate-700 dark:text-zinc-100">
               שם הקטגוריה (עברית)
             </label>
             <input
@@ -119,7 +119,7 @@ export default function AddCategoryForm({ onCancel }) {
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none transition"
+              className="mt-1 w-full rounded-md border border-slate-300 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none transition"
               placeholder="לדוגמה: ראשונות"
             />
           </div>
@@ -127,15 +127,15 @@ export default function AddCategoryForm({ onCancel }) {
 
         {/* תיאור */}
         <div>
-          <label className="block text-sm font-medium text-slate-700">
+          <label className="block text-sm font-medium text-slate-700 dark:text-zinc-100">
             תיאור הקטגוריה{" "}
-            <span className="text-xs text-slate-400">(אופציונלי)</span>
+            <span className="text-xs text-slate-400 dark:text-zinc-400">(אופציונלי)</span>
           </label>
           <textarea
             rows={3}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none transition"
+            className="mt-1 w-full rounded-md border border-slate-300 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none transition"
           />
         </div>
 
@@ -144,7 +144,7 @@ export default function AddCategoryForm({ onCancel }) {
           <label className="block text-sm font-medium text-slate-700">
             תמונה
           </label>
-          <div className="mt-2 flex flex-col items-center justify-center border-2 border-dashed border-slate-300 p-6 rounded-lg bg-slate-50">
+          <div className="mt-2 flex flex-col items-center justify-center border-2 border-dashed border-slate-300 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 p-6 rounded-lg bg-slate-50">
             <PhotoIcon className="h-12 w-12 text-slate-400" />
             {img && (
               <p className="mt-2 text-sm text-green-600">
@@ -170,7 +170,7 @@ export default function AddCategoryForm({ onCancel }) {
         </div>
 
         {/* ── הגבלת שעות/ימים ──────────────────────────────────────────────── */}
-        <div className="border border-slate-200 rounded-xl p-5 space-y-4 bg-slate-50">
+        <div className="border border-slate-200 dark:border-zinc-700/80 rounded-xl p-5 space-y-4 bg-slate-50 dark:bg-zinc-800/20">
           {/* Toggle */}
           <label className="flex items-center gap-3 cursor-pointer select-none">
             <div
@@ -208,7 +208,7 @@ export default function AddCategoryForm({ onCancel }) {
                         className={`w-9 h-9 rounded-full text-sm font-semibold border transition ${
                           checked
                             ? "bg-amber-500 text-white border-amber-500"
-                            : "bg-white text-slate-600 border-slate-300 hover:border-amber-300"
+                            : "bg-white text-slate-600 border-slate-300 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 hover:border-amber-300"
                         }`}
                       >
                         {label}
@@ -228,7 +228,7 @@ export default function AddCategoryForm({ onCancel }) {
                     type="time"
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none"
+                    className="w-full rounded-md border border-slate-300 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none"
                   />
                 </div>
                 <div>
@@ -239,7 +239,7 @@ export default function AddCategoryForm({ onCancel }) {
                     type="time"
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none"
+                    className="w-full rounded-md border border-slate-300 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none"
                   />
                 </div>
               </div>

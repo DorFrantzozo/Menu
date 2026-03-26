@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 export default function DesignCard({ design, onSelect, onTry }) {
   return (
     <motion.div
-      className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all flex flex-col overflow-hidden"
+      className="bg-white rounded-xl shadow-2xl dark:shadow-black/60 border-4 border-transparent dark:border-zinc-800 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)] dark:hover:shadow-[0_20px_40px_rgba(0,0,0,0.8)] transition-all flex flex-col overflow-hidden"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
     >
@@ -13,7 +13,7 @@ export default function DesignCard({ design, onSelect, onTry }) {
           alt={design.title}
           className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
         />
-        <span className="absolute top-2 right-2 bg-black/60 text-white text-xs px-3 py-1 rounded-full">
+        <span className="absolute top-2 right-2 bg-black/80 text-white font-medium text-xs px-3 py-1 rounded-full shadow-md">
           {design.title}
         </span>
       </div>

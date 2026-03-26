@@ -17,7 +17,7 @@ const Menu = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Extract slug from subdomain (e.g. "aB3x_9Qz" from "aB3x_9Qz.menuyou.online")
+  // Extract slug from subdomain (e.g. "aB3x_9Qz" from "aB3x_9Qz.imenu-il.online")
   const hostname = window.location.hostname;
   const parts = hostname.split(".");
   // Only treat as a subdomain slug if there are 3+ parts (slug.domain.tld)

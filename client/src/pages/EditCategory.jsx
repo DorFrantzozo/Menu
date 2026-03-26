@@ -78,8 +78,8 @@ const EditCategory = () => {
       {isLoading ? (
         <Spinner />
       ) : (
-        <div className="px-4 sm:px-6 lg:px-8 lg:h-[80vh] mt-20 ">
-          <h1 className="text-black flex justify-center text-2xl mt-10">
+        <div className="px-4 sm:px-6 lg:px-8 lg:h-[80vh] mt-20 bg-zinc-50 dark:bg-background-dark transition-colors duration-200">
+          <h1 className="text-black dark:text-white flex justify-center text-2xl mt-10 pt-8 font-bold">
             {item?.name} עריכה
           </h1>
 
@@ -101,7 +101,7 @@ const EditCategory = () => {
 
                 <label
                   htmlFor="file-input"
-                  className="bg-slate-100 rounded p-2 cursor-pointer"
+                  className="bg-slate-100 dark:bg-zinc-800 dark:text-white rounded p-2 cursor-pointer transition-colors"
                 >
                   שנה תמונה
                 </label>
@@ -120,7 +120,7 @@ const EditCategory = () => {
               <div className="w-full lg:w-60">
                 <label
                   htmlFor="categoryName"
-                  className="block text-lg font-medium leading-6 text-end text-gray-900"
+                  className="block text-lg font-medium leading-6 text-end text-gray-900 dark:text-zinc-200"
                 >
                   שם הקטגוריה
                 </label>
@@ -132,13 +132,13 @@ const EditCategory = () => {
                     name="categoryName"
                     type="text"
                     placeholder="שם הקטגוריה"
-                    className="block text-end w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6"
+                    className="block text-end w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-zinc-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-zinc-700 dark:bg-zinc-800/50 dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6"
                   />
                 </div>
                 <div className="mt-8 w-full">
                   <label
                     htmlFor="hide"
-                    className="block text-lg font-medium leading-6 text-end text-gray-900"
+                    className="block text-lg font-medium leading-6 text-end text-gray-900 dark:text-zinc-200"
                   >
                     הסתר קטגוריה
                   </label>
@@ -158,7 +158,7 @@ const EditCategory = () => {
             <div className="w-full lg:w-40 lg:ms-80 ">
               <label
                 htmlFor="locationNumber"
-                className="block text-lg font-medium leading-6 text-end text-gray-900"
+                className="block text-lg font-medium leading-6 text-end text-gray-900 dark:text-zinc-200"
               >
                 מיקום בתפריט
               </label>
@@ -170,7 +170,7 @@ const EditCategory = () => {
                   name="locationNumber"
                   type="text"
                   placeholder="מיקום בתפריט"
-                  className="block text-end w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6"
+                  className="block text-end w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-zinc-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-zinc-700 dark:bg-zinc-800/50 dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
@@ -180,7 +180,7 @@ const EditCategory = () => {
             <div className="flex">
               <button
                 type="submit"
-                className="mt-10 m-10 bg-slate-100 rounded p-2 cursor-pointer"
+                className="mt-10 m-10 bg-slate-100 dark:bg-zinc-800 dark:text-white rounded p-2 cursor-pointer transition-colors"
               >
                 שמור
               </button>

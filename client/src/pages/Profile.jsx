@@ -23,7 +23,7 @@ const Profile = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-zinc-50/50 pb-16" dir="rtl">
+    <div className="min-h-screen bg-zinc-50/50 dark:bg-background-dark pb-16 transition-colors duration-200" dir="rtl">
       <FreeTrailBanner user={userFromStorage} />
       
       {/* Profile Header section */}
@@ -38,8 +38,8 @@ const Profile = () => {
             <SubscriptionCard user={userFromStorage} />
             
             {/* Quick Actions / Redesigned Quick Links */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-               <h3 className="text-[11px] font-black text-zinc-400 uppercase tracking-[0.2em] mb-4">קישורים מהירים</h3>
+            <div className="bg-white dark:bg-surface-dark rounded-2xl shadow-sm border border-gray-100 dark:border-zinc-700/50 p-5 transition-colors duration-200">
+               <h3 className="text-[11px] font-black text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.2em] mb-4">קישורים מהירים</h3>
                <div className="flex flex-col sm:flex-row gap-4">
                   <button
                     onClick={() =>
@@ -54,7 +54,7 @@ const Profile = () => {
                   </button>
                   <button
                     onClick={() => navigate("/profile/edit")}
-                    className="flex-1 bg-white hover:bg-zinc-50 text-zinc-900 font-bold py-3.5 px-6 rounded-2xl transition-all text-center border-2 border-zinc-200 active:scale-[0.98] flex items-center justify-center gap-2"
+                    className="flex-1 bg-white dark:bg-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white font-bold py-3.5 px-6 rounded-2xl transition-all text-center border-2 border-zinc-200 dark:border-zinc-700 active:scale-[0.98] flex items-center justify-center gap-2"
                   >
                     <PencilSquareIcon className="w-5 h-5" />
                     עריכת פרופיל

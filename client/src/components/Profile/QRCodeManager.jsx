@@ -48,10 +48,10 @@ const QRCodeManager = ({ qrSlug }) => {
 
   return (
     <>
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex flex-col items-center">
+      <div className="bg-white dark:bg-surface-dark rounded-2xl shadow-sm border border-gray-100 dark:border-zinc-700/50 p-4 flex flex-col items-center transition-colors duration-200">
         <div className="w-full flex justify-between items-center mb-4">
-          <h3 className="text-base font-bold text-gray-900 flex items-center gap-2">
-            <QrCodeIcon className="w-5 h-5 text-gray-400" />
+          <h3 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <QrCodeIcon className="w-5 h-5 text-gray-400 dark:text-zinc-500" />
             קוד ה-QR שלך
           </h3>
           <DefaultDropDown
@@ -68,7 +68,7 @@ const QRCodeManager = ({ qrSlug }) => {
 
         <div 
           onClick={() => setIsZoomed(true)}
-          className="relative group cursor-zoom-in mb-4 p-3 bg-gray-50/50 rounded-2xl border-2 border-dashed border-gray-100 transition-all hover:border-emerald-200 hover:bg-emerald-50/10"
+          className="relative group cursor-zoom-in mb-4 p-3 bg-gray-50/50 dark:bg-zinc-800/50 rounded-2xl border-2 border-dashed border-gray-100 dark:border-zinc-700/50 transition-all hover:border-emerald-200 dark:hover:border-emerald-500 hover:bg-emerald-50/10 dark:hover:bg-emerald-500/10"
         >
           {isLoading ? (
             <div className="w-32 h-32 flex items-center justify-center">
@@ -102,7 +102,7 @@ const QRCodeManager = ({ qrSlug }) => {
           </button>
           <button
             onClick={handleShareClick}
-            className="w-full bg-gray-50 hover:bg-gray-100 text-gray-700 py-2.5 rounded-xl transition-all flex items-center justify-center gap-2 text-xs font-bold border border-gray-100"
+            className="w-full bg-gray-50 dark:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-700 text-gray-700 dark:text-zinc-300 py-2.5 rounded-xl transition-all flex items-center justify-center gap-2 text-xs font-bold border border-gray-100 dark:border-zinc-700"
           >
             <ShareIcon className="w-4 h-4" />
             שיתוף עם לקוחות

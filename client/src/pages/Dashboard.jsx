@@ -8,6 +8,7 @@ import QrProfile from "@/components/data/qrCode/QrProfile";
 import PeakActivityWidget from "@/components/Dashboard/PeakActivityWidget";
 import StatsDashboard from "@/components/Dashboard/StatsDashboard";
 import useQrScanPolling from "@/hooks/useQrScanPolling";
+import { useTheme } from "../context/ThemeContext";
 
 const Dashboard = () => {
   const user = useSelector((state) => state.user.user);
@@ -18,13 +19,8 @@ const Dashboard = () => {
   const allItems = countItems(menuCategories);
   const allActiveItems = countActiveItems(menuCategories);
 
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const { isDarkMode, toggleDarkMode } = useTheme();
   const liveQrScans = useQrScanPolling(user?._id, user?.totalQrScans || 0);
-
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-    document.documentElement.classList.toggle('dark');
-  };
 
   return (
     <div dir="rtl" className="flex-1 flex flex-col h-screen overflow-hidden relative bg-background-light dark:bg-background-dark transition-colors duration-200">

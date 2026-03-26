@@ -94,8 +94,8 @@ const EditDish = () => {
       {isLoading ? (
         <Spinner loading={isLoading} />
       ) : (
-        <div className="px-4 sm:px-6 lg:px-8 ">
-          <h1 className="text-black flex justify-center text-2xl mt-10">
+        <div className="px-4 sm:px-6 lg:px-8 bg-zinc-50 dark:bg-background-dark min-h-screen transition-colors duration-200 pb-20">
+          <h1 className="text-black dark:text-white flex justify-center text-2xl mt-10 pt-8 font-bold">
             {dish?.name} עריכה
           </h1>
 
@@ -116,7 +116,7 @@ const EditDish = () => {
                 />
                 <label
                   htmlFor="file-input"
-                  className="bg-slate-100 rounded p-2 cursor-pointer"
+                  className="bg-slate-100 dark:bg-zinc-800 dark:text-white rounded p-2 cursor-pointer transition-colors"
                 >
                   שנה תמונה
                 </label>
@@ -133,7 +133,7 @@ const EditDish = () => {
               <div className="w-full lg:w-60 flex flex-col">
                 <label
                   htmlFor="price"
-                  className="block text-lg font-medium leading-6 text-end text-gray-900"
+                  className="block text-lg font-medium leading-6 text-end text-gray-900 dark:text-zinc-200"
                 >
                   מחיר
                 </label>
@@ -145,7 +145,7 @@ const EditDish = () => {
                     type="text"
                     placeholder={dish?.price + " ₪" || ""}
                     autoComplete="price"
-                    className="block text-end w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6"
+                    className="block text-end w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-zinc-700 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6 dark:bg-zinc-800/50"
                   />
                 </div>
               </div>
@@ -153,7 +153,7 @@ const EditDish = () => {
               <div className="w-full lg:w-60">
                 <label
                   htmlFor="dishName"
-                  className="block text-lg font-medium leading-6 text-end text-gray-900"
+                  className="block text-lg font-medium leading-6 text-end text-gray-900 dark:text-zinc-200"
                 >
                   שם המנה
                 </label>
@@ -165,14 +165,14 @@ const EditDish = () => {
                     type="text"
                     placeholder={dish?.name || ""}
                     autoComplete="restaurant-name"
-                    className="block text-end w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6"
+                    className="block text-end w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-zinc-700 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6 dark:bg-zinc-800/50"
                   />
                 </div>
                 
                 <div className="mt-8 w-full">
                   <label
                     htmlFor="hide"
-                    className="block text-lg font-medium leading-6 text-end text-gray-900"
+                    className="block text-lg font-medium leading-6 text-end text-gray-900 dark:text-zinc-200"
                   >
                     הסתר מנה
                   </label>
@@ -207,7 +207,7 @@ const EditDish = () => {
                     name="dishDescription"
                     placeholder="תיאור"
                     autoComplete="dishDescription"
-                    className="block text-end w-full rounded-md border-0 py-2 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6 min-h-[100px] sm:min-h-[150px] lg:min-h-[100px] max-h-[400px] resize-y"
+                    className="block text-end w-full rounded-md border-0 py-2 px-3 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-zinc-700 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6 min-h-[100px] sm:min-h-[150px] lg:min-h-[100px] max-h-[400px] resize-y dark:bg-zinc-800/50"
                   />
                 </div>
               </div>
@@ -235,7 +235,7 @@ const EditDish = () => {
                   key={idx}
                   className="flex items-center justify-center lg:justify-end space-x-2 rtl:space-x-reverse"
                 >
-                  <label className="text-gray-700 font-medium text-end">
+                  <label className="text-gray-700 dark:text-zinc-300 font-medium text-end">
                     {item.label}
                   </label>
                   <input
@@ -263,7 +263,7 @@ const EditDish = () => {
             <div className="flex">
               <button
                 type="submit"
-                className="mt-10 m-10 bg-slate-100 rounded p-2 cursor-pointer"
+                className="mt-10 m-10 bg-slate-100 dark:bg-zinc-800 dark:text-white rounded p-2 cursor-pointer transition-colors"
               >
                 שמור
               </button>
