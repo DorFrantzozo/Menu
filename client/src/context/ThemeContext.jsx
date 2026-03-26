@@ -30,17 +30,22 @@ export const ThemeProvider = ({ children }) => {
 
   const shouldApplyDark = isDarkMode && !isPublicMenu && !isLandingPage;
 
-  useEffect(() => {
-    const root = document.documentElement;
+useEffect(() => {
+  const root = window.document.documentElement;
 
-    if (shouldApplyDark) {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
+  // הוספת לוגים ל-Console כדי שתוכל לראות בזמן אמת ב-Production מה קורה
+  console.log("Current Path:", location.pathname);
+  console.log("Should Apply Dark:", shouldApplyDark);
 
-  }, [shouldApplyDark, location.pathname]);
-
+  if (shouldApplyDark) {
+    root.classList.add('dark');
+    // ליתר ביטחון עבור דפדפני מובייל מסוימים:
+    root.style.colorScheme = 'dark'; 
+  } else {
+    root.classList.remove('dark');
+    root.style.colorScheme = 'light';
+  }
+}, [shouldApplyDark, location.pathname]);
   const toggleDarkMode = () => {
     setIsDarkMode(prev => {
       const newTheme = !prev;
