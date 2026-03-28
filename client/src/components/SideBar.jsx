@@ -1,17 +1,28 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { logoutUser } from "@/state/user/userSlice";
-import { logoutMenuCategories } from "@/state/menu/menuCategoriesSlice";
-import { logoutDishes } from "@/state/menu/menuDishes";
-import { Menu, X } from "lucide-react";
+import {useState, useEffect} from "react";
+import {useNavigate} from "react-router-dom";
+import {useDispatch} from "react-redux";
+import {logoutUser} from "@/state/user/userSlice";
+import {logoutMenuCategories} from "@/state/menu/menuCategoriesSlice";
+import {logoutDishes} from "@/state/menu/menuDishes";
+import {Menu, X} from "lucide-react";
+import logoDarkBg from "../assets/logos/logo 1200X600.png";
+import logoWhiteBg from "../assets/logos/logo white background.jpg";
+import {useTheme} from "@/context/ThemeContext";
 
-const Sidebar = ({ user }) => {
+const Sidebar = ({user}) => {
   const [isMobile, setIsMobile] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [active, setActive] = useState("Dashboard");
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  // שימוש ב-Context: שליפת isDarkMode מה-Provider
+  const {isDarkMode} = useTheme();
+
+  // בחירת הלוגו המתאים לפי המצב ב-Context
+  // אם אנחנו ב-Dark Mode, נבחר את הלוגו הלבן ולהפך
+  const currentLogo = isDarkMode ? logoDarkBg : logoWhiteBg;
 
   useEffect(() => {
     const handleResize = () => {
@@ -62,7 +73,8 @@ const Sidebar = ({ user }) => {
       name: "תפריט חי",
       key: "PublicMenu",
       icon: "restaurant_menu",
-      customNavigate: () => navigate(`/design${user?.designNumber || 1}`, { state: user }),
+      customNavigate: () =>
+        navigate(`/design${user?.designNumber || 1}`, {state: user}),
     },
     {
       name: "עיצוב",
@@ -101,11 +113,18 @@ const Sidebar = ({ user }) => {
     >
       <div className="h-16 flex items-center px-6 border-b border-zinc-100 dark:border-zinc-700/50 justify-between">
         <div className="flex items-center gap-2">
-          <span className="material-icons-round text-primary text-3xl">restaurant_menu</span>
-          <span className="font-bold text-xl tracking-tight text-zinc-800 dark:text-white">MenuYou</span>
+          {/* שימוש בלוגו המחושב currentLogo */}
+          <img
+            src={currentLogo}
+            alt="Logo"
+            className="w-full h-fll object-contain p-4"
+          />
         </div>
         {isMobile && (
-          <button onClick={toggleSidebar} className="text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-white">
+          <button
+            onClick={toggleSidebar}
+            className="text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-white"
+          >
             <X size={24} />
           </button>
         )}
@@ -122,7 +141,9 @@ const Sidebar = ({ user }) => {
               }}
               className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg bg-red-50 text-red-600 font-medium hover:bg-red-100 transition-colors"
             >
-              <span className="material-icons-round text-xl">admin_panel_settings</span>
+              <span className="material-icons-round text-xl">
+                admin_panel_settings
+              </span>
               ניהול Admin
             </button>
           </div>
@@ -197,7 +218,10 @@ const Sidebar = ({ user }) => {
           <img
             alt="User Logo"
             className="w-10 h-10 rounded-full object-cover bg-zinc-200"
-            src={user?.logo || "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"}
+            src={
+              user?.logo ||
+              "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
+            }
           />
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-zinc-900 dark:text-zinc-50 truncate">
@@ -223,7 +247,6 @@ const Sidebar = ({ user }) => {
         <Menu size={24} />
       </button>
 
-      {/* Mobile Drawer Overlay */}
       <div
         className={`fixed inset-0 bg-black/40 z-40 transition-opacity duration-300 lg:hidden ${
           mobileOpen ? "opacity-100 visible" : "opacity-0 invisible"

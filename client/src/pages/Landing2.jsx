@@ -9,7 +9,7 @@ import {motion} from "framer-motion";
 
 const Landing2 = () => {
   return (
-    <div className="bg-white min-h-screen selection:bg-emerald-100 selection:text-emerald-900">
+    <div className="bg-white mt-20 min-h-screen selection:bg-emerald-100 selection:text-emerald-900">
       <NavBarLanding />
       <main>
         <Hero />

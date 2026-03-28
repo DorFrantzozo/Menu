@@ -1,4 +1,10 @@
+# robots.txt for iMenu-IL
 User-agent: *
 Allow: /
 
+# Disallow private areas (if you have them)
+Disallow: /admin/
+Disallow: /dashboard/
+
+# Link to your sitemap
 Sitemap: https://imenu-il.online/sitemap.xml
