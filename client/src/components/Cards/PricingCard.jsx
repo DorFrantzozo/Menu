@@ -1,5 +1,6 @@
-import React from "react";
 import {CheckCircleIcon} from "@heroicons/react/20/solid";
+
+import {useNavigate} from "react-router-dom";
 
 const features = [
   "זמן בלתי מוגבל לתפריט החכם שלך",
@@ -10,10 +11,7 @@ const features = [
 ];
 
 const PricingCard = () => {
-  const handleUpgrade = () => {
-    console.log("Connect to Stripe via handleUpgrade here");
-    alert("מודול סליקה יחובר בקרוב!");
-  };
+  const navigate = useNavigate();
 
   return (
     <div className="relative group w-full max-w-sm h-full" dir="rtl">
@@ -42,19 +40,17 @@ const PricingCard = () => {
         </p>
         <p className="mt-8 flex items-baseline gap-x-2">
           <span className="text-5xl font-black tracking-tight text-zinc-900 dark:text-white">
-            ₪149
+            ₪500
           </span>
           <span className="text-sm font-semibold leading-6 text-zinc-600 dark:text-zinc-400">
             / לחודש
           </span>
         </p>
-
         <button
-          onClick={handleUpgrade}
-          className="relative overflow-hidden mt-8 block w-full rounded-2xl bg-emerald-600 px-4 py-4 text-center text-md font-black text-white shadow-xl shadow-emerald-500/30 hover:bg-emerald-500 transition-all active:scale-95 group/btn"
+          onClick={() => navigate("/checkout")}
+          className={`relative overflow-hidden mt-8 block w-full rounded-2xl bg-emerald-600 px-4 py-4 text-center text-md font-black text-white shadow-xl shadow-emerald-500/30 hover:bg-emerald-500 transition-all active:scale-95 group/btn `}
         >
-          <span className="absolute top-0 -left-full w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-20deg] group-hover/btn:animate-[shine_3s_infinite]"></span>
-          <span className="relative z-10">שדרג עכשיו לתכנית פרימיום</span>
+          מעבר לתשלום
         </button>
 
         <ul

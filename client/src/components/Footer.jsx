@@ -1,12 +1,5 @@
-import { useNavigate } from "react-router-dom";
-import {
-  Mail,
-  Phone,
-  Facebook,
-  Instagram,
-  Linkedin,
-  Github,
-} from "lucide-react";
+import {useNavigate} from "react-router-dom";
+import {Mail, Phone, Facebook, Instagram, Linkedin, Github} from "lucide-react";
 import logo from "../assets/img/logo.avif";
 
 const Footer = () => {
@@ -58,6 +51,14 @@ const Footer = () => {
                 תנאי שימוש
               </button>
             </li>
+            <li>
+              <button
+                onClick={() => navigate("/accessibility")}
+                className="hover:text-white"
+              >
+                הצהרת נגישות
+              </button>
+            </li>
           </ul>
         </div>
 
@@ -102,7 +103,7 @@ const Footer = () => {
           <ul className="text-sm space-y-3 text-gray-300">
             <li className="flex items-center gap-2">
               <Mail size={16} />
-              dorfrant@gmail.com
+              imenuservice@gmail.com
             </li>
             <li className="flex items-center gap-2">
               <Phone size={16} />
