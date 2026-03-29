@@ -1,7 +1,6 @@
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import AddDataToStart from "../components/Cards/AddDataToStart";
-import FreeTrailBanner from "@/components/Cards/FreeTrailBanner";
 import { countActiveItems, countItems } from "@/utils/localFunctions";
 import DashboardDataCards from "@/components/Cards/DashboardDataCards";
 import QrProfile from "@/components/data/qrCode/QrProfile";
@@ -24,8 +23,6 @@ const Dashboard = () => {
 
   return (
     <div dir="rtl" className="flex-1 flex flex-col h-screen overflow-hidden relative bg-background-light dark:bg-background-dark transition-colors duration-200">
-      <FreeTrailBanner user={user} />
-
       {/* Header */}
       <header className="h-20 flex items-center justify-between px-4 lg:px-6 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md sticky top-0 z-10 border-b border-zinc-200 dark:border-zinc-700/50">
         <div className="w-12 flex shrink-0 lg:hidden">

@@ -16,6 +16,7 @@ import { setUser } from "./state/user/userSlice";
 import {
   getCategories,
   getAllDishesAndMapToCategories,
+  getFreshUser,
 } from "@/utils/fetchData";
 import Profile from "./pages/Profile";
 import EditDish from "./pages/EditDish";
@@ -48,6 +49,9 @@ import Design5 from "./designs/Design5/Design5";
 import GlobalErrorBoundary from "./components/GlobalErrorBoundary";
 import OnboardingTour from "./components/Dashboard/TourFix";
 import { ThemeProvider } from "./context/ThemeContext";
+import TrialBanner from "./components/banner/TrialBanner";
+import TrialExpiredOverlay from "./components/Dashboard/TrialExpiredOverlay";
+import Upgrade from "./pages/Upgrade";
 
 function App() {
   const dispatch = useDispatch();
@@ -60,6 +64,23 @@ function App() {
     if (savedUser) {
       const parsedUser = JSON.parse(savedUser);
       dispatch(setUser(parsedUser));
+      
+      const syncUser = async () => {
+        try {
+          const freshUser = await getFreshUser();
+          if (freshUser) {
+            dispatch(setUser(freshUser));
+            localStorage.setItem("user", JSON.stringify(freshUser));
+          }
+        } catch (error) {
+          if (error.response?.status === 401) {
+            dispatch(setUser(null));
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
+          }
+        }
+      };
+      syncUser();
       
       if (savedCategories) {
         const parsedCategories = JSON.parse(savedCategories);
@@ -114,8 +135,10 @@ function App() {
         <ThemeProvider>
           <ScrollToTop />
           <Analytics />
+          {user && user.role !== "admin" && <TrialBanner />}
 
-        <div className="flex flex-grow overflow-hidden">
+        <div className="flex flex-grow overflow-hidden relative">
+          {user && user.role !== "admin" && <TrialExpiredOverlay forceShow={false} />}
           <main className="flex-grow min-w-0 overflow-x-hidden">
             <GlobalErrorBoundary>
               <AnimatePresence mode="wait">
@@ -127,6 +150,10 @@ function App() {
                   <Route
                     path="/dashboard"
                     element={user ? <Dashboard /> : <Navigate to="/signin" />}
+                  />
+                  <Route
+                    path="/upgrade"
+                    element={user ? <Upgrade /> : <Navigate to="/signin" />}
                   />
                   <Route
                     path="/signin"

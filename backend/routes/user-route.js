@@ -17,6 +17,7 @@ import {
   getQrScanCount,
   completeTour,
   findBySlug,
+  getCurrentUser,
 } from "../controllers/user-controller.js";
 
 const userRouter = express.Router();
@@ -27,6 +28,7 @@ userRouter.put("/updateUser/:userId", isAuth, upload.single("logo"), isUserOrAdm
 userRouter.get("/find", findRestaurantsByName);
 userRouter.get("/slug/:slug", findBySlug);
 userRouter.get("/qr-scan-count/:userId", getQrScanCount);
+userRouter.get("/me", isAuth, getCurrentUser);
 // For deleteUser, the controller expects email/password in body, not a target userId parameter.
 // However, adding isAuth ensures the requester is at least logged in.
 userRouter.post("/deleteUser", isAuth, deleteUser);

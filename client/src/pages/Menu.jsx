@@ -83,8 +83,21 @@ const Menu = () => {
     menu.trialExpiresAt &&
     new Date(menu.trialExpiresAt) <= new Date()
   ) {
-    navigate("/"); // Or some "Plan Expired" page
-    return null;
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen text-center px-4 bg-zinc-50" dir="rtl">
+        <div className="bg-white p-8 rounded-3xl shadow-lg border border-zinc-100 max-w-sm w-full">
+          <div className="w-16 h-16 bg-zinc-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <span className="material-icons-round text-3xl text-zinc-400">restaurant</span>
+          </div>
+          <h1 className="text-xl font-bold text-zinc-800 mb-2">תפריט בעריכה</h1>
+          <p className="text-zinc-600">
+            התפריט מתעדכן ברגעים אלו.
+            <br />
+            אנא פנו למלצר לקבלת תפריט מודפס בינתיים. עמכם הסליחה.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (

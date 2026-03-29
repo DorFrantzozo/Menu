@@ -138,6 +138,20 @@ const fetchCategoriesAndDishes = async (userIdOrUser) => {
   }
 };
 
+const getFreshUser = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+  try {
+    const response = await axiosInstance.get("/user/me", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch fresh user:", error);
+    throw error;
+  }
+};
+
 const checkIfUserLoggedIn = async () => {
   const token = localStorage.getItem("token");
   return !!token;
@@ -202,4 +216,5 @@ export {
   recordMenuView,
   getMenuStats,
   fetchQrScanCount,
+  getFreshUser,
 };

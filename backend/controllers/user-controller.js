@@ -519,6 +519,19 @@ const completeTour = async (req, res) => {
   }
 };
 
+const getCurrentUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const { password: _, ...userWithoutPassword } = user.toObject();
+    res.status(200).json(userWithoutPassword);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export {
   getAllUsers,
   createUser,
@@ -533,5 +546,6 @@ export {
   handleQrRedirect,
   findBySlug,
   getQrScanCount,
-  completeTour
+  completeTour,
+  getCurrentUser
 };

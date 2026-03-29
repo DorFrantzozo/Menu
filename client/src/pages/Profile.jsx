@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import FreeTrailBanner from "@/components/Cards/FreeTrailBanner";
 import ProfileHeader from "@/components/Profile/ProfileHeader";
 import BusinessInfoCard from "@/components/Profile/BusinessInfoCard";
 import SubscriptionCard from "@/components/Profile/SubscriptionCard";
@@ -24,7 +23,6 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-zinc-50/50 dark:bg-background-dark pb-16 transition-colors duration-200" dir="rtl">
-      <FreeTrailBanner user={userFromStorage} />
       
       {/* Profile Header section */}
       <ProfileHeader user={userFromStorage} />
