@@ -1,89 +1,129 @@
-// server/controllers/payment-controller.js
 import User from "../model/user.js";
 import {createPaymentLink} from "../services/MorningService.js";
+import Payment from "../model/payment.js";
 
 export const startCheckout = async (req, res) => {
   try {
     const userId = req.user._id;
     console.log("🚀 Starting checkout for User ID:", userId);
 
-    const user = await User.findById(userId);
+    // 1. חילוץ הנתונים מהבקשה (מה ששלחנו מה-CheckoutPage)
+    const {planName, ...checkoutData} = req.body;
 
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({message: "User not found in Database"});
     }
 
-    const paymentSession = await createPaymentLink(user);
+    // 2. תיקון קריטי: העברת planName ו-checkoutData לפונקציה
+    // עכשיו MorningService יוכל לקרוא את fullName, email וכו'
+    const paymentSession = await createPaymentLink(
+      user,
+      planName,
+      checkoutData,
+    );
 
-    // מורנינג מחזירה את הלינק בשדה שנקרא url או link - וודא שזה תואם ל-Service שלך
+    // החזרת הלינק לפרונט
     res.status(200).json({url: paymentSession.url || paymentSession.link});
   } catch (error) {
     console.error("❌ Checkout Controller Error:", error.message);
     res.status(500).json({message: error.message});
   }
 };
-
-/**
- * Webhook Handler - מקבל עדכונים ממורנינג
- */
-export const morningWebhookHandler = async (req, res) => {
+const recordPaymentInDB = async (userId, payload, assignedPlan) => {
   try {
-    // מורנינג שולחת מידע רב ב-Body. אנחנו מתמקדים בסטטוס ובמידע המזהה
-    const {event, data, custom, status} = req.body;
-
-    console.log(
-      `--- 📥 Morning Webhook Received: ${event || "Payment Update"} ---`,
-    );
-    console.log("Full Payload (for debug):", JSON.stringify(req.body, null, 2));
-
-    // דרך א': זיהוי לפי שדה custom (הכי בטוח - זה ה-ID של המשתמש שלנו)
-    // דרך ב': זיהוי לפי morningCustomerId (data.clientId)
-    const userId = custom;
-    const morningCustomerId = data?.clientId || data?.customerId;
-
-    // אנחנו נשדרג את המשתמש אם הסטטוס הוא success או שנוצר מסמך
-    if (
-      status === "success" ||
-      event === "document.created" ||
-      event === "payment.created"
-    ) {
-      // חיפוש המשתמש - קודם לפי ה-ID שלנו (custom), ואם לא נמצא אז לפי ה-ID של מורנינג
-      let user = await User.findById(userId);
-
-      if (!user && morningCustomerId) {
-        user = await User.findOne({morningCustomerId});
-      }
-
-      if (user) {
-        console.log(`✨ Upgrading user ${user.email} to Premium...`);
-
-        user.isPaid = true;
-        // ליתר ביטחון, נשמור את ה-ID של מורנינג אם עוד לא שמרנו
-        if (!user.morningCustomerId && morningCustomerId) {
-          user.morningCustomerId = morningCustomerId;
-        }
-
-        // חישוב תאריך תשלום הבא
-        const nextBilling = new Date();
-        nextBilling.setDate(nextBilling.getDate() + 30);
-        user.nextPaymentDate = nextBilling;
-
-        await user.save();
-        console.log(
-          `✅ SUCCESS: User ${user.email} is now Premium until ${nextBilling.toLocaleDateString()}`,
-        );
-      } else {
-        console.warn(
-          `⚠️ Webhook Warning: No matching user found for CustomID: ${userId} or MorningID: ${morningCustomerId}`,
-        );
-      }
-    }
-
-    // חובה להחזיר 200 "OK" למורנינג כדי שלא ישלחו שוב ושוב את אותה הודעה (Retries)
-    res.status(200).send("OK");
+    await Payment.create({
+      userId: userId,
+      morningPaymentId: payload.id, // ה-ID של מורנינג
+      amount: Number(payload.amount) || 0,
+      currency: payload.currency || "ILS",
+      status: "success",
+      documentUrl: payload.files?.downloadLinks?.origin || "", // לינק להורדת הקבלה
+      documentNumber: payload.number || "0",
+      description: payload.description || `מנוי iMenu - מסלול ${assignedPlan}`,
+      paymentDate: new Date(),
+    });
+    console.log(`📑 Payment record created for user ${userId}`);
   } catch (error) {
-    console.error("❌ Webhook Handler Error:", error.message);
-    // גם בשגיאה, לפעמים עדיף להחזיר 200 כדי שמורנינג לא "יתקעו" עליך, או 500 אם אתה רוצה שינסו שוב
-    res.status(500).send("Internal Error");
+    console.error("❌ Failed to record payment in DB:", error.message);
+    // אנחנו לא עוצרים את ה-Webhook אם רק הרישום נכשל, אבל מתעדים את השגיאה
+  }
+};
+
+export const morningWebhookHandler = async (req, res) => {
+  const payload = req.body;
+  const userId = payload.custom;
+
+  // תיקון ה-NaN: המרה למספר ושימוש ב-0 כברירת מחדל
+  const paidAmount = Number(payload.amount) || 0;
+
+  // בדיקה אם זה אירוע רלוונטי (דף תשלום או הפקת מסמך)
+  if (userId && (payload.type === 400 || payload.type === 320)) {
+    try {
+      const user = await User.findById(userId);
+      if (!user) {
+        console.error(`❌ User ${userId} not found in DB`);
+        return res.status(200).send("OK");
+      }
+
+      // שכפ"ץ כפילויות
+      if (user.isPaid && user.nextPaymentDate > new Date()) {
+        console.log(`⚠️ User ${user.email} already active. Skipping.`);
+        return res.status(200).send("OK");
+      }
+
+      const PRICE_PRO = Number(process.env.PRICE_PRO) || 7500;
+      const PRICE_ADVANCE = Number(process.env.PRICE_ADVANCE) || 4500;
+
+      let assignedPlan = "Essential";
+      if (paidAmount >= PRICE_PRO) {
+        assignedPlan = "iMenu PRO";
+      } else if (paidAmount >= PRICE_ADVANCE) {
+        assignedPlan = "Advance";
+      }
+      await recordPaymentInDB(userId, payload, assignedPlan);
+      // הגדרת תוקף לשנה (365 ימים מהיום)
+      const nextYear = new Date();
+      nextYear.setFullYear(nextYear.getFullYear() + 1);
+
+      // עדכון המשתמש עם $set למניעת דריסת שדות אחרים
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        {
+          $set: {
+            isPaid: true,
+            plan: assignedPlan,
+            nextPaymentDate: nextYear,
+            // פתיחת עיצוב אישי רק ל-PRO
+            "themeSettings.isCustomDesign": assignedPlan === "iMenu PRO",
+            // שמירת מזהה לקוח ממורנינג לשימוש עתידי
+            morningCustomerId: payload.recipient?.id,
+          },
+        },
+        {new: true},
+      );
+
+      console.log(
+        `✅ SUCCESS: User ${updatedUser.email} upgraded to ${assignedPlan} | Amount: ₪${paidAmount}`,
+      );
+    } catch (error) {
+      // כאן ה-NaN היה גורם לקריסה, עכשיו זה מוגן
+      console.error("❌ Error in Webhook processing:", error.message);
+      return res.status(500).send("Internal Server Error");
+    }
+  }
+
+  // תמיד מחזירים 200 למורנינג כדי שיפסיקו לשלוח את אותו אירוע
+  res.status(200).send("OK");
+};
+
+export const getUserPaymentHistory = async (req, res) => {
+  try {
+    const payments = await Payment.find({userId: req.user._id}).sort({
+      createdAt: -1,
+    });
+    res.status(200).json(payments);
+  } catch (error) {
+    res.status(500).json({message: "שגיאה בשליפת היסטוריה"});
   }
 };

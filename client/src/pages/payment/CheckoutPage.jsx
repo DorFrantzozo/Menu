@@ -1,14 +1,24 @@
 import React, {useState} from "react";
-import axiosInstance from "../../utils/baseUrl"; // וודא שהנתיב נכון
-import loading from "../../components/Spinner"; // וודא שהנתיב נכון
+import {useLocation, useNavigate} from "react-router-dom";
+import axiosInstance from "../../utils/baseUrl";
+
 const CheckoutPage = () => {
+  const location = useLocation();
+  const {amount, planName} = location.state || {
+    amount: 2900,
+    planName: "Essential",
+  };
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     phone: "",
+    businessId: "",
     address: "",
     city: "",
+    zip: "",
   });
+
   const [agreed, setAgreed] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -18,200 +28,135 @@ const CheckoutPage = () => {
 
   const handlePayment = async (e) => {
     e.preventDefault();
-    if (!agreed) return alert("חובה לאשר את התקנון ומדיניות הביטולים");
+    if (!agreed) return alert("יש לאשר את התקנון");
 
     try {
       setLoading(true);
-      // שליחת הבקשה ל-Backend שיצרנו (startCheckout)
-      const res = await axiosInstance.post("/user/checkout", {
-        ...formData,
-        amount: 149,
-      });
+      const token = localStorage.getItem("token");
 
-      if (res.data && res.data.url) {
-        window.location.href = res.data.url; // מעבר למורנינג
-      }
+      const res = await axiosInstance.post(
+        "/payments/checkout",
+        {
+          ...formData,
+          planName: planName,
+        },
+        {headers: {Authorization: `Bearer ${token}`}},
+      );
+
+      if (res.data?.url) window.location.href = res.data.url;
     } catch (error) {
-      console.error("Payment error:", error);
-      alert(error.response?.data?.message || "חלה שגיאה בחיבור לסליקה");
+      alert("שגיאה בחיבור לסליקה, נסה שנית");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.checkoutCard}>
-        <h2 style={styles.title}>פרטי הזמנה ושדרוג ל-Premium</h2>
+    <div
+      className="min-h-screen bg-gray-50 py-12 px-4 flex justify-center"
+      dir="rtl"
+    >
+      <div className="w-full max-w-lg bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
+        <h2 className="text-2xl font-black text-center mb-6">
+          סיכום הזמנה - iMenu
+        </h2>
 
-        <div style={styles.summaryBox}>
-          <span>מנוי חודשי iMenu</span>
-          <strong>149 ₪</strong>
+        <div className="bg-emerald-50 p-4 rounded-2xl flex justify-between items-center mb-8 border border-emerald-100">
+          <div>
+            <p className="font-bold text-emerald-900">חבילת {planName}</p>
+            <p className="text-xs text-emerald-700">מנוי שנתי + הקמה</p>
+          </div>
+          <p className="text-xl font-black">₪{amount.toLocaleString()}</p>
         </div>
 
-        <form onSubmit={handlePayment} style={styles.form}>
+        <form onSubmit={handlePayment} className="space-y-4">
           <input
-            type="text"
             name="fullName"
-            placeholder="שם מלא (כפי שמופיע על הכרטיס)"
+            placeholder="שם העסק / שם מלא לקבלה"
             required
-            style={styles.input}
+            className="w-full p-3 border rounded-xl"
             onChange={handleChange}
           />
           <input
-            type="email"
+            name="businessId"
+            placeholder="ח.פ / עוסק מורשה / ת.ז לקבלה"
+            className="w-full p-3 border rounded-xl"
+            onChange={handleChange}
+            required
+          />
+          <input
             name="email"
-            placeholder="אימייל לקבלת חשבונית"
+            type="email"
+            placeholder="אימייל למשלוח קבלה"
             required
-            style={styles.input}
+            className="w-full p-3 border rounded-xl"
             onChange={handleChange}
           />
           <input
-            type="tel"
             name="phone"
-            placeholder="טלפון ליצירת קשר"
+            type="tel"
+            placeholder="טלפון"
             required
-            style={styles.input}
+            className="w-full p-3 border rounded-xl"
             onChange={handleChange}
           />
-          <div style={styles.row}>
+
+          <div className="flex gap-2">
             <input
-              type="text"
               name="city"
               placeholder="עיר"
-              style={styles.inputHalf}
+              className="w-1/2 p-3 border rounded-xl"
               onChange={handleChange}
             />
             <input
-              type="text"
               name="address"
               placeholder="כתובת"
-              style={styles.inputHalf}
+              className="w-1/2 p-3 border rounded-xl"
               onChange={handleChange}
             />
           </div>
 
-          <div style={styles.checkboxContainer}>
+          <div className="flex items-start gap-2 py-4">
             <input
               type="checkbox"
               id="terms"
               checked={agreed}
               onChange={() => setAgreed(!agreed)}
+              className="mt-1"
             />
-            <label htmlFor="terms" style={styles.label}>
-              קראתי ואני מאשר את{" "}
-              <span
-                onClick={() => window.open("/termofservice", "_blank")}
-                style={styles.link}
+            <label
+              htmlFor="terms"
+              className="text-xs text-gray-500 leading-tight"
+            >
+              {" "}
+              " אני מאשר כי קראתי את{" "}
+              <button
+                onClick={() =>
+                  window.open(
+                    "https://www.imenu-il.online/termofservice",
+                    "_blank",
+                  )
+                }
+                className="underline cursor-pointer text-blue-600"
               >
                 תקנון האתר
-              </span>
-              , מדיניות הפרטיות והגבלת גיל (18+)
+              </button>{" "}
+              ומדיניות הביטולים.
             </label>
           </div>
 
           <button
-            type="submit"
             disabled={!agreed || loading}
-            style={agreed ? styles.payButton : styles.disabledButton}
+            className={`w-full py-4 rounded-2xl font-bold text-white transition-all ${agreed ? "bg-zinc-900" : "bg-gray-300"}`}
           >
-            {loading ? "מתחבר לסליקה..." : "המשך לתשלום מאובטח"}
+            {loading
+              ? "מתחבר לסליקה..."
+              : `שלם ₪${amount.toLocaleString()} והמשך`}
           </button>
         </form>
-
-        <div style={styles.footerInfo}>
-          <p>iMenu רחוב הקוקיה , ראשון לציון | טלפון: 053-4314774</p>
-          <p style={styles.secureText}>🔒 סליקה מאובטחת בתקן PCI-DSS</p>
-        </div>
       </div>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    padding: "40px",
-    backgroundColor: "#f9fafb",
-    minHeight: "100vh",
-    direction: "rtl",
-  },
-  checkoutCard: {
-    width: "100%",
-    maxWidth: "500px",
-    backgroundColor: "#fff",
-    borderRadius: "12px",
-    padding: "30px",
-    boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
-  },
-  title: {
-    fontSize: "24px",
-    fontWeight: "bold",
-    marginBottom: "20px",
-    color: "#1a1a1a",
-    textAlign: "center",
-  },
-  summaryBox: {
-    display: "flex",
-    justifyContent: "space-between",
-    padding: "15px",
-    backgroundColor: "#f3f4f6",
-    borderRadius: "8px",
-    marginBottom: "25px",
-  },
-  form: {display: "flex", flexDirection: "column", gap: "15px"},
-  input: {
-    padding: "12px",
-    borderRadius: "6px",
-    border: "1px solid #ddd",
-    fontSize: "16px",
-  },
-  row: {display: "flex", gap: "10px"},
-  inputHalf: {
-    flex: 1,
-    padding: "12px",
-    borderRadius: "6px",
-    border: "1px solid #ddd",
-  },
-  checkboxContainer: {
-    display: "flex",
-    alignItems: "center",
-    gap: "10px",
-    marginTop: "10px",
-  },
-  label: {fontSize: "14px", color: "#4b5563"},
-  link: {color: "#2563eb", textDecoration: "underline"},
-  payButton: {
-    padding: "15px",
-    backgroundColor: "#000",
-    color: "#fff",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-    fontSize: "18px",
-    fontWeight: "bold",
-    marginTop: "10px",
-  },
-  disabledButton: {
-    padding: "15px",
-    backgroundColor: "#9ca3af",
-    color: "#fff",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "not-allowed",
-    fontSize: "18px",
-    marginTop: "10px",
-  },
-  footerInfo: {
-    marginTop: "30px",
-    borderTop: "1px solid #eee",
-    paddingTop: "15px",
-    textAlign: "center",
-    fontSize: "12px",
-    color: "#9ca3af",
-  },
-  secureText: {marginTop: "5px", color: "#10b981", fontWeight: "bold"},
 };
 
 export default CheckoutPage;

@@ -23,7 +23,12 @@ const userSchema = new mongoose.Schema(
     displayName: {type: String, required: true},
     phone: {type: String, required: true},
     logo: {type: String},
-    designNumber: {type: Number},
+    plan: {
+      type: String,
+      enum: ["Essential", "Advance", "iMenu PRO"],
+      default: "Essential",
+    },
+    designNumber: {type: Number, default: 1},
     isPaid: {type: Boolean, default: false},
     trialExpiresAt: {
       type: Date,
@@ -45,10 +50,10 @@ const userSchema = new mongoose.Schema(
     },
     role: {type: String, default: "user"},
     qrSlug: {type: String, unique: true, index: true},
+
     totalQrScans: {type: Number, default: 0},
     hasCompletedTour: {type: Boolean, default: false},
     morningCustomerId: {type: String}, // שדה לשמירת ה-ID של הלקוח ב-Morning
-    isPaid: {type: Boolean, default: false},
   },
   {timestamps: true},
 );

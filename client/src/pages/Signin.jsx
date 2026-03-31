@@ -1,13 +1,10 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { setUser, setToken } from "../state/user/userSlice";
-import {
-  getCategories,
-  getAllDishesAndMapToCategories,
-} from "@/utils/fetchData";
-import { setMenuCategories } from "@/state/menu/menuCategoriesSlice";
+import {useState} from "react";
+import {useDispatch} from "react-redux";
+import {useNavigate} from "react-router-dom";
+import {toast} from "react-toastify";
+import {setUser, setToken} from "../state/user/userSlice";
+import {getCategories, getAllDishesAndMapToCategories} from "@/utils/fetchData";
+import {setMenuCategories} from "@/state/menu/menuCategoriesSlice";
 import logo from "../assets/img/logoBlack.avif";
 import axiosInstance from "../utils/baseUrl";
 import Spinner from "@/components/Spinner";
@@ -28,7 +25,7 @@ const Signin = () => {
         password,
       });
       if (response.status === 200) {
-        const { user, token, expireTime } = response.data;
+        const {user, token, expireTime} = response.data;
         dispatch(setUser(user));
         dispatch(setToken(token));
         localStorage.setItem("token", token);
@@ -39,12 +36,12 @@ const Signin = () => {
         const categoriesWithDishes = await getAllDishesAndMapToCategories(
           user,
           categories,
-          dispatch
+          dispatch,
         );
         dispatch(setMenuCategories(categoriesWithDishes));
         localStorage.setItem(
           "categories",
-          JSON.stringify(categoriesWithDishes)
+          JSON.stringify(categoriesWithDishes),
         );
 
         toast.success("התחברות בהצלחה");

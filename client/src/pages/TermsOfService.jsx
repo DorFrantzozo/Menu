@@ -15,12 +15,12 @@ const TermsOfService = () => {
 
   return (
     <div
-      className="min-h-screen bg-white flex flex-col mb-10 text-right"
+      className="min-h-screen mt-8 bg-white flex flex-col mb-10 text-right"
       dir="rtl"
     >
       {loggedIn ? <div className="h-16" /> : <NavbarLanding />}
 
-      <div className="max-w-screen-xl mx-auto p-12 bg-white mt-5">
+      <div className="max-w-screen-xl  mx-auto p-12 bg-white mt-5">
         <h1 className="text-4xl font-black text-center text-gray-900 mb-16">
           תקנון ותנאי שימוש - פלטפורמת iMenu
         </h1>

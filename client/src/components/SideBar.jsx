@@ -45,6 +45,7 @@ const Sidebar = ({user}) => {
     dispatch(logoutDishes());
     localStorage.removeItem("token");
     localStorage.removeItem("expireTime");
+    localStorage.removeItem("user_payment_history");
     navigate("/");
   };
 
