@@ -68,7 +68,7 @@ try {
   app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);
     initPaymentReminders();
-    console.log("✅ Payment reminders cron job initialized");
+    console.log("✅DISCORD Payment reminders cron job initialized");
   });
 } catch (error) {
   console.error("Failed to connect to the database", error);

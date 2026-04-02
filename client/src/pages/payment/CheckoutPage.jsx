@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
 import axiosInstance from "../../utils/baseUrl";
+import {toast} from "react-toastify";
 
 const CheckoutPage = () => {
   const location = useLocation();
@@ -45,7 +46,10 @@ const CheckoutPage = () => {
 
       if (res.data?.url) window.location.href = res.data.url;
     } catch (error) {
-      alert("שגיאה בחיבור לסליקה, נסה שנית");
+      toast.error(
+        error.response?.data?.message ||
+          "אירעה שגיאה ביצירת התשלום. נסה שוב מאוחר יותר.",
+      );
     } finally {
       setLoading(false);
     }

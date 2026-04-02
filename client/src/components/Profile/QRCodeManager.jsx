@@ -1,20 +1,17 @@
-import { useState, useEffect } from "react";
-import { 
-  QrCodeIcon, 
-  ArrowDownTrayIcon, 
+import {useState, useEffect} from "react";
+import {
+  QrCodeIcon,
+  ArrowDownTrayIcon,
   ShareIcon,
   MagnifyingGlassPlusIcon,
-  XMarkIcon
+  XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { 
-  downloadQRCode, 
-  generateQRCode, 
-  shareQRCode 
-} from "@/utils/qrGenerator";
+import {downloadQRCode, generateQRCode, shareQRCode} from "@/utils/qrGenerator";
 import Spinner from "@/components/Spinner";
 import DefaultDropDown from "../data/DefaultDropDown";
+import LandingQrCode from "../../assets/img/LandingQrCode.png";
 
-const QRCodeManager = ({ qrSlug }) => {
+const QRCodeManager = ({qrSlug}) => {
   const [qrcode, setQrCode] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [qrColor, setQrColor] = useState("שחור עם רקע שקוף");
@@ -41,7 +38,7 @@ const QRCodeManager = ({ qrSlug }) => {
 
   const handleShareClick = (e) => {
     e.preventDefault();
-    shareQRCode({ qrcode });
+    shareQRCode({qrcode});
   };
 
   if (!qrSlug) return null;
@@ -66,7 +63,7 @@ const QRCodeManager = ({ qrSlug }) => {
           />
         </div>
 
-        <div 
+        <div
           onClick={() => setIsZoomed(true)}
           className="relative group cursor-zoom-in mb-4 p-3 bg-gray-50/50 dark:bg-zinc-800/50 rounded-2xl border-2 border-dashed border-gray-100 dark:border-zinc-700/50 transition-all hover:border-emerald-200 dark:hover:border-emerald-500 hover:bg-emerald-50/10 dark:hover:bg-emerald-500/10"
         >
@@ -75,9 +72,9 @@ const QRCodeManager = ({ qrSlug }) => {
               <Spinner />
             </div>
           ) : (
-            <img 
-              src={qrcode} 
-              alt="QR Code" 
+            <img
+              src={qrcode}
+              alt="QR Code"
               className="w-32 h-32 transition-transform duration-300 group-hover:scale-105"
             />
           )}
@@ -112,27 +109,29 @@ const QRCodeManager = ({ qrSlug }) => {
 
       {/* Zoom Modal */}
       {isZoomed && (
-        <div 
+        <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
           onClick={() => setIsZoomed(false)}
         >
-          <div 
+          <div
             className="relative bg-white p-8 rounded-3xl shadow-2xl max-w-sm w-full flex flex-col items-center"
             onClick={(e) => e.stopPropagation()}
           >
-            <button 
+            <button
               onClick={() => setIsZoomed(false)}
               className="absolute top-4 left-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
             >
               <XMarkIcon className="w-6 h-6 text-gray-500" />
             </button>
-            <img 
-              src={qrcode} 
-              alt="QR Code Zoom" 
+            <img
+              src={qrcode}
+              alt="QR Code Zoom"
               className="w-64 h-64 mb-6 shadow-sm"
             />
             <h4 className="text-xl font-bold text-gray-900 mb-2">סרוק אותי!</h4>
-            <p className="text-sm text-gray-500 text-center">הצג את הקוד ללקוחות שלך ישירות מהמסך</p>
+            <p className="text-sm text-gray-500 text-center">
+              הצג את הקוד ללקוחות שלך ישירות מהמסך
+            </p>
           </div>
         </div>
       )}

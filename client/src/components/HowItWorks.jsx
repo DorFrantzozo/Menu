@@ -29,7 +29,7 @@ export default function HowItWorks() {
         <div className="text-center mb-16" dir="rtl">
           {/* שימוש ב-H2 עם מילת מפתח מרכזית */}
           <h2 className="text-4xl md:text-5xl lg:text-5xl font-black text-zinc-900 mb-4 tracking-tighter">
-            איך עובד תפריט QR למסעדות?
+            איך עובד תפריט דיגיטלי למסעדות?
           </h2>
           <p className="text-zinc-500 text-lg md:text-xl font-medium">
             שלושה צעדים פשוטים לשדרוג חוויית הסועד והגדלת המכירות בעסק שלכם.

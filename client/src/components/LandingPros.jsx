@@ -74,7 +74,7 @@ const LandingPros = () => {
         <div className="text-center mb-24" dir="rtl">
           {/* H2 עם מילות מפתח חזקות */}
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-zinc-900 mb-6 tracking-tighter">
-            פתרון תפריט QR מלא למסעדה חכמה
+            פתרון תפריט דיגיטלי מלא למסעדה חכמה
           </h2>
           <p className="text-zinc-500 text-lg md:text-xl font-medium max-w-3xl mx-auto leading-relaxed">
             כל הכלים שצריך כדי לחסוך זמן תפעולי, למנוע טעויות בהזמנה ולהגדיל את

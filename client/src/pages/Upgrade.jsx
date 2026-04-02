@@ -25,25 +25,44 @@ const Upgrade = () => {
   const user = useSelector((state) => state.user.user);
   const navigate = useNavigate();
 
-  if (user?.isPaid) return <Navigate to="/dashboard" replace />;
+  // if (user?.isPaid) return <Navigate to="/dashboard" replace />;
 
   const plans = [
     {
       plan: "Essential",
       price: Number(import.meta.env.VITE_PRICE_ESSENTIAL) || 2900,
-      features: ["תפריט דיגיטלי חכם", "עיצובים גנריים", "תמיכה בוואטסאפ"],
+      features: [
+        "תפריט דיגיטלי חכם",
+        "QR קוד לסריקה בנייד",
+        "עדכונים בזמן אמת",
+        "ממשק ניהול עצמאי 24/7",
+        "סטטיסטיקות",
+        " מבחר עיצובים",
+        "תמיכה בוואטסאפ",
+      ],
       isBestValue: false,
     },
     {
       plan: "Advance",
       price: Number(import.meta.env.VITE_PRICE_ADVANCE) || 4500,
-      features: ["כל מה שיש ב-Essential", "15 סטנדים QR", "הזנת תפריט"],
+      features: [
+        "כל מה שיש ב-Essential",
+        "15   QR סטנדים",
+        "  הזנת תפריט עד 30 פריטים",
+        "עדיפות בתמיכה",
+      ],
       isBestValue: true,
     },
     {
       plan: "iMenu PRO",
       price: Number(import.meta.env.VITE_PRICE_PRO) || 8500,
-      features: ["כל מה שיש ב-Advance", "עיצוב Custom", "NFC"],
+      features: [
+        "כל מה שיש ב-Advance",
+        "עיצוב מותאם אישית",
+        "ליווי אישי",
+        "שיחת אפיון",
+        "הזנת תפריט ללא הגבלה",
+      ],
       isBestValue: false,
     },
   ];

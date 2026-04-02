@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import Joyride, { STATUS } from "react-joyride";
+import React, {useState, useEffect} from "react";
+import Joyride, {STATUS} from "react-joyride";
 import Lottie from "lottie-react";
 import axiosInstance from "../../utils/baseUrl";
 
@@ -9,7 +9,7 @@ import typingAnim from "../../assets/animations/Typing Animation.json";
 import paintAnim from "../../assets/animations/Paint Brush.json";
 import qrAnim from "../../assets/animations/QR Code Scanner.json";
 
-const OnboardingTour = ({ user, onStatusChange }) => {
+const OnboardingTour = ({user, onStatusChange}) => {
   const [run, setRun] = useState(false);
 
   useEffect(() => {
@@ -31,10 +31,15 @@ const OnboardingTour = ({ user, onStatusChange }) => {
       content: (
         <div className="flex flex-col items-center text-center">
           <div className="w-40 h-40 max-h-[160px]">
-            <Lottie animationData={helloAnim} loop={true} style={{ height: '100%' }} />
+            <Lottie
+              animationData={helloAnim}
+              loop={true}
+              style={{height: "100%"}}
+            />
           </div>
           <p className="mt-4 text-zinc-600 dark:text-zinc-300">
-            المערכת בגרסת ניסיון ל-14 יום מלאים. בוא נקים את התפריט הדיגיטלי שלך בתוך 5 דקות בלבד.
+            מערכת בגרסת ניסיון ל-14 יום מלאים. בוא נקים את התפריט הדיגיטלי שלך
+            בתוך 5 דקות בלבד.
           </p>
         </div>
       ),
@@ -47,10 +52,15 @@ const OnboardingTour = ({ user, onStatusChange }) => {
       content: (
         <div className="flex flex-col items-center text-center">
           <div className="w-36 h-36 max-h-[140px]">
-            <Lottie animationData={typingAnim} loop={true} style={{ height: '100%' }} />
+            <Lottie
+              animationData={typingAnim}
+              loop={true}
+              style={{height: "100%"}}
+            />
           </div>
           <p className="mt-2 text-zinc-600 dark:text-zinc-300">
-            כאן יוצרים את הסדר של התפריט. חלק את המנות שלך לקבוצות כמו "עיקריות", "קינוחים" או "שתייה".
+            כאן יוצרים את הסדר של התפריט. חלק את המנות שלך לקבוצות כמו
+            "עיקריות", "קינוחים" או "שתייה".
           </p>
         </div>
       ),
@@ -63,10 +73,15 @@ const OnboardingTour = ({ user, onStatusChange }) => {
       content: (
         <div className="flex flex-col items-center text-center">
           <div className="w-36 h-36 max-h-[140px]">
-            <Lottie animationData={typingAnim} loop={true} style={{ height: '100%' }} />
+            <Lottie
+              animationData={typingAnim}
+              loop={true}
+              style={{height: "100%"}}
+            />
           </div>
           <p className="mt-2 text-zinc-600 dark:text-zinc-300">
-            לחץ כאן כדי להכניס את המנות המנצחות שלך. לכל מנה תוכל להוסיף תמונה, תיאור ומחיר.
+            לחץ כאן כדי להכניס את המנות המנצחות שלך. לכל מנה תוכל להוסיף תמונה,
+            תיאור ומחיר.
           </p>
         </div>
       ),
@@ -75,11 +90,19 @@ const OnboardingTour = ({ user, onStatusChange }) => {
       target: '[data-tour="design"]',
       disableBeacon: true,
       disableScrolling: true,
-      title: <span className="text-lg font-bold">התפריט שלך צריך להיראות מדהים ✨</span>,
+      title: (
+        <span className="text-lg font-bold">
+          התפריט שלך צריך להיראות מדהים ✨
+        </span>
+      ),
       content: (
         <div className="flex flex-col items-center text-center">
           <div className="w-36 h-36 max-h-[140px]">
-            <Lottie animationData={paintAnim} loop={true} style={{ height: '100%' }} />
+            <Lottie
+              animationData={paintAnim}
+              loop={true}
+              style={{height: "100%"}}
+            />
           </div>
           <p className="mt-2 text-zinc-600 dark:text-zinc-300">
             בחר את העיצוב (Layout) שתפור על המסעדה שלך. תוכל לשנות אותו בכל רגע.
@@ -95,10 +118,15 @@ const OnboardingTour = ({ user, onStatusChange }) => {
       content: (
         <div className="flex flex-col items-center text-center">
           <div className="w-36 h-36 max-h-[140px]">
-            <Lottie animationData={qrAnim} loop={true} style={{ height: '100%' }} />
+            <Lottie
+              animationData={qrAnim}
+              loop={true}
+              style={{height: "100%"}}
+            />
           </div>
           <p className="mt-2 text-zinc-600 dark:text-zinc-300">
-            כאן מורידים את קוד ה-QR להדפסה לשולחנות ועוקבים אחרי כמות הסריקות בזמן אמת.
+            כאן מורידים את קוד ה-QR להדפסה לשולחנות ועוקבים אחרי כמות הסריקות
+            בזמן אמת.
           </p>
         </div>
       ),
@@ -106,20 +134,20 @@ const OnboardingTour = ({ user, onStatusChange }) => {
   ];
 
   const handleJoyrideCallback = async (data) => {
-    const { status } = data;
+    const {status} = data;
     if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
       setRun(false);
       try {
         const token = localStorage.getItem("token");
         await axiosInstance.patch(
           "/user/complete-tour",
-          { userId: user._id },
+          {userId: user._id},
           {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+            headers: {Authorization: `Bearer ${token}`},
+          },
         );
         if (onStatusChange) {
-          onStatusChange({ ...user, hasCompletedTour: true });
+          onStatusChange({...user, hasCompletedTour: true});
         }
       } catch (error) {
         console.error("Failed to complete tour:", error);
@@ -175,7 +203,7 @@ const OnboardingTour = ({ user, onStatusChange }) => {
         },
         spotlight: {
           borderRadius: "1rem", // הופך את אזור המיקוד למעוגל ונעים
-        }
+        },
       }}
     />
   );
