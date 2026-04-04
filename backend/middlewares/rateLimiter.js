@@ -7,6 +7,7 @@ export const generalLimiter = rateLimit({
   message: { message: "Too many requests from this IP, please try again after 15 minutes" },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  validate: { xForwardedForHeader: false },
 });
 
 // Strict rate limiter for authentication routes (protects against Brute Force)
