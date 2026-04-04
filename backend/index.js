@@ -46,8 +46,8 @@ app.use(
 app.use(express.json());
 
 // Apply general rate limiter to all API routes
+app.set('trust proxy', 1);
 app.use("/api", generalLimiter);
-
 app.use("/api/user", userRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/dish", dishRouter);
