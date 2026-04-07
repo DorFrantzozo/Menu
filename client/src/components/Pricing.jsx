@@ -1,5 +1,5 @@
-import { CheckIcon } from "@heroicons/react/20/solid";
-import { useNavigate } from "react-router-dom";
+import {CheckIcon} from "@heroicons/react/20/solid";
+import {useNavigate} from "react-router-dom";
 const includedFeatures = [
   "Variety of designs",
   "24/7 support",
@@ -10,7 +10,7 @@ const includedFeatures = [
 export default function Pricing() {
   const Navigate = useNavigate();
   const handleclick = () => {
-    Navigate("/signin");
+    Navigate("/auth");
   };
   return (
     <div className="bg-white py-24 sm:py-32">

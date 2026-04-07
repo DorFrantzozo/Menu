@@ -9,7 +9,6 @@ import {
 import {downloadQRCode, generateQRCode, shareQRCode} from "@/utils/qrGenerator";
 import Spinner from "@/components/Spinner";
 import DefaultDropDown from "../data/DefaultDropDown";
-import LandingQrCode from "../../assets/img/LandingQrCode.png";
 
 const QRCodeManager = ({qrSlug}) => {
   const [qrcode, setQrCode] = useState("");

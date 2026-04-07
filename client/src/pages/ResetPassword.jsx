@@ -1,141 +1,143 @@
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import {useState} from "react";
+import {useLocation, useNavigate} from "react-router-dom";
 import axiosInstance from "@/utils/baseUrl";
-import { toast } from "react-toastify";
-import NavBarLanding from "@/components/nav/NavBarLanding";
-import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
-import { to } from "@react-spring/web";
+import {toast} from "react-toastify";
+import {motion} from "framer-motion";
+import AuthInput from "../components/Auth/AuthInput";
+import AuthVisuals from "../components/Auth/AuthVisuals";
+import logo from "../assets/logos/logo white background.jpg";
+import Spinner from "@/components/Spinner";
 
-function ResetPassword() {
+const ResetPassword = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const token = new URLSearchParams(location.search).get("token");
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
- 
-
-
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (password !== confirmPassword) {
-    toast.error("הסיסמאות אינן תואמות");
-    return;
-  }
-
-  try {
-    await axiosInstance.post("/user/resetPassword", {
-      data: {
-        token,
-        newPassword: password,
-      },
-    });
-
-    toast.success("הסיסמה אופסה בהצלחה! מועבר לעמוד התחברות...");
-    setTimeout(() => navigate("/signin"), 3000);
-  } catch (err) {
-    const message = err.response?.data?.message;
-   
-    if (message === "הטוקן פג תוקף") {
-      toast.error("הקישור לאיפוס הסיסמה פג תוקף. נסה שוב.");
-      setTimeout(() => navigate("/signin"), 3000);
-    } else {
-      toast.error(message || "שגיאה בלתי צפויה");
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      toast.error("הסיסמאות אינן תואמות");
+      return;
     }
 
-    setError(message);
-  }
-};
+    setLoading(true);
+    try {
+      await axiosInstance.post("/user/resetPassword", {
+        data: {
+          token,
+          newPassword: password,
+        },
+      });
+
+      toast.success("הסיסמה אופסה בהצלחה! מועבר לעמוד התחברות...");
+      setTimeout(() => navigate("/auth"), 3000); // Redirect to AuthPage
+    } catch (err) {
+      const message = err.response?.data?.message || "שגיאה בלתי צפויה";
+      toast.error(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (!token) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-red-600 font-semibold text-lg">
-        הטוקן חסר או לא תקין.
+      <div className="min-h-screen bg-[#FDFBF9] flex items-center justify-center p-4 md:p-8 font-sans" dir="rtl">
+        <div className="max-w-md w-full bg-white rounded-[2rem] shadow-xl p-10 text-center">
+             <img src={logo} alt="Logo" className="h-12 w-auto grayscale opacity-50 mx-auto mb-8" />
+          <h2 className="text-2xl font-black text-slate-800 mb-4">אופס! הקישור לא תקין</h2>
+          <p className="text-slate-400 mb-8">נראה שחסר טוקן בקישור שקיבלת במייל, או שהטוקן שגוי.</p>
+          <button 
+            onClick={() => navigate("/auth")}
+            className="w-full bg-[#00C38B] text-white font-bold py-4 rounded-full shadow-lg"
+          >
+            חזרה להתחברות
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div dir="rtl" className="min-h-screen bg-gray-50">
-      <NavBarLanding />
-      <div className="flex justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-8 bg-white p-8 shadow-xl rounded-xl">
-          <h2 className="text-center text-2xl font-bold text-gray-800">
-            איפוס סיסמה
-          </h2>
-          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-            <div className="rounded-md shadow-sm space-y-4">
-              {/* סיסמה חדשה */}
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                  סיסמה חדשה
-                </label>
-                <div className="relative">
-                  <input
-                    id="password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    placeholder="********"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500"
-                  >
-                    {showPassword ? < EyeIcon className="h-5 w-5" /> : <EyeSlashIcon className="h-5 w-5" />}
-                  </button>
-                </div>
-              </div>
-
-              {/* אימות סיסמה */}
-              <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                  אימות סיסמה
-                </label>
-                <div className="relative">
-                  <input
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    type={showConfirmPassword ? "text" : "password"}
-                    required
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    placeholder="********"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword((prev) => !prev)}
-                    className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500"
-                  >
-                    {showConfirmPassword ? < EyeIcon className="h-5 w-5" /> : <EyeSlashIcon className="h-5 w-5" />}
-                  </button>
-                </div>
-              </div>
+    <div
+      className="min-h-screen bg-[#FDFBF9] flex items-center justify-center p-4 md:p-8 font-sans"
+      dir="rtl"
+    >
+      <div className="max-w-6xl w-full bg-white rounded-[2.5rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] flex flex-col lg:flex-row overflow-hidden min-h-[85vh]">
+        {/* צד ימין: טופס */}
+        <div className="w-full lg:w-1/2 flex flex-col py-12 px-8 md:px-20 relative overflow-y-auto">
+          {loading && (
+            <div className="absolute inset-0 bg-white/60 z-50 flex items-center justify-center backdrop-blur-sm">
+              <Spinner />
             </div>
+          )}
 
-            {error && <p className="text-red-600 text-sm text-center">{error}</p>}
+          {/* הלוגו */}
+          <div className="flex justify-between items-start mb-12">
+            <img src={logo} alt="Logo" className="h-12 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer" />
+            <button 
+                onClick={() => navigate("/auth")}
+                className="text-xs font-bold text-slate-400 hover:text-[#00C38B] transition-colors flex items-center gap-1"
+            >
+                <span className="material-icons-round text-sm">arrow_forward</span>
+                חזרה להתחברות
+            </button>
+          </div>
 
-            <div>
-              <button
+          <div className="text-right">
+            <motion.div
+              initial={{opacity: 0, x: 20}}
+              animate={{opacity: 1, x: 0}}
+              transition={{duration: 0.3}}
+            >
+              <h1 className="text-4xl font-black text-slate-900 mb-2">
+                איפוס סיסמה
+              </h1>
+              <p className="text-slate-400 text-lg mb-10">
+                בחר סיסמה חדשה וחזקה כדי להמשיך לנהל את המסעדה שלך.
+              </p>
+            </motion.div>
+
+            <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+              <AuthInput
+                label="סיסמה חדשה"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+
+              <AuthInput
+                label="אימות סיסמה"
+                type="password"
+                placeholder="••••••••"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+
+              <motion.button
+                whileHover={{scale: 1.01}}
+                whileTap={{scale: 0.98}}
                 type="submit"
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition"
+                className="w-full bg-[#00C38B] text-white font-bold py-4 rounded-full shadow-[0_10px_20px_-5px_rgba(0,195,139,0.3)] hover:bg-[#00ab7a] transition-all flex justify-center items-center gap-2 mt-4"
               >
-                אפס סיסמה
-              </button>
-            </div>
-          </form>
+                אפס סיסמה וצא לדרך
+                <span className="text-xl">✨</span>
+              </motion.button>
+            </form>
+          </div>
         </div>
+
+        {/* צד שמאל: גרפיקה */}
+        <AuthVisuals />
       </div>
     </div>
   );
-}
+};
 
 export default ResetPassword;

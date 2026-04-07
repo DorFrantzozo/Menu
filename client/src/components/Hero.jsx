@@ -89,7 +89,7 @@ export default function Hero() {
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
             <button
-              onClick={() => navigate("/signup")}
+              onClick={() => navigate("/auth")}
               className="group mx-auto mb-6 relative px-8 py-4 lg:px-10 lg:py-4 bg-zinc-900 text-white rounded-[2rem] font-black text-lg transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-emerald-500/10 overflow-hidden"
             >
               <span className="relative z-10">צרו תפריט דיגיטלי חינם</span>

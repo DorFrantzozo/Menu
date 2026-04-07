@@ -1,6 +1,6 @@
-import { Button } from "@headlessui/react";
+import {Button} from "@headlessui/react";
 import PropTypes from "prop-types";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 const DefaultButton = ({
   text = "דוגמה לכפתור",
@@ -12,16 +12,16 @@ const DefaultButton = ({
   hoverTextColor = "",
   width = "80px",
   ariaLable = "",
-  icon = null
+  icon = null,
 }) => {
   const navigate = useNavigate();
-  const handleClick = onClick || (() => navigate("/signin"));
+  const handleClick = onClick || (() => navigate("/auth"));
 
   return (
     <Button
       onClick={handleClick}
       aria-label={`${ariaLable}`}
-      className={`text-${color} font-light rounded-xl p-2 ${hover} ${hoverTextColor} transition duration-500 w-[${width}]  bg-${bg} ${className}`} 
+      className={`text-${color} font-light rounded-xl p-2 ${hover} ${hoverTextColor} transition duration-500 w-[${width}]  bg-${bg} ${className}`}
     >
       {icon && <span className="mr-2">{icon}</span>}
       {text}

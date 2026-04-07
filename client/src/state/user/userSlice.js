@@ -1,7 +1,16 @@
-import { createSlice } from "@reduxjs/toolkit";
+import {createSlice} from "@reduxjs/toolkit";
+
+const getUserFromStorage = () => {
+  try {
+    const userItem = localStorage.getItem("user");
+    return userItem ? JSON.parse(userItem) : null;
+  } catch (error) {
+    return null;
+  }
+};
 
 const initialState = {
-  user: null,
+  user: getUserFromStorage(),
 };
 
 const userSlice = createSlice({
@@ -33,6 +42,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUser, signupUser, logoutUser, setToken, updateUser } =
+export const {setUser, signupUser, logoutUser, setToken, updateUser} =
   userSlice.actions;
 export default userSlice.reducer;

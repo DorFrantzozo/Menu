@@ -41,7 +41,7 @@ const Contact = () => {
                   <div className="w-full ">
                     <h4 className="mb-1 text-xl font-bold text-white ">מייל</h4>
                     <p className="text-base text-body-color text-white">
-                      dorfrant@gmail.com
+                      imenuservice@gmail.com
                     </p>
                   </div>
                 </div>

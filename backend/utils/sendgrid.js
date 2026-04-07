@@ -14,7 +14,7 @@ const sendEmail = async ({ to, templateId, dynamicData,subject  }) => {
  
   const msg = {
     to,
-    from:  process.env.SENDGRID_FROM_EMAIL,
+    from:  process.env.FROM_EMAIL,
     subject:subject,
     templateId,
     dynamic_template_data: dynamicData,

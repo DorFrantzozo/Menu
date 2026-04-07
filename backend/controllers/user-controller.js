@@ -1,7 +1,7 @@
 import User from "../model/user.js";
 import bcrypt from "bcryptjs";
 import cloudinary from "../utils/cloudinary.js";
-import { checkTokenValidity, expirationTime, generateToken } from "../utils/jwt.js";
+import { checkTokenValidity, expirationTime, generateResetToken, generateToken } from "../utils/jwt.js";
 import { sendEmail } from "../utils/sendgrid.js";
 import ActivityLog from "../model/activityLog.js";
 import sendDiscordAlert from "../utils/discordAlert.js";
@@ -344,8 +344,11 @@ const SendResetPasswordMail = async (req, res) => {
       });
     }
 
-    const resetToken = generateToken(user);
-    const resetLink = `${process.env.CLIENT_BASE_URL}/resetpassword?token=${resetToken}`;
+    const resetToken = generateResetToken(user);
+    const baseUrl = process.env.FRONTEND_URL?.endsWith("/") 
+      ? process.env.FRONTEND_URL.slice(0, -1) 
+      : process.env.FRONTEND_URL;
+    const resetLink = `${baseUrl}/resetpassword?token=${resetToken}`;
 
     const templateId = process.env.TEMPLATEID;
     if (!templateId) {

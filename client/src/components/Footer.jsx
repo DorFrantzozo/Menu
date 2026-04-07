@@ -29,7 +29,7 @@ const Footer = () => {
           <ul className="space-y-2 text-sm text-gray-300">
             <li>
               <button
-                onClick={() => navigate("/signin")}
+                onClick={() => navigate("/auth")}
                 className="hover:text-white"
               >
                 התחברות
@@ -37,7 +37,7 @@ const Footer = () => {
             </li>
             <li>
               <button
-                onClick={() => navigate("/signup")}
+                onClick={() => navigate("/auth")}
                 className="hover:text-white"
               >
                 הרשמה

@@ -36,7 +36,7 @@ const Signup = () => {
 
     try {
       setLoading(true);
-      const response = await axiosInstance.post("/user/signup", formData, {
+      const response = await axiosInstance.post("/user/auth", formData, {
         headers: {"Content-Type": "multipart/form-data"},
       });
 
@@ -197,7 +197,7 @@ const Signup = () => {
           <p dir="rtl" className="text-center text-sm text-gray-500 mt-8">
             כבר רשום?
             <button
-              onClick={() => navigate("/signin")}
+              onClick={() => navigate("/auth")}
               className="text-orange-500 hover:text-black font-medium ms-2"
             >
               התחבר

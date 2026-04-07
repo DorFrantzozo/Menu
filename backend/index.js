@@ -26,7 +26,7 @@ app.use(
       if (!origin) return callback(null, true);
       // Strict CORS: Allow frontend URL from env or fallback base domain
       const allowedClientUrl =
-        process.env.CLIENT_BASE_URL || "https://imenu-il.online";
+        process.env.FRONTEND_URL || "https://imenu-il.online";
       if (
         origin === allowedClientUrl ||
         /^https?:\/\/(?:[a-z0-9-]+\.)?imenu-il\.online$/.test(origin)

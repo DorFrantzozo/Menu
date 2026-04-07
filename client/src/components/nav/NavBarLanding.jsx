@@ -9,9 +9,9 @@ import logoWhiteBg from "../../assets/logos/logo white background.jpg";
 import logoDarkBg from "../../assets/logos/logo 1200X600.png";
 
 const navigation = [
-  {name: "ניתוח נתונים", href: "#features"},
-  {name: "מחירים", href: "#pricing"},
-  {name: "לקוחות", href: "#customers"},
+  {name: "פיצ'רים ", href: "#features"},
+  {name: "איך זה עובד", href: "#howItWorks"},
+
 ];
 
 export default function NavBarLanding() {
@@ -63,16 +63,10 @@ export default function NavBarLanding() {
           {/* Left: Actions */}
           <div className="flex items-center gap-4">
             <button
-              onClick={() => navigate("/signin")}
+              onClick={() => navigate("/auth")}
               className="hidden sm:block text-sm font-bold text-zinc-900 hover:text-emerald-600 dark:text-zinc-100 dark:hover:text-emerald-400 transition-colors"
             >
               כניסה למערכת
-            </button>
-            <button
-              onClick={() => navigate("/signup")}
-              className="bg-zinc-900 text-white px-4 py-2 md:px-6 md:py-2.5 rounded-xl text-sm md:text-base font-black transition-all hover:bg-emerald-600 hover:scale-105 active:scale-95 shadow-lg shadow-zinc-200 dark:shadow-none"
-            >
-              הרשמה חינם
             </button>
 
             {/* Mobile menu button */}
@@ -100,7 +94,7 @@ export default function NavBarLanding() {
           ))}
           <div className="pt-4 mt-4 border-t border-zinc-100 dark:border-zinc-800 space-y-3">
             <button
-              onClick={() => navigate("/signin")}
+              onClick={() => navigate("/auth")}
               className="block w-full text-right px-4 py-3 text-base font-bold text-zinc-500 dark:text-zinc-400"
             >
               כניסה למערכת

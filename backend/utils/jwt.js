@@ -2,13 +2,13 @@ import jwt from "jsonwebtoken";
 
 const generateToken = (user) => {
   return jwt.sign({_id: user._id, role: user.role}, process.env.JWT_SECRET, {
-    expiresIn: "1h",
+    expiresIn: "30d",
   });
 };
 
 const generateResetToken = (user) => {
-  return jwt.sign({userId: user._id}, process.env.JWT_SECRET, {
-    expiresIn: "15m",
+  return jwt.sign({_id: user._id}, process.env.JWT_SECRET, {
+    expiresIn: "30m",
   });
 };
 
@@ -29,11 +29,12 @@ const checkTokenValidity = (token) => {
 
 const isAuth = (req, res, next) => {
   const authorization = req.headers.authorization;
-  if (authorization) {
+  if (authorization && authorization.startsWith("Bearer ")) {
+    // בדיקה בטוחה יותר
     const token = authorization.slice(7, authorization.length);
     jwt.verify(token, process.env.JWT_SECRET, (err, decode) => {
       if (err) {
-        res.status(401).send({message: "Expired or Invalid Token"});
+        return res.status(401).send({message: "Token Expired or Invalid"});
       } else {
         req.user = decode;
         next();
@@ -45,14 +46,11 @@ const isAuth = (req, res, next) => {
 };
 
 const isAdmin = (req, res, next) => {
-  isAuth(req, res, async () => {
-    // Note: To be fully secure, it is recommended to pull the user from the DB and check their role,
-    // or include it in the JWT payload. Since the current implementation doesn't look like it includes
-    // role in the JWT payload by default, we'll check it here against the DB, or just use `req.user` if it's there.
-
-    // As per user model, `role` is an attribute.
-    next(); // We will require the User model to do this properly, let's implement the DB check in the route itself or import User here.
-  });
+  if (req.user && req.user.role === "admin") {
+    next();
+  } else {
+    res.status(403).send({message: "Access Denied"});
+  }
 };
 
 const isUserOrAdmin = (req, res, next) => {

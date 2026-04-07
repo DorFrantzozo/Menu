@@ -24,11 +24,11 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <div className="py-24 bg-zinc-50 border-y border-zinc-100" id="howitworks">
+    <div id="howItWorks" className="py-24 bg-zinc-50 border-y border-zinc-100" >
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16" dir="rtl">
           {/* שימוש ב-H2 עם מילת מפתח מרכזית */}
-          <h2 className="text-4xl md:text-5xl lg:text-5xl font-black text-zinc-900 mb-4 tracking-tighter">
+          <h2  className="text-4xl md:text-5xl lg:text-5xl font-black text-zinc-900 mb-4 tracking-tighter">
             איך עובד תפריט דיגיטלי למסעדות?
           </h2>
           <p className="text-zinc-500 text-lg md:text-xl font-medium">
@@ -36,7 +36,7 @@ export default function HowItWorks() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8" dir="rtl">
+        <div  className="grid  grid-cols-1 md:grid-cols-3 gap-8" dir="rtl">
           {steps.map((step, index) => (
             <motion.div
               key={index}

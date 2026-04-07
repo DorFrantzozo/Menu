@@ -55,6 +55,7 @@ import Upgrade from "./pages/Upgrade";
 import SuccessPage from "./pages/payment/SuccessPaymentPage";
 import CheckoutPage from "./pages/payment/CheckoutPage";
 import Accessibility from "./pages/legal/Accessibility";
+import AuthPage from "./pages/AuthPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -156,20 +157,19 @@ function App() {
                     />
                     <Route
                       path="/dashboard"
-                      element={user ? <Dashboard /> : <Navigate to="/signin" />}
+                      element={user ? <Dashboard /> : <Navigate to="/auth" />}
                     />
                     <Route
                       path="/upgrade"
-                      element={user ? <Upgrade /> : <Navigate to="/signin" />}
+                      element={user ? <Upgrade /> : <Navigate to="/auth" />}
                     />
                     <Route
-                      path="/signin"
-                      element={user ? <Navigate to="/dashboard" /> : <Signin />}
+                      path="/auth"
+                      element={
+                        user ? <Navigate to="/dashboard" /> : <AuthPage />
+                      }
                     />
-                    <Route
-                      path="/signup"
-                      element={user ? <Navigate to="/dashboard" /> : <Signup />}
-                    />
+
                     <Route
                       path="/admin"
                       element={

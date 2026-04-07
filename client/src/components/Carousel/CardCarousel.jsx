@@ -74,7 +74,7 @@ const Designs = () => {
     <>
       {isLoading && <Spinner />}
       <div className="flex flex-col items-center px-4 py-10 text-center">
-        <h1 className="text-3xl font-bold mb-2 text-slate-800 dark:text-zinc-100">בחר את עיצוב התפריט שלך</h1>
+      
         <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-8">* לחוויה טובה תחילה הוסף את כל המנות לתפריט</p>
         <div className="grid grid-cols-1 mt-3 sm:grid-cols-2 lg:grid-cols-4 gap-10 w-full max-w-7xl">
           {designs.map((design) => (
