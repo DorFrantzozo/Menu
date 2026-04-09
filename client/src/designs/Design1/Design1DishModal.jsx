@@ -4,8 +4,10 @@ import { X } from "lucide-react";
 import Alergies from "../../components/sensitivities/Allergies";
 import { Button } from "@/components/ui/button";
 import useTrackDishView from "@/hooks/useTrackDishView";
+import { useLanguage } from "../../context/LanguageContext";
 
 const Design1DishModal = ({ dish, isOpen, onClose }) => {
+  const { language } = useLanguage();
   useTrackDishView(isOpen ? dish?._id : null);
 
   if (!dish) return null; // אם אין מנה, לא נטען שום דבר
@@ -35,10 +37,10 @@ const Design1DishModal = ({ dish, isOpen, onClose }) => {
               <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-white via-black/50 to-transparent"></div>{" "}
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mt-8">
-              {dish.name}
+              {language === "en" && dish.nameEn ? dish.nameEn : dish.name}
             </h2>
-            <p className="text-gray-500 mt-2 text-lg">
-              {dish.description}
+            <p className="text-gray-500 mt-2 text-lg px-4 text-center">
+              {language === "en" && dish.descriptionEn ? dish.descriptionEn : dish.description}
             </p>
             <div className="flex items-center justify-center gap-3 mt-4">
               {dish.salePrice && Number(dish.salePrice) > 0 && Number(dish.salePrice) !== dish.price ? (

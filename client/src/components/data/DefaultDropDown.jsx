@@ -23,9 +23,7 @@ const DefaultDropDown = ({
 }) => {
   const [selectedItem, setSelectedItem] = useState(null);
 
-  useEffect(() => {
-    console.log("Selected Item:", selectedItem);
-  }, [selectedItem]);
+ 
 
   const handleStatusChange = (item) => {
     setSelectedItem(item);

@@ -56,6 +56,13 @@ const Sidebar = ({user}) => {
       icon: "dashboard",
       navigate: "/dashboard",
     },
+      {
+      name: "קטגוריות",
+      key: "Categories",
+      icon: "category",
+      navigate: "/manage-categories",
+      tourKey: "categories",
+    },
     {
       name: "מנות",
       key: "Dishes",
@@ -63,13 +70,7 @@ const Sidebar = ({user}) => {
       navigate: "/manage-dishes",
       tourKey: "dishes",
     },
-    {
-      name: "קטגוריות",
-      key: "Categories",
-      icon: "category",
-      navigate: "/manage-categories",
-      tourKey: "categories",
-    },
+  
     {
       name: "תפריט חי",
       key: "PublicMenu",

@@ -1,18 +1,33 @@
 import React, {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
+import {useDispatch} from "react-redux";
+import {getFreshUser} from "../../utils/fetchData";
+import {setUser} from "../../state/user/userSlice";
 
 const SuccessPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    // כאן אפשר להוסיף קריאה ל-API שלך כדי לרענן את נתוני המשתמש
-    // או פשוט להמתין 5 שניות ולהעביר אותו לדאשבורד
-    const timer = setTimeout(() => {
-      navigate("/dashboard");
-    }, 5000);
+    const syncAndRedirect = async () => {
+      try {
+        // Fetch fresh user data to update isPaid status
+        const freshUser = await getFreshUser();
+        if (freshUser) {
+          dispatch(setUser(freshUser));
+        }
+      } catch (error) {
+        console.error("Failed to sync user after payment:", error);
+      } finally {
+        // Wait 5 seconds anyway to show the success message, then redirect
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 5000);
+      }
+    };
 
-    return () => clearTimeout(timer);
-  }, [navigate]);
+    syncAndRedirect();
+  }, [navigate, dispatch]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4 text-center">

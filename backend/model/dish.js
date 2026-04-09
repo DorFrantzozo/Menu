@@ -10,6 +10,10 @@ const Dish = new mongoose.Schema({
     type: String,
     required: true,
   },
+  nameEn: {
+    type: String,
+    required: false,
+  },
 
   img: {
     type: String,
@@ -17,6 +21,10 @@ const Dish = new mongoose.Schema({
   },
   description: {
     type: String,
+  },
+  descriptionEn: {
+    type: String,
+    required: false,
   },
 
   price: {

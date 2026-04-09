@@ -13,7 +13,6 @@ const Analytics = () => {
   const [stats, setStats] = useState([]);
   const VERCEL_PROJECT_ID = import.meta.env.VITE_VERCEL_PROJECTID;
   const VERCEL_TOKEN = import.meta.env.VITE_VERCEL_ANALYTICS;
-  console.log(VERCEL_PROJECT_ID + VERCEL_TOKEN);
 
   useEffect(() => {
     const fetchData = async () => {

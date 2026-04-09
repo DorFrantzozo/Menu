@@ -21,28 +21,38 @@ dotenv.config();
 const app = express();
 app.set('trust proxy', 1);
 
+const getNormalizedOrigin = (url) => {
+  if (!url) return "";
+  return url.endsWith("/") ? url.slice(0, -1) : url;
+};
+
 app.use(
   cors({
     origin: function (origin, callback) {
+      // If no origin (like mobile apps or curl requests), allow it
       if (!origin) return callback(null, true);
-      // Strict CORS: Allow frontend URL from env or fallback base domain
-      const allowedClientUrl =
-        process.env.FRONTEND_URL || "https://imenu-il.online";
-      if (
-        origin === allowedClientUrl ||
-        /^https?:\/\/(?:[a-z0-9-]+\.)?imenu-il\.online$/.test(origin)
-      ) {
+
+      const frontendUrl = getNormalizedOrigin(process.env.FRONTEND_URL);
+      const fallbackUrl = "https://imenu-il.online";
+      
+      const allowedOrigins = [frontendUrl, fallbackUrl].filter(Boolean);
+      
+      // Check if the origin matches our main domain or any subdomain of it
+      const isDomainAllowed = /^https?:\/\/(?:[a-z0-9-]+\.)?imenu-il\.online$/.test(origin);
+      const isExactMatch = allowedOrigins.includes(origin);
+
+      if (isExactMatch || isDomainAllowed || /^http:\/\/localhost(:\d+)?$/.test(origin)) {
         return callback(null, true);
       }
-      // Allow localhost for development
-      if (/^http:\/\/localhost(:\d+)?$/.test(origin)) {
-        return callback(null, true);
-      }
-      callback(null, false);
+      
+      console.warn(`CORS blocked for origin: ${origin}`);
+      callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
+    optionsSuccessStatus: 200, // For legacy browser support
   }),
 );
+
 
 app.use(express.json());
 

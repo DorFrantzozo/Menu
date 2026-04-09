@@ -121,7 +121,7 @@ const Signin = () => {
           <p className="text-center text-sm text-gray-500 mt-8">
             אין לך חשבון?
             <button
-              onClick={() => navigate("/auth")}
+              onClick={() => navigate("/signup")}
               className="text-orange-500 hover:text-black font-medium ms-2"
             >
               הירשם עכשיו

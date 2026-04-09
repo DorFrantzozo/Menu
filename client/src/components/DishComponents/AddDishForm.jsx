@@ -57,10 +57,7 @@ export default function AddDishForm({ closeModal }) {
     try {
       setIsLoading(true);
       
-      // Debugging: Log all FormData entries
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}:`, value);
-      }
+   
 
       await axiosInstance.post(`/dish/createDish/${user._id}`, formData, {
         headers: {

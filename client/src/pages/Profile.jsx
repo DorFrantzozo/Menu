@@ -31,10 +31,8 @@ const Profile = () => {
 
       // בדיקה אם יש נתונים תקינים (לא null ולא מערך ריק)
       if (data && data !== "[]") {
-        console.log("טוען היסטוריה מהלוקאל סטורג'");
         setPaymentHistory(JSON.parse(data));
       } else {
-        console.log("לוקאל ריק, מושך מהשרת...");
 
         const token = localStorage.getItem("token");
         if (!token) return console.error("אין טוקן בלוקאל סטורג'!");
@@ -43,7 +41,6 @@ const Profile = () => {
           // חייב await כאן! זה מחכה שהשרת יחזיר תשובה
           const historyFromServer = await fetchPaymentHistory(token);
 
-          console.log("נתונים שהתקבלו מהשרת:", historyFromServer);
 
           // עדכון הלוקאל סטורג' והסטייט
           localStorage.setItem(

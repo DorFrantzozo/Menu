@@ -9,8 +9,11 @@ import axiosInstance from "@/utils/baseUrl";
 import { fetchCategoriesAndDishes } from "@/utils/fetchData";
 import { isCategoryActive } from "@/utils/isCategoryActive";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "../../context/LanguageContext";
+import FloatingLanguageSelector from "../../components/LanguageSelector/FloatingLanguageSelector";
 
 const Design2 = ({ menu: menuProp }) => {
+  const { language } = useLanguage();
   const [restaurant, setRestaurant] = useState(null);
   const [categories, setCategories] = useState([]);
   const [dishes, setDishes] = useState({});
@@ -91,7 +94,7 @@ const Design2 = ({ menu: menuProp }) => {
               .map((category) => (
                 <div key={category._id} className="mb-6">
                   <h2 className="text-2xl font-semibold flex justify-center text-gray-700 border-b pb-2 mb-4">
-                    {category.name}
+                    {language === "en" && category.nameEn ? category.nameEn : category.name}
                   </h2>
                   <div>
                     {dishes[category._id] &&
@@ -99,8 +102,8 @@ const Design2 = ({ menu: menuProp }) => {
                         <div key={dish._id} className="p-4 w-full">
                           <div className="flex justify-between items-center">
                             <Allergies dish={dish} />
-                            <h3 className="text-lg font-semibold text-gray-700 text-wrap">
-                              {dish.name}
+                            <h3 className={`text-lg font-semibold text-gray-700 text-wrap ${language === "en" ? "text-left" : "text-right"}`}>
+                              {language === "en" && dish.nameEn ? dish.nameEn : dish.name}
                             </h3>
                           </div>
 
@@ -117,8 +120,8 @@ const Design2 = ({ menu: menuProp }) => {
                                 </p>
                               )}
                             </div>
-                            <p className="whitespace-normal break-words text-sm sm:text-base md:text-lg lg:text-xl text-right ms-10">
-                                {dish.description}
+                            <p className={`whitespace-normal break-words text-sm sm:text-base md:text-lg lg:text-xl ms-10 ${language === "en" ? "text-left" : "text-right"}`}>
+                                {language === "en" && dish.descriptionEn ? dish.descriptionEn : dish.description}
                             </p>
                           </div>
                         </div>
@@ -132,6 +135,7 @@ const Design2 = ({ menu: menuProp }) => {
           </div>
         </div>
       )}
+      <FloatingLanguageSelector />
     </div>
   );
 };

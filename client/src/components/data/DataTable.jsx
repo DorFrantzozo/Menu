@@ -44,7 +44,7 @@ export default function DataTable() {
 
   const handleStatusChange = async (userId, newStatus) => {
     try {
-      console.log(userId, newStatus);
+   
       // Update local state immediately for better UX
       const updatedData = data.map((user) => {
         if (user._id === userId) {

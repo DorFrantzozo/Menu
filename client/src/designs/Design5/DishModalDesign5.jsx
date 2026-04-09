@@ -3,8 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import useTrackDishView from "@/hooks/useTrackDishView";
 import Allergies from "@/components/sensitivities/Allergies";
+import { useLanguage } from "../../context/LanguageContext";
 
 const DishModalDesign5 = ({ dish, isOpen, onClose }) => {
+  const { language } = useLanguage();
   useTrackDishView(isOpen ? dish?._id : null);
 
   // Lock body scroll when modal is open
@@ -59,13 +61,13 @@ const DishModalDesign5 = ({ dish, isOpen, onClose }) => {
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto p-5 pb-8" dir="rtl">
+            <div className={`flex-1 overflow-y-auto p-5 pb-8 ${language === "en" ? "text-left" : "text-right"}`} dir={language === "en" ? "ltr" : "rtl"}>
               <h2 className="text-2xl font-bold text-slate-900 mb-2">
-                {dish.name}
+                {language === "en" && dish.nameEn ? dish.nameEn : dish.name}
               </h2>
 
               <p className="text-slate-500 text-sm leading-relaxed mb-4">
-                {dish.description}
+                {language === "en" && dish.descriptionEn ? dish.descriptionEn : dish.description}
               </p>
 
               {/* Price */}
@@ -86,10 +88,12 @@ const DishModalDesign5 = ({ dish, isOpen, onClose }) => {
 
               {/* Allergies/Sensitivities */}
               <div className="border-t border-slate-100 pt-4">
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
-                  מידע תזונתי
+                <p className={`text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 ${language === "en" ? "text-left" : "text-right"}`}>
+                  {language === "en" ? "Nutritional Information" : "מידע תזונתי"}
                 </p>
-                <Allergies dish={dish} />
+                <div className={`flex ${language === "en" ? "justify-start" : "justify-start"}`}>
+                  <Allergies dish={dish} />
+                </div>
               </div>
             </div>
           </motion.div>

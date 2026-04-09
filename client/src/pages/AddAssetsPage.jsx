@@ -39,7 +39,6 @@ export default function AddAssetPage() {
           },
         }
       );
-      console.log("image uploaded successfully:", response.data);
       toast.success("תמונה הועלתה בהצלחה");
       navigate("/dashboard");
     } catch (error) {

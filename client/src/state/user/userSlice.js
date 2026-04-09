@@ -36,7 +36,6 @@ const userSlice = createSlice({
     updateUser: (state, action) => {
       state.user = action.payload;
       localStorage.removeItem("user");
-      console.log(action.payload);
       localStorage.setItem("user", JSON.stringify(action.payload));
     },
   },

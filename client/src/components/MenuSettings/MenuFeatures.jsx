@@ -20,7 +20,6 @@ const MenuFeatures = () => {
 
   useEffect(() => {}, []);
   const handleUpdateSettings = async () => {
-    console.log(wifiSettings);
 
     try {
       const response = await updateMenuSettings(wifiSettings);

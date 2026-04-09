@@ -20,10 +20,7 @@ export const ThemeProvider = ({ children }) => {
     '/menu', '/design1', '/design2', '/design3', '/design4', '/design5', '/design4DishDetails'
   ];
 
-  const isPublicMenu = publicMenuPaths.some(path => location.pathname.startsWith(path)) || 
-                       (window.location.hostname !== 'localhost' && 
-                        window.location.hostname !== 'menuyou.online' && 
-                        window.location.hostname !== 'www.menuyou.online');
+  const isPublicMenu = publicMenuPaths.some(path => location.pathname.startsWith(path));
 
   // Also Landing2 (path === '/') should not be dark
   const isLandingPage = location.pathname === '/';
@@ -34,8 +31,6 @@ useEffect(() => {
   const root = window.document.documentElement;
 
   // הוספת לוגים ל-Console כדי שתוכל לראות בזמן אמת ב-Production מה קורה
-  console.log("Current Path:", location.pathname);
-  console.log("Should Apply Dark:", shouldApplyDark);
 
   if (shouldApplyDark) {
     root.classList.add('dark');

@@ -51,7 +51,7 @@ const TopDishes = ({ userId }) => {
   if (!userId) return null;
 
   return (
-    <div dir="rtl" className="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl soft-shadow border border-zinc-100 dark:border-zinc-700/50 flex flex-col h-full w-full flex-1">
+    <div dir="rtl" className="frosted-glass-card p-6 rounded-2xl flex flex-col h-full w-full flex-1">
       <div className="flex items-center justify-between mb-6 shrink-0">
         <h2 className="text-lg font-bold text-zinc-800 dark:text-white">מנות פופולריות</h2>
         <div className="relative">

@@ -24,7 +24,6 @@ export const generateQRCode = async (qrSlug, qrColor) => {
 
     const qrUrl = await QRCode.toDataURL(url, qrOptions);
 
-    console.log("QR URL:", qrUrl);
     return qrUrl;
   } catch (error) {
     console.error("שגיאה בהפקת קוד ה-QR:", error);

@@ -4,13 +4,17 @@ import { toast } from "react-toastify";
 import Alergies from "../../components/sensitivities/Allergies";
 import IconDescription from "../../components/sensitivities/IconDescription";
 import Design1DishModal from "./Design1DishModal";
+
 import axiosInstance from "../../utils/baseUrl";
+import { useLanguage } from "../../context/LanguageContext";
+import FloatingLanguageSelector from "../../components/LanguageSelector/FloatingLanguageSelector";
 
 const Design1Dish = () => {
   const { userId, categoryId, categoryName } = useParams();
   const [dishes, setDishes] = useState([]);
   const [selectedDish, setSelectedDish] = useState(null);
   const navigate = useNavigate();
+  const { language } = useLanguage();
 
 
 
@@ -54,10 +58,10 @@ const Design1Dish = () => {
             >
               חזור
             </button>
-            <h1 className="text-3xl font-bold text-white text-center flex-1">
-              {categoryName}
-            </h1>
-          </div>
+              <h1 className="text-3xl font-bold text-white text-center flex-1">
+                {language === "en" && dishes.length > 0 && dishes[0].categoryNameEn ? dishes[0].categoryNameEn : categoryName}
+              </h1>
+            </div>
         </div>
 
         <div className="flex-grow p-6">
@@ -70,15 +74,15 @@ const Design1Dish = () => {
                   className="flex items-center p-2 space-x-6 cursor-pointer"
                   onClick={() => handleOpenModal(dish)}
                 >
-                  <div className="flex flex-col w-full">
-                    <h3 className="text-lg font-semibold text-right text-gray-700">
-                      {dish.name}
+                  <div className={`flex flex-col w-full ${language === "en" ? "text-left" : "text-right"}`}>
+                    <h3 className="text-lg font-semibold text-gray-700">
+                      {language === "en" && dish.nameEn ? dish.nameEn : dish.name}
                     </h3>
-                    <p className="text-gray-400 mt-2 text-right text-sm mb-2">
-                      {dish.description}
+                    <p className={`text-gray-400 mt-2 text-sm mb-2 ${language === "en" ? "text-left" : "text-right"}`}>
+                      {language === "en" && dish.descriptionEn ? dish.descriptionEn : dish.description}
                     </p>
                     <Alergies dish={dish} />
-                    <div className="flex items-center justify-end gap-2 mt-2">
+                    <div className={`flex items-center gap-2 mt-2 ${language === "en" ? "justify-start" : "justify-end"}`}>
                       {dish.salePrice && Number(dish.salePrice) > 0 && Number(dish.salePrice) !== dish.price ? (
                         <>
                           <p className="font-bold text-xl text-emerald-600">{dish.salePrice} ₪</p>
@@ -112,6 +116,7 @@ const Design1Dish = () => {
         isOpen={!!selectedDish} // המודל יפתח אם יש מנה נבחרת
         onClose={handleCloseModal}
       />
+      <FloatingLanguageSelector />
     </>
   );
 };

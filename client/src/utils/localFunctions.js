@@ -26,7 +26,6 @@ const countActiveItems = (array) => {
     }
 
 }
-console.log(itemSum)
 return itemSum
 
 }

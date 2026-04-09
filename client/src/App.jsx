@@ -56,6 +56,7 @@ import SuccessPage from "./pages/payment/SuccessPaymentPage";
 import CheckoutPage from "./pages/payment/CheckoutPage";
 import Accessibility from "./pages/legal/Accessibility";
 import AuthPage from "./pages/AuthPage";
+import Design6 from "./designs/Design6/Design6";
 
 function App() {
   const dispatch = useDispatch();
@@ -261,6 +262,7 @@ function App() {
                       element={<DishDetails />}
                     />
                     <Route path="/design5" element={<Design5 />} />
+                    <Route path="/design6" element={<Design6 />} />
                     <Route path="/checkout" element={<CheckoutPage />} />
                     <Route path="/payment-success" element={<SuccessPage />} />
                     <Route

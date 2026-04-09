@@ -15,6 +15,7 @@ export default function AddCategory() {
   const user = useSelector((state) => state.user.user);
   const menuCategories = useSelector((state) => state.menuCategories.menuCategories);
   const [name, setName] = useState("");
+  const [nameEn, setNameEn] = useState("");
   const [description, setDescription] = useState("");
   const [img, setImg] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -34,6 +35,7 @@ export default function AddCategory() {
     const formData = new FormData();
     formData.append("userId", user._id);
     formData.append("name", name);
+    formData.append("nameEn", nameEn);
     formData.append("locationNumber", newLocationNumber);
     formData.append("description", description);
     formData.append("img", img);
@@ -51,7 +53,7 @@ export default function AddCategory() {
         updatedCategories
       );
       dispatch(setMenuCategories(categoriesWithDishes));
-      console.log(categoriesWithDishes);
+  
 
       setIsLoading(false);
       toast.success("הקטגוריה נוספה בהצלחה");
@@ -81,7 +83,7 @@ export default function AddCategory() {
           יצירת קטגוריה חדשה
         </h2>
 
-        <div className="grid grid-cols-1 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* שם הקטגוריה */}
           <div>
             <label className="block text-sm font-medium text-slate-700">
@@ -93,6 +95,20 @@ export default function AddCategory() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 shadow-sm focus:ring-2 focus:ring-green-300 focus:outline-none"
+            />
+          </div>
+          {/* שם הקטגוריה באנגלית */}
+          <div>
+            <label className="block text-sm font-medium text-slate-700">
+              שם הקטגוריה באנגלית <span className="text-xs text-slate-400">(אופציונלי)</span>
+            </label>
+            <input
+              type="text"
+              value={nameEn}
+              onChange={(e) => setNameEn(e.target.value)}
+              dir="ltr"
+              placeholder="e.g. Starters"
+              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 shadow-sm focus:ring-2 focus:ring-green-300 focus:outline-none placeholder-slate-300"
             />
           </div>
         </div>

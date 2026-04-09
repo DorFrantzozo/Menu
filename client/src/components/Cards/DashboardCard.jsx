@@ -13,7 +13,7 @@ const DashboardCard = ({
   animateValue = false,
 }) => {
   return (
-    <div className="bg-surface-light dark:bg-surface-dark p-5 rounded-2xl soft-shadow border border-zinc-100 dark:border-zinc-700/50 flex flex-col justify-between h-32 relative overflow-hidden transition-transform duration-300 hover:scale-[1.02] hover:shadow-md group">
+    <div className="frosted-glass-card p-5 rounded-2xl flex flex-col justify-between h-32 relative overflow-hidden transition-transform duration-300 hover:scale-[1.02] group">
       <div className="flex justify-between items-start z-10 relative">
         <div className="text-right">
           <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">{name}</p>

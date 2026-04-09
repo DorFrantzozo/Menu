@@ -12,6 +12,7 @@ import design2Tambneil from "../../assets/img/design2Tambneil.png";
 import design3Tambneil from "../../assets/img/design3Tambneil.png";
 import design4Tambneil from "../../assets/img/design4Tambneil.png";
 import design5Tambneil from "../../assets/img/design5Tambneil.png";
+import design6Tambneil from "../../assets/img/design6Tambneil.png";
 
 const Designs = () => {
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ const Designs = () => {
       { img: design4Tambneil, number: 4, title: "Design 3", desc: "עיצוב צבעוני ודינאמי" },
     { img: design2Tambneil, number: 2, title: "Design 4", desc: "תצוגה קלאסית נקייה" },
     { img: design3Tambneil, number: 3, title: "Design 5", desc: "עיצוב כהה יוקרתי" },
+    { img: design6Tambneil, number: 6, title: "Design 6", desc: "תצוגה קלאסית נקייה" },
   ,
    ,
   ];
@@ -49,7 +51,7 @@ const Designs = () => {
       toast.success("העיצוב שונה בהצלחה");
       dispatch(updateUser(response.data.user));
     } catch (error) {
-      console.log(error);
+      toast.error("שגיאה בעדכון עיצוב");
     } finally {
       setIsLoading(false);
     }
@@ -62,7 +64,7 @@ const Designs = () => {
       });
       setMenu(response.data);
     } catch (error) {
-      console.log(error);
+      toast.error("שגיאה בטעינת התפריט");
     }
   };
 

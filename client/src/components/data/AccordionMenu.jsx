@@ -7,9 +7,11 @@ import {
 import PropTypes from "prop-types";
 
 import { useState } from "react";
+import { useLanguage } from "../../context/LanguageContext";
 
 const AccordionMenu = ({ categories, dishes, textColor = "white" }) => {
   const [activeCategory, setActiveCategory] = useState(null);
+  const { language } = useLanguage();
 
   // Sort categories by locationNumber
   const sortedCategories = [...categories].sort(
@@ -34,7 +36,7 @@ const AccordionMenu = ({ categories, dishes, textColor = "white" }) => {
                   : `text-${textColor} hover:text-gray-400`
               }`}
             >
-              {category.name}
+              {language === "en" && category.nameEn ? category.nameEn : category.name}
             </AccordionTrigger>
             <AccordionContent>
               {dishes[category._id] && dishes[category._id].length > 0 ? (
@@ -44,10 +46,10 @@ const AccordionMenu = ({ categories, dishes, textColor = "white" }) => {
                       <li
                         className={`text-2xl font-semibold text-${textColor}`}
                       >
-                        {dish.name}
+                        {language === "en" && dish.nameEn ? dish.nameEn : dish.name}
                       </li>
                       <li className={`text-${textColor}`}>
-                        {dish.description}
+                        {language === "en" && dish.descriptionEn ? dish.descriptionEn : dish.description}
                       </li>
                       <li className="flex justify-center items-center gap-2">
                         {dish.salePrice && Number(dish.salePrice) > 0 && Number(dish.salePrice) !== dish.price ? (

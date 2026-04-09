@@ -12,6 +12,7 @@ import {
   getRestaurantName,
 } from "@/utils/fetchData";
 import { isCategoryActive } from "@/utils/isCategoryActive";
+import FloatingLanguageSelector from "../../components/LanguageSelector/FloatingLanguageSelector";
 
 const Design3 = ({ menu: menuProp }) => {
   const [restaurant, setRestaurant] = useState(null);
@@ -97,6 +98,7 @@ const Design3 = ({ menu: menuProp }) => {
           />
         </div>
       </div>
+      <FloatingLanguageSelector />
     </div>
   );
 };

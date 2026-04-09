@@ -23,6 +23,7 @@ const EditCategoryForm = ({ category, isOpen, setIsOpen }) => {
   const [img, setImg] = useState(null);
   const [hide, setHide] = useState(item.hide || false);
   const [name, setName] = useState(item.name || "");
+  const [nameEn, setNameEn] = useState(item.nameEn || "");
   const [locationNumber, setLocationNumber] = useState(item.locationNumber || 0);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -48,6 +49,7 @@ const EditCategoryForm = ({ category, isOpen, setIsOpen }) => {
 
     const formData = new FormData();
     formData.append("newName", name);
+    formData.append("nameEn", nameEn);
     formData.append("locationNumber", locationNumber);
     formData.append("hide", hide);
     if (img) formData.append("img", img);
@@ -107,7 +109,7 @@ const EditCategoryForm = ({ category, isOpen, setIsOpen }) => {
           עריכת קטגוריה: {item.name}
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-zinc-100 mb-1">
               שם הקטגוריה (עברית)
@@ -118,6 +120,20 @@ const EditCategoryForm = ({ category, isOpen, setIsOpen }) => {
               onChange={(e) => setName(e.target.value)}
               required
               className="w-full rounded-md border border-slate-300 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-zinc-100 mb-1">
+              שם הקטגוריה באנגלית <span className="text-xs text-slate-400 font-normal">(אופציונלי)</span>
+            </label>
+            <input
+              type="text"
+              value={nameEn}
+              onChange={(e) => setNameEn(e.target.value)}
+              dir="ltr"
+              placeholder="e.g. Starters"
+              className="w-full rounded-md border border-slate-300 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none placeholder-slate-300 dark:placeholder-zinc-500"
             />
           </div>
 

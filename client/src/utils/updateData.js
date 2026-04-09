@@ -12,7 +12,6 @@ const updatePaidStatus = async (userId, isPaid) => {
       },
     }
   );
-  console.log(response.data);
   return response.data;
 };
 
@@ -38,7 +37,6 @@ const updateMenuSettings = async ({
       }
     );
 
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error updating menu settings:", error);
@@ -54,7 +52,6 @@ const SendLinkToEmail = async (email) => {
       subject: "איפוס סיסמה",
       userName: "לקוח יקר",
     });
-    console.log(data)
 
     if (data?.success) {
       toast.success("נשלח קישור לאיפוס הסיסמה למייל שלך.");

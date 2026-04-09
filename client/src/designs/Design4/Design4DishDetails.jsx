@@ -3,8 +3,11 @@ import useTrackDishView from "@/hooks/useTrackDishView";
 import Allergies from "@/components/sensitivities/Allergies";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLanguage } from "../../context/LanguageContext";
+import FloatingLanguageSelector from "../../components/LanguageSelector/FloatingLanguageSelector";
 
 const Design4DishDetails = () => {
+  const { language } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -42,14 +45,14 @@ const Design4DishDetails = () => {
         />
         
         {/* עטפנו את התוכן עם padding שונה למובייל ומחשב */}
-        <div className="space-y-4 px-4 md:px-8 text-center md:text-right">
+        <div className={`space-y-4 px-4 md:px-8 text-center ${language === "en" ? "md:text-left" : "md:text-right"}`}>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-            {dish.name}
+            {language === "en" && dish.nameEn ? dish.nameEn : dish.name}
           </h2>
           <p className="text-xl text-gray-700 leading-relaxed">
-            {dish.description}
+            {language === "en" && dish.descriptionEn ? dish.descriptionEn : dish.description}
           </p>
-          <div className="flex items-center justify-center md:justify-start gap-3">
+          <div className={`flex items-center justify-center gap-3 ${language === "en" ? "md:justify-start" : "md:justify-start"}`}>
             {dish.salePrice && Number(dish.salePrice) > 0 && Number(dish.salePrice) !== dish.price ? (
               <>
                 <p className="text-3xl text-emerald-600 font-bold">{dish.salePrice} ₪</p>
@@ -75,6 +78,7 @@ const Design4DishDetails = () => {
         <ArrowRight size={24} />
         חזרה לתפריט
       </button>
+      <FloatingLanguageSelector />
     </div>
   );
 };

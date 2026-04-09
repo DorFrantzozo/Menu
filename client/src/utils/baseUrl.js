@@ -28,11 +28,24 @@ axiosInstance.interceptors.request.use(
   },
 );
 
-// 2. המיירט של התשובות (Response Interceptor) - הקיים שלך
-// תפקידו: לטפל במצב שהטוקן פג תוקף (401)
+// 2. המיירט של התשובות (Response Interceptor)
+// תפקידו: לטפל במצב שהטוקן פג תוקף (401) או שגיאות רשת (שרת בשינה)
 axiosInstance.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
+    const originalRequest = error.config;
+
+    // בודק אם זו שגיאת רשת (סבירות גבוהה לשרת בשינה או בעיית CORS)
+    // ולפחות לא ניסינו כבר לעשות Retry
+    if (!error.response && !originalRequest._retry) {
+      originalRequest._retry = true;
+      console.warn("Network error or CORS block detected. Retrying in 2 seconds (server might be waking up)...");
+      
+      // מחכה 2 שניות לפני הניסיון החוזר כדי לתת לשרת זמן לעלות
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      return axiosInstance(originalRequest);
+    }
+
     if (error.response && error.response.status === 401) {
       // Don't redirect/reload if we're already on the auth page to allow toasts to show
       if (window.location.pathname === "/auth") {
@@ -43,8 +56,11 @@ axiosInstance.interceptors.response.use(
       store.dispatch(logoutUser());
       window.location.href = "/auth";
     }
+
+    // אם עדיין יש שגיאה אחרי ה-Retry, או שזו שגיאה אחרת
     return Promise.reject(error);
   },
 );
+
 
 export default axiosInstance;

@@ -43,7 +43,7 @@ const QrProfile = ({ qrSlug }) => {
 
   if (!qrSlug) {
     return (
-      <div dir="rtl" className="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl soft-shadow border border-zinc-100 dark:border-zinc-700/50 flex flex-col items-center justify-center text-center h-full min-h-[400px]">
+      <div dir="rtl" className="frosted-glass-card p-6 rounded-2xl flex flex-col items-center justify-center text-center h-full min-h-[400px]">
         <span className="material-icons-round text-5xl text-zinc-400 mb-4 opacity-50">qr_code_scanner</span>
         <p className="text-zinc-500 dark:text-zinc-400 font-medium max-w-[200px]">
           לא נמצא קוד מזהה, נא לרענן או לפנות לתמיכה.
@@ -53,10 +53,10 @@ const QrProfile = ({ qrSlug }) => {
   }
 
   return (
-    <div dir="rtl" className="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl soft-shadow border border-zinc-100 dark:border-zinc-700/50 flex flex-col items-center justify-center text-center h-full w-full relative">
+    <div dir="rtl" className="frosted-glass-card p-6 rounded-2xl flex flex-col items-center justify-center text-center h-full w-full relative">
       <div className="w-full flex justify-center mb-6 z-10">
         <DefaultDropDown
-          dropDownTitle="עיצוב ה-QR"
+          dropDownTitle=" QR עיצוב "
           dropDownItems={[
             "שחור עם רקע שקוף",
             "שחור עם רקע לבן",

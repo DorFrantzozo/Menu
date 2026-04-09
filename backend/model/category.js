@@ -10,7 +10,10 @@ const Category = new mongoose.Schema({
     type: String,
     required: true,
   },
-
+  nameEn: {
+    type: String,
+    required: false,
+  },
   img: {
     type: String,
     required: false,

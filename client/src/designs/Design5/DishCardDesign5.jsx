@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { toWebP } from "@/utils/cloudinaryUrl";
 import { useState } from "react";
+import { useLanguage } from "../../context/LanguageContext";
 
 const dietaryBadge = (dish) => {
   const tags = [];
@@ -13,6 +14,7 @@ const dietaryBadge = (dish) => {
 
 const DishCardDesign5 = ({ dish, isPopular, onClick }) => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const { language } = useLanguage();
   const tags = dietaryBadge(dish);
 
   return (
@@ -63,11 +65,11 @@ const DishCardDesign5 = ({ dish, isPopular, onClick }) => {
 
       {/* Content */}
       <div className="p-3">
-        <h3 className="text-sm font-bold text-slate-900 truncate leading-tight">
-          {dish.name}
+        <h3 className={`text-sm font-bold text-slate-900 truncate leading-tight ${language === "en" ? "text-left" : "text-right"}`}>
+          {language === "en" && dish.nameEn ? dish.nameEn : dish.name}
         </h3>
-        <p className="text-[11px] text-slate-400 mt-1 line-clamp-2 leading-snug min-h-[28px]">
-          {dish.description}
+        <p className={`text-[11px] text-slate-400 mt-1 line-clamp-2 leading-snug min-h-[28px] ${language === "en" ? "text-left" : "text-right"}`}>
+          {language === "en" && dish.descriptionEn ? dish.descriptionEn : dish.description}
         </p>
         <div className="flex items-center gap-2 mt-2">
           {dish.salePrice && Number(dish.salePrice) > 0 && Number(dish.salePrice) !== dish.price ? (

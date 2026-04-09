@@ -5,7 +5,7 @@ import { PUBLIC_MENU_PROJECTION } from "../utils/projections.js";
 
 const createCategoryByUserId = async (req, res) => {
   try {
-    const { userId, name, locationNumber, hasTimeLimit, startTime, endTime, activeDays } = req.body;
+    const { userId, name, nameEn, locationNumber, hasTimeLimit, startTime, endTime, activeDays } = req.body;
 
     if (!userId || !name || !locationNumber) {
       return res.status(400).json({ message: "All fields are required" });
@@ -62,6 +62,7 @@ const createCategoryByUserId = async (req, res) => {
     const newCategory = new Category({
       userId,
       name,
+      nameEn: nameEn || "",
       img: imgUrl || "",
       locationNumber,
       hasTimeLimit: hasTimeLimit === "true" || hasTimeLimit === true || false,
@@ -101,7 +102,7 @@ const getCategoriesByUserId = async (req, res) => {
 //TODO: function needs category id!!!
 const updateCategoryByUserId = async (req, res) => {
   const { userId, categoryId } = req.params;
-  const { newName, locationNumber, hide, hasTimeLimit, startTime, endTime, activeDays } = req.body;
+  const { newName, nameEn, locationNumber, hide, hasTimeLimit, startTime, endTime, activeDays } = req.body;
 
   try {
     // Ensure categoryId is provided
@@ -168,6 +169,10 @@ const updateCategoryByUserId = async (req, res) => {
 
     if (newName && category.name !== newName) {
       category.name = newName;
+    }
+
+    if (nameEn !== undefined) {
+      category.nameEn = nameEn;
     }
 
     if (hide !== undefined) {

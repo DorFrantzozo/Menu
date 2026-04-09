@@ -5,7 +5,7 @@ import { PUBLIC_MENU_PROJECTION } from "../utils/projections.js";
 const createDish = async (req, res) => {
   try {
     const { userId } = req.params;
-    const { name, description, price, category, pregnant, gluten, lactose, vegi, hide } = req.body;
+    const { name, nameEn, description, descriptionEn, price, category, pregnant, gluten, lactose, vegi, hide } = req.body;
 
     // 0. וולידציה בסיסית
     if (!userId || !name || !price || !category) {
@@ -50,7 +50,9 @@ const createDish = async (req, res) => {
     const newDish = new Dish({
       userId,
       name,
+      nameEn: nameEn || "",
       description: description || "",
+      descriptionEn: descriptionEn || "",
       price: Number(price),
       category,
       pregnant: pregnant === "true" || pregnant === true,
@@ -116,7 +118,9 @@ const updateDish = async (req, res) => {
   const { userId, dishId } = req.params;
   const {
     name,
+    nameEn,
     description,
+    descriptionEn,
     price,
     category,
     pregnant,
@@ -170,7 +174,9 @@ const updateDish = async (req, res) => {
     }
     // Update other fields
     dish.name = name;
+    if (nameEn !== undefined) dish.nameEn = nameEn;
     dish.description = description;
+    if (descriptionEn !== undefined) dish.descriptionEn = descriptionEn;
     dish.price = price;
     dish.category = category;
     dish.pregnant = pregnant;

@@ -80,7 +80,7 @@ const MenuViewsChart = () => {
   return (
     <div
       dir="rtl"
-      className="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl soft-shadow border border-zinc-100 dark:border-zinc-700/50 flex flex-col h-full w-full flex-1"
+      className="frosted-glass-card p-6 rounded-2xl flex flex-col h-full w-full flex-1"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-5 shrink-0">

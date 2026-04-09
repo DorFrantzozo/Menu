@@ -7,6 +7,8 @@ import Spinner from "@/components/Spinner";
 // ✅ ייבוא הפונקציה המסודרת שיצרנו ב-fetchData
 import { getCategories } from "@/utils/fetchData";
 import { isCategoryActive } from "@/utils/isCategoryActive";
+import { useLanguage } from "../../context/LanguageContext";
+import FloatingLanguageSelector from "../../components/LanguageSelector/FloatingLanguageSelector";
 
 const Design1 = ({ menu: menuProp }) => {
   const [restaurant, setRestaurant] = useState(null);
@@ -14,6 +16,7 @@ const Design1 = ({ menu: menuProp }) => {
   const [restaurantName, setRestaurantName] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const { language } = useLanguage();
   
   const menu = menuProp || location.state || {};
 
@@ -97,7 +100,7 @@ const Design1 = ({ menu: menuProp }) => {
                   }
                 >
                   <h2 className="text-xl font-semibold text-center text-gray-800">
-                    {category.name}
+                    {language === "en" && category.nameEn ? category.nameEn : category.name}
                   </h2>
                   <img
                     src={category.img}
@@ -109,6 +112,7 @@ const Design1 = ({ menu: menuProp }) => {
           </div>
         </div>
       )}
+      <FloatingLanguageSelector />
     </div>
   );
 };

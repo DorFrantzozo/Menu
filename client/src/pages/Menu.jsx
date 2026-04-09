@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/baseUrl";
 import Spinner from "@/components/Spinner";
 import useTrackMenuView from "@/hooks/useTrackMenuView";
+import { useLanguage } from "../context/LanguageContext";
 
 // Import Designs
 import Design1 from "../designs/Design1/Design1";
@@ -10,12 +11,14 @@ import Design2 from "../designs/Design2/Design2";
 import Design3 from "../designs/Design3/Design3";
 import Design4 from "../designs/Design4/Design4";
 import Design5 from "../designs/Design5/Design5";
+import Design6 from "@/designs/Design6/Design6";
 
 const Menu = () => {
   const [menu, setMenu] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { language } = useLanguage();
 
   // Extract slug from subdomain (e.g. "aB3x_9Qz" from "aB3x_9Qz.imenu-il.online")
   const hostname = window.location.hostname;
@@ -101,12 +104,13 @@ const Menu = () => {
   }
 
   return (
-    <div className="relative">
+    <div className="relative" dir={language === "en" ? "ltr" : "rtl"}>
       {menu.designNumber === 1 && <Design1 menu={menu} />}
       {menu.designNumber === 2 && <Design2 menu={menu} />}
       {menu.designNumber === 3 && <Design3 menu={menu} />}
       {menu.designNumber === 4 && <Design4 menu={menu} />}
       {menu.designNumber === 5 && <Design5 menu={menu} />}
+      {menu.designNumber === 6 && <Design6 menu={menu} />}
     </div>
   );
 };

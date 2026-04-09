@@ -13,8 +13,11 @@ import Spinner from "@/components/Spinner";
 import useTrackMenuView from "@/hooks/useTrackMenuView";
 import DishCardDesign5 from "./DishCardDesign5";
 import DishModalDesign5 from "./DishModalDesign5";
+import { useLanguage } from "../../context/LanguageContext";
+import FloatingLanguageSelector from "../../components/LanguageSelector/FloatingLanguageSelector";
 
 const Design5 = ({ menu: menuProp }) => {
+  const { language } = useLanguage();
   const [restaurantName, setRestaurantName] = useState("");
   const [restaurantData, setRestaurantData] = useState(null);
   const [categories, setCategories] = useState([]);
@@ -230,7 +233,7 @@ const Design5 = ({ menu: menuProp }) => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans w-full overflow-x-hidden" dir="rtl">
+    <div className="min-h-screen bg-slate-50 font-sans w-full overflow-x-hidden" dir={language === "en" ? "ltr" : "rtl"}>
       {/* ══════════ Hero Section ══════════ */}
       <div className="relative w-full h-60 sm:h-72 overflow-hidden rounded-b-3xl">
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent z-10" />
@@ -276,7 +279,7 @@ const Design5 = ({ menu: menuProp }) => {
                   : "bg-white text-slate-700 border border-slate-200 hover:border-slate-300"
               }`}
             >
-              {cat.name}
+              {language === "en" && cat.nameEn ? cat.nameEn : cat.name}
             </button>
           ))}
         </div>
@@ -322,9 +325,9 @@ const Design5 = ({ menu: menuProp }) => {
       </div>
 
       {/* ══════════ Section Title ══════════ */}
-      <div className="flex items-center justify-between px-4 pt-4 pb-2">
+      <div className={`flex items-center justify-between px-4 pt-4 pb-2 ${language === "en" ? "flex-row-reverse" : ""}`}>
         <h2 className="text-lg font-bold text-slate-900">
-          {selectedCategory?.name || "כל המנות"}
+          {selectedCategory ? (language === "en" && selectedCategory.nameEn ? selectedCategory.nameEn : selectedCategory.name) : (language === "en" ? "All Dishes" : "כל המנות")}
         </h2>
       </div>
 
@@ -354,6 +357,7 @@ const Design5 = ({ menu: menuProp }) => {
         isOpen={!!selectedDish}
         onClose={() => setSelectedDish(null)}
       />
+      <FloatingLanguageSelector />
     </div>
   );
 };

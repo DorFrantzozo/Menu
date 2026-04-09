@@ -21,8 +21,10 @@ export default function AddDish() {
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
+  const [nameEn, setNameEn] = useState("");
   const [img, setImg] = useState("");
   const [description, setDescription] = useState("");
+  const [descriptionEn, setDescriptionEn] = useState("");
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("");
   const [pregnant, setPregnant] = useState(false);
@@ -36,8 +38,10 @@ export default function AddDish() {
     const formData = new FormData();
     formData.append("userId", user._id);
     formData.append("name", name);
+    formData.append("nameEn", nameEn);
     formData.append("img", img);
     formData.append("description", description);
+    formData.append("descriptionEn", descriptionEn);
     formData.append("price", price);
     formData.append("category", category);
     formData.append("pregnant", pregnant);
@@ -105,6 +109,20 @@ export default function AddDish() {
             </div>
 
             <div>
+              <label className="block font-medium mb-1">
+                שם המנה באנגלית <span className="text-xs text-slate-400 font-normal">(אופציונלי)</span>
+              </label>
+              <input
+                type="text"
+                value={nameEn}
+                onChange={(e) => setNameEn(e.target.value)}
+                dir="ltr"
+                placeholder="e.g. Hamburger"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800 shadow-sm focus:ring-green-500 focus:border-green-500 placeholder-slate-300"
+              />
+            </div>
+
+            <div>
               <label className="block font-medium mb-1">מחיר</label>
               <input
                 type="number"
@@ -119,15 +137,30 @@ export default function AddDish() {
             </div>
           </div>
 
-          <div>
-            <label className="block font-medium mb-1">תיאור</label>
-            <textarea
-              rows={3}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800 shadow-sm focus:ring-green-500 focus:border-green-500"
-              placeholder="תיאור מרכיבי המנה"
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block font-medium mb-1">תיאור</label>
+              <textarea
+                rows={3}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800 shadow-sm focus:ring-green-500 focus:border-green-500"
+                placeholder="תיאור מרכיבי המנה"
+              />
+            </div>
+            <div>
+              <label className="block font-medium mb-1">
+                תיאור באנגלית <span className="text-xs text-slate-400 font-normal">(אופציונלי)</span>
+              </label>
+              <textarea
+                rows={3}
+                value={descriptionEn}
+                onChange={(e) => setDescriptionEn(e.target.value)}
+                dir="ltr"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800 shadow-sm focus:ring-green-500 focus:border-green-500 placeholder-slate-300"
+                placeholder="Dish description"
+              />
+            </div>
           </div>
 
           <div>

@@ -49,14 +49,12 @@ const categorySlice = createSlice({
     },
     addMenuDishesToCategory: (state, action) => {
       const { categoryId, dishes } = action.payload;
-      console.log(`Adding dishes to category ${categoryId}:`, dishes);
 
       const categoryIndex = state.menuCategories.findIndex(
         (cat) => cat._id === categoryId
       );
       if (categoryIndex !== -1) {
         state.menuCategories[categoryIndex].menuDishes = dishes;
-        console.log(`Updated category ${categoryId} with dishes:`, dishes);
         saveCategoriesToStorage(state.menuCategories);
       } else {
         console.warn(`Category ${categoryId} not found!`);

@@ -27,7 +27,6 @@ export default function Modal({ open, setOpen, user, item, type }) {
   const [loading, setLoading] = useState(false);
   const handleDelete = async () => {
     setLoading(true);
-    console.log(item);
     try {
       if (type === "dish") {
         await axiosInstance.delete(`/dish/deleteDish/${user._id}/${item._id}`, {

@@ -10,6 +10,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Allergies from "@/components/sensitivities/Allergies";
 import { motion } from "framer-motion";
 import Spinner from "@/components/Spinner";
+import { useLanguage } from "../../context/LanguageContext";
+import FloatingLanguageSelector from "../../components/LanguageSelector/FloatingLanguageSelector";
 
 import useTrackMenuView from "@/hooks/useTrackMenuView";
 
@@ -18,6 +20,7 @@ const Design4 = ({ menu: menuProp }) => {
   const [restaurantData, setRestaurantData] = useState(null);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const { language } = useLanguage();
   const [selectedFilter, setSelectedFilter] = useState("הכל");
   const [filters] = useState([
     "הכל",
@@ -135,12 +138,12 @@ const Design4 = ({ menu: menuProp }) => {
     ) || [];
 
   return (
-    <div className="min-h-screen overflow-x-hidden" dir="rtl">
+    <div className="min-h-screen overflow-x-hidden">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-white shadow-lg ">
-        <div className="flex justify-between items-center py-5 px-4">
+        <div className={`flex justify-between items-center py-5 px-4 ${language === "en" ? "flex-row-reverse" : ""}`}>
           <h1 className="text-2xl font-bold text-black flex items-center gap-2">
-            <span className="text-3xl ms-14">🛎️</span>
+            <span className={`text-3xl ${language === "en" ? "me-14" : "ms-14"}`}>🛎️</span>
             {restaurantData?.displayName ||
               JSON.parse(localStorage.getItem("user"))?.displayName ||
               restaurantName}
@@ -171,7 +174,7 @@ const Design4 = ({ menu: menuProp }) => {
               >
                 <span className="text-xl">{cat.icon}</span>
                 <span className="text-xs font-medium text-center">
-                  {cat.name}
+                  {language === "en" && cat.nameEn ? cat.nameEn : cat.name}
                 </span>
               </button>
             ))}
@@ -223,13 +226,13 @@ const Design4 = ({ menu: menuProp }) => {
                 transition={{ duration: 0.3 }}
               />
               <div className="p-3">
-                <p className="text-sm font-semibold truncate">
-                  {dish.name}
+                <p className={`text-sm font-semibold truncate ${language === "en" ? "text-left" : "text-right"}`}>
+                  {language === "en" && dish.nameEn ? dish.nameEn : dish.name}
                 </p>
-                <p className="text-sm font-light truncate">
-                    {dish.description}
+                <p className={`text-sm font-light truncate ${language === "en" ? "text-left" : "text-right"}`}>
+                    {language === "en" && dish.descriptionEn ? dish.descriptionEn : dish.description}
                 </p>
-                <p className="p-1 text-gray-600">
+                <p className={`p-1 text-gray-600 ${language === "en" ? "text-left" : "text-right"}`}>
                   <Allergies dish={dish} />
                 </p>
                 <div className="flex items-center gap-2">
@@ -249,6 +252,7 @@ const Design4 = ({ menu: menuProp }) => {
           ))
         )}
       </div>
+      <FloatingLanguageSelector />
     </div>
   );
 };

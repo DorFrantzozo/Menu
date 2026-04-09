@@ -20,7 +20,7 @@ const PeakActivityWidget = () => {
 
   if (isLoading) {
     return (
-      <div dir="rtl" className="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-zinc-100 dark:border-zinc-700/50 flex flex-col h-full w-full animate-pulse">
+      <div dir="rtl" className="frosted-glass-card p-6 rounded-2xl flex flex-col h-full w-full animate-pulse">
         <div className="flex items-center justify-between mb-6">
           <div className="h-6 bg-zinc-200 dark:bg-zinc-700 rounded w-1/3"></div>
           <div className="h-8 bg-zinc-200 dark:bg-zinc-700 rounded-full w-1/4"></div>
@@ -32,8 +32,8 @@ const PeakActivityWidget = () => {
 
   if (error) {
     return (
-      <div dir="rtl" className="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-zinc-100 dark:border-zinc-700/50 flex flex-col items-center justify-center h-full w-full min-h-[300px]">
-        <span className="material-icons-round text-red-400 text-4xl mb-2">error_outline</span>
+      <div dir="rtl" className="frosted-glass-card p-6 rounded-2xl flex flex-col items-center justify-center h-full w-full min-h-[300px]">
+        <span className="material-icons-round text-red-200 text-4xl mb-2">error_outline</span>
         <p className="text-zinc-600 dark:text-zinc-400 text-sm">שגיאה בטעינת הנתונים</p>
       </div>
     );
@@ -48,7 +48,7 @@ const PeakActivityWidget = () => {
       return (
         <div className="bg-white dark:bg-zinc-800 p-3 rounded-lg shadow-lg border border-zinc-100 dark:border-zinc-700 text-sm" dir="rtl">
           <p className="font-semibold text-zinc-800 dark:text-white mb-1">{label}</p>
-          <p className="text-amber-500 font-bold">
+          <p className="text-green-600 font-bold">
             {payload[0].value} <span className="text-zinc-500 font-normal">ממוצע צפיות וסריקות</span>
           </p>
         </div>
@@ -88,7 +88,7 @@ const PeakActivityWidget = () => {
   };
 
   return (
-    <div dir="rtl" className="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-zinc-100 dark:border-zinc-700/50 flex flex-col h-full w-full min-h-[300px]">
+    <div dir="rtl" className="frosted-glass-card p-6 rounded-2xl flex flex-col h-full w-full min-h-[300px]">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-lg font-bold text-zinc-800 dark:text-white flex items-center gap-2">
@@ -103,7 +103,7 @@ const PeakActivityWidget = () => {
         {viewMode === "days" && (
           <div className="hidden sm:flex items-center gap-3 text-xs text-zinc-400 dark:text-zinc-500 ml-4">
             <span className="flex items-center gap-1">
-              <span className="inline-block w-3 h-3 rounded-full bg-amber-500"></span>שיא
+              <span className="inline-block w-3 h-3 rounded-full bg-green-500"></span>שיא
             </span>
             <span className="flex items-center gap-1">
               <span className="inline-block w-3 h-3 rounded-full bg-blue-500"></span>היום
@@ -172,7 +172,7 @@ const PeakActivityWidget = () => {
                   <Cell
                     key={`cell-${index}`}
                     fill={fill}
-                    className={(!isPeak && !isToday) ? "dark:fill-amber-500/20" : ""}
+                    className={(!isPeak && !isToday) ? "dark:fill-green-500/20" : ""}
                   />
                 );
               })}

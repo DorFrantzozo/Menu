@@ -14,9 +14,10 @@ const EditDishForm = ({ dish, setShowEditForm }) => {
   const user = useSelector((state) => state.user.user);
   const token = localStorage.getItem("token");
 
-  // State בסיסי
   const [dishName, setDishName] = useState(dish?.name || "");
+  const [dishNameEn, setDishNameEn] = useState(dish?.nameEn || "");
   const [description, setDescription] = useState(dish?.description || "");
+  const [descriptionEn, setDescriptionEn] = useState(dish?.descriptionEn || "");
   const [price, setPrice] = useState(dish?.price || "");
   const [salePrice, setSalePrice] = useState(dish?.salePrice || "");
   const [discountPercent, setDiscountPercent] = useState("");
@@ -63,10 +64,11 @@ const EditDishForm = ({ dish, setShowEditForm }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    console.log(salePrice);
     const formData = new FormData();
     formData.append("name", dishName);
+    formData.append("nameEn", dishNameEn);
     formData.append("description", description);
+    formData.append("descriptionEn", descriptionEn);
     formData.append("price", price);
     formData.append("salePrice", salePrice || 0); // שליחת מחיר המבצע
     formData.append("gluten", gluten);
@@ -136,6 +138,20 @@ const EditDishForm = ({ dish, setShowEditForm }) => {
           </div>
 
           <div className="space-y-1">
+            <label className="text-sm font-semibold text-slate-700 dark:text-zinc-100">
+              שם המנה באנגלית <span className="text-xs text-slate-400 font-normal">(אופציונלי)</span>
+            </label>
+            <input
+              type="text"
+              value={dishNameEn}
+              onChange={(e) => setDishNameEn(e.target.value)}
+              dir="ltr"
+              placeholder="e.g. Hamburger"
+              className="w-full rounded-xl border border-slate-200 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 px-4 py-2.5 focus:ring-2 focus:ring-amber-400 focus:outline-none transition-all placeholder-slate-400 dark:placeholder-zinc-500"
+            />
+          </div>
+
+          <div className="space-y-1 sm:col-span-2">
             <label className="text-sm font-semibold text-slate-700 dark:text-zinc-100">מחיר מקורי (₪)</label>
             <input
               type="number"
@@ -182,14 +198,29 @@ const EditDishForm = ({ dish, setShowEditForm }) => {
         </div>
 
         {/* תיאור */}
-        <div className="space-y-1">
-          <label className="text-sm font-semibold text-slate-700 dark:text-zinc-100">תיאור המנה</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            rows={3}
-            className="w-full rounded-xl border border-slate-200 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 px-4 py-2.5 focus:ring-2 focus:ring-amber-400 focus:outline-none resize-none transition-all"
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-1">
+            <label className="text-sm font-semibold text-slate-700 dark:text-zinc-100">תיאור המנה</label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={3}
+              className="w-full rounded-xl border border-slate-200 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 px-4 py-2.5 focus:ring-2 focus:ring-amber-400 focus:outline-none resize-none transition-all"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-sm font-semibold text-slate-700 dark:text-zinc-100">
+              תיאור המנה באנגלית <span className="text-xs text-slate-400 font-normal">(אופציונלי)</span>
+            </label>
+            <textarea
+              value={descriptionEn}
+              onChange={(e) => setDescriptionEn(e.target.value)}
+              rows={3}
+              dir="ltr"
+              placeholder="Dish description"
+              className="w-full rounded-xl border border-slate-200 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 px-4 py-2.5 focus:ring-2 focus:ring-amber-400 focus:outline-none resize-none transition-all placeholder-slate-400 dark:placeholder-zinc-500"
+            />
+          </div>
         </div>
 
         {/* תכונות צ'קבוקסים */}
