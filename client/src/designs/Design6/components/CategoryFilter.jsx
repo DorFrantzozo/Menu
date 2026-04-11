@@ -21,7 +21,7 @@ const CategoryFilter = ({ categories, activeCategoryId, onSelectCategory }) => {
         </button>
 
         {/* Category Chips */}
-        {categories.map((category) => (
+        {(categories || []).map((category) => (
           <button
             key={category._id}
             onClick={() => onSelectCategory(category._id)}

@@ -94,8 +94,8 @@ const Design6 = ({ menu: menuProp }) => {
   useEffect(() => {
     if (menuProp) {
       setRestaurant(menuProp.user);
-      setCategories(menuProp.categories);
-      setDishesMap(menuProp.dishesMap);
+      setCategories(menuProp.categories || []);
+      setDishesMap(menuProp.dishesMap || {});
     } else {
       const hostname = window.location.hostname;
       const parts = hostname.split(".");
@@ -161,7 +161,7 @@ const Design6 = ({ menu: menuProp }) => {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
+        (entries || []).forEach((entry) => {
           if (entry.isIntersecting && window.scrollY > 100) {
             setActiveCategoryId(entry.target.id.replace('section-', ''));
           } else if (window.scrollY <= 100) {
@@ -172,7 +172,7 @@ const Design6 = ({ menu: menuProp }) => {
       { rootMargin: '-150px 0px -50% 0px' }
     );
 
-    categories.forEach((cat) => {
+    (categories || []).forEach((cat) => {
       const el = sectionRefs.current[cat._id];
       if (el) observer.observe(el);
     });
@@ -203,7 +203,7 @@ const Design6 = ({ menu: menuProp }) => {
       {/* Main Content Area */}
       <div className="max-w-screen-2xl mx-auto pb-24 px-4 sm:px-12 mt-10">
         {viewMode === 'all' ? (
-          categories.map((category, catIndex) => (
+          (categories || []).map((category, catIndex) => (
             <Design6Section 
               key={category._id}
               category={category}
