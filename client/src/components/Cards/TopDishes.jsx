@@ -1,31 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { getTopDishes } from '@/utils/fetchData';
 import Spinner from '@/components/Spinner';
+import { useCachedFetch } from '@/hooks/useCachedFetch';
 
 const TopDishes = ({ userId }) => {
-  const [dishes, setDishes] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [period, setPeriod] = useState('month');
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!userId) return;
-      
-      setLoading(true);
-      try {
-        const data = await getTopDishes(userId, period);
-        setDishes(data);
-        setError(null);
-      } catch (err) {
-        setError('שגיאה בטעינת המנות הפופולריות');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+  const fetchTopDishesData = useCallback(async () => {
+    if (!userId) return [];
+    return await getTopDishes(userId, period);
   }, [userId, period]);
+
+  const { data, isLoading, error } = useCachedFetch(
+    userId ? `top_dishes_${userId}_${period}` : null,
+    fetchTopDishesData,
+    [userId, period]
+  );
+  
+  const dishes = data || [];
 
   const getRankBadgeColor = (index) => {
     switch(index) {
@@ -72,7 +64,7 @@ const TopDishes = ({ userId }) => {
         </div>
       </div>
 
-      {loading ? (
+      {isLoading ? (
         <div className="flex justify-center items-center flex-1 min-h-[100px]">
           <Spinner />
         </div>

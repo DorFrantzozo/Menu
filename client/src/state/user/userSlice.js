@@ -30,8 +30,15 @@ const userSlice = createSlice({
     logoutUser: (state) => {
       state.user = null;
       state.token = null;
-      localStorage.removeItem("user");
-      localStorage.removeItem("token");
+      
+      const safeKeys = ['theme', 'darkMode', 'language', 'i18nextLng', 'adminTheme'];
+      
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const key = localStorage.key(i);
+        if (key && !safeKeys.includes(key)) {
+          localStorage.removeItem(key);
+        }
+      }
     },
     updateUser: (state, action) => {
       state.user = action.payload;

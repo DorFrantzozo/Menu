@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import axiosInstance from "../../utils/baseUrl";
 import Spinner from "@/components/Spinner";
-import { fetchCategoriesAndDishes } from "@/utils/fetchData";
+import { fetchCategoriesAndDishes, getRestaurantName, fetchRestaurant } from "@/utils/fetchData";
 import { isCategoryActive } from "@/utils/isCategoryActive";
 import { useLanguage } from "../../context/LanguageContext";
 import FloatingLanguageSelector from "../../components/LanguageSelector/FloatingLanguageSelector";
@@ -92,35 +92,42 @@ const Design6 = ({ menu: menuProp }) => {
   useTrackMenuView(restaurant?._id || menu?._id);
 
   useEffect(() => {
+    const name = getRestaurantName(menu);
+    if (name) setRestaurantName(name);
+
+    // If menuProp is provided, check if it's the full data or just the user object
     if (menuProp) {
-      setRestaurant(menuProp.user);
-      setCategories(menuProp.categories || []);
-      setDishesMap(menuProp.dishesMap || {});
-    } else {
-      const hostname = window.location.hostname;
-      const parts = hostname.split(".");
-      const name = parts.length >= 3 ? parts[0] : menu?.restaurantName?.toLowerCase();
-      if (name) setRestaurantName(name);
+      if (menuProp.user && menuProp.categories) {
+        // It's the full data (e.g. from a specialized preview or pre-fetched state)
+        setRestaurant(menuProp.user);
+        setCategories(menuProp.categories || []);
+        setDishesMap(menuProp.dishesMap || {});
+      } else {
+        // It's just the user object (e.g. from Menu.jsx public view)
+        setRestaurant(menuProp);
+        // We still need to fetch categories and dishes for this user
+        loadData(menuProp._id);
+      }
     }
   }, [menuProp, menu?.restaurantName]);
 
   useEffect(() => {
     const fetchRestaurantDetails = async () => {
       try {
-        const res = await axiosInstance.get(`/user/find?name=${restaurantName}`);
-        if (res.data) {
-          setRestaurant(res.data);
-          loadData(res.data._id);
+        const data = await fetchRestaurant(restaurantName);
+        if (data) {
+          setRestaurant(data);
+          loadData(data._id);
         }
       } catch (error) {
         toast.error("שגיאה בטעינת נתונים");
       }
     };
 
-    if (restaurantName && !menuProp) {
+    if (restaurantName && !restaurant) {
       fetchRestaurantDetails();
     }
-  }, [restaurantName, menuProp]);
+  }, [restaurantName, restaurant]);
 
   const loadData = async (userId) => {
     if (!userId) return;

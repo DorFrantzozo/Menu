@@ -23,21 +23,23 @@ const ProfileHeader = ({ user }) => {
               <UserCircleIcon className="w-12 h-12 text-gray-300" />
             </div>
           )}
-          
+
           {/* Status Pulse */}
           <div className="absolute bottom-1 right-1 bg-white rounded-full p-1 shadow-sm">
-             <div className="bg-emerald-500 w-3 h-3 rounded-full border-2 border-white animate-pulse"></div>
+            <div className="bg-emerald-500 w-3 h-3 rounded-full border-2 border-white animate-pulse"></div>
           </div>
         </div>
 
         <div className="mt-3 text-center">
           <div className="flex items-center justify-center gap-1.5">
-            <h1 className="text-xl font-black text-zinc-900">{user?.displayName || user?.restaurantName}</h1>
+            <h1 className="text-xl font-black dark:text-white text-zinc-900">
+              {user?.displayName || user?.restaurantName}
+            </h1>
             <CheckBadgeIcon className="w-5 h-5 text-emerald-500" />
           </div>
           <p className="text-[11px] font-bold text-emerald-600 mt-0.5 flex items-center justify-center gap-1">
-             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-             התפריט שלך באוויר
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            התפריט שלך באוויר
           </p>
         </div>
       </div>
