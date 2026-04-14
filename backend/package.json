@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google/genai": "^1.50.0",
     "@sendgrid/mail": "^8.1.5",
     "array-flatten": "^3.0.0",
     "aws4": "^1.13.2",

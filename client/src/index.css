@@ -154,3 +154,80 @@ hr.style-seven:before {
     inset 0 0 15px rgba(255, 255, 255, 0.05);
 }
 
+/* Custom AI Scanning Animations */
+@keyframes progress-indeterminate {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(0%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-progress-indeterminate {
+  animation: progress-indeterminate 2s infinite linear;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-in-bottom {
+  from { transform: translateY(8px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-in {
+  animation-duration: 500ms;
+  animation-fill-mode: both;
+}
+
+.fade-in {
+  animation-name: fade-in;
+}
+
+.slide-in-from-bottom-2 {
+  animation-name: slide-in-bottom;
+}
+
+/* Green AI Glow Animation */
+@keyframes rotating-glow {
+  0% { transform: rotate(0deg) scale(1); opacity: 0.3; }
+  50% { transform: rotate(180deg) scale(1.1); opacity: 0.5; }
+  100% { transform: rotate(360deg) scale(1); opacity: 0.3; }
+}
+
+.animate-rotate-glow {
+  animation: rotating-glow 8s linear infinite;
+}
+
+.bg-conic-green {
+  background: conic-gradient(from 0deg, transparent 0%, #4ade80 50%, transparent 100%);
+}
+
+/* Siri-like Organic Blob Animation */
+@keyframes blob-organic {
+  0% { 
+    transform: rotate(0deg) scale(1) translate(0, 0); 
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; 
+  }
+  33% { 
+    transform: rotate(120deg) scale(1.1) translate(8px, -12px); 
+    border-radius: 60% 40% 30% 70% / 50% 60% 40% 60%; 
+  }
+  66% { 
+    transform: rotate(240deg) scale(0.95) translate(-12px, 8px); 
+    border-radius: 30% 70% 60% 40% / 60% 30% 50% 70%; 
+  }
+  100% { 
+    transform: rotate(360deg) scale(1) translate(0, 0); 
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; 
+  }
+}
+
+.animate-blob-organic {
+  animation: blob-organic 12s ease-in-out infinite;
+}
+
+/* Custom Mint Color if not in Tailwind config */
+.bg-mint-400 {
+  background-color: #a7f3d0;
+}
