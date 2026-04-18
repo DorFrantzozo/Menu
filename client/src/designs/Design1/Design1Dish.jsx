@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import Alergies from "../../components/sensitivities/Allergies";
 import IconDescription from "../../components/sensitivities/IconDescription";
 import Design1DishModal from "./Design1DishModal";
+import FavoriteHeart from "../../components/buttons/FavoriteHeart";
 
 import axiosInstance from "../../utils/baseUrl";
 import { useLanguage } from "../../context/LanguageContext";
@@ -71,7 +72,7 @@ const Design1Dish = () => {
               .map((dish) => (
                 <div
                   key={dish._id}
-                  className="flex items-center p-2 space-x-6 cursor-pointer"
+                  className="flex items-center p-2 space-x-6 cursor-pointer relative"
                   onClick={() => handleOpenModal(dish)}
                 >
                   <div className={`flex flex-col w-full ${language === "en" ? "text-left" : "text-right"}`}>
@@ -95,11 +96,16 @@ const Design1Dish = () => {
                       )}
                     </div>
                   </div>
-                  <img
-                    src={dish.img}
-                    className="dish-img rounded-xl object-cover shadow-lg w-[120px] h-[120px]"
-                    alt={dish.name}
-                  />
+                  <div className="relative flex-shrink-0">
+                    <div className="absolute top-2 right-2 z-10">
+                      <FavoriteHeart dishId={dish._id} className="w-8 h-8 md:w-10 md:h-10" />
+                    </div>
+                    <img
+                      src={dish.img}
+                      className="dish-img rounded-xl object-cover shadow-lg w-[120px] h-[120px]"
+                      alt={dish.name}
+                    />
+                  </div>
                 </div>
               ))}
           </div>

@@ -8,6 +8,7 @@ import {Menu, X} from "lucide-react";
 import logoDarkBg from "../assets/logos/logo 1200X600.png";
 import logoWhiteBg from "../assets/logos/logo white background.jpg";
 import {useTheme} from "@/context/ThemeContext";
+import PremiumSidebarButton from "./nav/PremiumSidebarButton";
 
 const Sidebar = ({user}) => {
   const [isMobile, setIsMobile] = useState(false);
@@ -56,7 +57,7 @@ const Sidebar = ({user}) => {
       icon: "dashboard",
       navigate: "/dashboard",
     },
-      {
+    {
       name: "קטגוריות",
       key: "Categories",
       icon: "category",
@@ -70,7 +71,6 @@ const Sidebar = ({user}) => {
       navigate: "/manage-dishes",
       tourKey: "dishes",
     },
-  
     {
       name: "תפריט חי",
       key: "PublicMenu",
@@ -84,6 +84,13 @@ const Sidebar = ({user}) => {
       icon: "palette",
       navigate: "/designs",
       tourKey: "design",
+    },
+    {
+      name: "תובנות AI",
+      key: "AIInsights",
+      icon: "auto_awesome",
+      navigate: "/ai-insights",
+      isPremium: true,
     },
   ];
 
@@ -111,7 +118,7 @@ const Sidebar = ({user}) => {
   const sidebarContent = (
     <aside
       dir="rtl"
-      className="w-64 bg-surface-light dark:bg-zinc-950 border-l border-zinc-200 dark:border-zinc-800 flex flex-col h-full shrink-0 z-20 transition-all duration-300"
+      className="w-64 bg-surface-light dark:bg-background border-l border-zinc-200 dark:border-zinc-800 flex flex-col h-full shrink-0 z-20 transition-all duration-300"
     >
       <div className="h-16 flex items-center px-6 border-b border-zinc-100 dark:border-zinc-700/50 justify-between">
         <div className="flex items-center gap-2">
@@ -154,6 +161,39 @@ const Sidebar = ({user}) => {
         <nav className="px-4 space-y-1">
           {menuItems.map((item) => {
             const isActive = active === item.key;
+            const isPremium = item.isPremium;
+
+            if (isPremium) {
+              return (
+                <button
+                  key={item.key}
+                  className={`flex items-center w-full gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group ${
+                    isActive
+                      ? "bg-purple-500/20 text-purple-300 font-semibold border border-purple-500/30"
+                      : "text-purple-400/80 hover:bg-purple-500/10 hover:text-purple-300 border border-transparent hover:border-purple-500/20"
+                  }`}
+                  onClick={() => {
+                    setActive(item.key);
+                    if (item.customNavigate) {
+                      item.customNavigate();
+                    } else if (item.navigate) {
+                      navigate(item.navigate);
+                    }
+                    if (isMobile) setMobileOpen(false);
+                  }}
+                  data-tour={item.tourKey}
+                >
+                  <span className="material-icons-round text-xl text-purple-400 group-hover:scale-110 transition-transform">
+                    {item.icon}
+                  </span>
+                  <span>{item.name}</span>
+                  <span className="mr-auto text-[9px] font-extrabold bg-gradient-to-r from-amber-400 to-orange-500 text-black px-1.5 py-0.5 rounded-full uppercase tracking-wide">
+                    PRO
+                  </span>
+                </button>
+              );
+            }
+
             return (
               <button
                 key={item.key}
@@ -186,6 +226,8 @@ const Sidebar = ({user}) => {
           })}
         </nav>
 
+        <PremiumSidebarButton />
+        
         <div className="px-4 mt-8">
           <div className="text-xs font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-2 px-3">
             הגדרות

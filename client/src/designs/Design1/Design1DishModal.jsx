@@ -5,6 +5,7 @@ import Alergies from "../../components/sensitivities/Allergies";
 import { Button } from "@/components/ui/button";
 import useTrackDishView from "@/hooks/useTrackDishView";
 import { useLanguage } from "../../context/LanguageContext";
+import FavoriteHeart from "../../components/buttons/FavoriteHeart";
 
 const Design1DishModal = ({ dish, isOpen, onClose }) => {
   const { language } = useLanguage();
@@ -18,16 +19,19 @@ const Design1DishModal = ({ dish, isOpen, onClose }) => {
         <div className="relative w-full h-full bg-white shadow-lg overflow-y-auto">
           <Button
             onClick={onClose}
-            className="absolute top-4 right-4 text-white hover:text-gray-900 z-50"
+            className="absolute top-4 left-4 text-white hover:text-white z-50 bg-gray-900/80 hover:bg-gray-900 rounded-full w-10 h-10 p-0 flex items-center justify-center shadow-lg transition-all"
             variant="ghost"
           >
-            <X size={24} />
+            <X size={24} strokeWidth={2.5} />
           </Button>
 
           <div
             className="flex flex-col items-center text-center"
           >
             <div className="relative w-full">
+              <div className="absolute top-4 right-4 z-50">
+                <FavoriteHeart dishId={dish._id} />
+              </div>
               <img
                 src={dish.img}
                 alt={dish.name}

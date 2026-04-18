@@ -25,7 +25,9 @@ export const loginToMorning = async () => {
       "❌ OAuth Login Failed:",
       error.response?.data || error.message,
     );
-    throw new Error("Morning Authentication Failed");
+    // ⚠️ התיקון: במקום לזרוק טקסט כללי, אנחנו זורקים את השגיאה המקורית של Axios 
+    // כדי שהקונטרולר יוכל לשלוף משם את ה-errorCode
+    throw error;
   }
 };
 
@@ -52,7 +54,8 @@ const morningRequest = async (method, endpoint, data = {}) => {
       cachedToken = null;
       return morningRequest(method, endpoint, data);
     }
-    throw error;
+    // כאן זה כבר היה תקין - אתה מעביר את השגיאה הלאה
+    throw error; 
   }
 };
 
@@ -99,7 +102,6 @@ export const createPaymentLink = async (
       maxPayments: 1,
       pluginId: "1365af74-0ac5-4935-8bdd-7a57c75d6a36",
       client: {
-        // אם כבר יש לו ID נשלח אותו, אם לא - מורנינג ייצור חדש לפי המייל
         id: user.morningCustomerId || undefined,
         name: checkoutData.fullName.trim(),
         emails: [checkoutData.email.trim().toLowerCase()],
@@ -131,6 +133,7 @@ export const createPaymentLink = async (
       "❌ Morning API Error:",
       error.response?.data || error.message,
     );
+    // כאן זה כבר היה תקין - אתה מעביר את השגיאה הלאה
     throw error;
   }
 };

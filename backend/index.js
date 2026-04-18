@@ -16,8 +16,11 @@ import aiRouter from "./routes/ai-route.js";
 import {generalLimiter} from "./middlewares/rateLimiter.js";
 import {globalErrorHandler} from "./middlewares/errorHandler.js";
 import {initPaymentReminders} from "./utils/paymentReminders.js";
+import startNightlyInsightsCron from "./scripts/nightlyInsights.js";
+import insightRoutes from './routes/insightRoutes.js';
 
 dotenv.config();
+
 
 const app = express();
 app.set('trust proxy', 1);
@@ -54,7 +57,7 @@ app.use(
   }),
 );
 
-
+startNightlyInsightsCron();//GROQ AI SERVICE
 app.use(express.json());
 
 // Apply general rate limiter to all API routes
@@ -68,12 +71,14 @@ app.use("/api/support", supportRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/payments", paymentRouter);
 app.use("/api/ai", aiRouter);
+app.use('/api/insights', insightRoutes);
 
 // Dynamic QR Redirect Route (no global rate limiter applied here because QR scans can be frequent)
 app.get("/go/:slug", handleQrRedirect);
 
 // Global Error Handling Middleware (Must be the last app.use!)
 app.use(globalErrorHandler);
+
 
 try {
   await connect();

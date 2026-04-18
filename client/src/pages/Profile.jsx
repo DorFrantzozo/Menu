@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ProfileHeader from "@/components/Profile/ProfileHeader";
 import BusinessInfoCard from "@/components/Profile/BusinessInfoCard";
-import SubscriptionCard from "@/components/Profile/SubscriptionCard";
+import SubscriptionStatusCard from "@/components/Profile/SubscriptionStatusCard";
 import QRCodeManager from "@/components/Profile/QRCodeManager";
 
 import { useNavigate } from "react-router-dom";
@@ -94,7 +94,6 @@ const Profile = () => {
                 </button>
               </div>
             </div>
-            <SubscriptionCard user={userFromStorage} />
           </div>
 
           {/* Side Column (Left Side - 4 Columns) - Strictly QRCodeManager */}
@@ -102,7 +101,8 @@ const Profile = () => {
             <QRCodeManager qrSlug={qrSlug} />
           </div>
         </div>
-        <div className="w-full mt-8">
+        <div className="w-full mt-8 flex flex-col gap-6">
+            <SubscriptionStatusCard currentPlan={userFromStorage?.plan || 'Essential'} />
           <DataTableGeneric columns={paymentColumns} data={paymentHistory} />
         </div>
       </div>

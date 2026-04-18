@@ -32,7 +32,7 @@ const Designs = () => {
           } 
         }
       );
-      toast.success("העיצוב שונה בהצלחה");
+      toast.success(designNumber);
       dispatch(updateUser(response.data.user));
     } catch (error) {
       toast.error("שגיאה בעדכון עיצוב");

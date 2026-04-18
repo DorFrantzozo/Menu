@@ -26,10 +26,30 @@ export const startCheckout = async (req, res) => {
     // החזרת הלינק לפרונט
     res.status(200).json({url: paymentSession.url || paymentSession.link});
   } catch (error) {
+    // --- תחילת טיפול השגיאות המעודכן ---
+    
+    // מנסים לחלץ את קוד והודעת השגיאה המקוריים שמורנינג החזירו
+    const morningErrorCode = error.response?.data?.errorCode || error.response?.data?.error;
+    const morningErrorMessage = error.response?.data?.errorMessage || error.response?.data?.error_description;
+
+    // אם יש קוד שגיאה ממורנינג (למשל 1111 או 2014), נחזיר סטטוס 400 לפרונט
+    if (morningErrorCode) {
+      console.error(`❌ Morning API Error [${morningErrorCode}]:`, morningErrorMessage);
+      return res.status(400).json({
+        success: false,
+        errorCode: morningErrorCode,
+        message: morningErrorMessage || "שגיאה מול חברת הסליקה"
+      });
+    }
+
+    // אם זו שגיאה כללית אחרת בשרת, נחזיר סטטוס 500 כמקודם
     console.error("❌ Checkout Controller Error:", error.message);
     res.status(500).json({message: error.message});
+    
+    // --- סוף טיפול השגיאות המעודכן ---
   }
 };
+
 const recordPaymentInDB = async (userId, payload, assignedPlan) => {
   try {
     await Payment.create({

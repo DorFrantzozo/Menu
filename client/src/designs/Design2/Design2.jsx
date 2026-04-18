@@ -99,7 +99,8 @@ const Design2 = ({ menu: menuProp }) => {
                   <div>
                     {dishes[category._id] &&
                       dishes[category._id].map((dish) => (
-                        <div key={dish._id} className="p-4 w-full">
+                        <div key={dish._id} className="p-4 w-full relative">
+                       
                           <div className="flex justify-between items-center">
                             <Allergies dish={dish} />
                             <h3 className={`text-lg font-semibold text-gray-700 text-wrap ${language === "en" ? "text-left" : "text-right"}`}>

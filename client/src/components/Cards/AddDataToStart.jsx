@@ -2,7 +2,7 @@ import { PlusCircleIcon } from "lucide-react";
 import { SparklesIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import MenuScannerModal from "../AI-Scanner/MenuScannerModal";
+import MenuScannerModal from "../Ai/AI-Scanner/MenuScannerModal";
 
 const AddDataToStart = () => {
   const navigate = useNavigate();

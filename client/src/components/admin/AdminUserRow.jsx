@@ -34,7 +34,7 @@ export default function AdminUserRow({ user, onStatusUpdate }) {
   };
 
   // Handle Menu Link
-  const menuLink = user.qrSlug ? `${window.location.origin}/go/${user.qrSlug}` : "#";
+  const menuLink = user.qrSlug ? `https://${user.qrSlug}.imenu-il.online/menu` : "#";
 
   return (
     <tr className="border-b border-slate-100 hover:bg-slate-50 transition-colors group">
@@ -81,6 +81,19 @@ export default function AdminUserRow({ user, onStatusUpdate }) {
                 handelSelectedProp={handleStatusChange}
               />
             </div>
+        </div>
+      </td>
+
+           {/* Status (isPaid) */}
+      <td className="p-4 align-middle">
+        <div className="flex items-center gap-2">
+            <div
+              className={`px-2 py-1 rounded-md text-white text-center text-xs font-bold whitespace-nowrap `}
+            >
+            <p className="text-xs text-black">{user.plan}</p>
+            </div>
+            
+         
         </div>
       </td>
 

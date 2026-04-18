@@ -18,7 +18,7 @@ export const isAdminMiddleware = async (req, res, next) => {
 };
 
 // 1. Get Dashboard Stats (Aggregation)
-export const getAdminDashboardStats = async (req, res) => {
+export const  getAdminDashboardStats = async (req, res) => {
   try {
     // We want to fetch all users (except maybe admins, or we can include them)
     const users = await User.find({ role: { $ne: "admin" } }).select("-password");
@@ -30,6 +30,8 @@ export const getAdminDashboardStats = async (req, res) => {
 
       return {
         _id: user._id,
+        designNumber: user.designNumber,
+        plan: user.plan,
         restaurantName: user.restaurantName,
         displayName: user.displayName,
         email: user.email,

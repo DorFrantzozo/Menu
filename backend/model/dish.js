@@ -60,6 +60,10 @@ const Dish = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  likes: {
+    type: Number,
+    default: 0,
+  },
 });
 
-export default mongoose.model("Dish", Dish);
+export default mongoose.models.Dish || mongoose.model("Dish", Dish);

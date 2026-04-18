@@ -52,6 +52,7 @@ import CheckoutPage from "./pages/payment/CheckoutPage";
 import Accessibility from "./pages/legal/Accessibility";
 import AuthPage from "./pages/AuthPage";
 import Design6 from "./designs/Design6/Design6";
+import AIInsightsPage from "./pages/AIInsights/AIInsightsPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -130,7 +131,7 @@ function App() {
   }, [dispatch]);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-background text-foreground transition-colors duration-200">
       <BrowserRouter>
         <ThemeProvider>
           <ScrollToTop />
@@ -213,8 +214,12 @@ function App() {
                       element={user ? <Profile /> : <Landing2 />}
                     />
                     <Route
-                      path="/support"
+                       path="/support"
                       element={user ? <SupportPage /> : <Landing2 />}
+                    />
+                    <Route
+                      path="/ai-insights"
+                      element={user ? <AIInsightsPage /> : <Navigate to="/auth" />}
                     />
                     <Route
                       path="/profile/edit"

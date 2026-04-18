@@ -1,23 +1,26 @@
 import React from "react";
-import {useSelector} from "react-redux";
-import {useNavigate, Navigate} from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import PricingCard from "../components/Cards/PricingCard";
+// ייבוא הקבועים והרשימות המופרדות
+import { 
+  ESSENTIAL_FEATURES, 
+  ADVANCE_ADDONS, 
+  PRO_ADDONS 
+} from "../config/plans"; 
 
 const faqs = [
   {
     question: "האם יש התחייבות?",
-    answer:
-      "לא, השירות ניתן במתכונת של מנוי שנתי ללא התחייבות לחידוש. תוכלו לבטל מתי שתרצו.",
+    answer: "לא, השירות ניתן במתכונת של מנוי שנתי ללא התחייבות לחידוש. תוכלו לבטל מתי שתרצו.",
   },
   {
     question: "איך מקבלים מדבקות NFC?",
-    answer:
-      "לאחר השדרוג במסלולים המתאימים, אנו נפיק ונשלח את הציוד הממותג ישירות לכתובת העסק שהזנתם.",
+    answer: "לאחר השדרוג במסלולים המתאימים, אנו נפיק ונשלח את הציוד הממותג ישירות לכתובת העסק שהזנתם.",
   },
   {
     question: "מה קורה למידע שלי אם לא אשדרג?",
-    answer:
-      "המידע נשמר באופן מאובטח, אך הגישה לתפריט דרך סריקת QR תוגבל עד להסדרת המנוי.",
+    answer: "המידע נשמר באופן מאובטח, אך הגישה לתפריט דרך סריקת QR תוגבל עד להסדרת המנוי.",
   },
 ];
 
@@ -25,32 +28,20 @@ const Upgrade = () => {
   const user = useSelector((state) => state.user.user);
   const navigate = useNavigate();
 
-  // if (user?.isPaid) return <Navigate to="/dashboard" replace />;
-
+  // הגדרת המסלולים עם לוגיקת הקיצורים
   const plans = [
     {
       plan: "Essential",
       price: Number(import.meta.env.VITE_PRICE_ESSENTIAL) || 2900,
-      features: [
-        "תפריט דיגיטלי חכם",
-        "סריקת תפריט באמצעות AI",
-        "QR קוד לסריקה בנייד",
-        "עדכונים בזמן אמת",
-        "ממשק ניהול עצמאי 24/7",
-        "סטטיסטיקות",
-        " מבחר עיצובים",
-        "תמיכה בוואטסאפ",
-      ],
+      features: ESSENTIAL_FEATURES, // במסלול הבסיסי מראים את כל הרשימה
       isBestValue: false,
     },
     {
       plan: "Advance",
       price: Number(import.meta.env.VITE_PRICE_ADVANCE) || 4500,
       features: [
-        "כל מה שיש ב-Essential",
-        "15   QR סטנדים",
-        "  הזנת תפריט עד 30 פריטים",
-        "עדיפות בתמיכה",
+        "כל מה שכלול ב-Essential", // קיצור ויזואלי
+        ...ADVANCE_ADDONS,          // הוספת הפיצ'רים הייחודיים ל-Advance
       ],
       isBestValue: true,
     },
@@ -58,26 +49,20 @@ const Upgrade = () => {
       plan: "iMenu PRO",
       price: Number(import.meta.env.VITE_PRICE_PRO) || 8500,
       features: [
-        "כל מה שיש ב-Advance",
-        "עיצוב מותאם אישית",
-        "ליווי אישי",
-        "שיחת אפיון",
-        "הזנת תפריט ללא הגבלה",
+        "כל מה שכלול ב-Advance",   // קיצור ויזואלי למסלול הקודם
+        ...PRO_ADDONS,             // הוספת הפיצ'רים הייחודיים ל-PRO
       ],
       isBestValue: false,
     },
   ];
 
   const handleSelectPlan = (price, planName) => {
-    navigate("/checkout", {state: {amount: price, planName: planName}});
+    navigate("/checkout", { state: { amount: price, planName: planName } });
   };
 
   return (
-    <div
-      className="relative flex-1 overflow-y-auto bg-zinc-50 dark:bg-zinc-950 py-12 px-4 sm:px-6 lg:px-8 overflow-hidden"
-      dir="rtl"
-    >
-      {/* Siri-style Background Blobs */}
+    <div className="relative flex-1 overflow-y-auto bg-zinc-50 dark:bg-zinc-950 py-12 px-4 sm:px-6 lg:px-8 overflow-hidden" dir="rtl">
+      {/* רקע דקורטיבי */}
       <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-emerald-500/10 rounded-full blur-[140px] animate-pulse" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-lime-500/10 rounded-full blur-[120px] animate-pulse delay-1000" />
 
@@ -85,15 +70,10 @@ const Upgrade = () => {
         {/* Header Section */}
         <div className="text-center max-w-3xl mx-auto mb-20 animate-in fade-in slide-in-from-bottom-4 duration-1000">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-gradient-to-br from-emerald-500 to-lime-600 text-white mb-8 shadow-2xl shadow-emerald-500/20 transform hover:rotate-12 transition-transform">
-            <span className="material-icons-round text-3xl">
-              workspace_premium
-            </span>
+            <span className="material-icons-round text-3xl">workspace_premium</span>
           </div>
           <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-zinc-900 dark:text-white mb-6">
-            Upgrade to{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-lime-500">
-              Premium
-            </span>
+            Upgrade to <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-lime-500">Premium</span>
           </h1>
           <p className="text-xl text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed">
             בחרו את המסלול שיקפיץ את העסק שלכם לדור הבא של עולם המסעדנות.
@@ -106,6 +86,7 @@ const Upgrade = () => {
             <PricingCard
               key={idx}
               {...p}
+              isCurrentPlan={user?.plan === p.plan}
               onUpgrade={() => handleSelectPlan(p.price, p.plan)}
             />
           ))}
@@ -113,9 +94,7 @@ const Upgrade = () => {
 
         {/* FAQ Section */}
         <div className="max-w-3xl mx-auto pt-20 border-t border-zinc-200 dark:border-zinc-800 relative">
-          <h2 className="text-3xl font-black text-zinc-900 dark:text-white mb-12 text-center">
-            שאלות נפוצות
-          </h2>
+          <h2 className="text-3xl font-black text-zinc-900 dark:text-white mb-12 text-center">שאלות נפוצות</h2>
           <div className="grid gap-6">
             {faqs.map((faq, index) => (
               <div
@@ -134,10 +113,6 @@ const Upgrade = () => {
           </div>
         </div>
       </div>
-
-      <style>{`
-        @keyframes shine { 100% { left: 100%; } }
-      `}</style>
     </div>
   );
 };

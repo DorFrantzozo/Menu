@@ -36,6 +36,7 @@ const Designs = () => {
   ];
 
   const handleChangeMenuDesign = async (designNumber) => {
+    console.log(designNumber);
     setIsLoading(true);
     try {
       const response = await axiosInstance.put(

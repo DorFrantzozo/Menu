@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLanguage } from "../../../context/LanguageContext";
+import FavoriteHeart from "../../../components/buttons/FavoriteHeart";
 
 const FoodCard = ({ dish, variant = 'small', fullWidth = false, onClick }) => {
   const { language } = useLanguage();
@@ -21,7 +22,10 @@ const FoodCard = ({ dish, variant = 'small', fullWidth = false, onClick }) => {
         onClick={() => onClick?.(dish)}
         className={`${baseCardStyle} flex-col ${fullWidth ? 'w-full' : 'w-44 sm:w-56 md:w-64 lg:w-72'} m-1`}
       >
-        <div className="w-full h-32 sm:h-44 md:h-52 bg-gray-100 flex-shrink-0">
+        <div className="w-full h-32 sm:h-44 md:h-52 bg-gray-100 flex-shrink-0 relative">
+          <div className="absolute top-2 right-2 z-10">
+            <FavoriteHeart dishId={dish._id} className="w-8 h-8" />
+          </div>
           {dish.img ? (
             <img src={dish.img} alt={title} className="w-full h-full object-cover" />
           ) : (
@@ -48,7 +52,10 @@ const FoodCard = ({ dish, variant = 'small', fullWidth = false, onClick }) => {
         onClick={() => onClick?.(dish)}
         className={`${baseCardStyle} w-64 sm:w-[400px] md:w-[480px] flex-row h-24 sm:h-36 md:h-44 m-1`}
       >
-        <div className="w-1/2 h-full bg-gray-100 flex-shrink-0">
+        <div className="w-1/2 h-full bg-gray-100 flex-shrink-0 relative">
+          <div className="absolute top-2 right-2 z-10">
+            <FavoriteHeart dishId={dish._id} className="w-8 h-8" />
+          </div>
           {dish.img ? (
             <img src={dish.img} alt={title} className="w-full h-full object-cover" />
           ) : (
@@ -77,6 +84,9 @@ const FoodCard = ({ dish, variant = 'small', fullWidth = false, onClick }) => {
       className={`${baseCardStyle} flex-col w-72 sm:w-[450px] md:w-[550px] m-1`}
     >
       <div className="w-full h-44 sm:h-64 md:h-72 bg-gray-100 flex-shrink-0 relative">
+        <div className="absolute top-3 right-3 z-10">
+          <FavoriteHeart dishId={dish._id} />
+        </div>
         {dish.img ? (
           <img src={dish.img} alt={title} className="w-full h-full object-cover" />
         ) : (

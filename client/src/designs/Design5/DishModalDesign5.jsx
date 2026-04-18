@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import useTrackDishView from "@/hooks/useTrackDishView";
 import Allergies from "@/components/sensitivities/Allergies";
 import { useLanguage } from "../../context/LanguageContext";
+import FavoriteHeart from "../../components/buttons/FavoriteHeart";
 
 const DishModalDesign5 = ({ dish, isOpen, onClose }) => {
   const { language } = useLanguage();
@@ -52,7 +53,11 @@ const DishModalDesign5 = ({ dish, isOpen, onClose }) => {
             </button>
 
             {/* Dish Image */}
-            <div className="w-full h-56 sm:h-72 flex-shrink-0 overflow-hidden">
+            <div className="w-full h-56 sm:h-72 flex-shrink-0 overflow-hidden relative">
+              {/* Like Button - top right corner (RTL-aware) */}
+              <div className={`absolute top-4 ${language === "en" ? "left-4" : "right-4"} z-10`}>
+                <FavoriteHeart dishId={dish._id} />
+              </div>
               <img
                 src={dish.img}
                 alt={dish.name}

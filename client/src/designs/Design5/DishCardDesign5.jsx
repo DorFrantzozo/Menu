@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { toWebP } from "@/utils/cloudinaryUrl";
 import { useState } from "react";
 import { useLanguage } from "../../context/LanguageContext";
+import FavoriteHeart from "../../components/buttons/FavoriteHeart";
 
 const dietaryBadge = (dish) => {
   const tags = [];
@@ -41,9 +42,14 @@ const DishCardDesign5 = ({ dish, isPopular, onClick }) => {
           onLoad={() => setIsLoaded(true)}
         />
 
-        {/* Popular Badge */}
+        {/* Like Button - top right corner */}
+        <div className="absolute top-2 right-2 z-10">
+          <FavoriteHeart dishId={dish._id} />
+        </div>
+
+        {/* Popular Badge - moved below like button */}
         {isPopular && (
-          <span className="absolute top-2 right-2 bg-emerald-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1">
+          <span className="absolute top-14 right-2 bg-emerald-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1">
             <span>⭐</span> Popular
           </span>
         )}

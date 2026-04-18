@@ -25,8 +25,8 @@ const userSchema = new mongoose.Schema(
     logo: {type: String},
     plan: {
       type: String,
-      enum: ["Essential", "Advance", "iMenu PRO"],
-      default: "Essential",
+      enum: ["Free", "Essential", "Advance", "iMenu PRO"],
+      default: "Free",
     },
     designNumber: {type: Number, default: 1},
     isPaid: {type: Boolean, default: false},

@@ -7,7 +7,7 @@ import {
 } from "@headlessui/react";
 import { XMarkIcon, PhotoIcon, SparklesIcon } from "@heroicons/react/24/outline";
 import { toast } from "react-toastify";
-import { scanMenuImage, saveFinalMenu } from "../../services/aiApiService";
+import { scanMenuImage, saveFinalMenu } from "../../../services/aiApiService";
 import ScanLoading from "./ScanLoading";
 import ReviewTable from "./ReviewTable";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,7 +19,7 @@ import {
   getCategories,
 } from "@/utils/fetchData";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../../utils/baseUrl";
+import axiosInstance from "../../../utils/baseUrl";
 
 export default function MenuScannerModal({ open, setOpen }) {
   const [step, setStep] = useState(1); // 1 = Upload, 2 = Loading, 3 = Review
