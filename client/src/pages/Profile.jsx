@@ -1,14 +1,14 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import ProfileHeader from "@/components/Profile/ProfileHeader";
 import BusinessInfoCard from "@/components/Profile/BusinessInfoCard";
 import SubscriptionCard from "@/components/Profile/SubscriptionCard";
 import QRCodeManager from "@/components/Profile/QRCodeManager";
 
-import {useNavigate} from "react-router-dom";
-import {PencilSquareIcon} from "@heroicons/react/24/outline";
+import { useNavigate } from "react-router-dom";
+import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import DataTableGeneric from "@/components/data/DataTableGeneric";
-import {fetchPaymentHistory} from "@/utils/paymentData";
-import {paymentColumns} from "@/components/Profile/PaymentTableConfig";
+import { fetchPaymentHistory } from "@/utils/paymentData";
+import { paymentColumns } from "@/components/Profile/PaymentTableConfig";
 const Profile = () => {
   const navigate = useNavigate();
   const [userFromStorage, setUser] = useState(null);
@@ -33,14 +33,12 @@ const Profile = () => {
       if (data && data !== "[]") {
         setPaymentHistory(JSON.parse(data));
       } else {
-
         const token = localStorage.getItem("token");
         if (!token) return console.error("אין טוקן בלוקאל סטורג'!");
 
         try {
           // חייב await כאן! זה מחכה שהשרת יחזיר תשובה
           const historyFromServer = await fetchPaymentHistory(token);
-
 
           // עדכון הלוקאל סטורג' והסטייט
           localStorage.setItem(
@@ -83,7 +81,7 @@ const Profile = () => {
                       "_blank",
                     )
                   }
-                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-6 rounded-2xl transition-all text-center shadow-lg shadow-emerald-100 active:scale-[0.98]"
+                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-6 rounded-2xl transition-all text-center  shadow-emerald-100 active:scale-[0.98]"
                 >
                   צפייה בתפריט החי
                 </button>

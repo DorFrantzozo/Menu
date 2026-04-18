@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import {
   QrCodeIcon,
   ArrowDownTrayIcon,
@@ -6,11 +6,15 @@ import {
   MagnifyingGlassPlusIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import {downloadQRCode, generateQRCode, shareQRCode} from "@/utils/qrGenerator";
+import {
+  downloadQRCode,
+  generateQRCode,
+  shareQRCode,
+} from "@/utils/qrGenerator";
 import Spinner from "@/components/Spinner";
 import DefaultDropDown from "../data/DefaultDropDown";
 
-const QRCodeManager = ({qrSlug}) => {
+const QRCodeManager = ({ qrSlug }) => {
   const [qrcode, setQrCode] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [qrColor, setQrColor] = useState("שחור עם רקע שקוף");
@@ -37,7 +41,7 @@ const QRCodeManager = ({qrSlug}) => {
 
   const handleShareClick = (e) => {
     e.preventDefault();
-    shareQRCode({qrcode});
+    shareQRCode({ qrcode });
   };
 
   if (!qrSlug) return null;
@@ -91,7 +95,7 @@ const QRCodeManager = ({qrSlug}) => {
         <div className="flex flex-col gap-2 w-full">
           <button
             onClick={handleDownloadQr}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl transition-all flex items-center justify-center gap-2 text-xs font-bold shadow-md shadow-emerald-100"
+            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl transition-all flex items-center justify-center gap-2 text-xs font-boldshadow-emerald-100"
           >
             <ArrowDownTrayIcon className="w-4 h-4" />
             הורדת קוד QR

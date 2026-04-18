@@ -1,11 +1,8 @@
 import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
-import Signup from "./pages/Signup";
 import Footer from "./components/Footer";
 import {ToastContainer} from "react-toastify";
-import Signin from "./pages/Signin";
 import "react-toastify/dist/ReactToastify.css";
 import {useSelector} from "react-redux";
-import Edit from "./pages/Edit";
 import AddDish from "./components/AddDish";
 import Dashboard from "./pages/Dashboard";
 import AddCategory from "./components/AddCategory";
@@ -19,9 +16,7 @@ import {
   getFreshUser,
 } from "@/utils/fetchData";
 import Profile from "./pages/Profile";
-import EditDish from "./pages/EditDish";
 import Menu from "./pages/Menu";
-import EditCategory from "./pages/EditCategory";
 import Design1 from "./designs/Design1/Design1";
 import Designs from "./pages/Designs";
 import Design1Dish from "./designs/Design1/Design1Dish";
@@ -181,7 +176,6 @@ function App() {
                         )
                       }
                     />
-                    <Route path="/edit" element={<Edit />} />
                     <Route
                       path="/designs"
                       element={user ? <Designs /> : <Landing2 />}
@@ -226,14 +220,8 @@ function App() {
                       path="/profile/edit"
                       element={user ? <EditProfile /> : <Landing2 />}
                     />
-                    <Route
-                      path="/editDish"
-                      element={user ? <EditDish /> : <Landing2 />}
-                    />
-                    <Route
-                      path="/editCategory"
-                      element={user ? <EditCategory /> : <Landing2 />}
-                    />
+                  
+                 
                     <Route path="/menu" element={<Menu />} />
                     <Route path="/termofservice" element={<TermsOfService />} />
                     <Route path="/accessibility" element={<Accessibility />} />

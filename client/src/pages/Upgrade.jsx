@@ -33,6 +33,7 @@ const Upgrade = () => {
       price: Number(import.meta.env.VITE_PRICE_ESSENTIAL) || 2900,
       features: [
         "תפריט דיגיטלי חכם",
+        "סריקת תפריט באמצעות AI",
         "QR קוד לסריקה בנייד",
         "עדכונים בזמן אמת",
         "ממשק ניהול עצמאי 24/7",

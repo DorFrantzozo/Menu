@@ -1,51 +1,26 @@
-import { useState, useEffect } from "react";
+import { useCallback } from "react";
 import axiosInstance from "@/utils/baseUrl";
+import { useCachedFetch } from "@/hooks/useCachedFetch";
 
 export const usePeakActivity = (userId) => {
-  const [data, setData] = useState({ daysData: [], hoursData: [] });
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const fetchPeakActivity = useCallback(async () => {
+    if (!userId) {
+      return { daysData: [], hoursData: [] };
+    }
 
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchPeakActivity = async () => {
-      if (!userId) {
-        setIsLoading(false);
-        return;
+    const response = await axiosInstance.get(`/analytics/peak-activity/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
       }
-
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const response = await axiosInstance.get(`/analytics/peak-activity/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`
-          }
-        });
-        
-        if (isMounted) {
-          setData(response.data);
-        }
-      } catch (err) {
-        if (isMounted) {
-          setError(err.response?.data?.message || err.message || "שגיאה בטעינת הנתונים");
-          console.error("Error fetching peak activity:", err);
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    fetchPeakActivity();
-
-    return () => {
-      isMounted = false;
-    };
+    });
+    return response.data;
   }, [userId]);
 
-  return { data, isLoading, error };
+  const { data, isLoading, error } = useCachedFetch(
+    userId ? `peak_activity_${userId}` : null,
+    fetchPeakActivity,
+    [userId]
+  );
+
+  return { data: data || { daysData: [], hoursData: [] }, isLoading, error };
 };

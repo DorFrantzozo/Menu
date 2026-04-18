@@ -79,6 +79,10 @@ export const getTopDishes = async (req, res) => {
       const lastMonth = new Date(today);
       lastMonth.setMonth(lastMonth.getMonth() - 1);
       dateFilter = { $gte: lastMonth };
+    } else if (period === "year") {
+      const lastYear = new Date(today);
+      lastYear.setFullYear(lastYear.getFullYear() - 1);
+      dateFilter = { $gte: lastYear };
     }
     // if period is 'all' or undefined, we don't add a date filter (or filtered from beginning of time)
 
@@ -191,7 +195,17 @@ export const getMenuStats = async (req, res) => {
       views: stat.views
     }));
 
-    res.status(200).json(formattedStats);
+    // Calculate all-time total views for the restaurant
+    const allTimeTotalResult = await MenuStats.aggregate([
+      { $match: { restaurantId: new mongoose.Types.ObjectId(restaurantId) } },
+      { $group: { _id: null, total: { $sum: "$views" } } }
+    ]);
+    const totalAllTime = allTimeTotalResult.length > 0 ? allTimeTotalResult[0].total : 0;
+
+    res.status(200).json({ 
+      formattedStats, 
+      totalAllTime 
+    });
   } catch (error) {
     console.error("Error fetching menu stats:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -205,9 +219,9 @@ export const getPeakActivity = async (req, res) => {
       return res.status(400).json({ message: "User ID is required" });
     }
 
-    // ── Fetch user to get the account creation date ──
+    // ── Fetch user to ensure they exist ──
     const User = (await import("../model/user.js")).default;
-    const user = await User.findById(userId).select("createdAt").lean();
+    const user = await User.findById(userId).select("_id").lean();
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -215,12 +229,26 @@ export const getPeakActivity = async (req, res) => {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    // Dynamic divisor: how many full weeks since account creation (clamped 1–4).
-    // This ensures a new account sees accurate data from day one, while the
-    // graph stabilises into a true 30-day weekday average after ~4 weeks.
-    const msPerWeek = 7 * 24 * 60 * 60 * 1000;
-    const weeksSinceCreation = (Date.now() - new Date(user.createdAt).getTime()) / msPerWeek;
-    const divisor = Math.min(4, Math.max(1, Math.floor(weeksSinceCreation)));
+    // Dynamic divisor: compute based on the first activity within the 30-day window.
+    const firstActivity = await ActivityLog.findOne({
+      restaurantId: new mongoose.Types.ObjectId(userId),
+      timestamp: { $gte: thirtyDaysAgo }
+    }).sort({ timestamp: 1 }).lean();
+
+    let daysSinceFirstActivity = 30;
+    if (firstActivity) {
+      const diffTime = Math.abs(new Date() - new Date(firstActivity.timestamp));
+      daysSinceFirstActivity = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      daysSinceFirstActivity = Math.max(1, daysSinceFirstActivity);
+    } else {
+      daysSinceFirstActivity = 1;
+    }
+
+    // For days of the week, the average is based on how many weeks have passed
+    const weeksDivisor = Math.max(1, daysSinceFirstActivity / 7);
+    
+    // For hours, the average is based on how many days have passed
+    const daysDivisor = daysSinceFirstActivity;
 
     const matchStage = {
       $match: {
@@ -270,7 +298,7 @@ export const getPeakActivity = async (req, res) => {
       return {
         name: dayNames[i],
         // Round to one decimal so small values are still legible
-        uv: Math.round((rawCount / divisor) * 10) / 10
+        uv: Math.round((rawCount / weeksDivisor) * 10) / 10
       };
     });
 
@@ -279,7 +307,7 @@ export const getPeakActivity = async (req, res) => {
       const rawCount = found ? found.count : 0;
       return {
         name: `${i.toString().padStart(2, '0')}:00`,
-        uv: Math.round((rawCount / divisor) * 10) / 10
+        uv: Math.round((rawCount / daysDivisor) * 10) / 10
       };
     });
 

@@ -12,6 +12,7 @@ import dotenv from "dotenv";
 import assetRouter from "./routes/asset-route.js";
 import analyticsRouter from "./routes/analyticsRoute.js";
 import supportRouter from "./routes/supportRoute.js";
+import aiRouter from "./routes/ai-route.js";
 import {generalLimiter} from "./middlewares/rateLimiter.js";
 import {globalErrorHandler} from "./middlewares/errorHandler.js";
 import {initPaymentReminders} from "./utils/paymentReminders.js";
@@ -66,6 +67,7 @@ app.use("/api/analytics", analyticsRouter);
 app.use("/api/support", supportRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/payments", paymentRouter);
+app.use("/api/ai", aiRouter);
 
 // Dynamic QR Redirect Route (no global rate limiter applied here because QR scans can be frequent)
 app.get("/go/:slug", handleQrRedirect);

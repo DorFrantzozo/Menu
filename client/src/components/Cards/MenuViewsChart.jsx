@@ -10,6 +10,7 @@ import {
 } from 'recharts';
 import { getMenuStats } from '@/utils/fetchData';
 import { useSelector } from 'react-redux';
+import { useCachedFetch } from '@/hooks/useCachedFetch';
 
 /* ── Custom Tooltip ─────────────────────────────────── */
 const CustomTooltip = ({ active, payload, label }) => {
@@ -39,15 +40,14 @@ const GlowDot = (props) => {
 
 /* ── Main Component ─────────────────────────────────── */
 const MenuViewsChart = () => {
-  const [chartData, setChartData] = useState([]);
-  const [totalViews, setTotalViews] = useState(0);
-  const [trend, setTrend] = useState(0);
   const user = useSelector((state) => state.user.user);
 
-  const fetchData = useCallback(async () => {
-    if (!user?._id) return;
+  const fetchAndFormatData = useCallback(async () => {
+    if (!user?._id) return null;
 
-    const stats = await getMenuStats(user._id, 30);
+    const response = await getMenuStats(user._id, 30);
+    const stats = response?.formattedStats || [];
+    const totalAllTime = response?.totalAllTime || 0;
 
     const last30Days = [];
     for (let i = 29; i >= 0; i--) {
@@ -61,21 +61,23 @@ const MenuViewsChart = () => {
       return { date: dateStr, views: found ? found.views : 0 };
     });
 
-    setChartData(merged);
-
-    // Compute totals & trend
-    const total = merged.reduce((acc, d) => acc + d.views, 0);
-    setTotalViews(total);
-
-    const firstHalf = merged.slice(0, 15).reduce((a, d) => a + d.views, 0);
-    const secondHalf = merged.slice(15).reduce((a, d) => a + d.views, 0);
+    // Compute trend based on the 30-day data
+    const firstHalf = merged.slice(0, 15).reduce((acc, d) => acc + d.views, 0);
+    const secondHalf = merged.slice(15).reduce((acc, d) => acc + d.views, 0);
     const pct = firstHalf > 0 ? Math.round(((secondHalf - firstHalf) / firstHalf) * 100) : secondHalf > 0 ? 100 : 0;
-    setTrend(pct);
-  }, [user]);
+    
+    return { chartData: merged, totalViews: totalAllTime, trend: pct };
+  }, [user?._id]);
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  const { data } = useCachedFetch(
+    user?._id ? `menu_stats_${user._id}_30` : null,
+    fetchAndFormatData,
+    [user?._id]
+  );
+
+  const chartData = data?.chartData || [];
+  const totalViews = data?.totalViews || 0;
+  const trend = data?.trend || 0;
 
   return (
     <div
