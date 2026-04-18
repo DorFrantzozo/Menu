@@ -1,9 +1,9 @@
-import { createRoot } from "react-dom/client";
+import {createRoot} from "react-dom/client";
 import App from "./App.jsx";
-import { Provider } from "react-redux";
+import {Provider} from "react-redux";
 import store from "./state/store.js";
 import GlobalErrorBoundary from "./components/GlobalErrorBoundary.jsx";
-import { LanguageProvider } from "./context/LanguageContext.jsx";
+import {LanguageProvider} from "./context/LanguageContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <GlobalErrorBoundary>
@@ -12,5 +12,5 @@ createRoot(document.getElementById("root")).render(
         <App />
       </LanguageProvider>
     </Provider>
-  </GlobalErrorBoundary>
+  </GlobalErrorBoundary>,
 );

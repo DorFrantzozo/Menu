@@ -61,21 +61,21 @@ hr.style-seven:before {
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
-.dark {
-  /* רקע כללי של הדף - Zinc 950 */
-  --background: 240 10% 3.9%; 
-  
-  /* צבע הכפתור והכרטיסים (השחור הבהיר יותר) - Zinc 900 */
-  --secondary: 240 6% 10%; 
-  --secondary-foreground: 0 0% 98%;
+  .dark {
+    /* רקע כללי של הדף - Zinc 950 */
+    --background: 240 10% 3.9%;
 
-  /* צבע ל-Hover - Zinc 800 */
-  --accent: 240 5% 15%;
-  --accent-foreground: 0 0% 98%;
+    /* צבע הכפתור והכרטיסים (השחור הבהיר יותר) - Zinc 900 */
+    --secondary: 240 6% 10%;
+    --secondary-foreground: 0 0% 98%;
 
-  /* תיקון ה-Border שבתמונה נראה קצת בוהק מדי */
-  --border: 240 5% 15%;
-}
+    /* צבע ל-Hover - Zinc 800 */
+    --accent: 240 5% 15%;
+    --accent-foreground: 0 0% 98%;
+
+    /* תיקון ה-Border שבתמונה נראה קצת בוהק מדי */
+    --border: 240 5% 15%;
+  }
 }
 
 @layer base {
@@ -91,66 +91,81 @@ hr.style-seven:before {
     height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: transparent; 
+    background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: #cbd5e1; 
+    background: #cbd5e1;
     border-radius: 4px;
   }
   .dark ::-webkit-scrollbar-thumb {
-    background: #475569; 
+    background: #475569;
   }
   .soft-shadow {
     box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
   }
   .dark .soft-shadow {
     box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.2);
-}
+  }
 }
 
 /* Frosted Glassmorphism Utility Class */
 .frosted-glass-card {
   /* Linear gradient for a subtle light sweep */
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.03) 100%);
-  
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+
   /* Increased blur for a solid glass feel */
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  
+
   /* Specular highlights on top and left edges typical of 3D glass */
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-top: 1px solid rgba(255, 255, 255, 0.6);
   border-left: 1px solid rgba(255, 255, 255, 0.6);
-  
+
   /* Deep shadow mixed with an inner specular glow */
-  box-shadow: 
+  box-shadow:
     0 8px 24px 0 rgba(0, 0, 0, 0.08),
     inset 0 0 10px rgba(255, 255, 255, 0.1);
-    
+
   transition: all 0.3s ease;
 }
 
 .dark .frosted-glass-card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.01) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0.01) 100%
+  );
   border: 1px solid rgba(255, 255, 255, 0.02);
   border-top: 1px solid rgba(255, 255, 255, 0.25);
   border-left: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 
+  box-shadow:
     0 8px 24px 0 rgba(0, 0, 0, 0.2),
     inset 0 0 12px rgba(255, 255, 255, 0.02);
 }
 
 .frosted-glass-card:hover {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
-  box-shadow: 
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  box-shadow:
     0 12px 32px 0 rgba(0, 0, 0, 0.12),
     inset 0 0 15px rgba(255, 255, 255, 0.2);
 }
 
 .dark .frosted-glass-card:hover {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
-  box-shadow: 
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  box-shadow:
     0 12px 32px 0 rgba(0, 0, 0, 0.3),
     inset 0 0 15px rgba(255, 255, 255, 0.05);
 }
-
