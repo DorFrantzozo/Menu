@@ -37,24 +37,38 @@ app.use(
       // If no origin (like mobile apps or curl requests), allow it
       if (!origin) return callback(null, true);
 
-      const frontendUrl = getNormalizedOrigin(process.env.FRONTEND_URL);
+      // Normalize frontend URL from environment variables
+      const frontendUrl = process.env.FRONTEND_URL
+        ? getNormalizedOrigin(process.env.FRONTEND_URL)
+        : null;
       const fallbackUrl = "https://imenu-il.online";
-
       const allowedOrigins = [frontendUrl, fallbackUrl].filter(Boolean);
 
-      // Check if the origin matches our main domain or any subdomain of it
-      const isDomainAllowed =
-        /^https?:\/\/(?:[a-z0-9-]+\.)?imenu-il\.online$/.test(origin);
+      // --- Validation Logic ---
+
+      // 1. Check for exact match from env or fallback
       const isExactMatch = allowedOrigins.includes(origin);
+
+      // 2. Check if it's our main domain or any subdomain
+      const isMainDomainAllowed =
+        /^https?:\/\/(?:[a-z0-9-]+\.)?imenu-il\.online$/.test(origin);
+
+      // 3. Check if it's a Vercel deployment (Dynamic Previews)
+      const isVercelAllowed = /\.vercel\.app$/.test(origin);
+
+      // 4. Check for local development
+      const isLocalhost = /^http:\/\/localhost(:\d+)?$/.test(origin);
 
       if (
         isExactMatch ||
-        isDomainAllowed ||
-        /^http:\/\/localhost(:\d+)?$/.test(origin)
+        isMainDomainAllowed ||
+        isVercelAllowed ||
+        isLocalhost
       ) {
         return callback(null, true);
       }
 
+      // If we got here, it's blocked
       console.warn(`CORS blocked for origin: ${origin}`);
       callback(new Error("Not allowed by CORS"));
     },
