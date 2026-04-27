@@ -21,6 +21,7 @@ export default function AddDishForm({ closeModal }) {
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
+  const [nameEn, setNameEn] = useState("");
 
   const [img, setImg] = useState("");
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -39,6 +40,7 @@ export default function AddDishForm({ closeModal }) {
     const formData = new FormData();
     formData.append("userId", user._id);
     formData.append("name", name);
+    formData.append("nameEn", nameEn);
 
     formData.append("description", description);
 
@@ -125,6 +127,20 @@ export default function AddDishForm({ closeModal }) {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800 shadow-sm focus:ring-sky-200 focus:border-sky-200"
+              />
+            </div>
+
+            <div>
+              <label className="block font-medium mb-1">
+                שם המנה (אנגלית) <span className="text-xs text-slate-400 font-normal">(אופציונלי)</span>
+              </label>
+              <input
+                type="text"
+                value={nameEn}
+                onChange={(e) => setNameEn(e.target.value)}
+                dir="ltr"
+                placeholder="e.g. Hamburger"
                 className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800 shadow-sm focus:ring-sky-200 focus:border-sky-200"
               />
             </div>

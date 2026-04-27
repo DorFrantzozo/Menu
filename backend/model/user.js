@@ -28,17 +28,36 @@ const userSchema = new mongoose.Schema(
       enum: ["Free", "Essential", "Advance", "iMenu PRO"],
       default: "Free",
     },
-    designNumber: {type: Number, default: 1},
+    designNumber: {type: Number, default: 4},
+
+    //payment://///////////////////////////////////
     isPaid: {type: Boolean, default: false},
     trialExpiresAt: {
       type: Date,
       default: () => new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
       immutable: true,
     },
-    // שדה חדש לניהול הגבייה הידנית שלך
+
     nextPaymentDate: {
       type: Date,
     },
+
+    lastBilledDate: {type: Date},
+
+    morningCustomerId: {type: String},
+
+    morningPaymentToken: {type: String},
+
+    isBillingProcessing: {type: Boolean, default: false},
+
+    subscriptionStatus: {
+      type: String, // הוספנו את past_due למקרה של חיוב שכשל
+      enum: ["active", "canceled", "trial", "past_due"],
+      default: "trial",
+    },
+    lastFourDigits: {type: String},
+    //////////////////////////////////////////
+
     wifiSettings: {
       isEnabled: {type: Boolean, default: false},
       ssid: {type: String},
@@ -53,7 +72,6 @@ const userSchema = new mongoose.Schema(
 
     totalQrScans: {type: Number, default: 0},
     hasCompletedTour: {type: Boolean, default: false},
-    morningCustomerId: {type: String}, // שדה לשמירת ה-ID של הלקוח ב-Morning
   },
   {timestamps: true},
 );

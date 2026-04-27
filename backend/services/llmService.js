@@ -1,14 +1,10 @@
-import Groq from "groq-sdk";
+import groqApi from "../services/groqClient.js";
 
-const groq = new Groq({
-    apiKey: process.env.GROQ_API_KEY
-});
-
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const generateInsightText = async (ruleId, metaData) => {
-    try {
- const systemPrompt = `
+  try {
+    const systemPrompt = `
 אתה יועץ קולינרי ושיווקי בכיר למסעדות ישראליות. 
 המטרה שלך היא לכתוב המלצת אופטימיזציה קצרה, מקצועית והמלצה לפעולה עבור בעל המסעדה, כדי להגדיל את המכירות שלו.
 הטון צריך להיות יוקרתי, קצר ופרקטי. שפת התשובה: עברית צברית, תקינה וטבעית לחלוטין. אל תשתמש בתרגומים מילוליים מאנגלית.
@@ -25,43 +21,43 @@ export const generateInsightText = async (ruleId, metaData) => {
 - "תיאור המנה 'סלט יווני' קצר מדי. כדאי להוסיף תיאור מגרה של המרכיבים כדי להעלות את אחוזי ההזמנה."
 `;
 
-        let userPrompt = "";
+    let userPrompt = "";
 
-        switch (ruleId) {
-            case 'CAT_OVERLOAD':
-                userPrompt = `זיהינו עומס קוגניטיבי בקטגוריה "${metaData.categoryName}". יש בה ${metaData.itemCount} מנות. הסבר לבעל המסעדה בטון מקצועי שזה יוצר "פרדוקס הבחירה" ומקשה על הסועדים להחליט, והצע לו לפצל אותה לתת-קטגוריות כדי להעלות את יחס ההמרה.`;
-                break;
-                
-            case 'THIN_CAT':
-                userPrompt = `הקטגוריה "${metaData.categoryName}" דלילה ומכילה רק ${metaData.itemCount} מנות. הסבר שזה נראה כמו "שטח מת" בתפריט והמלץ לשלב את המנות כ-Upsell (מכירה צולבת) בקטגוריות אחרות, או לחלופין להוסיף מנות דומות כדי להצדיק את קיום הקטגוריה.`;
-                break;
-                
-            case 'MISSING_IMAGES':
-                userPrompt = `בקטגוריה "${metaData.categoryName}" חסרות תמונות ל-${metaData.missingCount} מנות. הסבר בקצרה ובאופן משכנע שסועדים "אוכלים עם העיניים", ושילוב תמונות איכותיות מעלה משמעותית את כמות ההזמנות, והמלץ לו להשלים את הצילומים החסרים.`;
-                break;
-                
-            case 'DRY_DESCRIPTIONS':
-                userPrompt = `ל-${metaData.missingCount} מנות בקטגוריה "${metaData.categoryName}" חסר תיאור מגרה. הסבר שקופירייטינג קולינרי גורם למנה להישמע איכותית ומוצדקת יותר מבחינת מחיר, והמלץ לו להוסיף תיאורים הכוללים רכיבים, שיטות הכנה או מקור ההשראה.`;
-                break;
-                
-            case 'NO_PRICE_ANCHOR':
-                userPrompt = `בקטגוריה "${metaData.categoryName}" טווח המחירים צפוף וקרוב מדי. הסבר את העיקרון הפסיכולוגי של "עוגן מחיר" - הוספת מנת פרימיום יקרה מאוד שגורמת למנות האחרות (והמבוקשות יותר) להיראות כעסקה משתלמת, והמלץ לו ליישם זאת.`;
-                break;
-                
-            case 'STALE_CATEGORY':
-                userPrompt = `הקטגוריה "${metaData.categoryName}" לא עודכנה כבר ${metaData.daysSinceUpdate} ימים. הסבר שלקוחות חוזרים מחפשים חידושים, והמלץ לרענן אותה, להוסיף מנת "ספיישל", או פשוט לשנות את סדר המנות כדי ליצור עניין מחודש.`;
-                break;
-                
-                case 'DISH_NO_IMAGE':
-                    userPrompt = `למנה "${metaData.dishName}" (בקטגוריה ${metaData.categoryName}) חסרה תמונה. הסבר לבעל המסעדה בטון שיווקי שמנה בלי תמונה נמכרת ב-30% פחות, והמלץ לו להעלות תמונה מגרה.`;
-                    break;
+    switch (ruleId) {
+      case "CAT_OVERLOAD":
+        userPrompt = `זיהינו עומס קוגניטיבי בקטגוריה "${metaData.categoryName}". יש בה ${metaData.itemCount} מנות. הסבר לבעל המסעדה בטון מקצועי שזה יוצר "פרדוקס הבחירה" ומקשה על הסועדים להחליט, והצע לו לפצל אותה לתת-קטגוריות כדי להעלות את יחס ההמרה.`;
+        break;
 
-                case 'DISH_POOR_DESC':
-                    userPrompt = `למנה "${metaData.dishName}" יש תיאור דליל מדי או חסר תיאור כלל. הסבר שקופירייטינג קולינרי טוב (כמו פירוט מרכיבים וצורת הכנה) גורם לסועדים להזמין יותר, והצע לו להוסיף תיאור מפתה.`;
-                    break;
-                    
-                case 'HIGH_VIEWS_LOW_CONVERSION':
-                    userPrompt = `
+      case "THIN_CAT":
+        userPrompt = `הקטגוריה "${metaData.categoryName}" דלילה ומכילה רק ${metaData.itemCount} מנות. הסבר שזה נראה כמו "שטח מת" בתפריט והמלץ לשלב את המנות כ-Upsell (מכירה צולבת) בקטגוריות אחרות, או לחלופין להוסיף מנות דומות כדי להצדיק את קיום הקטגוריה.`;
+        break;
+
+      case "MISSING_IMAGES":
+        userPrompt = `בקטגוריה "${metaData.categoryName}" חסרות תמונות ל-${metaData.missingCount} מנות. הסבר בקצרה ובאופן משכנע שסועדים "אוכלים עם העיניים", ושילוב תמונות איכותיות מעלה משמעותית את כמות ההזמנות, והמלץ לו להשלים את הצילומים החסרים.`;
+        break;
+
+      case "DRY_DESCRIPTIONS":
+        userPrompt = `ל-${metaData.missingCount} מנות בקטגוריה "${metaData.categoryName}" חסר תיאור מגרה. הסבר שקופירייטינג קולינרי גורם למנה להישמע איכותית ומוצדקת יותר מבחינת מחיר, והמלץ לו להוסיף תיאורים הכוללים רכיבים, שיטות הכנה או מקור ההשראה.`;
+        break;
+
+      case "NO_PRICE_ANCHOR":
+        userPrompt = `בקטגוריה "${metaData.categoryName}" טווח המחירים צפוף וקרוב מדי. הסבר את העיקרון הפסיכולוגי של "עוגן מחיר" - הוספת מנת פרימיום יקרה מאוד שגורמת למנות האחרות (והמבוקשות יותר) להיראות כעסקה משתלמת, והמלץ לו ליישם זאת.`;
+        break;
+
+      case "STALE_CATEGORY":
+        userPrompt = `הקטגוריה "${metaData.categoryName}" לא עודכנה כבר ${metaData.daysSinceUpdate} ימים. הסבר שלקוחות חוזרים מחפשים חידושים, והמלץ לרענן אותה, להוסיף מנת "ספיישל", או פשוט לשנות את סדר המנות כדי ליצור עניין מחודש.`;
+        break;
+
+      case "DISH_NO_IMAGE":
+        userPrompt = `למנה "${metaData.dishName}" (בקטגוריה ${metaData.categoryName}) חסרה תמונה. הסבר לבעל המסעדה בטון שיווקי שמנה בלי תמונה נמכרת ב-30% פחות, והמלץ לו להעלות תמונה מגרה.`;
+        break;
+
+      case "DISH_POOR_DESC":
+        userPrompt = `למנה "${metaData.dishName}" יש תיאור דליל מדי או חסר תיאור כלל. הסבר שקופירייטינג קולינרי טוב (כמו פירוט מרכיבים וצורת הכנה) גורם לסועדים להזמין יותר, והצע לו להוסיף תיאור מפתה.`;
+        break;
+
+      case "HIGH_VIEWS_LOW_CONVERSION":
+        userPrompt = `
                         שים לב לנתונים הבאים על המנה "${metaData.dishName}" (בקטגוריה: ${metaData.categoryName}):
                         ב-30 הימים האחרונים המנה קיבלה חשיפה של ${metaData.totalViews} צפיות, אבל אספה רק ${metaData.totalLikes} לייקים. המחיר שלה הוא ₪${metaData.price}.
                         
@@ -74,56 +70,59 @@ export const generateInsightText = async (ruleId, metaData) => {
                         
                         נסח כותרת בגובה העיניים כמו "שווה בדיקה בקופה 🧐" או "הרבה עיניים, מעט קליקים", וכתוב את הטקסט בטון מתייעץ ומעורר מחשבה.
                     `;
-                    break;
-                case 'HIDDEN_GEM_DISH':
-                    userPrompt = `
+        break;
+
+      case "HIDDEN_GEM_DISH":
+        userPrompt = `
                         המנה "${metaData.dishName}" היא 'פנינה נסתרת'! 
                         היא קיבלה רק ${metaData.totalViews} צפיות החודש (שזה מעט), אבל מתוכן ${metaData.totalLikes} אנשים שמו לה לייק. 
                         זה אומר שמי שכבר רואה אותה - אוהב אותה.
                         הסבר לבעל המסעדה שהמנה כנראה "קבורה" עמוק מדי בתפריט. הצע לו להקפיץ אותה לראש הקטגוריה "${metaData.categoryName}" או לתת לה תגית צבעונית כדי להגדיל חשיפה, ולראות איך המכירות שלה מזנקות.
                     `;
-                    break;
-                        case 'GHOST_DISH':
-                           userPrompt = `
+        break;
+
+      case "GHOST_DISH":
+        userPrompt = `
                         המנה "${metaData.dishName}" היא "רוח רפאים" בתפריט. ב-30 הימים האחרונים היא קיבלה רק ${metaData.totalViews} צפיות. הלקוחות פשוט גוללים מעליה.
                         הסבר למסעדן שכדאי לו לשקול אחת משתי פעולות:
                         1. לשנות למנה את השם למשהו יותר מסקרן ומגרה.
                         2. לבדוק בקופה אם המנה הזו בכלל נמכרת, ואם לא - אולי הגיע הזמן להוציא אותה מהתפריט כדי לא להעמיס על הלקוחות (תפריט עמוס מקטין מכירות).
                     `;
-                    break;
-                    case 'INVISIBLE_SALE_DISH':
-                        userPrompt = `
+        break;
+
+      case "INVISIBLE_SALE_DISH":
+        userPrompt = `
                         בעל המסעדה חתך את המחיר של "${metaData.dishName}" מ-₪${metaData.price} ל-₪${metaData.salePrice}, אבל המבצע הזה מתבזבז! 
                         החודש המנה הזו נצפתה רק ${metaData.totalViews} פעמים.
                         הסבר לו שאין טעם לעשות מבצע אם הלקוחות לא רואים אותו. הצע לו להזיז את המנה לראש התפריט, להוסיף לה תמונה בולטת, או לפתוח קטגוריית "מבצעים" ייעודית, כדי שההנחה הזו תייצר לו את העלייה במכירות שהוא תכנן.
                     `;
-                    break;
-                default:
-                    userPrompt = `נמצאה חריגה בקטגוריה "${metaData.categoryName}". כתוב המלצה כללית וחכמה לשיפור הנראות והחוויה הדיגיטלית של התפריט כדי להגדיל מכירות.`;
-        }
+        break;
 
-        await sleep(2000);
-
-        const chatCompletion = await groq.chat.completions.create({
-            messages: [
-                { role: "system", content: systemPrompt },
-                { role: "user", content: userPrompt.trim() }
-            ],
-            model: "llama-3.3-70b-versatile",
-            response_format: { type: "json_object" },
-            temperature: 0.6,
-        });
-
-        const content = chatCompletion.choices[0]?.message?.content;
-        return JSON.parse(content);
-
-    } catch (error) {
-        console.error("Groq AI Error:", error);
-        
-        // Fallback למקרה של נפילת API
-        return {
-            title: "הזדמנות לשיפור התפריט 💡",
-            message: `זיהינו הזדמנות לאופטימיזציה בקטגוריית "${metaData?.categoryName || 'הנוכחית'}". מומלץ לעבור על המנות ולבחון את סידורן כדי להקל על בחירת הסועדים ולהגדיל את המכירות.`
-        };
+      default:
+        userPrompt = `נמצאה חריגה בקטגוריה "${metaData.categoryName}". כתוב המלצה כללית וחכמה לשיפור הנראות והחוויה הדיגיטלית של התפריט כדי להגדיל מכירות.`;
     }
+
+    await sleep(2000);
+
+    const chatCompletion = await groqApi.chat.completions.create({
+      messages: [
+        {role: "system", content: systemPrompt},
+        {role: "user", content: userPrompt.trim()},
+      ],
+      model: "llama-3.3-70b-versatile",
+      response_format: {type: "json_object"},
+      temperature: 0.6,
+    });
+
+    const content = chatCompletion.choices[0]?.message?.content;
+    return JSON.parse(content);
+  } catch (error) {
+    console.error("Groq AI Error:", error);
+
+    // Fallback למקרה של נפילת API
+    return {
+      title: "הזדמנות לשיפור התפריט 💡",
+      message: `זיהינו הזדמנות לאופטימיזציה בקטגוריית "${metaData?.categoryName || "הנוכחית"}". מומלץ לעבור על המנות ולבחון את סידורן כדי להקל על בחירת הסועדים ולהגדיל את המכירות.`,
+    };
+  }
 };

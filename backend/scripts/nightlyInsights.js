@@ -1,5 +1,5 @@
-import cron from 'node-cron';
-import { processAllProRestaurants } from '../services/insightService.js';
+import cron from "node-cron";
+import {processAllProRestaurants} from "../services/ai services/insightService.js";
 
 /**
  * הגדרת הג'וב המתוזמן
@@ -11,22 +11,46 @@ import { processAllProRestaurants } from '../services/insightService.js';
  * יום בשבוע: כל יום
  */
 const startNightlyInsightsCron = () => {
-    console.log("Cron Job Initialized: Nightly AI Insights at 03:00 AM");
+  console.log("Cron Job Initialized: Nightly AI Insights at 03:00 AM");
 
-    cron.schedule('0 3 * * *', async () => {
-        const startTime = new Date().toLocaleString();
-        console.log(`[${startTime}] Starting scheduled nightly AI insights processing...`);
-        
-        try {
-            await processAllProRestaurants();
-            console.log(`[${new Date().toLocaleString()}] Nightly AI insights completed successfully.`);
-        } catch (error) {
-            console.error(`[${new Date().toLocaleString()}] Nightly AI insights failed:`, error);
-        }
-    }, {
-        scheduled: true,
-        timezone: "Asia/Jerusalem" // חשוב להגדיר את אזור הזמן של ישראל
-    });
+  cron.schedule(
+    "0 3 * * *",
+    async () => {
+      // הגדרת אובייקט זמן ספציפי לישראל עבור הלוגים
+      const israelTimeOptions = {
+        timeZone: "Asia/Jerusalem",
+        hour12: false,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      };
+
+      const startTime = new Date().toLocaleString("he-IL", israelTimeOptions);
+
+      console.log(
+        `[${startTime}] 🤖 Starting scheduled nightly AI insights processing...`,
+      );
+
+      try {
+        await processAllProRestaurants();
+
+        const endTime = new Date().toLocaleString("he-IL", israelTimeOptions);
+        console.log(
+          `[${endTime}] ✅ Nightly AI insights completed successfully.`,
+        );
+      } catch (error) {
+        const errorTime = new Date().toLocaleString("he-IL", israelTimeOptions);
+        console.error(`[${errorTime}] ❌ Nightly AI insights failed:`, error);
+      }
+    },
+    {
+      scheduled: true,
+      timezone: "Asia/Jerusalem", // מבטיח שה-Cron עצמו יתעורר ב-03:00 של ישראל
+    },
+  );
 };
 
 export default startNightlyInsightsCron;

@@ -1,6 +1,7 @@
 import React from 'react';
-
+import { useNavigate } from 'react-router-dom';
 const InsightCard = ({ insight, onDismiss }) => {
+  const navigate = useNavigate();
   return (
     <div className="relative group flex flex-col h-full bg-white/5 dark:bg-zinc-800/40 backdrop-blur-sm border border-zinc-200/50 dark:border-white/5 rounded-2xl p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 hover:border-purple-500/30 overflow-hidden">
       
@@ -34,8 +35,8 @@ const InsightCard = ({ insight, onDismiss }) => {
           <span className="text-[10px] font-semibold text-zinc-400 uppercase tracking-widest">
              פעולה נדרשת
           </span>
-          <button className="text-xs font-semibold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity flex items-center gap-1">
-            בוצע!  <span className="material-icons-round text-[14px] text-indigo-600">arrow_back</span>
+          <button onClick={() => navigate("/ai-insights")} className="text-xs font-semibold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity flex items-center gap-1">
+            טפל עכשיו   <span className="material-icons-round text-[14px] text-indigo-600">arrow_back</span>
           </button>
         </div>
       </div>

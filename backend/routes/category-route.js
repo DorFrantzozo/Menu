@@ -6,31 +6,41 @@ import {
   deleteCategory,
   reorderCategories,
 } from "../controllers/category-controller.js";
-import { upload } from "../utils/multer.js";
-import { isAuth, isUserOrAdmin } from "../utils/jwt.js";
+import {upload} from "../utils/multer.js";
+import {isAuth, isUserOrAdmin} from "../utils/jwt.js";
+import {checkSubscription} from "../middlewares/checkSubscription.js";
 
 const categoryRouter = express.Router();
 
 categoryRouter.post(
   "/createCategory",
   isAuth,
-  upload.single("img"),  // ← multer חייב לרוץ לפני isUserOrAdmin כדי לפענח FormData
+  upload.single("img"), // ← multer חייב לרוץ לפני isUserOrAdmin כדי לפענח FormData
   isUserOrAdmin,
-  createCategoryByUserId
+  checkSubscription,
+  createCategoryByUserId,
 );
 categoryRouter.get("/getCategories/:userId", getCategoriesByUserId);
 categoryRouter.put(
   "/updateCategory/:userId/:categoryId",
   isAuth,
-  upload.single("img"),  // ← גם כאן
+  upload.single("img"), // ← גם כאן
   isUserOrAdmin,
-  updateCategoryByUserId
+  checkSubscription,
+  updateCategoryByUserId,
 );
 categoryRouter.delete(
   "/deleteCategory/:userId/:categoryId",
-  isAuth, 
+  isAuth,
   isUserOrAdmin,
-  deleteCategory
+  checkSubscription,
+  deleteCategory,
 );
-categoryRouter.put("/reorderCategories/:userId", isAuth, isUserOrAdmin, reorderCategories);
+categoryRouter.put(
+  "/reorderCategories/:userId",
+  isAuth,
+  isUserOrAdmin,
+  checkSubscription,
+  reorderCategories,
+);
 export default categoryRouter;

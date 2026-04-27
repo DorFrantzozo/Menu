@@ -22,6 +22,7 @@ export default function AddCategoryForm({ onCancel }) {
   const dispatch = useDispatch();
 
   const [name, setName] = useState("");
+  const [nameEn, setNameEn] = useState("");
   const [description, setDescription] = useState("");
   const [img, setImg] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -53,6 +54,7 @@ export default function AddCategoryForm({ onCancel }) {
     const formData = new FormData();
     formData.append("userId", user._id);
     formData.append("name", name);
+    formData.append("nameEn", nameEn);
     formData.append("locationNumber", newLocationNumber);
     formData.append("description", description);
     if (img) formData.append("img", img);
@@ -121,6 +123,21 @@ export default function AddCategoryForm({ onCancel }) {
               onChange={(e) => setName(e.target.value)}
               className="mt-1 w-full rounded-md border border-slate-300 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none transition"
               placeholder="לדוגמה: ראשונות"
+            />
+          </div>
+
+          {/* שם הקטגוריה באנגלית */}
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-zinc-100">
+              שם הקטגוריה (אנגלית) <span className="text-xs text-slate-400 font-normal">(אופציונלי)</span>
+            </label>
+            <input
+              type="text"
+              value={nameEn}
+              onChange={(e) => setNameEn(e.target.value)}
+              dir="ltr"
+              className="mt-1 w-full rounded-md border border-slate-300 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none transition placeholder-slate-400 dark:placeholder-zinc-500"
+              placeholder="e.g. Starters"
             />
           </div>
         </div>

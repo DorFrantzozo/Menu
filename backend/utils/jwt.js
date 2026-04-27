@@ -1,9 +1,18 @@
 import jwt from "jsonwebtoken";
 
 const generateToken = (user) => {
-  return jwt.sign({_id: user._id, role: user.role}, process.env.JWT_SECRET, {
-    expiresIn: "30d",
-  });
+  return jwt.sign(
+    {
+      _id: user._id,
+      role: user.role,
+      isPaid: user.isPaid,
+      subscriptionStatus: user.subscriptionStatus,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "30d",
+    },
+  );
 };
 
 const generateResetToken = (user) => {

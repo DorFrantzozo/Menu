@@ -1,6 +1,14 @@
 import express from "express";
-import { trackView, getTopDishes, trackMenuView, getMenuStats, getPeakActivity, clearMyData, likeDish } from "../controllers/analyticsController.js";
-import { isAuth } from "../utils/jwt.js";
+import {
+  trackView,
+  getTopDishes,
+  trackMenuView,
+  getMenuStats,
+  getPeakActivity,
+  clearMyData,
+  likeDish,
+} from "../controllers/analyticsController.js";
+import {isAuth} from "../utils/jwt.js";
 
 const router = express.Router();
 
