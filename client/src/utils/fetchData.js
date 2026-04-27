@@ -157,11 +157,11 @@ const checkIfUserLoggedIn = async () => {
   return !!token;
 };
 
-const getTopDishes = async (restaurantIdOrUser, period = 'month') => {
+const getTopDishes = async (restaurantIdOrUser, period = 'month', sortBy = 'views') => {
   const restaurantId = getSafeId(restaurantIdOrUser);
   try {
     const response = await axiosInstance.get('/analytics/top-dishes', {
-      params: { restaurantId, period }
+      params: { restaurantId, period, sortBy }
     });
     return response.data;
   } catch (error) {

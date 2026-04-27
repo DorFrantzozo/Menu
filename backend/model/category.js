@@ -42,6 +42,6 @@ const Category = new mongoose.Schema({
     type: [Number],
     required: false,
   },
-});
+}, { timestamps: true });
 
-export default mongoose.model("Category", Category);
+export default mongoose.models.Category || mongoose.model("Category", Category);

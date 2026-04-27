@@ -4,8 +4,7 @@ import AddDataToStart from "../components/Cards/AddDataToStart";
 import {countActiveItems, countItems} from "@/utils/localFunctions";
 import DashboardDataCards from "@/components/Cards/DashboardDataCards";
 import QrProfile from "@/components/data/qrCode/QrProfile";
-import PeakActivityWidget from "@/components/Dashboard/PeakActivityWidget";
-import StatsDashboard from "@/components/Dashboard/StatsDashboard";
+import BentoAnalyticsGrid from "@/components/Dashboard/BentoAnalyticsGrid";
 import useQrScanPolling from "@/hooks/useQrScanPolling";
 import {useTheme} from "../context/ThemeContext";
 
@@ -67,38 +66,39 @@ const Dashboard = () => {
       </header>
 
       {/* Main Content Scrollable Area */}
-      <main className="flex-1 overflow-y-auto p-4 lg:p-8 flex flex-col gap-6">
-        {menuCategories?.length > 0 ? (
-          <>
-            {/* Top Stat Cards Grid */}
-            <div className="shrink-0">
-              <DashboardDataCards
-                menuCategories={menuCategories}
-                allItems={allItems}
-                allActiveItems={allActiveItems}
-                totalQrScans={liveQrScans}
-              />
-            </div>
+      <main className="flex-1 overflow-y-auto p-4 lg:p-8">
+        <div className="max-w-[1600px] mx-auto w-full flex flex-col gap-6 lg:gap-8">
+          {menuCategories?.length > 0 ? (
+            <>
+              {/* Top Stat Cards Grid */}
+              <div className="shrink-0">
+                <DashboardDataCards
+                  menuCategories={menuCategories}
+                  allItems={allItems}
+                  allActiveItems={allActiveItems}
+                  totalQrScans={liveQrScans}
+                />
+              </div>
 
-            {/* Middle Section: Chart & Dishes */}
-            <div className="lg:flex-1 lg:min-h-[300px] flex flex-col">
-              <StatsDashboard userId={user?._id} />
-            </div>
+              {/* Middle Section: Bento Grid */}
+              <div className="flex flex-col w-full z-10 shrink-0">
+                <BentoAnalyticsGrid user={user} />
+              </div>
 
-            {/* Bottom Section: QR & Actions */}
-            <div
-              data-tour="stats"
-              className="grid grid-cols-1 xl:grid-cols-2 gap-6 items-stretch w-full shrink-0"
-            >
-              <QrProfile qrSlug={user?.qrSlug} />
-              <PeakActivityWidget />
+              {/* Bottom Section: QR Code Card */}
+              <div
+                data-tour="stats"
+                className="w-full shrink-0 mb-8"
+              >
+                <QrProfile qrSlug={user?.qrSlug} />
+              </div>
+            </>
+          ) : (
+            <div className="mt-10">
+              <AddDataToStart />
             </div>
-          </>
-        ) : (
-          <div className="mt-10">
-            <AddDataToStart />
-          </div>
-        )}
+          )}
+        </div>
       </main>
     </div>
   );

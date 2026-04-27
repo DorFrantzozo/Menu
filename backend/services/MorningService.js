@@ -32,7 +32,7 @@ export const loginToMorning = async () => {
 /**
  * פונקציה גנרית לביצוע בקשות API
  */
-const morningRequest = async (method, endpoint, data = {}) => {
+export const morningRequest = async (method, endpoint, data = {}) => {
   if (!cachedToken) await loginToMorning();
 
   try {
@@ -67,9 +67,9 @@ export const createPaymentLink = async (
 ) => {
   // 1. קביעת מחיר בשרת בלבד
   let finalAmount;
-  const PRICE_ESSENTIAL = Number(process.env.PRICE_ESSENTIAL) || 2900;
-  const PRICE_ADVANCE = Number(process.env.PRICE_ADVANCE) || 4500;
-  const PRICE_PRO = Number(process.env.PRICE_PRO) || 8500;
+  const PRICE_ESSENTIAL = Number(process.env.PRICE_ESSENTIAL) || 29;
+  const PRICE_ADVANCE = Number(process.env.PRICE_ADVANCE) || 45;
+  const PRICE_PRO = Number(process.env.PRICE_PRO) || 85;
 
   switch (planName) {
     case "iMenu PRO":
@@ -90,7 +90,7 @@ export const createPaymentLink = async (
 
     // 2. שליחת הבקשה לפי הסכמה של מורנינג
     const response = await morningRequest("POST", "/payments/form", {
-      description: `iMenu ${planName} Subscription`,
+      description: `iMenu ${planName} מנוי חודשי `,
       type: 400, // קבלה
       lang: "he",
       currency: "ILS",
@@ -98,6 +98,9 @@ export const createPaymentLink = async (
       amount: finalAmount,
       maxPayments: 1,
       pluginId: "1365af74-0ac5-4935-8bdd-7a57c75d6a36",
+      options: {
+        cardStorage: true,
+      },
       client: {
         // אם כבר יש לו ID נשלח אותו, אם לא - מורנינג ייצור חדש לפי המייל
         id: user.morningCustomerId || undefined,
@@ -112,7 +115,7 @@ export const createPaymentLink = async (
       },
       income: [
         {
-          description: `מנוי שנתי iMenu - מסלול ${planName}`,
+          description: `מנוי חודשי iMenu - מסלול ${planName}`,
           quantity: 1,
           price: finalAmount,
           currency: "ILS",
@@ -124,6 +127,85 @@ export const createPaymentLink = async (
       notifyUrl: process.env.MORNING_WEBHOOK_URL,
       custom: user._id.toString(), // ה-ID של המשתמש ב-DB שלנו
     });
+
+    return response;
+  } catch (error) {
+    console.error(
+      "❌ Morning API Error:",
+      error.response?.data || error.message,
+    );
+    throw error;
+  }
+};
+
+export const chargeToken = async (user, amount, planName) => {
+  if (!user.morningPaymentToken) {
+    throw new Error(
+      `Charge failed: Missing payment token for user ${user.email}`,
+    );
+  }
+  if (!user.morningCustomerId) {
+    throw new Error(
+      `Charge failed: Missing morning customer ID for user ${user.email}`,
+    );
+  }
+  try {
+    console.log(
+      `💸 Attempting to charge token for: ${user.email} | Amount: ₪${amount}`,
+    );
+
+    const payload = {
+      description: `מנוי חודשי iMenu - מסלול ${planName}`,
+      type: 400,
+      lang: "he",
+      currency: "ILS",
+      vatType: 0,
+      amount: amount,
+      maxPayments: 1,
+      income: [
+        {
+          catalogNum: "1",
+          description: `מנוי חודשי iMenu - מסלול ${planName}`,
+          quantity: 1,
+          price: amount,
+          currency: "ILS",
+          vatType: 0,
+        },
+      ],
+
+      notifyUrl: process.env.MORNING_WEBHOOK_URL,
+    };
+    const response = await morningRequest(
+      "POST",
+      `/payments/tokens/${user.morningPaymentToken}/charge`,
+      payload,
+    );
+    return response;
+  } catch (error) {
+    console.error(
+      "❌ Morning API Error:",
+      error.response?.data || error.message,
+    );
+    throw error;
+  }
+};
+
+export const testSerchUserPayToken = async (
+  paymentNumber,
+  cardHolder,
+  externalKey,
+) => {
+  try {
+    const response = await morningRequest("POST", `payments/tokens/search`, {
+      paymentNumber: paymentNumber,
+      cardHolder: cardHolder,
+      externalKey: externalKey,
+    });
+
+    console.log(
+      `🔍  TOKENS IN SYSTEM: ${paymentNumber}, ${cardHolder}, ${externalKey}`,
+      JSON.stringify(response, null, 2),
+    );
 
     return response;
   } catch (error) {

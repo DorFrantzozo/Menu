@@ -4,6 +4,7 @@ import { X, ShoppingBag } from 'lucide-react';
 import { useLanguage } from "../../../context/LanguageContext";
 import useTrackDishView from "@/hooks/useTrackDishView";
 import Allergies from "@/components/sensitivities/Allergies";
+import FavoriteHeart from "../../../components/buttons/FavoriteHeart";
 import "./DishModal.css";
 
 const DishModal = ({ dish, isOpen, onClose }) => {
@@ -57,6 +58,9 @@ const DishModal = ({ dish, isOpen, onClose }) => {
 
             {/* Large Image Section */}
             <div className="w-full md:w-1/2 h-64 sm:h-80 md:h-auto flex-shrink-0 relative overflow-hidden">
+              <div className={`absolute top-4 ${isRTL ? 'right-4' : 'left-4'} z-10`}>
+                <FavoriteHeart dishId={dish._id} />
+              </div>
               {dish.img ? (
                 <img 
                   src={dish.img} 

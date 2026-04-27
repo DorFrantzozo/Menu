@@ -1,6 +1,6 @@
 import React from "react";
 
-const PricingCard = ({plan, price, features, isBestValue, onUpgrade}) => {
+const PricingCard = ({plan, price, features, isBestValue, onUpgrade, isCurrentPlan}) => {
   const isPro = plan === "iMenu PRO";
   const isEssential = plan === "Essential";
 
@@ -68,14 +68,19 @@ const PricingCard = ({plan, price, features, isBestValue, onUpgrade}) => {
       {/* Button */}
       <button
         onClick={onUpgrade}
-        className={`relative overflow-hidden w-full py-4 rounded-[1.5rem] font-black text-sm transition-all active:scale-95 group/btn z-10 ${
-          isBestValue
-            ? "bg-emerald-600 text-white shadow-lg"
-            : "bg-zinc-900 text-white dark:bg-zinc-800 hover:bg-zinc-800 dark:hover:bg-zinc-700"
+        disabled={isCurrentPlan}
+        className={`relative overflow-hidden w-full py-4 rounded-[1.5rem] font-black text-sm transition-all z-10 ${
+          isCurrentPlan 
+            ? "bg-zinc-200 dark:bg-zinc-800 text-zinc-400 cursor-not-allowed border-2 border-transparent"
+            : isBestValue
+              ? "bg-emerald-600 text-white shadow-lg active:scale-95 group-hover/btn:animate-[shine_1.5s_infinite] group/btn"
+              : "bg-zinc-900 text-white dark:bg-zinc-800 hover:bg-zinc-800 dark:hover:bg-zinc-700 active:scale-95 group/btn"
         }`}
       >
-        <span className="absolute top-0 -left-full w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-20deg] group-hover/btn:animate-[shine_1.5s_infinite]"></span>
-        בחר מסלול זה
+        {!isCurrentPlan && (
+          <span className="absolute top-0 -left-full w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-20deg] group-hover/btn:animate-[shine_1.5s_infinite]"></span>
+        )}
+        {isCurrentPlan ? "התוכנית הנוכחית שלך" : "בחר מסלול קדימה"}
       </button>
 
       {/* CSS לאנימציה הטבעית */}

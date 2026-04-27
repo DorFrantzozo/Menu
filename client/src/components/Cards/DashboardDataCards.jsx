@@ -3,7 +3,7 @@ import DashboardCard from "./DashboardCard";
 
 const DashboardDataCards = ({ menuCategories, allActiveItems, allItems, totalQrScans = 0 }) => {
   return (
-    <div dir="rtl" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 w-full">
+    <div dir="rtl" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 w-full">
       <DashboardCard
         value={totalQrScans}
         name="סריקות QR"

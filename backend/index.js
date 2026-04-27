@@ -16,11 +16,15 @@ import aiRouter from "./routes/ai-route.js";
 import {generalLimiter} from "./middlewares/rateLimiter.js";
 import {globalErrorHandler} from "./middlewares/errorHandler.js";
 import {initPaymentReminders} from "./utils/paymentReminders.js";
+import startNightlyInsightsCron from "./scripts/nightlyInsights.js";
+import insightRoutes from "./routes/insightRoutes.js";
+import marketingRoutes from "./routes/marketingLab-route.js";
+import {testSerchUserPayToken} from "./services/MorningService.js";
 
 dotenv.config();
 
 const app = express();
-app.set('trust proxy', 1);
+app.set("trust proxy", 1);
 
 const getNormalizedOrigin = (url) => {
   if (!url) return "";
@@ -35,17 +39,22 @@ app.use(
 
       const frontendUrl = getNormalizedOrigin(process.env.FRONTEND_URL);
       const fallbackUrl = "https://imenu-il.online";
-      
+
       const allowedOrigins = [frontendUrl, fallbackUrl].filter(Boolean);
-      
+
       // Check if the origin matches our main domain or any subdomain of it
-      const isDomainAllowed = /^https?:\/\/(?:[a-z0-9-]+\.)?imenu-il\.online$/.test(origin);
+      const isDomainAllowed =
+        /^https?:\/\/(?:[a-z0-9-]+\.)?imenu-il\.online$/.test(origin);
       const isExactMatch = allowedOrigins.includes(origin);
 
-      if (isExactMatch || isDomainAllowed || /^http:\/\/localhost(:\d+)?$/.test(origin)) {
+      if (
+        isExactMatch ||
+        isDomainAllowed ||
+        /^http:\/\/localhost(:\d+)?$/.test(origin)
+      ) {
         return callback(null, true);
       }
-      
+
       console.warn(`CORS blocked for origin: ${origin}`);
       callback(new Error("Not allowed by CORS"));
     },
@@ -54,9 +63,9 @@ app.use(
   }),
 );
 
-
+startNightlyInsightsCron(); //GROQ AI SERVICE
 app.use(express.json());
-
+app.use(express.urlencoded({extended: true}));
 // Apply general rate limiter to all API routes
 app.use("/api", generalLimiter);
 app.use("/api/user", userRouter);
@@ -68,6 +77,8 @@ app.use("/api/support", supportRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/payments", paymentRouter);
 app.use("/api/ai", aiRouter);
+app.use("/api/insights", insightRoutes);
+app.use("/api/marketing", marketingRoutes);
 
 // Dynamic QR Redirect Route (no global rate limiter applied here because QR scans can be frequent)
 app.get("/go/:slug", handleQrRedirect);

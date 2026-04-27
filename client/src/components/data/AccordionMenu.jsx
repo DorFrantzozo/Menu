@@ -42,7 +42,8 @@ const AccordionMenu = ({ categories, dishes, textColor = "white" }) => {
               {dishes[category._id] && dishes[category._id].length > 0 ? (
                 <ul>
                   {dishes[category._id].map((dish) => (
-                    <div className="text-center mb-8" key={dish._id}>
+                    <div className="text-center mb-8 relative" key={dish._id}>
+                    
                       <li
                         className={`text-2xl font-semibold text-${textColor}`}
                       >

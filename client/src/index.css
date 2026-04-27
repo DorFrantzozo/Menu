@@ -2,15 +2,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 body,
 html {
   height: 100%;
-
   font-family: "Open Sans", sans-serif;
   /* min-height: 100vh !important; */
 }
-
 hr.style-seven {
   width: 40%;
   margin-left: 30%;
@@ -32,9 +29,9 @@ hr.style-seven:before {
   border-width: 0 0 1px 0;
   border-radius: 20px;
 }
-
 @layer base {
   :root {
+    --dashboard-bg-rgb: 255, 255, 255; /* Pure white to match card */
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
@@ -62,22 +59,20 @@ hr.style-seven:before {
     --radius: 0.5rem;
   }
   .dark {
-    /* רקע כללי של הדף - Zinc 950 */
-    --background: 240 10% 3.9%;
+    --dashboard-bg-rgb: 24, 24, 27; /* Zinc-900 to match dashboard background */
+    /* רקע כללי של הדף - Zinc 900 */
+    --background: 240 6% 10%;
 
-    /* צבע הכפתור והכרטיסים (השחור הבהיר יותר) - Zinc 900 */
-    --secondary: 240 6% 10%;
+    /* צבע הכפתור והכרטיסים (קצת בהיר יותר מהרקע) - Zinc 800/850 */
+    --secondary: 240 5% 15%;
     --secondary-foreground: 0 0% 98%;
-
-    /* צבע ל-Hover - Zinc 800 */
-    --accent: 240 5% 15%;
+    /* צבע ל-Hover - Zinc 700/800 */
+    --accent: 240 5% 20%;
     --accent-foreground: 0 0% 98%;
-
-    /* תיקון ה-Border שבתמונה נראה קצת בוהק מדי */
-    --border: 240 5% 15%;
+    /* תיקון ה-Border */
+    --border: 240 5% 20%;
   }
 }
-
 @layer base {
   * {
     @apply border-border;
@@ -85,7 +80,6 @@ hr.style-seven:before {
   body {
     @apply bg-background text-foreground;
   }
-
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -110,30 +104,27 @@ hr.style-seven:before {
 
 /* Frosted Glassmorphism Utility Class */
 .frosted-glass-card {
-  /* Linear gradient for a subtle light sweep */
+  /* שיניתי את הסוף מ-0.03 ל-0.8 כדי לחסום את האור הסגול מלמטה */
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.03) 100%
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(255, 255, 255, 0.8) 100%
   );
-
-  /* Increased blur for a solid glass feel */
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
 
-  /* Specular highlights on top and left edges typical of 3D glass */
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-top: 1px solid rgba(255, 255, 255, 0.6);
-  border-left: 1px solid rgba(255, 255, 255, 0.6);
+  /* הברקות עדינות בקצוות */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.7);
+  border-left: 1px solid rgba(255, 255, 255, 0.7);
 
-  /* Deep shadow mixed with an inner specular glow */
+  /* צל עדין מאוד למסך בהיר */
   box-shadow:
-    0 8px 24px 0 rgba(0, 0, 0, 0.08),
+    0 8px 24px 0 rgba(0, 0, 0, 0.04),
     inset 0 0 10px rgba(255, 255, 255, 0.1);
 
   transition: all 0.3s ease;
 }
-
 .dark .frosted-glass-card {
   background: linear-gradient(
     135deg,
@@ -147,181 +138,229 @@ hr.style-seven:before {
     0 8px 24px 0 rgba(0, 0, 0, 0.2),
     inset 0 0 12px rgba(255, 255, 255, 0.02);
 }
-
-.frosted-glass-card:hover {
+/* Locked Analytics Overlay Gradient - More aggressive hide */
+.locked-overlay-gradient {
   background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.15) 0%,
-    rgba(255, 255, 255, 0.05) 100%
+    to bottom,
+    rgba(var(--dashboard-bg-rgb), 0) 0%,
+    rgba(var(--dashboard-bg-rgb), 0.7) 20%,
+    rgba(var(--dashboard-bg-rgb), 1) 100%
   );
-  box-shadow:
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.3) 10%,
+    black 50%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.3) 10%,
+    black 50%
+  );
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+}
+.dark .locked-overlay-gradient {
+  background: linear-gradient(
+    to bottom,
+    rgba(var(--dashboard-bg-rgb), 0) 0%,
+    rgba(var(--dashboard-bg-rgb), 0.5) 40%,
+    rgba(var(--dashboard-bg-rgb), 0.92) 100%
+  );
+}
+/* .frosted-glass-card:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+  box-shadow: 
     0 12px 32px 0 rgba(0, 0, 0, 0.12),
     inset 0 0 15px rgba(255, 255, 255, 0.2);
 }
 
 .dark .frosted-glass-card:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.08) 0%,
-    rgba(255, 255, 255, 0.02) 100%
-  );
-  box-shadow:
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+  box-shadow: 
     0 12px 32px 0 rgba(0, 0, 0, 0.3),
     inset 0 0 15px rgba(255, 255, 255, 0.05);
-}
+} */
 
 /* Custom AI Scanning Animations */
 @keyframes progress-indeterminate {
-  0% { transform: translateX(-100%); }
-  50% { transform: translateX(0%); }
-  100% { transform: translateX(100%); }
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
-
 .animate-progress-indeterminate {
   animation: progress-indeterminate 2s infinite linear;
 }
-
 @keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
-
 @keyframes slide-in-bottom {
-  from { transform: translateY(8px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
-
 .animate-in {
   animation-duration: 500ms;
   animation-fill-mode: both;
 }
-
 .fade-in {
   animation-name: fade-in;
 }
-
 .slide-in-from-bottom-2 {
   animation-name: slide-in-bottom;
 }
-
 /* Green AI Glow Animation */
 @keyframes rotating-glow {
-  0% { transform: rotate(0deg) scale(1); opacity: 0.3; }
-  50% { transform: rotate(180deg) scale(1.1); opacity: 0.5; }
-  100% { transform: rotate(360deg) scale(1); opacity: 0.3; }
+  0% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: rotate(180deg) scale(1.1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+    opacity: 0.3;
+  }
 }
-
 .animate-rotate-glow {
   animation: rotating-glow 8s linear infinite;
 }
-
 .bg-conic-green {
-  background: conic-gradient(from 0deg, transparent 0%, #4ade80 50%, transparent 100%);
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    #4ade80 50%,
+    transparent 100%
+  );
 }
-
 /* Siri-like Organic Blob Animation */
 @keyframes blob-organic {
-  0% { 
-    transform: rotate(0deg) scale(1) translate(0, 0); 
-    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; 
+  0% {
+    transform: rotate(0deg) scale(1) translate(0, 0);
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
   }
-  33% { 
-    transform: rotate(120deg) scale(1.1) translate(8px, -12px); 
-    border-radius: 60% 40% 30% 70% / 50% 60% 40% 60%; 
+  33% {
+    transform: rotate(120deg) scale(1.1) translate(8px, -12px);
+    border-radius: 60% 40% 30% 70% / 50% 60% 40% 60%;
   }
-  66% { 
-    transform: rotate(240deg) scale(0.95) translate(-12px, 8px); 
-    border-radius: 30% 70% 60% 40% / 60% 30% 50% 70%; 
+  66% {
+    transform: rotate(240deg) scale(0.95) translate(-12px, 8px);
+    border-radius: 30% 70% 60% 40% / 60% 30% 50% 70%;
   }
-  100% { 
-    transform: rotate(360deg) scale(1) translate(0, 0); 
-    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; 
+  100% {
+    transform: rotate(360deg) scale(1) translate(0, 0);
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
   }
 }
-
 .animate-blob-organic {
   animation: blob-organic 12s ease-in-out infinite;
 }
-
 /* Custom Mint Color if not in Tailwind config */
 .bg-mint-400 {
   background-color: #a7f3d0;
 }
 
-/* Custom AI Scanning Animations */
-@keyframes progress-indeterminate {
-  0% { transform: translateX(-100%); }
-  50% { transform: translateX(0%); }
-  100% { transform: translateX(100%); }
+/* ai insights glow - גרסה מתוקנת ללא clip-path */
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
 }
 
-.animate-progress-indeterminate {
-  animation: progress-indeterminate 2s infinite linear;
-}
-
-@keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slide-in-bottom {
-  from { transform: translateY(8px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-.animate-in {
-  animation-duration: 500ms;
-  animation-fill-mode: both;
-}
-
-.fade-in {
-  animation-name: fade-in;
-}
-
-.slide-in-from-bottom-2 {
-  animation-name: slide-in-bottom;
-}
-
-/* Green AI Glow Animation */
-@keyframes rotating-glow {
-  0% { transform: rotate(0deg) scale(1); opacity: 0.3; }
-  50% { transform: rotate(180deg) scale(1.1); opacity: 0.5; }
-  100% { transform: rotate(360deg) scale(1); opacity: 0.3; }
-}
-
-.animate-rotate-glow {
-  animation: rotating-glow 8s linear infinite;
-}
-
-.bg-conic-green {
-  background: conic-gradient(from 0deg, transparent 0%, #4ade80 50%, transparent 100%);
-}
-
-/* Siri-like Organic Blob Animation */
-@keyframes blob-organic {
-  0% { 
-    transform: rotate(0deg) scale(1) translate(0, 0); 
-    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; 
-  }
-  33% { 
-    transform: rotate(120deg) scale(1.1) translate(8px, -12px); 
-    border-radius: 60% 40% 30% 70% / 50% 60% 40% 60%; 
-  }
-  66% { 
-    transform: rotate(240deg) scale(0.95) translate(-12px, 8px); 
-    border-radius: 30% 70% 60% 40% / 60% 30% 50% 70%; 
-  }
-  100% { 
-    transform: rotate(360deg) scale(1) translate(0, 0); 
-    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; 
+@keyframes rotate-gradient {
+  to {
+    --gradient-angle: 360deg;
   }
 }
 
-.animate-blob-organic {
-  animation: blob-organic 12s ease-in-out infinite;
+.animated-glow-border-purple {
+  position: relative;
+  /* isolation: isolate עוזר לניהול שכבות z פנימיות */
+  isolation: isolate;
 }
 
-/* Custom Mint Color if not in Tailwind config */
-.bg-mint-400 {
-  background-color: #a7f3d0;
+/* שכבה 1: ההילה החיצונית (הצל המטושטש) */
+.animated-glow-border-purple::before {
+  content: "";
+  position: absolute;
+  /* inset שלילי מוציא את ההילה החוצה מהגבולות */
+  inset: 15px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--gradient-angle),
+    transparent 70%,
+    rgba(168, 85, 247, 0.5) 85%,
+    rgba(216, 180, 254, 0.4) 95%,
+    transparent 100%
+  );
+  animation: rotate-gradient 12s linear infinite;
+
+  /* טשטוש ההילה */
+  filter: blur(14px);
+
+  /* במקום clip-path, נשתמש ב-mask כדי לחתוך את הפנים */
+  /* זה מונע מההילה להשתקף בתוך ה-Glass ומונע את הריבוע השחור */
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+
+  /* ה-padding כאן קובע כמה ה"חור" יהיה גדול. 15px יתאים בדיוק ל-inset */
+  padding: 25px;
+
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* שכבה 2: ה-Border הדק והמסתובב */
+.animated-glow-border-purple::after {
+  content: "";
+  position: absolute;
+  /* יושב בדיוק על הקצה */
+  inset: -1.5px;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--gradient-angle),
+    transparent 75%,
+    #a855f7 85%,
+    #d8b4fe 95%,
+    transparent 100%
+  );
+  animation: rotate-gradient 8s linear infinite;
+
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+
+  z-index: 10;
+  pointer-events: none;
 }

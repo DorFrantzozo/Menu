@@ -24,6 +24,7 @@ export default function AdminUsersTable() {
         
         // Check if response payload is wrapped differently
         let items = response.data;
+        console.log(response.data);
         if (response.data && !Array.isArray(response.data) && Array.isArray(response.data.stats)) {
           items = response.data.stats;
         } else if (response.data === "string" || typeof response.data === "string") {
@@ -133,6 +134,7 @@ export default function AdminUsersTable() {
               <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 w-1/4">Restaurant</th>
               <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100">User ID</th>
               <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100">Status</th>
+              <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100">Plan</th>
               <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 w-[10%]">Digital Menu</th>
               <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 text-center w-[8%]">Scans</th>
               <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 w-[10%]">Created</th>

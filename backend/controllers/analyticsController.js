@@ -51,18 +51,23 @@ export const trackView = async (req, res) => {
 
 export const getTopDishes = async (req, res) => {
   try {
-    const { restaurantId, period } = req.query;
+    const { restaurantId, period, sortBy = "views" } = req.query;
 
     if (!restaurantId) {
       return res.status(400).json({ message: "Restaurant ID is required" });
     }
 
     // ── Cache check ──
-    const cacheKey = `topDishes_${restaurantId}_${period || "all"}`;
+    const cacheKey = `topDishes_${restaurantId}_${period || "all"}_${sortBy}`;
     const cached = cache.get(cacheKey);
     if (cached) {
       return res.status(200).json(cached);
     }
+
+    // Reference User Model dynamic import if not top-level
+    const User = (await import("../model/user.js")).default;
+    const user = await User.findById(restaurantId).select("plan").lean();
+    const userPlan = user?.plan || "Essential";
 
     let dateFilter = {};
     const now = new Date();
@@ -84,7 +89,6 @@ export const getTopDishes = async (req, res) => {
       lastYear.setFullYear(lastYear.getFullYear() - 1);
       dateFilter = { $gte: lastYear };
     }
-    // if period is 'all' or undefined, we don't add a date filter (or filtered from beginning of time)
 
     const matchStage = {
       restaurantId: new mongoose.Types.ObjectId(restaurantId),
@@ -94,7 +98,7 @@ export const getTopDishes = async (req, res) => {
       matchStage.date = dateFilter;
     }
 
-    const stats = await DishStats.aggregate([
+    const pipeline = [
       { $match: matchStage },
       {
         $group: {
@@ -102,28 +106,38 @@ export const getTopDishes = async (req, res) => {
           totalViews: { $sum: "$views" },
         },
       },
-      { $sort: { totalViews: -1 } },
-      { $limit: 100 }, // Top 100
       {
         $lookup: {
-          from: "dishes", // collection name usually lowercase plural
+          from: "dishes",
           localField: "_id",
           foreignField: "_id",
           as: "dishDetails",
         },
       },
       { $unwind: "$dishDetails" },
-      {
-        $project: {
-          _id: 0,
-          dishId: "$_id",
-          name: "$dishDetails.name",
-          image: "$dishDetails.img",
-          price: "$dishDetails.price",
-          totalViews: 1,
-        },
+    ];
+
+    if (sortBy === "likes") {
+      pipeline.push({ $sort: { "dishDetails.likes": -1, totalViews: -1 } });
+    } else {
+      pipeline.push({ $sort: { totalViews: -1, "dishDetails.likes": -1 } });
+    }
+
+    pipeline.push({ $limit: 100 });
+
+    pipeline.push({
+      $project: {
+        _id: 0,
+        dishId: "$_id",
+        name: "$dishDetails.name",
+        image: "$dishDetails.img",
+        price: "$dishDetails.price",
+        likes: userPlan === "Essential" ? { $literal: null } : "$dishDetails.likes",
+        totalViews: 1,
       },
-    ]);
+    });
+
+    const stats = await DishStats.aggregate(pipeline);
 
     // ── Store in cache (TTL from shared cache instance – 5 min) ──
     cache.set(cacheKey, stats);
@@ -340,6 +354,62 @@ export const clearMyData = async (req, res) => {
     });
   } catch (error) {
     console.error("Error clearing activity data:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+export const likeDish = async (req, res) => {
+  try {
+    const { dishId, deviceId } = req.body;
+    
+    // Validation
+    if (!dishId || !mongoose.Types.ObjectId.isValid(dishId)) {
+      return res.status(400).json({ message: "Valid Dish ID is required" });
+    }
+    if (!deviceId) {
+      return res.status(400).json({ message: "Device ID is required" });
+    }
+
+    const ipAddress = req.ip || req.connection?.remoteAddress || "unknown";
+    const userAgent = req.get("User-Agent") || "unknown";
+
+    const dish = await Dish.findById(dishId);
+    if (!dish) {
+      return res.status(404).json({ message: "Dish not found" });
+    }
+
+    // 24-Hour Anti-Spam Check
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const existingLike = await import("../model/analyticsEvent.js").then(module => module.default.findOne({
+      dishId: new mongoose.Types.ObjectId(dishId),
+      deviceId: deviceId,
+      type: "dish_like",
+      timestamp: { $gte: twentyFourHoursAgo },
+    }));
+
+    if (existingLike) {
+      // Silent Success: return 200 without DB writes
+      return res.status(200).json({ message: "Dish already liked recently" });
+    }
+
+    // Atomic Updates
+    await Dish.findByIdAndUpdate(dishId, { $inc: { likes: 1 } });
+    
+    // Track individual event
+    const AnalyticsEvent = (await import("../model/analyticsEvent.js")).default;
+    await AnalyticsEvent.create({
+      dishId: dish._id,
+      restaurantId: dish.userId,
+      type: "dish_like",
+      ipAddress,
+      userAgent,
+      deviceId,
+    });
+
+    res.status(200).json({ message: "Dish liked successfully" });
+  } catch (error) {
+    console.error("Error liking dish:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };

@@ -12,7 +12,7 @@ import { motion } from "framer-motion";
 import Spinner from "@/components/Spinner";
 import { useLanguage } from "../../context/LanguageContext";
 import FloatingLanguageSelector from "../../components/LanguageSelector/FloatingLanguageSelector";
-
+import FavoriteHeart from "../../components/buttons/FavoriteHeart";
 import useTrackMenuView from "@/hooks/useTrackMenuView";
 
 const Design4 = ({ menu: menuProp }) => {
@@ -218,13 +218,19 @@ const Design4 = ({ menu: menuProp }) => {
               }
               className="bg-gray-100 rounded-xl overflow-hidden relative hover:shadow-lg transition"
             >
-              <motion.img
-                src={dish.img}
-                alt={dish.name}
-                className="w-full h-32 object-cover"
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
-              />
+              <div className="relative">
+                <motion.img
+                  src={dish.img}
+                  alt={dish.name}
+                  className="w-full h-32 object-cover"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.3 }}
+                />
+                {/* Like button - top right corner */}
+                <div className="absolute top-2 right-2 z-10">
+                  <FavoriteHeart dishId={dish._id} />
+                </div>
+              </div>
               <div className="p-3">
                 <p className={`text-sm font-semibold truncate ${language === "en" ? "text-left" : "text-right"}`}>
                   {language === "en" && dish.nameEn ? dish.nameEn : dish.name}

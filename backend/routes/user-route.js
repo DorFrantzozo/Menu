@@ -50,9 +50,11 @@ userRouter.put(
   isUserOrAdmin,
   updateUserMenuSettings,
 );
-userRouter.post("/sendResetPasswordLink", SendResetPasswordMail);
 userRouter.patch("/complete-tour", isAuth, completeTour);
+
+userRouter.post("/sendResetPasswordLink", SendResetPasswordMail);
 userRouter.post("/resetPassword", resetPassword);
+
 userRouter.post("/checkout", isAuth, startCheckout);
 userRouter.post("/morning-webhook", morningWebhookHandler);
 

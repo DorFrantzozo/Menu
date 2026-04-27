@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { useLanguage } from "../../context/LanguageContext";
 import FloatingLanguageSelector from "../../components/LanguageSelector/FloatingLanguageSelector";
+import FavoriteHeart from "../../components/buttons/FavoriteHeart";
 
 const Design4DishDetails = () => {
   const { language } = useLanguage();
@@ -33,16 +34,21 @@ const Design4DishDetails = () => {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <motion.img
-          src={dish.img}
-          alt={dish.name}
-          // מחקנו את ה-md:object-fill. הוספנו עיגול פינות עדין במסכים גדולים (md:rounded-b-2xl)
-          // והקטנו טיפה את הגובה במסך גדול מ-800 ל-500 כדי שזה לא יתפוס את כל הגלילה
-          className="w-full h-72 md:h-[500px] object-cover shadow-md mb-6 md:rounded-b-3xl"
-          initial={{ scale: 0.9 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-        />
+        <div className="relative w-full">
+          <motion.img
+              src={dish.img}
+              alt={dish.name}
+              className="w-full h-72 md:h-[500px] object-cover shadow-md mb-6 md:rounded-b-3xl"
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+            />
+          {/* Like button - top right corner over image */}
+          <div className="absolute top-4 right-4 z-10">
+            <FavoriteHeart dishId={dish._id} />
+          </div>
+        </div>
+      
         
         {/* עטפנו את התוכן עם padding שונה למובייל ומחשב */}
         <div className={`space-y-4 px-4 md:px-8 text-center ${language === "en" ? "md:text-left" : "md:text-right"}`}>

@@ -82,7 +82,7 @@ const MenuViewsChart = () => {
   return (
     <div
       dir="rtl"
-      className="frosted-glass-card p-6 rounded-2xl flex flex-col h-full w-full flex-1"
+      className="frosted-glass-card p-6 lg:p-8 rounded-2xl flex flex-col h-full w-full flex-1 overflow-hidden"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-5 shrink-0">
@@ -112,7 +112,7 @@ const MenuViewsChart = () => {
       </div>
 
       {/* Chart */}
-      <div className="w-full h-[300px] overflow-hidden">
+      <div className="w-full flex-1 min-h-0 overflow-hidden mt-2">
         <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData} margin={{ top: 10, right: 5, left: -20, bottom: 0 }}>
               {/* SVG Defs — gradient + glow filter */}
