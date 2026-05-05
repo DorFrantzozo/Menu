@@ -4,6 +4,7 @@ import Dish from "../model/dish.js";
 import MenuStats from "../model/menuStats.js";
 import ActivityLog from "../model/activityLog.js";
 import cache from "../utils/cache.js";
+import { getJerusalemMidnight } from "../utils/dateUtils.js";
 
 export const trackView = async (req, res) => {
   try {
@@ -18,9 +19,8 @@ export const trackView = async (req, res) => {
       return res.status(404).json({ message: "Dish not found" });
     }
 
-    // Normalize date to midnight (UTC to avoid timezone issues, or local if preferred - sticking to UTC for consistency)
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    // Normalize date to midnight (UTC matching Asia/Jerusalem to avoid timezone issues)
+    const today = getJerusalemMidnight(new Date());
 
     // Upsert the stats for today
     await DishStats.findOneAndUpdate(
@@ -71,23 +71,25 @@ export const getTopDishes = async (req, res) => {
 
     let dateFilter = {};
     const now = new Date();
-    
-    // reset to start of today for consistency
-    const today = new Date(now);
-    today.setHours(0, 0, 0, 0);
 
     if (period === "week") {
-      const lastWeek = new Date(today);
-      lastWeek.setDate(lastWeek.getDate() - 7);
-      dateFilter = { $gte: lastWeek };
+      // Get clock face matching Jerusalem
+      const localFaceDate = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Jerusalem' }));
+      const dayOfWeek = localFaceDate.getDay(); // 0 is Sunday
+      localFaceDate.setDate(localFaceDate.getDate() - dayOfWeek); // Subtract days to reach Sunday
+      
+      dateFilter = { $gte: getJerusalemMidnight(localFaceDate) };
     } else if (period === "month") {
-      const lastMonth = new Date(today);
-      lastMonth.setMonth(lastMonth.getMonth() - 1);
-      dateFilter = { $gte: lastMonth };
+      const localFaceDate = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Jerusalem' }));
+      localFaceDate.setDate(1); // 1st of the month
+      
+      dateFilter = { $gte: getJerusalemMidnight(localFaceDate) };
     } else if (period === "year") {
-      const lastYear = new Date(today);
-      lastYear.setFullYear(lastYear.getFullYear() - 1);
-      dateFilter = { $gte: lastYear };
+      const localFaceDate = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Jerusalem' }));
+      localFaceDate.setMonth(0); // January
+      localFaceDate.setDate(1); // 1st
+      
+      dateFilter = { $gte: getJerusalemMidnight(localFaceDate) };
     }
 
     const matchStage = {
@@ -159,8 +161,7 @@ export const trackMenuView = async (req, res) => {
     }
 
     // Normalize date to midnight
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const today = getJerusalemMidnight(new Date());
 
     // Upsert the stats for today
     await MenuStats.findOneAndUpdate(
@@ -194,9 +195,9 @@ export const getMenuStats = async (req, res) => {
       return res.status(400).json({ message: "Restaurant ID is required" });
     }
 
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - parseInt(days));
-    startDate.setHours(0, 0, 0, 0);
+    const localFaceDate = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Jerusalem' }));
+    localFaceDate.setDate(localFaceDate.getDate() - parseInt(days));
+    const startDate = getJerusalemMidnight(localFaceDate);
 
     const stats = await MenuStats.find({
       restaurantId: restaurantId,
