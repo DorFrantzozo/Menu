@@ -1,4 +1,4 @@
-import authVisual from "../../assets/img/auth-hero-saas.png";
+import authVisual from "../../assets/img/auth-hero-clay.png";
 
 const AuthVisuals = () => (
   <div className="hidden lg:flex lg:w-1/2 bg-[#FDFBF9] items-center justify-center relative overflow-hidden p-10">

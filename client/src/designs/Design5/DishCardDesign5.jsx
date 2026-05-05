@@ -13,7 +13,7 @@ const dietaryBadge = (dish) => {
   return tags;
 };
 
-const DishCardDesign5 = ({ dish, isPopular, onClick }) => {
+const DishCardDesign5 = ({ dish, onClick }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const { language } = useLanguage();
   const tags = dietaryBadge(dish);
@@ -46,13 +46,6 @@ const DishCardDesign5 = ({ dish, isPopular, onClick }) => {
         <div className="absolute top-2 right-2 z-10">
           <FavoriteHeart dishId={dish._id} />
         </div>
-
-        {/* Popular Badge - moved below like button */}
-        {isPopular && (
-          <span className="absolute top-14 right-2 bg-emerald-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1">
-            <span>⭐</span> Popular
-          </span>
-        )}
 
         {/* Dietary Tags (floating over image, top-left) */}
         {tags.length > 0 && (

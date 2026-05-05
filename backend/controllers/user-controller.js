@@ -1,24 +1,28 @@
 import User from "../model/user.js";
 import bcrypt from "bcryptjs";
 import cloudinary from "../utils/cloudinary.js";
-import { checkTokenValidity, expirationTime, generateResetToken, generateToken } from "../utils/jwt.js";
-import { sendEmail } from "../utils/sendgrid.js";
+import {
+  checkTokenValidity,
+  expirationTime,
+  generateResetToken,
+  generateToken,
+} from "../utils/jwt.js";
+import {sendEmail} from "../utils/sendgrid.js";
 import ActivityLog from "../model/activityLog.js";
 import sendDiscordAlert from "../utils/discordAlert.js";
 
-
 //TODO: split logic to different layers (like repository for db accessing) and files (like bcrypt and cloudinary)
 const createUser = async (req, res) => {
-  const { email, password, restaurantName, displayName, phone } = req.body;
+  const {email, password, restaurantName, displayName, phone} = req.body;
 
   if (!email || !password || !restaurantName) {
-    return res.status(400).json({ message: "All fields are required" });
+    return res.status(400).json({message: "All fields are required"});
   }
 
   try {
-    const existUser = await User.findOne({ email });
+    const existUser = await User.findOne({email});
     if (existUser) {
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(400).json({message: "User already exists"});
     }
 
     let logoUrl = null;
@@ -40,7 +44,7 @@ const createUser = async (req, res) => {
             (error, result) => {
               if (error) return reject(error);
               resolve(result);
-            }
+            },
           )
           .end(req.file.buffer);
       });
@@ -63,38 +67,34 @@ const createUser = async (req, res) => {
 
     await newUser.save();
     await sendDiscordAlert(
-  `לקוח חדש פתח תפריט!\n**אימייל:** ${newUser.email}`, 
-  "🎉 משתמש חדש ב-MenuYou!", 
-  3066993 // צבע ירוק להצלחה
-);
+      `לקוח חדש פתח תפריט!\n**אימייל:** ${newUser.email}`,
+      "🎉 משתמש חדש ב-iMenu!",
+      3066993, // צבע ירוק להצלחה
+    );
     const token = generateToken(newUser);
 
-    const { password: _, ...userWithoutPassword } = newUser.toObject();
+    const {password: _, ...userWithoutPassword} = newUser.toObject();
 
- 
-
-    res.status(201).json({ user: userWithoutPassword, token: token });
+    res.status(201).json({user: userWithoutPassword, token: token});
   } catch (error) {
     console.error("Error creating user:", error.message);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({message: error.message});
   }
 };
 
 const loginUser = async (req, res) => {
-  const { email, password } = req.body;
+  const {email, password} = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({email});
     if (!user) {
-      return res
-        .status(401)
-        .json({ message: "Email or password is incorrect" });
+      return res.status(401).json({message: "Email or password is incorrect"});
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({message: "Invalid credentials"});
     }
 
     const now = new Date();
@@ -103,7 +103,7 @@ const loginUser = async (req, res) => {
     const token = generateToken(user);
     const expireTime = expirationTime();
 
-    const { password: _, ...userWithoutPassword } = user.toObject();
+    const {password: _, ...userWithoutPassword} = user.toObject();
 
     res.status(200).json({
       user: userWithoutPassword,
@@ -113,25 +113,26 @@ const loginUser = async (req, res) => {
     });
   } catch (error) {
     console.error("Error during login:", error.message);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({message: error.message});
   }
 };
 
 const updateUser = async (req, res) => {
-  const { email, password, restaurantName, isPaid, role, displayName, phone } = req.body;
-  const { userId } = req.params;
+  const {email, password, restaurantName, isPaid, role, displayName, phone} =
+    req.body;
+  const {userId} = req.params;
 
   try {
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({message: "User not found"});
     }
 
     // Update email if provided
     if (email) {
-      const existingUser = await User.findOne({ email });
+      const existingUser = await User.findOne({email});
       if (existingUser && existingUser._id.toString() !== userId) {
-        return res.status(400).json({ message: "Email already in use" });
+        return res.status(400).json({message: "Email already in use"});
       }
       user.email = email;
     }
@@ -149,7 +150,9 @@ const updateUser = async (req, res) => {
     // --- לוגיקת אדמין ותשלומים ---
     if (isPaid !== undefined || role !== undefined) {
       if (!req.user || req.user.role !== "admin") {
-        return res.status(403).json({ message: "Forbidden: Admin privileges required" });
+        return res
+          .status(403)
+          .json({message: "Forbidden: Admin privileges required"});
       }
 
       if (isPaid !== undefined) {
@@ -166,10 +169,10 @@ const updateUser = async (req, res) => {
           // שליחת התראה לדיסקורד (רק אם זה באמת השתנה לחיוב)
           if (previousStatus !== true) {
             sendDiscordAlert(
-              `המנוי של **${user.restaurantName}** חודש ידנית.\nתאריך תשלום הבא: ${nextMonth.toLocaleDateString('he-IL')}`,
+              `המנוי של **${user.restaurantName}** חודש ידנית.\nתאריך תשלום הבא: ${nextMonth.toLocaleDateString("he-IL")}`,
               "💰 עדכון תשלום ידני",
               3066993, // ירוק
-              "activity"
+              "activity",
             );
           }
         }
@@ -186,17 +189,24 @@ const updateUser = async (req, res) => {
       }
 
       const uploadResult = await new Promise((resolve, reject) => {
-        cloudinary.uploader.upload_stream(
-          {
-            public_id: `users/${user.email}_logo`,
-            folder: "users",
-            transformation: { quality: "auto", fetch_format: "auto", width: 1000, crop: "limit" },
-          },
-          (error, result) => {
-            if (error) return reject(error);
-            resolve(result);
-          }
-        ).end(req.file.buffer);
+        cloudinary.uploader
+          .upload_stream(
+            {
+              public_id: `users/${user.email}_logo`,
+              folder: "users",
+              transformation: {
+                quality: "auto",
+                fetch_format: "auto",
+                width: 1000,
+                crop: "limit",
+              },
+            },
+            (error, result) => {
+              if (error) return reject(error);
+              resolve(result);
+            },
+          )
+          .end(req.file.buffer);
       });
       user.logo = uploadResult.secure_url;
     }
@@ -205,64 +215,63 @@ const updateUser = async (req, res) => {
     await user.save();
 
     const token = generateToken(user);
-    const { password: _, ...userResponse } = user.toObject();
+    const {password: _, ...userResponse} = user.toObject();
 
-    res.status(200).json({ user: userResponse, token });
-
+    res.status(200).json({user: userResponse, token});
   } catch (error) {
     console.error("Error updating user:", error.message);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({message: "Server error"});
   }
 };
 
 const findRestaurantsByName = async (req, res) => {
-  const { name } = req.query;
+  const {name} = req.query;
 
   if (!name) {
-    return res.status(400).json({ message: "Name parameter is required" });
+    return res.status(400).json({message: "Name parameter is required"});
   }
 
   try {
     const restaurant = await User.find({
-      restaurantName: { $regex: new RegExp(`^${name}$`, "i") },
+      restaurantName: {$regex: new RegExp(`^${name}$`, "i")},
     });
 
     if (!restaurant || restaurant.length === 0) {
-      return res.status(404).json({ message: "Restaurant not found" });
+      return res.status(404).json({message: "Restaurant not found"});
     }
 
-    const { password: _, ...userWithoutPassword } = restaurant[0].toObject();
+    const {password: _, ...userWithoutPassword} = restaurant[0].toObject();
     res.status(200).json(userWithoutPassword);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({message: error.message});
   }
 };
 
 const deleteUser = async (req, res) => {
-  const { email, password } = req.body;
-  const user = await User.findOne({ email });
+  const {email, password} = req.body;
+  const user = await User.findOne({email});
   if (!user) {
-    return res.status(401).json({ message: "Email or password is incorrect" });
+    return res.status(401).json({message: "Email or password is incorrect"});
   }
   const isPasswordValid = await bcrypt.compare(password, user.password);
   if (!isPasswordValid) {
-    return res.status(401).json({ message: "Invalid credentials" });
+    return res.status(401).json({message: "Invalid credentials"});
   }
   try {
     await user.deleteOne();
-    res.status(200).json({ message: "User deleted successfully" });
+    res.status(200).json({message: "User deleted successfully"});
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({message: error.message});
   }
 };
 
 const updateDesignByNumber = async (req, res) => {
-  const { userId, number } = req.body;
+  const {userId, number} = req.body;
 
   try {
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({message: "User not found"});
     }
     user.designNumber = number;
     await user.save();
@@ -272,7 +281,7 @@ const updateDesignByNumber = async (req, res) => {
       design: user.designNumber,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({message: error.message});
   }
 };
 
@@ -281,16 +290,16 @@ const getAllUsers = async (req, res) => {
     const users = await User.find();
     res.status(200).json(users);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({message: error.message});
   }
 };
 const updateUserMenuSettings = async (req, res) => {
-  const { userId, wifiSsid, wifiPassword, isEnabled } = req.body;
+  const {userId, wifiSsid, wifiPassword, isEnabled} = req.body;
   console.log(userId, wifiSsid, wifiPassword, isEnabled);
   try {
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({message: "User not found"});
     }
 
     if (!user.wifiSettings) {
@@ -317,15 +326,15 @@ const updateUserMenuSettings = async (req, res) => {
 
     res
       .status(200)
-      .json({ message: "User menu settings updated successfully", user });
+      .json({message: "User menu settings updated successfully", user});
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({message: error.message});
   }
 };
 
 const SendResetPasswordMail = async (req, res) => {
-  const { to, userName } = req.body;
-  console.log("קלט שהתקבל:", { to, userName });
+  const {to, userName} = req.body;
+  console.log("קלט שהתקבל:", {to, userName});
 
   if (!to || !userName) {
     return res.status(400).json({
@@ -335,7 +344,7 @@ const SendResetPasswordMail = async (req, res) => {
   }
 
   try {
-    const user = await User.findOne({ email: to });
+    const user = await User.findOne({email: to});
 
     if (!user) {
       return res.status(404).json({
@@ -345,8 +354,8 @@ const SendResetPasswordMail = async (req, res) => {
     }
 
     const resetToken = generateResetToken(user);
-    const baseUrl = process.env.FRONTEND_URL?.endsWith("/") 
-      ? process.env.FRONTEND_URL.slice(0, -1) 
+    const baseUrl = process.env.FRONTEND_URL?.endsWith("/")
+      ? process.env.FRONTEND_URL.slice(0, -1)
       : process.env.FRONTEND_URL;
     const resetLink = `${baseUrl}/resetpassword?token=${resetToken}`;
 
@@ -374,7 +383,10 @@ const SendResetPasswordMail = async (req, res) => {
         message: "נשלח מייל לאיפוס סיסמה בהצלחה.",
       });
     } else {
-      console.error("❌ SendGrid error:", JSON.stringify(result?.error, null, 2));
+      console.error(
+        "❌ SendGrid error:",
+        JSON.stringify(result?.error, null, 2),
+      );
       return res.status(500).json({
         success: false,
         message: "שליחת המייל נכשלה.",
@@ -390,33 +402,34 @@ const SendResetPasswordMail = async (req, res) => {
   }
 };
 
-
 const resetPassword = async (req, res) => {
-  const { data } = req.body;
-  const { token, newPassword } = data;
+  const {data} = req.body;
+  const {token, newPassword} = data;
 
   // 1. בדיקת תקינות הטוקן דרך הפונקציה שב־utils
-  const { valid, payload, message } = checkTokenValidity(token);
+  const {valid, payload, message} = checkTokenValidity(token);
 
   if (!valid) {
     if (message === "jwt expired") {
-      return res.status(401).json({ message: "הקישור לאיפוס הסיסמה פג תוקף" });
+      return res.status(401).json({message: "הקישור לאיפוס הסיסמה פג תוקף"});
     }
-    return res.status(400).json({ message: "הטוקן לא תקין" });
+    return res.status(400).json({message: "הטוקן לא תקין"});
   }
 
   try {
-    console.log(payload.userId)
+    console.log(payload.userId);
     // 2. חיפוש המשתמש
     const user = await User.findById(payload._id);
     if (!user) {
-      return res.status(404).json({ message: "המשתמש לא נמצא" });
+      return res.status(404).json({message: "המשתמש לא נמצא"});
     }
 
     // 3. בדיקת סיסמה זהה
     const isSamePassword = await bcrypt.compare(newPassword, user.password);
     if (isSamePassword) {
-      return res.status(400).json({ message: "הסיסמה החדשה לא יכולה להיות זהה לקודמת" });
+      return res
+        .status(400)
+        .json({message: "הסיסמה החדשה לא יכולה להיות זהה לקודמת"});
     }
 
     // 4. עידכון הסיסמה
@@ -424,53 +437,51 @@ const resetPassword = async (req, res) => {
     user.password = hashedPassword;
     await user.save();
 
-    return res.status(200).json({ message: "הסיסמה אופסה בהצלחה" });
+    return res.status(200).json({message: "הסיסמה אופסה בהצלחה"});
   } catch (error) {
     console.error("Error resetting password:", error.message);
-    return res.status(500).json({ message: "שגיאת שרת פנימית" });
+    return res.status(500).json({message: "שגיאת שרת פנימית"});
   }
 };
 
-
-
 const findBySlug = async (req, res) => {
-  const { slug } = req.params;
+  const {slug} = req.params;
 
   if (!slug) {
-    return res.status(400).json({ message: "Slug parameter is required" });
+    return res.status(400).json({message: "Slug parameter is required"});
   }
 
   try {
-    const user = await User.findOne({ qrSlug: slug });
+    const user = await User.findOne({qrSlug: slug});
 
     if (!user) {
-      return res.status(404).json({ message: "Menu not found" });
+      return res.status(404).json({message: "Menu not found"});
     }
 
-    const { password: _, ...userWithoutPassword } = user.toObject();
+    const {password: _, ...userWithoutPassword} = user.toObject();
     res.status(200).json(userWithoutPassword);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({message: error.message});
   }
 };
 
 const getQrScanCount = async (req, res) => {
-  const { userId } = req.params;
+  const {userId} = req.params;
   try {
-    const user = await User.findById(userId).select('totalQrScans').lean();
-    if (!user) return res.status(404).json({ message: 'User not found' });
-    res.status(200).json({ totalQrScans: user.totalQrScans || 0 });
+    const user = await User.findById(userId).select("totalQrScans").lean();
+    if (!user) return res.status(404).json({message: "User not found"});
+    res.status(200).json({totalQrScans: user.totalQrScans || 0});
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({message: error.message});
   }
 };
 
 const handleQrRedirect = async (req, res) => {
-  const { slug } = req.params;
+  const {slug} = req.params;
 
   try {
-    const user = await User.findOne({ qrSlug: slug });
-    
+    const user = await User.findOne({qrSlug: slug});
+
     // הדומיין הראשי שלך
     const baseDomain = process.env.MAIN_DOMAIN || "imenu-il.online";
 
@@ -480,18 +491,26 @@ const handleQrRedirect = async (req, res) => {
     }
 
     // עדכון מונה הסריקות (רץ ברקע)
-    User.updateOne({ qrSlug: slug }, { $inc: { totalQrScans: 1 } }).catch(err => {
-      console.error(`Failed to increment scan counter for slug ${slug}:`, err.message);
+    User.updateOne({qrSlug: slug}, {$inc: {totalQrScans: 1}}).catch((err) => {
+      console.error(
+        `Failed to increment scan counter for slug ${slug}:`,
+        err.message,
+      );
     });
 
     // תיעוד סריקה באנליטיקות שעות עומס (רץ ברקע)
-    ActivityLog.create({ restaurantId: user._id, type: "qr_scan" }).catch(err => {
-      console.error(`Failed to log QR scan activity for slug ${slug}:`, err.message);
-    });
+    ActivityLog.create({restaurantId: user._id, type: "qr_scan"}).catch(
+      (err) => {
+        console.error(
+          `Failed to log QR scan activity for slug ${slug}:`,
+          err.message,
+        );
+      },
+    );
 
     // בניית הכתובת: https://slug.imenu-il.online/menu
     const redirectUrl = `https://${slug}.${baseDomain}/menu`;
-    
+
     return res.redirect(302, redirectUrl);
   } catch (error) {
     console.error("Error handling QR redirect:", error.message);
@@ -501,24 +520,26 @@ const handleQrRedirect = async (req, res) => {
 };
 
 const completeTour = async (req, res) => {
-  const { userId } = req.body;
-  
+  const {userId} = req.body;
+
   // Ensure the user is updating their own record or is an admin
-  if (req.user._id !== userId && req.user.role !== 'admin') {
-    return res.status(403).json({ message: "Forbidden" });
+  if (req.user._id !== userId && req.user.role !== "admin") {
+    return res.status(403).json({message: "Forbidden"});
   }
 
   try {
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({message: "User not found"});
     }
     user.hasCompletedTour = true;
     await user.save();
-    res.status(200).json({ message: "Tour completed successfully", hasCompletedTour: true });
+    res
+      .status(200)
+      .json({message: "Tour completed successfully", hasCompletedTour: true});
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({message: "Server error"});
   }
 };
 
@@ -526,12 +547,12 @@ const getCurrentUser = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({message: "User not found"});
     }
-    const { password: _, ...userWithoutPassword } = user.toObject();
+    const {password: _, ...userWithoutPassword} = user.toObject();
     res.status(200).json(userWithoutPassword);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({message: error.message});
   }
 };
 
@@ -550,5 +571,5 @@ export {
   findBySlug,
   getQrScanCount,
   completeTour,
-  getCurrentUser
+  getCurrentUser,
 };

@@ -1,30 +1,28 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import {
   getRestaurantName,
   fetchRestaurant,
   fetchCategoriesAndDishes,
-  getTopDishes,
 } from "@/utils/fetchData";
-import { isCategoryActive } from "@/utils/isCategoryActive";
-import { toWebP } from "@/utils/cloudinaryUrl";
-import { useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
+import {isCategoryActive} from "@/utils/isCategoryActive";
+import {toWebP} from "@/utils/cloudinaryUrl";
+import {useLocation} from "react-router-dom";
+import {motion} from "framer-motion";
 import Spinner from "@/components/Spinner";
 import useTrackMenuView from "@/hooks/useTrackMenuView";
 import DishCardDesign5 from "./DishCardDesign5";
 import DishModalDesign5 from "./DishModalDesign5";
-import { useLanguage } from "../../context/LanguageContext";
+import {useLanguage} from "../../context/LanguageContext";
 import FloatingLanguageSelector from "../../components/LanguageSelector/FloatingLanguageSelector";
 
-const Design5 = ({ menu: menuProp }) => {
-  const { language } = useLanguage();
+const Design5 = ({menu: menuProp}) => {
+  const {language} = useLanguage();
   const [restaurantName, setRestaurantName] = useState("");
   const [restaurantData, setRestaurantData] = useState(null);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [heroImage, setHeroImage] = useState("");
-  const [popularDishIds, setPopularDishIds] = useState(new Set());
   const [selectedDish, setSelectedDish] = useState(null);
 
   // Filters & Sorting
@@ -38,16 +36,16 @@ const Design5 = ({ menu: menuProp }) => {
   useTrackMenuView(restaurantData?._id || menu?._id);
 
   const filters = [
-    { label: "הכל", value: "all" },
-    { label: "צמחוני", value: "vegi" },
-    { label: "ללא גלוטן", value: "gluten" },
-    { label: "מתאים להריון", value: "pregnant" },
-    { label: "ללא לקטוז", value: "lactose" },
+    {label: "הכל", value: "all"},
+    {label: "צמחוני", value: "vegi"},
+    {label: "ללא גלוטן", value: "gluten"},
+    {label: "מתאים להריון", value: "pregnant"},
+    {label: "ללא לקטוז", value: "lactose"},
   ];
 
   const sortOptions = [
-    { label: "מחיר: מהזול ליקר", value: "asc" },
-    { label: "מחיר: מהיקר לזול", value: "desc" },
+    {label: "מחיר: מהזול ליקר", value: "asc"},
+    {label: "מחיר: מהיקר לזול", value: "desc"},
   ];
 
   // ─── Get restaurant name ───
@@ -66,7 +64,8 @@ const Design5 = ({ menu: menuProp }) => {
       if (cachedData) {
         try {
           const parsedData = JSON.parse(cachedData);
-          if (parsedData.restaurantData) setRestaurantData(parsedData.restaurantData);
+          if (parsedData.restaurantData)
+            setRestaurantData(parsedData.restaurantData);
           if (parsedData.categories) {
             setCategories(parsedData.categories);
             if (parsedData.categories.length > 0) {
@@ -74,7 +73,6 @@ const Design5 = ({ menu: menuProp }) => {
             }
           }
           if (parsedData.heroImage) setHeroImage(parsedData.heroImage);
-          if (parsedData.popularDishIds) setPopularDishIds(new Set(parsedData.popularDishIds));
           setIsLoading(false);
         } catch (e) {
           console.error("Error parsing cached menu data", e);
@@ -92,7 +90,9 @@ const Design5 = ({ menu: menuProp }) => {
       const data = await fetchRestaurant(restaurantName);
       setRestaurantData(data);
 
-      const { categories: cats, dishes } = await fetchCategoriesAndDishes(data._id);
+      const {categories: cats, dishes} = await fetchCategoriesAndDishes(
+        data._id,
+      );
 
       const categoriesWithDishes = cats
         .filter((cat) => !cat.hide && isCategoryActive(cat))
@@ -102,14 +102,14 @@ const Design5 = ({ menu: menuProp }) => {
         }));
 
       const sortedCategories = categoriesWithDishes.sort(
-        (a, b) => a.locationNumber - b.locationNumber
+        (a, b) => a.locationNumber - b.locationNumber,
       );
 
       setCategories(sortedCategories);
 
       if (selectedCategory) {
         const freshSelected = sortedCategories.find(
-          (c) => c._id === selectedCategory._id
+          (c) => c._id === selectedCategory._id,
         );
         setSelectedCategory(freshSelected || sortedCategories[0]);
       } else {
@@ -118,14 +118,14 @@ const Design5 = ({ menu: menuProp }) => {
 
       // Compute hero image from popular dishes or random
       const allDishes = sortedCategories.flatMap((c) => c.menuDishes || []);
-      
+
       // Preserve existing cache fields if they exist to avoid overwriting them
       let currentHeroImage = "";
-      let currentPopularIds = [];
       try {
-        const cached = JSON.parse(localStorage.getItem(`menu_${restaurantName}`) || "{}");
+        const cached = JSON.parse(
+          localStorage.getItem(`menu_${restaurantName}`) || "{}"
+        );
         currentHeroImage = cached.heroImage || "";
-        currentPopularIds = cached.popularDishIds || [];
       } catch (e) {}
 
       // Set a fallback image immediately so the banner doesn't wait for getTopDishes
@@ -139,57 +139,25 @@ const Design5 = ({ menu: menuProp }) => {
           restaurantData: data,
           categories: sortedCategories,
           heroImage: fallbackImage,
-          popularDishIds: currentPopularIds,
-        })
+        }),
       );
 
-      // Fetch top dishes asynchronously without blocking the render
-      getTopDishes(data._id, "month")
-        .then((topDishes) => {
-          let newHeroImage = fallbackImage;
-          let newPopularIds = [];
+      // Set hero image if not already set by cache
+      if (!currentHeroImage) {
+        const randomDish =
+          allDishes[Math.floor(Math.random() * allDishes.length)];
+        const newHeroImage = randomDish?.img || fallbackImage;
+        setHeroImage(newHeroImage);
 
-          if (topDishes?.length > 0) {
-            const top3 = topDishes.slice(0, 3);
-            newPopularIds = top3.map((d) => d.dishId);
-            setPopularDishIds(new Set(newPopularIds));
-
-            const topDish = allDishes.find((d) => newPopularIds.includes(d._id));
-            if (topDish?.img) {
-              newHeroImage = topDish.img;
-              setHeroImage(newHeroImage);
-            }
-          } else {
-            const randomDish = allDishes[Math.floor(Math.random() * allDishes.length)];
-            newHeroImage = randomDish?.img || "";
-            setHeroImage(newHeroImage);
-          }
-
-          localStorage.setItem(
-            `menu_${restaurantName}`,
-            JSON.stringify({
-              restaurantData: data,
-              categories: sortedCategories,
-              heroImage: newHeroImage,
-              popularDishIds: newPopularIds,
-            })
-          );
-        })
-        .catch(() => {
-          const randomDish = allDishes[Math.floor(Math.random() * allDishes.length)];
-          const newHeroImage = randomDish?.img || "";
-          setHeroImage(newHeroImage);
-
-          localStorage.setItem(
-            `menu_${restaurantName}`,
-            JSON.stringify({
-              restaurantData: data,
-              categories: sortedCategories,
-              heroImage: newHeroImage,
-              popularDishIds: [],
-            })
-          );
-        });
+        localStorage.setItem(
+          `menu_${restaurantName}`,
+          JSON.stringify({
+            restaurantData: data,
+            categories: sortedCategories,
+            heroImage: newHeroImage,
+          })
+        );
+      }
     } catch (error) {
       console.error("Error fetching restaurant data:", error);
     } finally {
@@ -200,11 +168,16 @@ const Design5 = ({ menu: menuProp }) => {
   // ─── Filter logic ───
   const filterDishes = (dish) => {
     switch (selectedFilter) {
-      case "צמחוני": return dish.vegi;
-      case "ללא גלוטן": return dish.gluten;
-      case "ללא לקטוז": return dish.lactose;
-      case "מתאים להריון": return dish.pregnant;
-      default: return true;
+      case "צמחוני":
+        return dish.vegi;
+      case "ללא גלוטן":
+        return dish.gluten;
+      case "ללא לקטוז":
+        return dish.lactose;
+      case "מתאים להריון":
+        return dish.pregnant;
+      default:
+        return true;
     }
   };
 
@@ -212,13 +185,13 @@ const Design5 = ({ menu: menuProp }) => {
   const sortDishes = (dishes) => {
     if (!sortOrder) return dishes;
     return [...dishes].sort((a, b) =>
-      sortOrder === "asc" ? a.price - b.price : b.price - a.price
+      sortOrder === "asc" ? a.price - b.price : b.price - a.price,
     );
   };
 
   const filteredDishes =
     selectedCategory?.menuDishes?.filter(
-      (dish) => !dish.hide && filterDishes(dish)
+      (dish) => !dish.hide && filterDishes(dish),
     ) || [];
 
   const dishesToShow = sortDishes(filteredDishes);
@@ -233,7 +206,10 @@ const Design5 = ({ menu: menuProp }) => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans w-full overflow-x-hidden" dir={language === "en" ? "ltr" : "rtl"}>
+    <div
+      className="min-h-screen bg-slate-50 font-sans w-full overflow-x-hidden"
+      dir={language === "en" ? "ltr" : "rtl"}
+    >
       {/* ══════════ Hero Section ══════════ */}
       <div className="relative w-full h-60 sm:h-72 overflow-hidden rounded-b-3xl">
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent z-10" />
@@ -244,14 +220,14 @@ const Design5 = ({ menu: menuProp }) => {
             className="w-full h-full object-cover"
             fetchpriority="high"
             loading="eager"
-            style={{ aspectRatio: '16/9' }}
+            style={{aspectRatio: "16/9"}}
           />
         )}
         <div className="absolute inset-0 z-20 flex flex-col justify-end p-5 pb-6">
           <motion.h1
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
+            initial={{y: 20, opacity: 0}}
+            animate={{y: 0, opacity: 1}}
+            transition={{duration: 0.5, ease: "easeOut"}}
             className="text-3xl sm:text-4xl font-black text-white drop-shadow-lg leading-tight"
           >
             {restaurantData?.displayName || restaurantName}
@@ -267,7 +243,7 @@ const Design5 = ({ menu: menuProp }) => {
         {/* Categories Strip */}
         <div
           className="flex gap-3 px-4 py-3 overflow-x-auto scrollbar-hide"
-          style={{ WebkitOverflowScrolling: "touch" }}
+          style={{WebkitOverflowScrolling: "touch"}}
         >
           {categories.map((cat) => (
             <button
@@ -287,7 +263,7 @@ const Design5 = ({ menu: menuProp }) => {
         {/* Filters + Sort Strip */}
         <div
           className="flex gap-2 px-4 pb-3 overflow-x-auto scrollbar-hide"
-          style={{ WebkitOverflowScrolling: "touch" }}
+          style={{WebkitOverflowScrolling: "touch"}}
         >
           {/* Filters */}
           {filters.map((f) => (
@@ -325,9 +301,17 @@ const Design5 = ({ menu: menuProp }) => {
       </div>
 
       {/* ══════════ Section Title ══════════ */}
-      <div className={`flex items-center justify-between px-4 pt-4 pb-2 ${language === "en" ? "flex-row-reverse" : ""}`}>
+      <div
+        className={`flex items-center justify-between px-4 pt-4 pb-2 ${language === "en" ? "flex-row-reverse" : ""}`}
+      >
         <h2 className="text-lg font-bold text-slate-900">
-          {selectedCategory ? (language === "en" && selectedCategory.nameEn ? selectedCategory.nameEn : selectedCategory.name) : (language === "en" ? "All Dishes" : "כל המנות")}
+          {selectedCategory
+            ? language === "en" && selectedCategory.nameEn
+              ? selectedCategory.nameEn
+              : selectedCategory.name
+            : language === "en"
+              ? "All Dishes"
+              : "כל המנות"}
         </h2>
       </div>
 
@@ -343,7 +327,6 @@ const Design5 = ({ menu: menuProp }) => {
               <DishCardDesign5
                 key={dish._id}
                 dish={dish}
-                isPopular={popularDishIds.has(dish._id)}
                 onClick={() => setSelectedDish(dish)}
               />
             ))}
