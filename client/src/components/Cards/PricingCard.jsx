@@ -1,6 +1,13 @@
 import React from "react";
 
-const PricingCard = ({plan, price, features, isBestValue, onUpgrade, isCurrentPlan}) => {
+const PricingCard = ({
+  plan,
+  price,
+  features,
+  isBestValue,
+  onUpgrade,
+  isCurrentPlan,
+}) => {
   const isPro = plan === "iMenu PRO";
   const isEssential = plan === "Essential";
 
@@ -52,7 +59,7 @@ const PricingCard = ({plan, price, features, isBestValue, onUpgrade, isCurrentPl
 
       {/* Features List - V מימין וירוק */}
       <ul className="flex-1 space-y-5 mb-10 text-right relative z-10" dir="rtl">
-        {features.map((feature, idx) => (
+        {features?.map((feature, idx) => (
           <li
             key={idx}
             className="flex items-center gap-3 text-sm font-bold text-zinc-600 dark:text-zinc-400"
@@ -70,7 +77,7 @@ const PricingCard = ({plan, price, features, isBestValue, onUpgrade, isCurrentPl
         onClick={onUpgrade}
         disabled={isCurrentPlan}
         className={`relative overflow-hidden w-full py-4 rounded-[1.5rem] font-black text-sm transition-all z-10 ${
-          isCurrentPlan 
+          isCurrentPlan
             ? "bg-zinc-200 dark:bg-zinc-800 text-zinc-400 cursor-not-allowed border-2 border-transparent"
             : isBestValue
               ? "bg-emerald-600 text-white shadow-lg active:scale-95 group-hover/btn:animate-[shine_1.5s_infinite] group/btn"
@@ -80,7 +87,7 @@ const PricingCard = ({plan, price, features, isBestValue, onUpgrade, isCurrentPl
         {!isCurrentPlan && (
           <span className="absolute top-0 -left-full w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-20deg] group-hover/btn:animate-[shine_1.5s_infinite]"></span>
         )}
-        {isCurrentPlan ? "התוכנית הנוכחית שלך" : "בחר מסלול קדימה"}
+        {isCurrentPlan ? "התוכנית הנוכחית שלך" : "בחר מסלול "}
       </button>
 
       {/* CSS לאנימציה הטבעית */}

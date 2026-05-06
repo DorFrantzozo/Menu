@@ -123,7 +123,7 @@ const Design5 = ({menu: menuProp}) => {
       let currentHeroImage = "";
       try {
         const cached = JSON.parse(
-          localStorage.getItem(`menu_${restaurantName}`) || "{}"
+          localStorage.getItem(`menu_${restaurantName}`) || "{}",
         );
         currentHeroImage = cached.heroImage || "";
       } catch (e) {}
@@ -155,7 +155,7 @@ const Design5 = ({menu: menuProp}) => {
             restaurantData: data,
             categories: sortedCategories,
             heroImage: newHeroImage,
-          })
+          }),
         );
       }
     } catch (error) {
@@ -240,69 +240,73 @@ const Design5 = ({menu: menuProp}) => {
 
       {/* ══════════ Sticky Controls ══════════ */}
       <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-md shadow-sm">
-        {/* Categories Strip */}
-        <div
-          className="flex gap-3 px-4 py-3 overflow-x-auto scrollbar-hide"
-          style={{WebkitOverflowScrolling: "touch"}}
-        >
-          {categories.map((cat) => (
-            <button
-              key={cat._id}
-              onClick={() => setSelectedCategory(cat)}
-              className={`flex-shrink-0 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
-                selectedCategory?._id === cat._id
-                  ? "bg-slate-900 text-white shadow-md"
-                  : "bg-white text-slate-700 border border-slate-200 hover:border-slate-300"
-              }`}
-            >
-              {language === "en" && cat.nameEn ? cat.nameEn : cat.name}
-            </button>
-          ))}
-        </div>
+        <div className="lg:max-w-5xl lg:mx-auto">
+          {/* Categories Strip */}
+          <div
+            className="flex gap-3 px-4 py-3 overflow-x-auto scrollbar-hide"
+            style={{WebkitOverflowScrolling: "touch"}}
+          >
+            {categories?.map((cat) => (
+              <button
+                key={cat._id}
+                onClick={() => setSelectedCategory(cat)}
+                className={`flex-shrink-0 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                  selectedCategory?._id === cat._id
+                    ? "bg-slate-900 text-white shadow-md"
+                    : "bg-white text-slate-700 border border-slate-200 hover:border-slate-300"
+                }`}
+              >
+                {language === "en" && cat.nameEn ? cat.nameEn : cat.name}
+              </button>
+            ))}
+          </div>
 
-        {/* Filters + Sort Strip */}
-        <div
-          className="flex gap-2 px-4 pb-3 overflow-x-auto scrollbar-hide"
-          style={{WebkitOverflowScrolling: "touch"}}
-        >
-          {/* Filters */}
-          {filters.map((f) => (
-            <button
-              key={f.value}
-              onClick={() => setSelectedFilter(f.label)}
-              className={`flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium border transition-all duration-200 ${
-                selectedFilter === f.label
-                  ? "bg-emerald-50 border-emerald-300 text-emerald-700"
-                  : "bg-white border-slate-200 text-slate-500 hover:border-slate-300"
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
+          {/* Filters + Sort Strip */}
+          <div
+            className="flex gap-2 px-4 pb-3 overflow-x-auto scrollbar-hide"
+            style={{WebkitOverflowScrolling: "touch"}}
+          >
+            {/* Filters */}
+            {filters?.map((f) => (
+              <button
+                key={f.value}
+                onClick={() => setSelectedFilter(f.label)}
+                className={`flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium border transition-all duration-200 ${
+                  selectedFilter === f.label
+                    ? "bg-emerald-50 border-emerald-300 text-emerald-700"
+                    : "bg-white border-slate-200 text-slate-500 hover:border-slate-300"
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
 
-          {/* Separator */}
-          <div className="flex-shrink-0 w-px bg-slate-200 mx-1"></div>
+            {/* Separator */}
+            <div className="flex-shrink-0 w-px bg-slate-200 mx-1"></div>
 
-          {/* Sort */}
-          {sortOptions.map((s) => (
-            <button
-              key={s.value}
-              onClick={() => setSortOrder(sortOrder === s.value ? "" : s.value)}
-              className={`flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium border transition-all duration-200 ${
-                sortOrder === s.value
-                  ? "bg-blue-50 border-blue-300 text-blue-700"
-                  : "bg-white border-slate-200 text-slate-500 hover:border-slate-300"
-              }`}
-            >
-              {s.label}
-            </button>
-          ))}
+            {/* Sort */}
+            {sortOptions?.map((s) => (
+              <button
+                key={s.value}
+                onClick={() =>
+                  setSortOrder(sortOrder === s.value ? "" : s.value)
+                }
+                className={`flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium border transition-all duration-200 ${
+                  sortOrder === s.value
+                    ? "bg-blue-50 border-blue-300 text-blue-700"
+                    : "bg-white border-slate-200 text-slate-500 hover:border-slate-300"
+                }`}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* ══════════ Section Title ══════════ */}
       <div
-        className={`flex items-center justify-between px-4 pt-4 pb-2 ${language === "en" ? "flex-row-reverse" : ""}`}
+        className={`flex items-center justify-between px-4 pt-4 pb-2 lg:max-w-5xl lg:mx-auto ${language === "en" ? "flex-row-reverse" : ""}`}
       >
         <h2 className="text-lg font-bold text-slate-900">
           {selectedCategory
@@ -316,14 +320,14 @@ const Design5 = ({menu: menuProp}) => {
       </div>
 
       {/* ══════════ Dish Grid ══════════ */}
-      <div className="px-4 pb-24">
+      <div className="px-4 pb-24 lg:max-w-5xl lg:mx-auto">
         {dishesToShow.length === 0 ? (
           <div className="text-center text-slate-400 py-16 text-sm">
             אין מנות להצגה בקטגוריה זו
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3.5">
-            {dishesToShow.map((dish) => (
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5">
+            {dishesToShow?.map((dish) => (
               <DishCardDesign5
                 key={dish._id}
                 dish={dish}

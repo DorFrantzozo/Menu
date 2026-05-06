@@ -42,31 +42,31 @@ const DishModalDesign5 = ({ dish, isOpen, onClose }) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 60 }}
             transition={{ type: "spring", damping: 28, stiffness: 300 }}
-            className="fixed inset-x-0 bottom-0 z-[101] max-h-[90vh] bg-white rounded-t-3xl overflow-hidden flex flex-col"
+            className="fixed inset-x-0 bottom-0 lg:inset-y-0 lg:m-auto z-[101] max-h-[90vh] lg:max-h-[500px] lg:h-[450px] bg-white rounded-t-3xl lg:rounded-3xl overflow-hidden flex flex-col lg:flex-row lg:max-w-4xl w-full"
           >
             {/* Close Button */}
             <button
               onClick={onClose}
-              className="absolute top-4 left-4 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-sm shadow-md hover:bg-white transition-colors"
+              className="absolute top-4 left-4 z-20 w-9 h-9 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-sm shadow-md hover:bg-white transition-colors"
             >
               <X size={18} className="text-slate-700" />
             </button>
 
             {/* Dish Image */}
-            <div className="w-full h-56 sm:h-72 flex-shrink-0 overflow-hidden relative">
+            <div className="w-full h-56 sm:h-72 lg:w-1/2 lg:h-full flex-shrink-0 overflow-hidden relative">
               {/* Like Button - top right corner (RTL-aware) */}
-              <div className={`absolute top-4 ${language === "en" ? "left-4" : "right-4"} z-10`}>
+              <div className={`absolute top-4 ${language === "en" ? "left-4" : "right-4"} z-20`}>
                 <FavoriteHeart dishId={dish._id} />
               </div>
               <img
                 src={dish.img}
                 alt={dish.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover lg:max-h-full"
               />
             </div>
 
             {/* Content */}
-            <div className={`flex-1 overflow-y-auto p-5 pb-8 ${language === "en" ? "text-left" : "text-right"}`} dir={language === "en" ? "ltr" : "rtl"}>
+            <div className={`flex-1 overflow-y-auto p-5 pb-8 lg:p-8 lg:w-1/2 lg:flex lg:flex-col lg:justify-center ${language === "en" ? "text-left" : "text-right"}`} dir={language === "en" ? "ltr" : "rtl"}>
               <h2 className="text-2xl font-bold text-slate-900 mb-2">
                 {language === "en" && dish.nameEn ? dish.nameEn : dish.name}
               </h2>
