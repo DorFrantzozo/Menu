@@ -100,6 +100,9 @@ const loginUser = async (req, res) => {
     const now = new Date();
     const isTrialExpired = !user.isPaid && user.trialExpiresAt < now;
 
+    user.lastLogin = now;
+    await user.save().catch(err => console.error("Failed to update last login:", err.message));
+
     const token = generateToken(user);
     const expireTime = expirationTime();
 

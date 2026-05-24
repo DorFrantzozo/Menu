@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import { PhotoIcon } from "@heroicons/react/24/solid";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import {useState, useEffect} from "react";
+import {PhotoIcon} from "@heroicons/react/24/solid";
+import {useDispatch, useSelector} from "react-redux";
+import {useNavigate} from "react-router-dom";
+import {toast} from "react-toastify";
 
 import DropDown from "../DropDown";
 import axiosInstance from "@/utils/baseUrl";
@@ -12,9 +12,9 @@ import {
   getAllDishesAndMapToCategories,
   fetchCategoriesAndDishes,
 } from "@/utils/fetchData";
-import { setMenuCategories } from "@/state/menu/menuCategoriesSlice";
+import {setMenuCategories} from "@/state/menu/menuCategoriesSlice";
 
-export default function AddDishForm({ closeModal }) {
+export default function AddDishForm({closeModal}) {
   const user = useSelector((state) => state.user.user);
   const token = localStorage.getItem("token");
   const dispatch = useDispatch();
@@ -50,17 +50,17 @@ export default function AddDishForm({ closeModal }) {
     formData.append("gluten", gluten);
     formData.append("vegi", vegi);
     formData.append("lactose", lactose);
-    formData.append("img", img);
-    if (!img) {
-      toast.error("חובה להעלות תמונה");
-      return;
+    if (img) {
+      formData.append("img", img);
     }
 
     try {
       setIsLoading(true);
-      
-   
 
+      if (!category) {
+        toast.error("חובה לבחור קטגוריה");
+        return;
+      }
       await axiosInstance.post(`/dish/createDish/${user._id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -71,15 +71,15 @@ export default function AddDishForm({ closeModal }) {
       const categories = await getCategories(user._id);
       const categoriesWithDishes = await getAllDishesAndMapToCategories(
         user,
-        categories
+        categories,
       );
       dispatch(setMenuCategories(categoriesWithDishes));
 
-      const { categories: newCategories, dishes: newDishes } =
+      const {categories: newCategories, dishes: newDishes} =
         await fetchCategoriesAndDishes(user._id);
       localStorage.setItem(
         `menu_${user.restaurantName}`,
-        JSON.stringify({ categories: newCategories, dishes: newDishes })
+        JSON.stringify({categories: newCategories, dishes: newDishes}),
       );
       localStorage.setItem("categories", JSON.stringify(categoriesWithDishes));
 
@@ -87,7 +87,6 @@ export default function AddDishForm({ closeModal }) {
       setIsLoading(false);
       closeModal();
     } catch (error) {
-     
       toast.error("שגיאה בעת הוספת המנה");
       setIsLoading(false);
     } finally {
@@ -133,7 +132,10 @@ export default function AddDishForm({ closeModal }) {
 
             <div>
               <label className="block font-medium mb-1">
-                שם המנה (אנגלית) <span className="text-xs text-slate-400 font-normal">(אופציונלי)</span>
+                שם המנה (אנגלית){" "}
+                <span className="text-xs text-slate-400 font-normal">
+                  (אופציונלי)
+                </span>
               </label>
               <input
                 type="text"
@@ -144,8 +146,6 @@ export default function AddDishForm({ closeModal }) {
                 className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800 shadow-sm focus:ring-sky-200 focus:border-sky-200"
               />
             </div>
-
-
 
             <div>
               <label className="block font-medium mb-1">מחיר</label>
@@ -162,7 +162,7 @@ export default function AddDishForm({ closeModal }) {
               <DropDown setCategory={setCategory} />
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block font-medium mb-1">תיאור (עברית)</label>
@@ -171,7 +171,6 @@ export default function AddDishForm({ closeModal }) {
                 className="w-full rounded-xl h-28 focus:ring-sky-200 focus:border-sky-200"
               ></textarea>
             </div>
-
           </div>
 
           <div>
@@ -234,7 +233,7 @@ export default function AddDishForm({ closeModal }) {
                   value: gluten,
                   setter: setGluten,
                 },
-              ].map(({ label, value, setter }, i) => (
+              ].map(({label, value, setter}, i) => (
                 <label key={i} className="flex items-center gap-2 text-sm">
                   <input
                     type="checkbox"

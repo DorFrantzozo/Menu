@@ -70,6 +70,12 @@ export default function AdminUsersTable() {
     );
   };
 
+  const handleUserUpdated = (userId, updatedFields) => {
+    setUsers((prev) => 
+      prev.map(u => u._id === userId ? { ...u, ...updatedFields } : u)
+    );
+  };
+
   if (isLoading) {
     return (
       <div className="w-full bg-white rounded-3xl border border-slate-100 shadow-sm p-12 flex justify-center items-center">
@@ -138,6 +144,7 @@ export default function AdminUsersTable() {
               <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 w-[10%]">Digital Menu</th>
               <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 text-center w-[8%]">Scans</th>
               <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 w-[10%]">Created</th>
+              <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 w-[10%]">Last Login</th>
               <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 w-[10%]">Trial Ends</th>
               <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 text-center w-[8%]">Menu Size</th>
               <th className="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 text-right w-[10%]">Actions</th>
@@ -145,7 +152,12 @@ export default function AdminUsersTable() {
           </thead>
           <tbody>
             {filteredUsers.map((user) => (
-              <AdminUserRow key={user._id} user={user} onStatusUpdate={handleStatusUpdate} />
+              <AdminUserRow 
+                key={user._id} 
+                user={user} 
+                onStatusUpdate={handleStatusUpdate} 
+                onUserUpdated={handleUserUpdated}
+              />
             ))}
           </tbody>
         </table>

@@ -30,13 +30,15 @@ const AccordionMenu = ({ categories, dishes, textColor = "white" }) => {
         .map((category) => (
           <AccordionItem key={category._id} value={`item-${category._id}`}>
             <AccordionTrigger
-              className={`text-2xl mb-8 mt-8 flex justify-center font-bold transition-colors duration-200 ${
+              className={`text-2xl mb-8 mt-8 flex justify-center text-center font-bold transition-colors duration-200 ${
                 activeCategory === `item-${category._id}`
                   ? "text-sky-400 hover:text-sky-500"
                   : `text-${textColor} hover:text-gray-400`
               }`}
             >
-              {language === "en" && category.nameEn ? category.nameEn : category.name}
+              <span className="break-words max-w-[90%]">
+                {language === "en" && category.nameEn ? category.nameEn : category.name}
+              </span>
             </AccordionTrigger>
             <AccordionContent>
               {dishes[category._id] && dishes[category._id].length > 0 ? (

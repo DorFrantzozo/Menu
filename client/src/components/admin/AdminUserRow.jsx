@@ -3,10 +3,12 @@ import { useImpersonation } from "../../hooks/useImpersonation";
 import DropDown from "../data/DefaultDropDown";
 import { updatePaidStatus } from "../../utils/updateData";
 import { toast } from "react-toastify";
+import EditUserModal from "./EditUserModal";
 
-export default function AdminUserRow({ user, onStatusUpdate }) {
+export default function AdminUserRow({ user, onStatusUpdate, onUserUpdated }) {
   const { impersonateUser, isImpersonating } = useImpersonation();
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Handle Formatting
   const formatDate = (dateString) => {
@@ -15,9 +17,18 @@ export default function AdminUserRow({ user, onStatusUpdate }) {
       day: '2-digit', month: '2-digit', year: 'numeric'
     }).format(new Date(dateString));
   };
+
+  const formatDateTime = (dateString) => {
+    if (!dateString) return "-";
+    return new Intl.DateTimeFormat('en-GB', { 
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    }).format(new Date(dateString));
+  };
   
   const createdDate = formatDate(user.createdAt);
   const trialEndDate = formatDate(user.trialExpiresAt);
+  const lastLoginDate = formatDateTime(user.lastLogin);
   
   const handleStatusChange = async (newText) => {
     try {
@@ -130,6 +141,11 @@ export default function AdminUserRow({ user, onStatusUpdate }) {
         {createdDate}
       </td>
       
+      {/* Last Login */}
+      <td className="p-4 align-middle text-sm text-slate-600">
+        {lastLoginDate}
+      </td>
+      
       {/* Trial Ends */}
       <td className="p-4 align-middle text-sm text-slate-600">
         {trialEndDate}
@@ -144,18 +160,38 @@ export default function AdminUserRow({ user, onStatusUpdate }) {
 
       {/* Actions */}
       <td className="p-4 align-middle text-right">
-        <button
-          onClick={() => impersonateUser(user._id)}
-          disabled={isImpersonating}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-slate-800 hover:-translate-y-0.5 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
-        >
-          Login As
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-            <polyline points="10 17 15 12 10 7"></polyline>
-            <line x1="15" y1="12" x2="3" y2="12"></line>
-          </svg>
-        </button>
+        <div className="flex items-center justify-end gap-2">
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 text-sm font-bold rounded-xl hover:bg-slate-200 transition-colors shadow-sm"
+          >
+            Edit
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+          </button>
+          
+          <button
+            onClick={() => impersonateUser(user._id)}
+            disabled={isImpersonating}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-slate-800 hover:-translate-y-0.5 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+          >
+            Login As
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+              <polyline points="10 17 15 12 10 7"></polyline>
+              <line x1="15" y1="12" x2="3" y2="12"></line>
+            </svg>
+          </button>
+        </div>
+        
+        <EditUserModal 
+          isOpen={isModalOpen} 
+          onClose={() => setIsModalOpen(false)} 
+          user={user} 
+          onSave={onUserUpdated} 
+        />
       </td>
     </tr>
   );

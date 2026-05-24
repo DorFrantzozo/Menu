@@ -35,7 +35,6 @@ const userSchema = new mongoose.Schema(
     trialExpiresAt: {
       type: Date,
       default: () => new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
-      immutable: true,
     },
 
     nextPaymentDate: {
@@ -52,6 +51,7 @@ const userSchema = new mongoose.Schema(
 
     subscriptionStatus: {
       type: String, // הוספנו את past_due למקרה של חיוב שכשל
+      
       enum: ["active", "canceled", "trial", "past_due"],
       default: "trial",
     },
@@ -72,6 +72,7 @@ const userSchema = new mongoose.Schema(
 
     totalQrScans: {type: Number, default: 0},
     hasCompletedTour: {type: Boolean, default: false},
+    lastLogin: {type: Date},
   },
   {timestamps: true},
 );
