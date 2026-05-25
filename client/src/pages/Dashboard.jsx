@@ -53,7 +53,7 @@ const Dashboard = () => {
           <button
             onClick={() =>
               window.open(
-                `https://${user?.restaurantName?.toLowerCase()}.imenu-il.online/menu`,
+                `https://${user?.restaurantName?.toLowerCase()?.replace(/\s+/g, "-")}.imenu-il.online/menu`,
                 "_blank",
               )
             }
@@ -86,10 +86,7 @@ const Dashboard = () => {
               </div>
 
               {/* Bottom Section: QR Code Card */}
-              <div
-                data-tour="stats"
-                className="w-full shrink-0 mb-8"
-              >
+              <div data-tour="stats" className="w-full shrink-0 mb-8">
                 <QrProfile qrSlug={user?.qrSlug} />
               </div>
             </>

@@ -25,6 +25,13 @@ const Design3 = ({ menu: menuProp }) => {
   
   const menu = menuProp || location.state || {};
 
+  useEffect(() => {
+    document.body.style.overflow = "auto";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
+
   // מעקב צפיות - משתמש ב-ID בבטחה
   useTrackMenuView(restaurantData?._id || menu?._id);
 

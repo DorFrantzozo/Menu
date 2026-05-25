@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import ProfileHeader from "@/components/Profile/ProfileHeader";
 import BusinessInfoCard from "@/components/Profile/BusinessInfoCard";
 import SubscriptionStatusCard from "@/components/Profile/SubscriptionStatusCard";
 import QRCodeManager from "@/components/Profile/QRCodeManager";
 
-import { useNavigate } from "react-router-dom";
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
+import {useNavigate} from "react-router-dom";
+import {PencilSquareIcon} from "@heroicons/react/24/outline";
 import DataTableGeneric from "@/components/data/DataTableGeneric";
-import { fetchPaymentHistory } from "@/utils/paymentData";
-import { paymentColumns } from "@/components/Profile/PaymentTableConfig";
+import {fetchPaymentHistory} from "@/utils/paymentData";
+import {paymentColumns} from "@/components/Profile/PaymentTableConfig";
 const Profile = () => {
   const navigate = useNavigate();
   const [userFromStorage, setUser] = useState(null);
@@ -77,7 +77,7 @@ const Profile = () => {
                 <button
                   onClick={() =>
                     window.open(
-                      `https://${userFromStorage?.restaurantName?.toLowerCase()}.imenu-il.online/menu`,
+                      `https://${userFromStorage?.restaurantName?.toLowerCase()?.replace(/\s+/g, "-")}.imenu-il.online/menu`,
                       "_blank",
                     )
                   }
@@ -102,7 +102,9 @@ const Profile = () => {
           </div>
         </div>
         <div className="w-full mt-8 flex flex-col gap-6">
-            <SubscriptionStatusCard currentPlan={userFromStorage?.plan || 'Essential'} />
+          <SubscriptionStatusCard
+            currentPlan={userFromStorage?.plan || "Essential"}
+          />
           <DataTableGeneric columns={paymentColumns} data={paymentHistory} />
         </div>
       </div>
