@@ -123,7 +123,7 @@ export default function AddDish() {
             </div>
 
             <div>
-              <label className="block font-medium mb-1">מחיר</label>
+              <label className="block font-medium mb-1">מחיר <span className="text-xs text-slate-400 font-normal">(אופציונלי)</span></label>
               <input
                 type="number"
                 value={price}

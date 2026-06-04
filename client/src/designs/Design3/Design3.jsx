@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom"; 
 import { toast } from "react-toastify";
 import Spinner from "../../components/Spinner";
-import AccordionMenu from "@/components/data/AccordionMenu";
+import Design3Accordion from "./Design3Accordion";
 import useTrackMenuView from "@/hooks/useTrackMenuView";
 
 import {
@@ -13,6 +13,7 @@ import {
 } from "@/utils/fetchData";
 import { isCategoryActive } from "@/utils/isCategoryActive";
 import FloatingLanguageSelector from "../../components/LanguageSelector/FloatingLanguageSelector";
+import { useLanguage } from "../../context/LanguageContext";
 
 const Design3 = ({ menu: menuProp }) => {
   const [restaurant, setRestaurant] = useState(null);
@@ -22,6 +23,7 @@ const Design3 = ({ menu: menuProp }) => {
   const [restaurantData, setRestaurantData] = useState(null);
   const location = useLocation();
   const navigate = useNavigate(); // ✅ עכשיו זה יעבוד כי הייבוא תוקן
+  const { language } = useLanguage();
   
   const menu = menuProp || location.state || {};
 
@@ -61,8 +63,8 @@ const Design3 = ({ menu: menuProp }) => {
           setRestaurantData(data);
 
           if (data) {
-            setRestaurant(data);
             await fetchMenuData(data._id);
+            setRestaurant(data);
           } else {
             toast.error("מסעדה לא נמצאה");
           }
@@ -79,34 +81,37 @@ const Design3 = ({ menu: menuProp }) => {
   }
 
   return (
-    <div
-      className="flex justify-center min-h-screen w-full"
-      style={{
-        background: "linear-gradient(to bottom, #000000, #1a1a1a)",
-      }}
-    >
-      <div className="flex flex-col w-full max-w-2xl py-4">
-        {/* ✅ הוספת סימן שאלה למניעת קריסה אם הסטייט עוד לא התעדכן */}
-        {restaurantData?.logo && (
-          <div className="flex justify-center">
-            <img
-              src={restaurantData.logo}
-              className="w-[200px] rounded shadow-lg"
-              alt="restaurant logo"
+    <>
+      <style>{`
+        /* Import Premium Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Montserrat:wght@300;400;500&family=Heebo:wght@300;400;500&display=swap');
+      `}</style>
+      <div 
+        className="flex justify-center w-full min-h-screen text-[#f5f5f5] font-['Montserrat',_sans-serif] bg-[#0c0c0e]"
+        style={{ backgroundImage: "radial-gradient(circle at top center, #16161a 0%, #0c0c0e 80%)" }}
+        dir={language === "en" ? "ltr" : "rtl"}
+      >
+        <div className="flex flex-col w-full max-w-2xl py-12 px-4 sm:px-6">
+          {restaurantName && (
+            <div className="flex flex-col items-center mb-6 w-full">
+              <h1 className="text-4xl text-center font-['Playfair_Display',_serif] text-[#E5D3C5] font-normal tracking-[0.08em] uppercase mb-2 drop-shadow-[0_2px_10px_rgba(229,211,197,0.15)]">
+                {restaurantName}
+              </h1>
+              {/* HR below main title */}
+              <div className="w-full h-[1px] bg-white/15 mt-2 mb-2"></div>
+            </div>
+          )}
+
+          <div className="w-full mx-auto">
+            <Design3Accordion
+              categories={categories}
+              dishes={dishes}
             />
           </div>
-        )}
-
-        <div className="mt-6 w-[80%] mx-auto">
-          <AccordionMenu
-            categories={categories}
-            dishes={dishes}
-            textColor="white"
-          />
         </div>
+        <FloatingLanguageSelector />
       </div>
-      <FloatingLanguageSelector />
-    </div>
+    </>
   );
 };
 

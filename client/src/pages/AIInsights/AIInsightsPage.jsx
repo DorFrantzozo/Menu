@@ -11,9 +11,7 @@ import {
 
 import InsightsHeader from "./InsightsHeader";
 import ActionableInsights from "./ActionableInsights";
-import MenuStrategyMatrix from "./MenuStrategyMatrix";
 import MarketingLab from "./MarketingLab";
-import FutureTrends from "./FutureTrends";
 import MarketingLabView from "@/components/MarketingLab/MarketingLabView";
 
 // ---- הגדרות אנימציה (Variants) ----
@@ -123,16 +121,8 @@ const AIInsightsContent = ({user}) => {
               />
             </motion.div>
 
-            <motion.div
-              variants={itemVariants}
-              className="grid grid-cols-1 lg:grid-cols-2 gap-6"
-            >
-              <MenuStrategyMatrix />
-              <MarketingLabView />
-            </motion.div>
-
             <motion.div variants={itemVariants}>
-              <FutureTrends />
+              <MarketingLabView />
             </motion.div>
           </motion.div>
         )}

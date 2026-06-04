@@ -8,8 +8,8 @@ const createDish = async (req, res) => {
     const { name, nameEn, description, descriptionEn, price, category, pregnant, gluten, lactose, vegi, hide } = req.body;
 
     // 0. וולידציה בסיסית
-    if (!userId || !name || !price || !category) {
-      return res.status(400).json({ message: "UserId, Name, Price, and Category are required" });
+    if (!userId || !name || !category) {
+      return res.status(400).json({ message: "UserId, Name, and Category are required" });
     }
 
     // 1. בדיקת כפילות
@@ -53,7 +53,7 @@ const createDish = async (req, res) => {
       nameEn: nameEn || "",
       description: description || "",
       descriptionEn: descriptionEn || "",
-      price: Number(price),
+      price: price ? Number(price) : undefined,
       category,
       pregnant: pregnant === "true" || pregnant === true,
       gluten: gluten === "true" || gluten === true,
