@@ -157,7 +157,7 @@ const EditDishForm = ({ dish, setShowEditForm }) => {
               type="number"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              required
+              
               className="w-full rounded-xl border border-slate-200 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 px-4 py-2.5 focus:ring-2 focus:ring-amber-400 focus:outline-none transition-all"
             />
           </div>
