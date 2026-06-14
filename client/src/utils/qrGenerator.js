@@ -1,8 +1,7 @@
 import QRCode from "qrcode";
 
 export const generateQRCode = async (qrSlug, qrColor) => {
-  const url = `${import.meta.env.VITE_QR_URL.replace("/name", `${qrSlug}`)}`
-
+const url = `https://${qrSlug}.imenu-il.online/menu`;
   console.log(url)
 
   try {

@@ -180,6 +180,10 @@ export const trackMenuView = async (req, res) => {
       console.error("Failed to log detailed menu view activity:", err.message);
     });
 
+    // Update the totalQrScans on the User model
+    const User = (await import("../model/user.js")).default;
+    await User.findByIdAndUpdate(restaurantId, { $inc: { totalQrScans: 1 } });
+
     res.status(200).json({ message: "Menu view tracked successfully" });
   } catch (error) {
     console.error("Error tracking menu view:", error);
