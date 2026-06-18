@@ -100,6 +100,14 @@ hr.style-seven:before {
   .dark .soft-shadow {
     box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.2);
   }
+
+  /* Global fix for select dropdown arrow in RTL with Tailwind Forms */
+  [dir="rtl"] select, 
+  select[dir="rtl"] {
+    background-position: left 0.5rem center;
+    padding-right: 0.75rem;
+    padding-left: 2.5rem;
+  }
 }
 
 /* Frosted Glassmorphism Utility Class */

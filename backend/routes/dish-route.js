@@ -5,9 +5,11 @@ import {
   updateDish,
   deleteDish,
   getAllDishesByUserId,
+  reorderDishes,
+  migrateDishLocations,
 } from "../controllers/dish-controller.js";
 import {upload} from "../utils/multer.js";
-import {isAuth, isUserOrAdmin} from "../utils/jwt.js";
+import {isAuth, isUserOrAdmin, isAdmin} from "../utils/jwt.js";
 import {checkSubscription} from "../middlewares/checkSubscription.js";
 
 const dishRouter = express.Router();
@@ -36,6 +38,20 @@ dishRouter.delete(
   isUserOrAdmin,
   checkSubscription,
   deleteDish,
+);
+
+dishRouter.put(
+  "/reorderDishes/:userId",
+  isAuth,
+  isUserOrAdmin,
+  reorderDishes,
+);
+
+dishRouter.post(
+  "/migrate-locations",
+  isAuth,
+  isAdmin,
+  migrateDishLocations,
 );
 
 export default dishRouter;

@@ -1,14 +1,26 @@
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
+import {PencilIcon, TrashIcon, EllipsisHorizontalIcon} from "@heroicons/react/24/outline";
+import {useState} from "react";
 import Modal from "../Modal";
 import EditDishForm from "./EditDishForm";
 
-export default function DishCard({ dish, user }) {
+export default function DishCard({dish, user, dragHandle}) {
   const [showDeleteForm, setShowDeleteForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
 
   return (
-    <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700/80 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col">
+    <div className="relative h-full bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700/80 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col">
+      {/* Drag handle – שלוש נקודות */}
+      {dragHandle && (
+        <button
+          className="absolute top-2 left-2 cursor-grab rounded-t-lg rounded-b-lg py-1 bg-white/90 shadow-md z-10"
+          {...dragHandle.listeners}
+          {...dragHandle.attributes}
+          aria-label="גרור לשינוי מיקום"
+        >
+          <EllipsisHorizontalIcon className="w-6 h-6 rotate-90 text-black dark:text-zinc-50" />
+        </button>
+      )}
+
       {/* תמונה עם שכבת "מוסתר" במידת הצורך */}
       <div className="relative h-40 bg-gradient-to-br from-slate-100 to-slate-200 overflow-hidden">
         {dish.img ? (
@@ -38,18 +50,28 @@ export default function DishCard({ dish, user }) {
             {dish.name}
           </h3>
           {dish.description && (
-            <p className="text-sm text-slate-600 dark:text-zinc-300 mb-2">{dish.description}</p>
+            <p className="text-sm text-slate-600 dark:text-zinc-300 mb-2">
+              {dish.description}
+            </p>
           )}
-       <div className="flex items-center gap-2 mb-2">
-      {dish.salePrice && Number(dish.salePrice) > 0 && Number(dish.salePrice) !== dish.price ? (
-        <>
-          <p className="text-lg text-emerald-600 font-bold">₪{dish.salePrice}</p>
-          <p className="text-sm text-red-500 line-through decoration-red-500 opacity-70">₪{dish.price}</p>
-        </>
-      ) : (
-        <p className="text-lg text-slate-700 dark:text-zinc-200 font-bold">₪{dish.price}</p>
-      )}
-    </div>
+          <div className="flex items-center gap-2 mb-2">
+            {dish.salePrice &&
+            Number(dish.salePrice) > 0 &&
+            Number(dish.salePrice) !== dish.price ? (
+              <>
+                <p className="text-lg text-emerald-600 font-bold">
+                  ₪{dish.salePrice}
+                </p>
+                <p className="text-sm text-red-500 line-through decoration-red-500 opacity-70">
+                  ₪{dish.price}
+                </p>
+              </>
+            ) : (
+              <p className="text-lg text-slate-700 dark:text-zinc-200 font-bold">
+                ₪{dish.price}
+              </p>
+            )}
+          </div>
           <div className="flex flex-wrap gap-2 mt-2 text-xs text-slate-500 dark:text-zinc-400">
             {dish.vegi && <span>🌱 צמחוני/טבעוני</span>}
             {dish.pregnant && <span>🤰 מתאים להריוניות</span>}
@@ -57,7 +79,9 @@ export default function DishCard({ dish, user }) {
             {dish.gluten && <span>🌾 ללא גלוטן</span>}
           </div>
         </div>
-
+        <div>
+          מיקום: {dish.locationNumber ? dish.locationNumber : "לא מוגדר"}
+        </div>
         {/* כפתורים */}
         <div className="flex gap-3 mt-4">
           <button

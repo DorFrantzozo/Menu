@@ -76,10 +76,10 @@ const getProgressColor = (index) => {
   return (
     <div
       dir="rtl"
-      className={`frosted-glass-card p-6 lg:p-8 rounded-2xl flex flex-col w-full relative overflow-hidden transition-all duration-500
+      className={`frosted-glass-card p-6 lg:p-8 rounded-2xl flex flex-col w-full relative overflow-hidden transition-all duration-500 flex-1
         ${showLockedOverlay 
           ? 'h-[340px] md:h-[450px]' 
-          : 'h-full min-h-[400px] max-h-[600px]'
+          : 'h-full min-h-[400px]'
         } 
       `}
     >
@@ -97,14 +97,14 @@ const getProgressColor = (index) => {
           <select
             value={period}
             onChange={(e) => setPeriod(e.target.value)}
-            className="appearance-none bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 py-1.5 pr-3 pl-7 rounded-lg focus:outline-none text-xs font-medium"
+            className="appearance-none bg-none bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 py-1.5 pr-3 pl-8 rounded-lg focus:outline-none text-xs font-medium cursor-pointer"
           >
             <option value="week">השבוע</option>
             <option value="month">החודש</option>
             <option value="year">השנה</option>
             <option value="all">הכל</option>
           </select>
-          <div className="absolute inset-y-0 left-0 flex items-center px-2 pointer-events-none text-zinc-400">
+          <div className="absolute inset-y-0 left-1 flex items-center px-1.5 pointer-events-none text-zinc-400">
             <span className="material-icons-round text-sm">expand_more</span>
           </div>
         </div>
@@ -121,6 +121,21 @@ const getProgressColor = (index) => {
         </div>
       ) : (
         <div className="flex-1 min-h-0 relative">
+          {!showLockedOverlay && dishes.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full opacity-80 pt-10 pb-4 animate-in fade-in duration-500">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 bg-zinc-100 dark:bg-zinc-800/50">
+                <span className="material-icons-round text-4xl text-zinc-400 dark:text-zinc-500">
+                  {isLikes ? "heart_broken" : "visibility_off"}
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-zinc-700 dark:text-zinc-300 mb-1">
+                אין עדיין מספיק נתונים להצגה
+              </h3>
+              <p className="text-xs text-zinc-500 dark:text-zinc-500 text-center max-w-[200px]">
+                ברגע שיהיו נתונים זמינים, הם יופיעו כאן באופן אוטומטי
+              </p>
+            </div>
+          ) : (
           <div className={`h-full pr-1 custom-scrollbar ${showLockedOverlay ? "overflow-hidden" : "overflow-y-auto"}`}>
             <div className="space-y-3 pb-4">
               {displayDishes.map((dish, index) => {
@@ -171,6 +186,7 @@ const getProgressColor = (index) => {
               })}
             </div>
           </div>
+          )}
         </div>
       )}
 

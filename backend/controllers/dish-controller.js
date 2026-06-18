@@ -87,6 +87,13 @@ const getDishesByCategory = async (req, res) => {
     // עכשיו זה בטוח ב-100%
     const dishes = await Dish.find({ userId, category }).select(PUBLIC_MENU_PROJECTION);
 
+    // מיון בטיחותי (JavaScript Level) למניעת קפיצת מנות ישנות לראש התפריט
+    dishes.sort((a, b) => {
+      const locA = a.locationNumber != null ? a.locationNumber : Infinity;
+      const locB = b.locationNumber != null ? b.locationNumber : Infinity;
+      return locA - locB;
+    });
+
     res.status(200).json(dishes);
 
   } catch (error) {
@@ -106,6 +113,13 @@ const getAllDishesByUserId = async (req, res) => {
     // שליפה מאובטחת
     const dishes = await Dish.find({ userId }).select(PUBLIC_MENU_PROJECTION);
     
+    // מיון בטיחותי
+    dishes.sort((a, b) => {
+      const locA = a.locationNumber != null ? a.locationNumber : Infinity;
+      const locB = b.locationNumber != null ? b.locationNumber : Infinity;
+      return locA - locB;
+    });
+
     res.status(200).json(dishes);
   } catch (error) {
     console.error("Error retrieving all dishes:", error.message);
@@ -214,5 +228,78 @@ const deleteDish = async (req, res) => {
 
 
 
+const reorderDishes = async (req, res) => {
+  const { userId } = req.params;
+  const { dishes } = req.body;
 
-export { createDish, getAllDishesByUserId,getDishesByCategory, updateDish, deleteDish };
+  if (!Array.isArray(dishes)) {
+    return res.status(400).json({ message: "Invalid dishes data" });
+  }
+
+  try {
+    const bulkOps = dishes.map((dish) => ({
+      updateOne: {
+        filter: { _id: dish._id, userId }, // מחייב ש-userId יתאים (אבטחה)
+        update: { $set: { locationNumber: dish.locationNumber } },
+      },
+    }));
+
+    await Dish.bulkWrite(bulkOps);
+
+    res.status(200).json({ message: "Dishes reordered successfully" });
+  } catch (error) {
+    console.error("Error reordering dishes:", error);
+    res.status(500).json({ message: "Internal Server Error during reorder" });
+  }
+};
+
+const migrateDishLocations = async (req, res) => {
+  try {
+    const allDishes = await Dish.find({}, '_id userId category locationNumber').lean();
+
+    const groupedDishes = {};
+    allDishes.forEach(dish => {
+      const key = `${dish.userId}_${dish.category}`;
+      if (!groupedDishes[key]) {
+        groupedDishes[key] = [];
+      }
+      groupedDishes[key].push(dish);
+    });
+
+    const bulkOps = [];
+
+    for (const key in groupedDishes) {
+      const dishesInCategory = groupedDishes[key];
+      
+      dishesInCategory.sort((a, b) => {
+        const locA = a.locationNumber != null ? a.locationNumber : Infinity;
+        const locB = b.locationNumber != null ? b.locationNumber : Infinity;
+        return locA - locB;
+      });
+
+      dishesInCategory.forEach((dish, index) => {
+        const expectedLocation = index + 1;
+        if (dish.locationNumber !== expectedLocation) {
+          bulkOps.push({
+            updateOne: {
+              filter: { _id: dish._id },
+              update: { $set: { locationNumber: expectedLocation } }
+            }
+          });
+        }
+      });
+    }
+
+    if (bulkOps.length > 0) {
+      await Dish.bulkWrite(bulkOps);
+      return res.status(200).json({ message: `Migration successful. Updated ${bulkOps.length} dishes.` });
+    }
+
+    return res.status(200).json({ message: "No dishes needed migration." });
+  } catch (error) {
+    console.error("Migration Error:", error);
+    return res.status(500).json({ message: "Error during migration", error: error.message });
+  }
+};
+
+export { createDish, getAllDishesByUserId,getDishesByCategory, updateDish, deleteDish, reorderDishes, migrateDishLocations };

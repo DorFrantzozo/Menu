@@ -56,6 +56,10 @@ const Dish = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  locationNumber: {
+    type: Number,
+    required: false,
+  },
   hide: {
     type: Boolean,
     default: false,

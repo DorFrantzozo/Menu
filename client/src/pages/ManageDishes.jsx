@@ -26,19 +26,25 @@ export default function ManageDish() {
   const [filterSensitivity, setFilterSensitivity] = useState("");
   const [showDishForm, setShowCreateDishForm] = useState(false);
   
-  const filteredDishes = allDishes.filter((dish) => {
-    if (!dish.name.toLowerCase().includes(searchTerm.toLowerCase())) return false;
-    if (filterCategory && dish.category !== filterCategory) return false;
+  const categoriesToRender = menuCategories.filter(cat => 
+    filterCategory ? cat._id === filterCategory : true
+  );
 
-    if (filterSensitivity) {
-      if (filterSensitivity === "pregnant" && !dish.pregnant) return false;
-      if (filterSensitivity === "gluten" && !dish.gluten) return false;
-      if (filterSensitivity === "lactose" && !dish.lactose) return false;
-      if (filterSensitivity === "vegi" && !dish.vegi) return false;
-    }
+  const categoriesWithFilteredDishes = categoriesToRender.map(cat => {
+    const dishes = (cat.menuDishes || []).filter(dish => {
+      if (searchTerm && !dish.name.toLowerCase().includes(searchTerm.toLowerCase())) return false;
+      if (filterSensitivity) {
+        if (filterSensitivity === "pregnant" && !dish.pregnant) return false;
+        if (filterSensitivity === "gluten" && !dish.gluten) return false;
+        if (filterSensitivity === "lactose" && !dish.lactose) return false;
+        if (filterSensitivity === "vegi" && !dish.vegi) return false;
+      }
+      return true;
+    });
+    return { ...cat, filteredDishes: dishes };
+  }).filter(cat => cat.filteredDishes.length > 0 || cat._id === filterCategory);
 
-    return true;
-  });
+  const isGlobalSortable = !searchTerm && !filterSensitivity;
 
   return (
     <div className="p-6 min-h-screen bg-gradient-to-br from-slate-50 via-white to-amber-50/30 dark:bg-none dark:bg-zinc-950 transition-colors duration-200" dir="rtl">
@@ -105,12 +111,36 @@ export default function ManageDish() {
           transition={{ delay: 0.2 }}
         >
           <AnimatePresence>
-            <DishList user={user} dishes={filteredDishes} />
+            {categoriesWithFilteredDishes.length > 0 ? (
+              <div className="space-y-12">
+                {categoriesWithFilteredDishes.map((cat) => (
+                  <div key={cat._id} className="space-y-4">
+                    <div className="border-b border-slate-200 dark:border-zinc-800 pb-2">
+                      <h2 className="text-2xl font-bold text-slate-800 dark:text-zinc-100 flex items-center gap-2">
+                        {cat.name}
+                        <span className="text-sm font-normal text-slate-500 bg-slate-100 dark:bg-zinc-800 px-2 py-0.5 rounded-full">
+                          {cat.filteredDishes.length}
+                        </span>
+                      </h2>
+                      {cat.description && (
+                        <p className="text-sm text-slate-500 dark:text-zinc-400 mt-1">{cat.description}</p>
+                      )}
+                    </div>
+                    <DishList
+                      user={user}
+                      dishes={cat.filteredDishes}
+                      categoryId={cat._id}
+                      isSortable={isGlobalSortable}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : null}
           </AnimatePresence>
         </motion.div>
         
         {/* מצב ריק */}
-        {filteredDishes.length === 0 && (
+        {categoriesWithFilteredDishes.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
