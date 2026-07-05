@@ -73,9 +73,9 @@ const Design3Accordion = ({ categories, dishes }) => {
                 </span>
               </AccordionTrigger>
               <AccordionContent className="pb-6">
-                {dishes[category._id] && dishes[category._id].length > 0 ? (
+                {dishes[category._id] && dishes[category._id].filter(dish => !dish.hide).length > 0 ? (
                   <ul className="flex flex-col">
-                    {dishes[category._id].map((dish) => (
+                    {dishes[category._id].filter(dish => !dish.hide).map((dish) => (
                       <div
                         key={dish._id}
                         className="

@@ -11,6 +11,7 @@ import qrAnim from "../../assets/animations/QR Code Scanner.json";
 
 const OnboardingTour = ({user, onStatusChange}) => {
   const [run, setRun] = useState(false);
+  const [stepIndex, setStepIndex] = useState(0);
 
   useEffect(() => {
     if (user && !user.hasCompletedTour) {
@@ -112,8 +113,9 @@ const OnboardingTour = ({user, onStatusChange}) => {
     },
     {
       target: '[data-tour="stats"]',
+      placement: "top",
+      disableScrolling: true,
       disableBeacon: false,
-      disableScrolling: true, // קריטי למניעת מתיחת העמוד
       title: <span className="text-lg font-bold">זהו, אתה באוויר! 🚀</span>,
       content: (
         <div className="flex flex-col items-center text-center">
@@ -134,7 +136,8 @@ const OnboardingTour = ({user, onStatusChange}) => {
   ];
 
   const handleJoyrideCallback = async (data) => {
-    const {status} = data;
+    const {status, index, type, action} = data;
+
     if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
       setRun(false);
       try {
@@ -152,18 +155,39 @@ const OnboardingTour = ({user, onStatusChange}) => {
       } catch (error) {
         console.error("Failed to complete tour:", error);
       }
+    } else if (type === "step:after" || type === "error") {
+      if (action === "next") {
+        if (index === 3) {
+          const target = document.querySelector('[data-tour="stats"]');
+          if (target) {
+            target.scrollIntoView({
+              behavior: "smooth",
+              block: "center"
+            });
+          }
+          // השהייה של שנייה כדי שהגלילה תסתיים לפני הופעת הבועה
+          setTimeout(() => {
+            setStepIndex(index + 1);
+          }, 1000);
+        } else {
+          setStepIndex(index + 1);
+        }
+      } else if (action === "prev") {
+        setStepIndex(index - 1);
+      }
     }
   };
 
   return (
     <Joyride
+      stepIndex={stepIndex}
       steps={steps}
       run={run}
       continuous={true}
       showProgress={true}
       showSkipButton={true}
-      disableScrolling={true} // מונע גלילה מיותרת בכל הצעדים
-      disableScrollParentFix={true} // התיקון העיקרי לעיוות הקומפוננטות בשלב האחרון
+      disableScrolling={true}
+      disableScrollParentFix={true}
       callback={handleJoyrideCallback}
       floaterProps={{
         disableAnimation: true, // יציבות מקסימלית לבועה

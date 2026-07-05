@@ -98,7 +98,7 @@ const Design2 = ({ menu: menuProp }) => {
                   </h2>
                   <div>
                     {dishes[category._id] &&
-                      dishes[category._id].map((dish) => (
+                      dishes[category._id].filter(dish => !dish.hide).map((dish) => (
                         <div key={dish._id} className="p-4 w-full relative">
                        
                           <div className="flex justify-between items-center">

@@ -65,7 +65,7 @@ const Design6Section = ({ category, catIndex, dishes, language, getVariant, sect
         ref={scrollRef}
         className="flex flex-nowrap overflow-x-auto gap-6 pb-8 snap-x snap-mandatory hide-scrollbar scroll-ps-4 px-2"
       >
-        {dishes.map((dish) => (
+        {dishes.filter(dish => !dish.hide).map((dish) => (
           <FoodCard key={dish._id} dish={dish} variant={variant} onClick={onCardClick} />
         ))}
         <div className="flex-shrink-0 w-16" />
@@ -230,7 +230,7 @@ const Design6 = ({ menu: menuProp }) => {
                 : categories.find(c => c._id === activeCategoryId)?.name}
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8 sm:gap-10 px-2 mt-6">
-              {dishesMap[activeCategoryId]?.map((dish) => (
+              {dishesMap[activeCategoryId]?.filter(dish => !dish.hide).map((dish) => (
                 <FoodCard key={dish._id} dish={dish} variant="small" fullWidth={true} onClick={handleCardClick} />
               ))}
             </div>

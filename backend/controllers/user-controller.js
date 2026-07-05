@@ -526,7 +526,7 @@ const completeTour = async (req, res) => {
   const {userId} = req.body;
 
   // Ensure the user is updating their own record or is an admin
-  if (req.user._id !== userId && req.user.role !== "admin") {
+  if (req.user._id.toString() !== userId && req.user.role !== "admin") {
     return res.status(403).json({message: "Forbidden"});
   }
 
