@@ -14,18 +14,18 @@ import Spinner from "@/components/Spinner";
 import { toast } from "react-toastify";
 
 export default function EditProfile() {
+  const user = useSelector((state) => state.user.user);
   const [img, setImg] = useState(null); // הלינק לתצוגה המקדימה
   const [imgFile, setImgFile] = useState(null); // הקובץ האמיתי שיישלח לשרת!
-  const [restaurantName, setRestaurantName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [restaurantName, setRestaurantName] = useState(user?.restaurantName || "");
+  const [email, setEmail] = useState(user?.email || "");
+  const [phone, setPhone] = useState(user?.phone || "");
   const [password, setPassword] = useState("");
-  const [displayName, setDisplayName] = useState("");
-  const [menuDescription, setMenuDescription] = useState("");
+  const [displayName, setDisplayName] = useState(user?.displayName || "");
+  const [menuDescription, setMenuDescription] = useState(user?.menuDescription || "");
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = useSelector((state) => state.user.user);
   const token = localStorage.getItem("token");
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -147,6 +147,7 @@ export default function EditProfile() {
           <div>
             <Label>שם להצגה</Label>
             <Input
+              value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder={user?.displayName || "למשל: המסעדה של דוד"}
             />
@@ -156,6 +157,7 @@ export default function EditProfile() {
           <div>
             <Label>תיאור תפריט / הכרזות</Label>
             <Input
+              value={menuDescription}
               onChange={(e) => setMenuDescription(e.target.value)}
               placeholder={user?.menuDescription || "למשל: Happy Hour בכל יום בין 17:00 ל-20:00"}
             />
@@ -165,6 +167,7 @@ export default function EditProfile() {
           <div>
             <Label>אימייל</Label>
             <Input
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
               type="email"
               placeholder={user?.email || "example@email.com"}
@@ -175,6 +178,7 @@ export default function EditProfile() {
           <div>
             <Label>טלפון</Label>
             <Input
+              value={phone}
               onChange={(e) => setPhone(e.target.value)}
               type="tel"
               placeholder={user?.phone || "050-1234567"}
