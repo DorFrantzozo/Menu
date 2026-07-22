@@ -8,6 +8,8 @@ import { fetchCategoriesAndDishes, getRestaurantName, fetchRestaurant } from "@/
 import { isCategoryActive } from "@/utils/isCategoryActive";
 import { useLanguage } from "../../context/LanguageContext";
 import FloatingLanguageSelector from "../../components/LanguageSelector/FloatingLanguageSelector";
+import { design6Config } from "./design6.config";
+import { parseMenuData } from "../../utils/menuDataParser";
 
 import CategoryFilter from "./components/CategoryFilter";
 import FoodCard from "./components/FoodCard";
@@ -139,7 +141,14 @@ const Design6 = ({ menu: menuProp }) => {
           .sort((a, b) => a.locationNumber - b.locationNumber);
           
         setCategories(activeCategories);
-        setDishesMap(fetchedDishesMap);
+
+        // Process dishes map with parser
+        const parsedDishesMap = {};
+        for (const cat of activeCategories) {
+          parsedDishesMap[cat._id] = parseMenuData(fetchedDishesMap[cat._id] || [], design6Config.supportsSubCategories);
+        }
+
+        setDishesMap(parsedDishesMap);
       }
     } catch (error) {
       console.error(error);

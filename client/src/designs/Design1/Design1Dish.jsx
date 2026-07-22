@@ -9,6 +9,8 @@ import FavoriteHeart from "../../components/buttons/FavoriteHeart";
 import axiosInstance from "../../utils/baseUrl";
 import { useLanguage } from "../../context/LanguageContext";
 import FloatingLanguageSelector from "../../components/LanguageSelector/FloatingLanguageSelector";
+import { design1Config } from "./design1.config";
+import { parseMenuData } from "../../utils/menuDataParser";
 
 const Design1Dish = () => {
   const { userId, categoryId, categoryName } = useParams();
@@ -26,7 +28,8 @@ const Design1Dish = () => {
           `/dish/getDish/${userId}/${categoryId}`
         );
         if (response.data) {
-          setDishes(response.data);
+          const parsedDishes = parseMenuData(response.data, design1Config.supportsSubCategories);
+          setDishes(parsedDishes);
         } else {
           toast.error("לא נמצאו מנות");
         }
@@ -96,16 +99,22 @@ const Design1Dish = () => {
                       )}
                     </div>
                   </div>
-                  <div className="relative flex-shrink-0">
-                    <div className="absolute top-2 right-2 z-10">
-                      <FavoriteHeart dishId={dish._id} className="w-8 h-8 md:w-10 md:h-10" />
+                  {(design1Config.supportsImages || design1Config.supportsLikes) && (
+                    <div className="relative flex-shrink-0">
+                      {design1Config.supportsLikes && (
+                        <div className="absolute top-2 right-2 z-10">
+                          <FavoriteHeart dishId={dish._id} className="w-8 h-8 md:w-10 md:h-10" />
+                        </div>
+                      )}
+                      {design1Config.supportsImages && dish.img && (
+                        <img
+                          src={dish.img}
+                          className="dish-img rounded-xl object-cover shadow-lg w-[120px] h-[120px]"
+                          alt={dish.name}
+                        />
+                      )}
                     </div>
-                    <img
-                      src={dish.img}
-                      className="dish-img rounded-xl object-cover shadow-lg w-[120px] h-[120px]"
-                      alt={dish.name}
-                    />
-                  </div>
+                  )}
                 </div>
               ))}
           </div>

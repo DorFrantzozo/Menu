@@ -18,6 +18,7 @@ import {
   completeTour,
   findBySlug,
   getCurrentUser,
+  getFullMenu,
 } from "../controllers/user-controller.js";
 import {
   morningWebhookHandler,
@@ -39,6 +40,7 @@ userRouter.get("/find", findRestaurantsByName);
 userRouter.get("/slug/:slug", findBySlug);
 userRouter.get("/qr-scan-count/:userId", getQrScanCount);
 userRouter.get("/me", isAuth, getCurrentUser);
+userRouter.get("/getMenu/:userId", getFullMenu);
 // For deleteUser, the controller expects email/password in body, not a target userId parameter.
 // However, adding isAuth ensures the requester is at least logged in.
 userRouter.post("/deleteUser", isAuth, deleteUser);

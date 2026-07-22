@@ -14,6 +14,8 @@ import DishCardDesign5 from "./DishCardDesign5";
 import DishModalDesign5 from "./DishModalDesign5";
 import {useLanguage} from "../../context/LanguageContext";
 import FloatingLanguageSelector from "../../components/LanguageSelector/FloatingLanguageSelector";
+import { design5Config } from "./design5.config";
+import { parseMenuData } from "../../utils/menuDataParser";
 
 const Design5 = ({menu: menuProp}) => {
   const {language} = useLanguage();
@@ -98,7 +100,7 @@ const Design5 = ({menu: menuProp}) => {
         .filter((cat) => !cat.hide && isCategoryActive(cat))
         .map((cat) => ({
           ...cat,
-          menuDishes: dishes[cat._id] || [],
+          menuDishes: parseMenuData(dishes[cat._id] || [], design5Config.supportsSubCategories),
         }));
 
       const sortedCategories = categoriesWithDishes.sort(

@@ -12,6 +12,7 @@ import { setMenuCategories } from "@/state/menu/menuCategoriesSlice";
 const EditDishForm = ({ dish, setShowEditForm }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
+  const menuCategories = useSelector((state) => state.menuCategories.menuCategories);
   const token = localStorage.getItem("token");
 
   const [dishName, setDishName] = useState(dish?.name || "");
@@ -21,6 +22,7 @@ const EditDishForm = ({ dish, setShowEditForm }) => {
   const [price, setPrice] = useState(dish?.price || "");
   const [salePrice, setSalePrice] = useState(dish?.salePrice || "");
   const [discountPercent, setDiscountPercent] = useState("");
+  const [category, setCategory] = useState(dish?.category || "");
   
   // State נוסף
   const [img, setImg] = useState(null);
@@ -75,7 +77,7 @@ const EditDishForm = ({ dish, setShowEditForm }) => {
     formData.append("pregnant", pregnant);
     formData.append("lactose", lactose);
     formData.append("vegi", vegi);
-    formData.append("category", dish?.category);
+    formData.append("category", category);
     formData.append("hide", hide);
     if (img) formData.append("img", img);
 
@@ -151,7 +153,7 @@ const EditDishForm = ({ dish, setShowEditForm }) => {
             />
           </div>
 
-          <div className="space-y-1 sm:col-span-2">
+          <div className="space-y-1 sm:col-span-1">
             <label className="text-sm font-semibold text-slate-700 dark:text-zinc-100">מחיר מקורי (₪)</label>
             <input
               type="number"
@@ -160,6 +162,37 @@ const EditDishForm = ({ dish, setShowEditForm }) => {
               
               className="w-full rounded-xl border border-slate-200 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 px-4 py-2.5 focus:ring-2 focus:ring-amber-400 focus:outline-none transition-all"
             />
+          </div>
+
+          <div className="space-y-1 sm:col-span-1">
+            <label className="text-sm font-semibold text-slate-700 dark:text-zinc-100">קטגוריה</label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              required
+              className="w-full rounded-xl border border-slate-200 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 px-4 py-2.5 focus:ring-2 focus:ring-amber-400 focus:outline-none transition-all"
+            >
+              <option value="" disabled>-- בחר קטגוריה --</option>
+              {menuCategories && menuCategories
+                .filter((cat) => !cat.parentCategory)
+                .flatMap((parent) => {
+                  const parentOption = (
+                    <option key={parent._id} value={parent._id} className="font-bold">
+                      {parent.name}
+                    </option>
+                  );
+                  const subOptions = user?.enableSubCategories
+                    ? menuCategories
+                        .filter((sub) => sub.parentCategory === parent._id)
+                        .map((sub) => (
+                          <option key={sub._id} value={sub._id}>
+                            &nbsp;&nbsp;└─ {sub.name}
+                          </option>
+                        ))
+                    : [];
+                  return [parentOption, ...subOptions];
+                })}
+            </select>
           </div>
         </div>
 

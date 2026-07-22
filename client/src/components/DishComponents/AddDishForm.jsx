@@ -4,7 +4,6 @@ import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {toast} from "react-toastify";
 
-import DropDown from "../DropDown";
 import axiosInstance from "@/utils/baseUrl";
 import Spinner from "../Spinner";
 import {
@@ -16,6 +15,7 @@ import {setMenuCategories} from "@/state/menu/menuCategoriesSlice";
 
 export default function AddDishForm({closeModal}) {
   const user = useSelector((state) => state.user.user);
+  const menuCategories = useSelector((state) => state.menuCategories.menuCategories);
   const token = localStorage.getItem("token");
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -158,7 +158,34 @@ export default function AddDishForm({closeModal}) {
             </div>
 
             <div className="col-span-1 md:col-span-1">
-              <DropDown setCategory={setCategory} />
+              <label className="block font-medium mb-1">קטגוריה</label>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                required
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800 shadow-sm focus:ring-sky-200 focus:border-sky-200"
+              >
+                <option value="" disabled>-- בחר קטגוריה --</option>
+                {menuCategories && menuCategories
+                  .filter((cat) => !cat.parentCategory)
+                  .flatMap((parent) => {
+                    const parentOption = (
+                      <option key={parent._id} value={parent._id} className="font-bold">
+                        {parent.name}
+                      </option>
+                    );
+                    const subOptions = user?.enableSubCategories
+                      ? menuCategories
+                          .filter((sub) => sub.parentCategory === parent._id)
+                          .map((sub) => (
+                            <option key={sub._id} value={sub._id}>
+                              &nbsp;&nbsp;└─ {sub.name}
+                            </option>
+                          ))
+                      : [];
+                    return [parentOption, ...subOptions];
+                  })}
+              </select>
             </div>
           </div>
 

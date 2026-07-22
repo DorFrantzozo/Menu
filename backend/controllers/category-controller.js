@@ -5,7 +5,7 @@ import { PUBLIC_MENU_PROJECTION } from "../utils/projections.js";
 
 const createCategoryByUserId = async (req, res) => {
   try {
-    const { userId, name, nameEn, locationNumber, hasTimeLimit, startTime, endTime, activeDays } = req.body;
+    const { userId, name, nameEn, locationNumber, hasTimeLimit, startTime, endTime, activeDays, parentCategory } = req.body;
 
     if (!userId || !name || !locationNumber) {
       return res.status(400).json({ message: "All fields are required" });
@@ -69,6 +69,7 @@ const createCategoryByUserId = async (req, res) => {
       startTime: startTime || null,
       endTime: endTime || null,
       activeDays: activeDays ? (typeof activeDays === "string" ? JSON.parse(activeDays) : activeDays) : [],
+      parentCategory: parentCategory || null,
     });
 
     await newCategory.save();
@@ -102,7 +103,7 @@ const getCategoriesByUserId = async (req, res) => {
 //TODO: function needs category id!!!
 const updateCategoryByUserId = async (req, res) => {
   const { userId, categoryId } = req.params;
-  const { newName, nameEn, locationNumber, hide, hasTimeLimit, startTime, endTime, activeDays } = req.body;
+  const { newName, nameEn, locationNumber, hide, hasTimeLimit, startTime, endTime, activeDays, parentCategory } = req.body;
 
   try {
     // Ensure categoryId is provided
@@ -193,6 +194,10 @@ const updateCategoryByUserId = async (req, res) => {
 
     if (activeDays !== undefined) {
       category.activeDays = typeof activeDays === "string" ? JSON.parse(activeDays) : activeDays;
+    }
+
+    if (parentCategory !== undefined) {
+      category.parentCategory = parentCategory === "" ? null : parentCategory;
     }
 
     // Save updated category

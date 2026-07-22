@@ -14,6 +14,8 @@ import { useLanguage } from "../../context/LanguageContext";
 import FloatingLanguageSelector from "../../components/LanguageSelector/FloatingLanguageSelector";
 import FavoriteHeart from "../../components/buttons/FavoriteHeart";
 import useTrackMenuView from "@/hooks/useTrackMenuView";
+import { design4Config } from "./design4.config";
+import { parseMenuData } from "../../utils/menuDataParser";
 
 const Design4 = ({ menu: menuProp }) => {
   const [restaurantName, setRestaurantName] = useState("");
@@ -84,7 +86,7 @@ const Design4 = ({ menu: menuProp }) => {
         .filter((cat) => !cat.hide && isCategoryActive(cat))
         .map((cat) => ({
           ...cat,
-          menuDishes: dishes[cat._id] || [],
+          menuDishes: parseMenuData(dishes[cat._id] || [], design4Config.supportsSubCategories),
         }));
 
       // מיין לפי locationNumber
@@ -219,17 +221,25 @@ const Design4 = ({ menu: menuProp }) => {
               className="bg-gray-100 rounded-xl overflow-hidden relative hover:shadow-lg transition"
             >
               <div className="relative">
-                <motion.img
-                  src={dish.img}
-                  alt={dish.name}
-                  className="w-full h-32 object-cover"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.3 }}
-                />
-                {/* Like button - top right corner */}
-                <div className="absolute top-2 right-2 z-10">
-                  <FavoriteHeart dishId={dish._id} />
-                </div>
+                {(design4Config.supportsImages || design4Config.supportsLikes) && (
+                  <>
+                    {design4Config.supportsImages && dish.img && (
+                      <motion.img
+                        src={dish.img}
+                        alt={dish.name}
+                        className="w-full h-32 object-cover"
+                        whileHover={{ scale: 1.05 }}
+                        transition={{ duration: 0.3 }}
+                      />
+                    )}
+                    {/* Like button - top right corner */}
+                    {design4Config.supportsLikes && (
+                      <div className="absolute top-2 right-2 z-10">
+                        <FavoriteHeart dishId={dish._id} />
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
               <div className="p-3">
                 <p className={`text-sm font-semibold truncate ${language === "en" ? "text-left" : "text-right"}`}>

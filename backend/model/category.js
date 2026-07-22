@@ -42,6 +42,11 @@ const Category = new mongoose.Schema({
     type: [Number],
     required: false,
   },
+  parentCategory: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category",
+    required: false,
+  },
 }, { timestamps: true });
 
 export default mongoose.models.Category || mongoose.model("Category", Category);

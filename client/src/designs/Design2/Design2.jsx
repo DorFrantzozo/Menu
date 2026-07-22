@@ -11,6 +11,8 @@ import { isCategoryActive } from "@/utils/isCategoryActive";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../../context/LanguageContext";
 import FloatingLanguageSelector from "../../components/LanguageSelector/FloatingLanguageSelector";
+import { design2Config } from "./design2.config";
+import { parseMenuData } from "../../utils/menuDataParser";
 
 const Design2 = ({ menu: menuProp }) => {
   const { language } = useLanguage();
@@ -97,10 +99,12 @@ const Design2 = ({ menu: menuProp }) => {
                     {language === "en" && category.nameEn ? category.nameEn : category.name}
                   </h2>
                   <div>
-                    {dishes[category._id] &&
-                      dishes[category._id].filter(dish => !dish.hide).map((dish) => (
+                    {(() => {
+                      const categoryData = dishes[category._id] || [];
+                      const parsedItems = parseMenuData(categoryData, design2Config.supportsSubCategories);
+                      
+                      const renderDish = (dish) => (
                         <div key={dish._id} className="p-4 w-full relative">
-                       
                           <div className="flex justify-between items-center">
                             <Allergies dish={dish} />
                             <h3 className={`text-lg font-semibold text-gray-700 text-wrap ${language === "en" ? "text-left" : "text-right"}`}>
@@ -126,7 +130,26 @@ const Design2 = ({ menu: menuProp }) => {
                             </p>
                           </div>
                         </div>
-                      ))}
+                      );
+
+                      return parsedItems.map((item, index) => {
+                        if (item.dishes) {
+                          // Sub-category grouping
+                          return (
+                            <div key={index} className="mt-4">
+                              <h4 className="text-xl font-medium text-gray-600 border-b border-gray-200 pb-1 mb-2 text-center italic">
+                                {item.name}
+                              </h4>
+                              {item.dishes.filter(d => !d.hide).map(renderDish)}
+                            </div>
+                          );
+                        } else {
+                          // Flat dish
+                          if (item.hide) return null;
+                          return renderDish(item);
+                        }
+                      });
+                    })()}
                   </div>
                 </div>
               ))}

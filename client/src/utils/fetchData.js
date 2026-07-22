@@ -102,38 +102,15 @@ const fetchCategoriesAndDishes = async (userIdOrUser) => {
   if (!userId) throw new Error("User ID is required");
 
   try {
-    // 1. שליפת קטגוריות
-    const categoriesResponse = await axiosInstance.get(
-      `/category/getCategories/${userId}`
-    );
-
-    if (!categoriesResponse.data) {
-      throw new Error("Failed to fetch categories");
+    const response = await axiosInstance.get(`/user/getMenu/${userId}`);
+    
+    if (!response.data) {
+      throw new Error("Failed to fetch menu");
     }
 
-    const categories = categoriesResponse.data;
-    const dishesMap = {};
-
-    // 2. שליפת כל המנות במכה אחת (הכי יעיל)
-    const dishesResponse = await axiosInstance.get(
-      `/dish/getAllDishes/${userId}`
-    );
-    const allDishes = dishesResponse.data || [];
-
-    // 3. מיפוי המנות לקטגוריות בזיכרון
-    categories.forEach((category) => {
-      dishesMap[category._id] = allDishes.filter(
-        (dish) => String(dish.category) === String(category._id)
-      );
-    });
-
-    return {
-      categories,
-      dishes: dishesMap,
-      lastUpdated: new Date().getTime(),
-    };
+    return response.data;
   } catch (error) {
-    console.error("Error fetching categories and dishes:", error);
+    console.error("Error fetching menu:", error);
     throw error;
   }
 };

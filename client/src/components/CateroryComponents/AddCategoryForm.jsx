@@ -27,6 +27,7 @@ export default function AddCategoryForm({ onCancel }) {
   const [img, setImg] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(null);
+  const [parentCategory, setParentCategory] = useState("");
 
   // ── Scheduling ────────────────────────────────────────────────────────────
   const [hasTimeLimit, setHasTimeLimit] = useState(false);
@@ -58,6 +59,7 @@ export default function AddCategoryForm({ onCancel }) {
     formData.append("locationNumber", newLocationNumber);
     formData.append("description", description);
     if (img) formData.append("img", img);
+    if (parentCategory) formData.append("parentCategory", parentCategory);
 
     // Scheduling fields
     formData.append("hasTimeLimit", hasTimeLimit);
@@ -141,6 +143,32 @@ export default function AddCategoryForm({ onCancel }) {
             />
           </div>
         </div>
+
+        {/* Feature Flag: Parent Category Dropdown */}
+        {user?.enableSubCategories && (
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-zinc-100">
+              קטגוריית אב <span className="text-xs text-slate-400 dark:text-zinc-400">(אופציונלי)</span>
+            </label>
+            <select
+              value={parentCategory}
+              onChange={(e) => setParentCategory(e.target.value)}
+              className="mt-1 w-full rounded-md border border-slate-300 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none transition"
+            >
+              <option value="">-- ללא קטגוריית אב --</option>
+              {menuCategories
+                .filter((cat) => !cat.parentCategory) // Only allow top-level categories
+                .map((cat) => (
+                  <option key={cat._id} value={cat._id}>
+                    {cat.name}
+                  </option>
+                ))}
+            </select>
+            <p className="text-xs text-slate-400 mt-1">
+              בחר קטגוריה ראשית תחתיה תופיע קטגוריה זו.
+            </p>
+          </div>
+        )}
 
         {/* תיאור */}
         <div>

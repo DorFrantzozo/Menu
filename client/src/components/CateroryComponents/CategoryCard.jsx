@@ -4,6 +4,8 @@ import {
   EllipsisHorizontalIcon,
 } from "@heroicons/react/24/outline";
 import PropTypes from "prop-types";
+import { useSelector } from "react-redux";
+
 export default function CategoryCard({
   category,
   onEdit,
@@ -11,6 +13,12 @@ export default function CategoryCard({
   user,
   dragHandle,
 }) {
+  const menuCategories = useSelector((state) => state.menuCategories.menuCategories);
+  const isSubCategory = user?.enableSubCategories && category.parentCategory;
+  const parentCategoryObj = isSubCategory 
+    ? menuCategories?.find((cat) => cat._id === category.parentCategory) 
+    : null;
+
   return (
     <div className="relative bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700/80 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col">
       {/* Drag handle – שלוש נקודות */}
@@ -38,8 +46,15 @@ export default function CategoryCard({
         )}
 
         {category.hide && (
-          <div className="absolute inset-0  bg-black bg-opacity-70 flex items-center justify-center text-white text-lg font-bold">
+          <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center text-white text-lg font-bold">
             מוסתר
+          </div>
+        )}
+
+        {/* Feature Flag: Sub-category Badge */}
+        {isSubCategory && (
+          <div className="absolute top-2 right-2 bg-amber-500 text-white text-xs font-semibold px-2 py-1 rounded shadow-sm z-10 flex items-center gap-1">
+            <span>🏷️</span> תת-קטגוריה של {parentCategoryObj ? parentCategoryObj.name : "לא ידוע"}
           </div>
         )}
       </div>
@@ -90,6 +105,7 @@ CategoryCard.propTypes = {
     locationNumber: PropTypes.number.isRequired,
     img: PropTypes.string,
     hide: PropTypes.bool,
+    parentCategory: PropTypes.string,
   }).isRequired,
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func,

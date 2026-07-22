@@ -16,6 +16,7 @@ const DAY_LABELS = ["א", "ב", "ג", "ד", "ה", "ו", "ש"]; // Sun=0…Sat=6
 const EditCategoryForm = ({ category, isOpen, setIsOpen }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
+  const menuCategories = useSelector((state) => state.menuCategories.menuCategories);
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
@@ -25,6 +26,7 @@ const EditCategoryForm = ({ category, isOpen, setIsOpen }) => {
   const [name, setName] = useState(item.name || "");
   const [nameEn, setNameEn] = useState(item.nameEn || "");
   const [locationNumber, setLocationNumber] = useState(item.locationNumber || 0);
+  const [parentCategory, setParentCategory] = useState(item.parentCategory || "");
   const [isLoading, setIsLoading] = useState(false);
 
   // ── Scheduling ────────────────────────────────────────────────────────────
@@ -53,6 +55,7 @@ const EditCategoryForm = ({ category, isOpen, setIsOpen }) => {
     formData.append("locationNumber", locationNumber);
     formData.append("hide", hide);
     if (img) formData.append("img", img);
+    if (parentCategory !== undefined) formData.append("parentCategory", parentCategory);
 
     // Scheduling fields
     formData.append("hasTimeLimit", hasTimeLimit);
@@ -136,6 +139,29 @@ const EditCategoryForm = ({ category, isOpen, setIsOpen }) => {
               className="w-full rounded-md border border-slate-300 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none placeholder-slate-300 dark:placeholder-zinc-500"
             />
           </div>
+
+          {/* Feature Flag: Parent Category Dropdown */}
+          {user?.enableSubCategories && (
+            <div>
+              <label className="block text-sm font-medium text-slate-700 dark:text-zinc-100 mb-1">
+                קטגוריית אב <span className="text-xs text-slate-400 font-normal">(אופציונלי)</span>
+              </label>
+              <select
+                value={parentCategory}
+                onChange={(e) => setParentCategory(e.target.value)}
+                className="w-full rounded-md border border-slate-300 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-100 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-400 focus:outline-none"
+              >
+                <option value="">-- ללא קטגוריית אב --</option>
+                {menuCategories
+                  .filter((cat) => !cat.parentCategory && cat._id !== item._id) // Only allow top-level, prevent self
+                  .map((cat) => (
+                    <option key={cat._id} value={cat._id}>
+                      {cat.name}
+                    </option>
+                  ))}
+              </select>
+            </div>
+          )}
 
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-zinc-100 mb-1">

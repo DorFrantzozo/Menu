@@ -1,6 +1,9 @@
 import User from "../model/user.js";
+import Category from "../model/category.js";
+import Dish from "../model/dish.js";
 import bcrypt from "bcryptjs";
 import cloudinary from "../utils/cloudinary.js";
+import { PUBLIC_MENU_PROJECTION } from "../utils/projections.js";
 import {
   checkTokenValidity,
   expirationTime,
@@ -559,6 +562,105 @@ const getCurrentUser = async (req, res) => {
   }
 };
 
+const getFullMenu = async (req, res) => {
+  const { userId } = req.params;
+  if (!userId) {
+    return res.status(400).json({ message: "User ID is required" });
+  }
+
+  try {
+    const user = await User.findById(userId).lean();
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const enableSubCategories = user.enableSubCategories === true;
+
+    // Fetch all categories for user
+    const allCategories = await Category.find({ userId })
+      .select(PUBLIC_MENU_PROJECTION)
+      .lean();
+
+    // Fetch all dishes for user
+    const allDishes = await Dish.find({ userId })
+      .select(PUBLIC_MENU_PROJECTION)
+      .lean();
+
+    // Sort dishes safely
+    allDishes.sort((a, b) => {
+      const locA = a.locationNumber != null ? a.locationNumber : Infinity;
+      const locB = b.locationNumber != null ? b.locationNumber : Infinity;
+      return locA - locB;
+    });
+
+    const dishesMap = {};
+
+    if (!enableSubCategories) {
+      // LEGACY FLAT RESPONSE
+      allCategories.forEach((category) => {
+        dishesMap[category._id] = allDishes.filter(
+          (dish) => String(dish.category) === String(category._id)
+        );
+      });
+
+      return res.status(200).json({
+        categories: allCategories,
+        dishes: dishesMap,
+        lastUpdated: new Date().getTime(),
+      });
+    }
+
+    // NEW NESTED RESPONSE
+    const topLevelCategories = allCategories.filter((cat) => !cat.parentCategory);
+    const subCategories = allCategories.filter((cat) => cat.parentCategory);
+
+    // Group dishes by their direct category
+    const dishesByCategory = {};
+    allDishes.forEach((dish) => {
+      const catId = String(dish.category);
+      if (!dishesByCategory[catId]) {
+        dishesByCategory[catId] = [];
+      }
+      dishesByCategory[catId].push(dish);
+    });
+
+    topLevelCategories.forEach((topCat) => {
+      const topCatId = String(topCat._id);
+      dishesMap[topCatId] = [];
+
+      // Find sub-categories that belong to this top-level category
+      const relatedSubCats = subCategories.filter(
+        (subCat) => String(subCat.parentCategory) === topCatId
+      );
+
+      // Add sub-categories (with their dishes)
+      relatedSubCats.forEach((subCat) => {
+        const subCatId = String(subCat._id);
+        const subCatDishes = dishesByCategory[subCatId] || [];
+        dishesMap[topCatId].push({
+          ...subCat,
+          dishes: subCatDishes,
+        });
+      });
+
+      // Add dishes that belong directly to the top-level category
+      const directDishes = dishesByCategory[topCatId] || [];
+      if (directDishes.length > 0) {
+        dishesMap[topCatId].push(...directDishes);
+      }
+    });
+
+    return res.status(200).json({
+      categories: topLevelCategories,
+      dishes: dishesMap,
+      lastUpdated: new Date().getTime(),
+    });
+  } catch (error) {
+    console.error("Error in getFullMenu:", error.message);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
 export {
   getAllUsers,
   createUser,
@@ -575,4 +677,5 @@ export {
   getQrScanCount,
   completeTour,
   getCurrentUser,
+  getFullMenu,
 };

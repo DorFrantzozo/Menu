@@ -7,6 +7,8 @@ import {
 import PropTypes from "prop-types";
 import { useState, useRef } from "react";
 import { useLanguage } from "../../context/LanguageContext";
+import { design3Config } from "./design3.config";
+import { parseMenuData } from "../../utils/menuDataParser";
 
 const Design3Accordion = ({ categories, dishes }) => {
   const [activeCategory, setActiveCategory] = useState(null);
@@ -73,9 +75,13 @@ const Design3Accordion = ({ categories, dishes }) => {
                 </span>
               </AccordionTrigger>
               <AccordionContent className="pb-6">
-                {dishes[category._id] && dishes[category._id].filter(dish => !dish.hide).length > 0 ? (
-                  <ul className="flex flex-col">
-                    {dishes[category._id].filter(dish => !dish.hide).map((dish) => (
+                {(() => {
+                  const categoryData = dishes[category._id] || [];
+                  const parsedDishes = parseMenuData(categoryData, design3Config.supportsSubCategories);
+                  const visibleDishes = parsedDishes.filter(dish => !dish.hide);
+
+                  if (visibleDishes.length > 0) {
+                    const renderDishRow = (dish) => (
                       <div
                         key={dish._id}
                         className="
@@ -130,13 +136,46 @@ const Design3Accordion = ({ categories, dishes }) => {
                           ) : null}
                         </li>
                       </div>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-start text-slate-400 p-6 italic font-light">
-                    {language === "en" ? "No dishes available" : "אין מנות זמינות"}
-                  </p>
-                )}
+                    );
+
+                    return (
+                      <ul className="flex flex-col">
+                        {visibleDishes.map((item) => {
+                          if (item.dishes) {
+                            // Render Sub-category
+                            const subCatDishes = item.dishes.filter(d => !d.hide);
+                            if (subCatDishes.length === 0) return null;
+                            
+                            return (
+                              <div key={item._id} className="mt-6 mb-3">
+                                <h4 
+                                  className={`flex items-center text-[1.3rem] font-medium text-white font-['Heebo',_sans-serif] border-neutral-600 ${
+                                    language === "en" ? "border-l-2 pl-3 ml-1" : "border-r-2 pr-3 mr-1"
+                                  }`}
+                                >
+                                  <span className={`text-neutral-500 text-lg opacity-80 ${language === "en" ? "mr-2" : "ml-2"}`}>↳</span>
+                                  {language === "en" && item.nameEn ? item.nameEn : item.name}
+                                </h4>
+                                <ul className="flex flex-col mt-2">
+                                  {subCatDishes.map(renderDishRow)}
+                                </ul>
+                              </div>
+                            );
+                          } else {
+                            // Render Flat Dish
+                            return renderDishRow(item);
+                          }
+                        })}
+                      </ul>
+                    );
+                  } else {
+                    return (
+                      <p className="text-start text-slate-400 p-6 italic font-light">
+                        {language === "en" ? "No dishes available" : "אין מנות זמינות"}
+                      </p>
+                    );
+                  }
+                })()}
               </AccordionContent>
             </AccordionItem>
           );
