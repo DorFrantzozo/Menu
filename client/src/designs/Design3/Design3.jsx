@@ -97,6 +97,11 @@ const Design3 = ({ menu: menuProp }) => {
               <h1 className="text-4xl text-center font-['Playfair_Display',_serif] text-[#E5D3C5] font-normal tracking-[0.08em] uppercase mb-2 drop-shadow-[0_2px_10px_rgba(229,211,197,0.15)]">
                 {restaurantName}
               </h1>
+              {restaurant?.menuDescription && (
+                <p className="text-center text-[#E5D3C5] opacity-80 text-sm mt-1 mb-2 whitespace-pre-wrap">
+                  {restaurant.menuDescription}
+                </p>
+              )}
               {/* HR below main title */}
               <div className="w-full h-[1px] bg-white/15 mt-2 mb-2"></div>
             </div>

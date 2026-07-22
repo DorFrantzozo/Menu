@@ -84,6 +84,11 @@ const Design1 = ({ menu: menuProp }) => {
           <h1 className="text-4xl font-bold text-center text-gray-800">
             {restaurant.displayName || restaurant.restaurantName}
           </h1>
+          {restaurant.menuDescription && (
+            <p className="text-center text-lg text-gray-600 mt-2 whitespace-pre-wrap">
+              {restaurant.menuDescription}
+            </p>
+          )}
 
           <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {categories

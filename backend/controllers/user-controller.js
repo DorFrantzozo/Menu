@@ -124,7 +124,7 @@ const loginUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const {email, password, restaurantName, isPaid, role, displayName, phone} =
+  const {email, password, restaurantName, isPaid, role, displayName, menuDescription, phone} =
     req.body;
   const {userId} = req.params;
 
@@ -151,6 +151,7 @@ const updateUser = async (req, res) => {
 
     if (restaurantName) user.restaurantName = restaurantName;
     if (displayName) user.displayName = displayName;
+    if (menuDescription !== undefined) user.menuDescription = menuDescription;
     if (phone) user.phone = phone;
 
     // --- לוגיקת אדמין ותשלומים ---

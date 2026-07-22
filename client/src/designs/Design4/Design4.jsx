@@ -144,12 +144,19 @@ const Design4 = ({ menu: menuProp }) => {
       {/* Header */}
       <div className="sticky top-0 z-10 bg-white shadow-lg ">
         <div className={`flex justify-between items-center py-5 px-4 ${language === "en" ? "flex-row-reverse" : ""}`}>
-          <h1 className="text-2xl font-bold text-black flex items-center gap-2">
-            <span className={`text-3xl ${language === "en" ? "me-14" : "ms-14"}`}>🛎️</span>
-            {restaurantData?.displayName ||
-              JSON.parse(localStorage.getItem("user"))?.displayName ||
-              restaurantName}
-          </h1>
+          <div className="flex flex-col">
+            <h1 className="text-2xl font-bold text-black flex items-center gap-2">
+              <span className={`text-3xl ${language === "en" ? "me-14" : "ms-14"}`}>🛎️</span>
+              {restaurantData?.displayName ||
+                JSON.parse(localStorage.getItem("user"))?.displayName ||
+                restaurantName}
+            </h1>
+            {restaurantData?.menuDescription && (
+              <p className={`text-sm text-gray-600 mt-1 whitespace-pre-wrap ${language === "en" ? "me-14" : "ms-14"}`}>
+                {restaurantData.menuDescription}
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Categories */}

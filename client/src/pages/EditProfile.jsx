@@ -21,6 +21,7 @@ export default function EditProfile() {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const [menuDescription, setMenuDescription] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -60,6 +61,7 @@ export default function EditProfile() {
     if (phone !== user?.phone) formData.append("phone", phone);
     if (password) formData.append("password", password);
     if (displayName !== user?.displayName) formData.append("displayName", displayName);
+    if (menuDescription !== user?.menuDescription) formData.append("menuDescription", menuDescription);
 
     try {
       const response = await axiosInstance.put(
@@ -147,6 +149,15 @@ export default function EditProfile() {
             <Input
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder={user?.displayName || "למשל: המסעדה של דוד"}
+            />
+          </div>
+
+          {/* תיאור תפריט / הכרזות */}
+          <div>
+            <Label>תיאור תפריט / הכרזות</Label>
+            <Input
+              onChange={(e) => setMenuDescription(e.target.value)}
+              placeholder={user?.menuDescription || "למשל: Happy Hour בכל יום בין 17:00 ל-20:00"}
             />
           </div>
 

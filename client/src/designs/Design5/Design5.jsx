@@ -234,8 +234,8 @@ const Design5 = ({menu: menuProp}) => {
           >
             {restaurantData?.displayName || restaurantName}
           </motion.h1>
-          <p className="text-white/70 text-sm mt-1 font-medium">
-            ברוכים הבאים לחוויה קולינרית
+          <p className="text-white/90 text-sm mt-1 font-medium whitespace-pre-wrap">
+            {restaurantData?.menuDescription || "ברוכים הבאים לחוויה קולינרית"}
           </p>
         </div>
       </div>

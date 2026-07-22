@@ -21,6 +21,7 @@ const userSchema = new mongoose.Schema(
     password: {type: String, required: true, minlength: 6},
     restaurantName: {type: String, required: true},
     displayName: {type: String, required: true},
+    menuDescription: {type: String},
     phone: {type: String, required: true},
     logo: {type: String},
     plan: {

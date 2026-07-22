@@ -204,9 +204,14 @@ const Design6 = ({ menu: menuProp }) => {
       {/* Header Area */}
       <div className="pt-6 bg-[#FAF9F6]">
         <div className="max-w-screen-2xl mx-auto px-6 sm:px-12">
-          <h1 className="text-3xl font-bold tracking-tight mb-6">
+          <h1 className={`text-3xl font-bold tracking-tight ${restaurant?.menuDescription ? 'mb-2' : 'mb-6'}`}>
              {restaurant.displayName || restaurant.restaurantName}
           </h1>
+          {restaurant?.menuDescription && (
+            <p className="text-gray-600 text-sm mb-6 whitespace-pre-wrap">
+              {restaurant.menuDescription}
+            </p>
+          )}
           
           <CategoryFilter 
              categories={categories} 

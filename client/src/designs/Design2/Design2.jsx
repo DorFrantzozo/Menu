@@ -85,9 +85,14 @@ const Design2 = ({ menu: menuProp }) => {
         <Spinner />
       ) : (
         <div className="min-h-screen flex flex-col p-6">
-          <h1 className="text-4xl mb-10 font-bold text-center text-gray-800">
+          <h1 className={`text-4xl font-bold text-center text-gray-800 ${restaurant?.menuDescription ? 'mb-2' : 'mb-10'}`}>
             {restaurant?.displayName}
           </h1>
+          {restaurant?.menuDescription && (
+            <p className="text-center text-lg text-gray-600 mb-10 whitespace-pre-wrap">
+              {restaurant.menuDescription}
+            </p>
+          )}
           <hr className="style-seven" />
           <div className="mt-10 w-full">
             {categories
