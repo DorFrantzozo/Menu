@@ -5,127 +5,12 @@ import bcrypt from "bcryptjs";
 import cloudinary from "../utils/cloudinary.js";
 import {PUBLIC_MENU_PROJECTION} from "../utils/projections.js";
 import {
-  checkTokenValidity,
-  expirationTime,
-  generateResetToken,
   generateToken,
 } from "../utils/jwt.js";
-import {sendEmail} from "../utils/sendgrid.js";
 import ActivityLog from "../model/activityLog.js";
 import sendDiscordAlert from "../utils/discordAlert.js";
 
 //TODO: split logic to different layers (like repository for db accessing) and files (like bcrypt and cloudinary)
-const createUser = async (req, res) => {
-  const {email, password, restaurantName, displayName, phone} = req.body;
-
-  if (!email || !password || !restaurantName) {
-    return res.status(400).json({message: "All fields are required"});
-  }
-
-  try {
-    const existUser = await User.findOne({email});
-    if (existUser) {
-      return res.status(400).json({message: "User already exists"});
-    }
-
-    let logoUrl = null;
-
-    if (req.file) {
-      const uploadResult = await new Promise((resolve, reject) => {
-        cloudinary.uploader
-          .upload_stream(
-            {
-              public_id: `users/${email}_logo`,
-              folder: "users", // Store the image in the "users" folder
-              transformation: {
-                quality: "auto",
-                fetch_format: "auto",
-                width: 1000,
-                crop: "limit",
-              },
-            },
-            (error, result) => {
-              if (error) return reject(error);
-              resolve(result);
-            },
-          )
-          .end(req.file.buffer);
-      });
-      logoUrl = uploadResult.secure_url; // Get the Cloudinary secure URL for the logo
-    }
-
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create new user instance
-    const newUser = new User({
-      email,
-      password: hashedPassword,
-      restaurantName,
-      logo: logoUrl || null,
-      designNumber: 1,
-      displayName,
-      phone,
-    });
-
-    await newUser.save();
-    await sendDiscordAlert(
-      `לקוח חדש פתח תפריט!\n**אימייל:** ${newUser.email}`,
-      "🎉 משתמש חדש ב-iMenu!",
-      3066993, // צבע ירוק להצלחה
-    );
-    const token = generateToken(newUser);
-
-    const {password: _, ...userWithoutPassword} = newUser.toObject();
-
-    res.status(201).json({user: userWithoutPassword, token: token});
-  } catch (error) {
-    console.error("Error creating user:", error.message);
-    res.status(500).json({message: error.message});
-  }
-};
-
-const loginUser = async (req, res) => {
-  const {email, password} = req.body;
-
-  try {
-    const user = await User.findOne({email});
-    if (!user) {
-      return res.status(401).json({message: "Email or password is incorrect"});
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordValid) {
-      return res.status(401).json({message: "Invalid credentials"});
-    }
-
-    const now = new Date();
-    const isTrialExpired = !user.isPaid && user.trialExpiresAt < now;
-
-    user.lastLogin = now;
-    await user
-      .save()
-      .catch((err) =>
-        console.error("Failed to update last login:", err.message),
-      );
-
-    const token = generateToken(user);
-    const expireTime = expirationTime();
-
-    const {password: _, ...userWithoutPassword} = user.toObject();
-
-    res.status(200).json({
-      user: userWithoutPassword,
-      isTrialExpired: isTrialExpired,
-      token: token,
-      expireTime: expireTime,
-    });
-  } catch (error) {
-    console.error("Error during login:", error.message);
-    res.status(500).json({message: error.message});
-  }
-};
 
 const updateUser = async (req, res) => {
   const {
@@ -351,118 +236,6 @@ const updateUserMenuSettings = async (req, res) => {
   }
 };
 
-const SendResetPasswordMail = async (req, res) => {
-  const {to, userName} = req.body;
-  console.log("קלט שהתקבל:", {to, userName});
-
-  if (!to || !userName) {
-    return res.status(400).json({
-      success: false,
-      message: "חסרים שדות חובה לשליחת האימייל.",
-    });
-  }
-
-  try {
-    const user = await User.findOne({email: to});
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "משתמש לא נמצא עם כתובת האימייל שסופקה.",
-      });
-    }
-
-    const resetToken = generateResetToken(user);
-    const baseUrl = process.env.FRONTEND_URL?.endsWith("/")
-      ? process.env.FRONTEND_URL.slice(0, -1)
-      : process.env.FRONTEND_URL;
-    const resetLink = `${baseUrl}/resetpassword?token=${resetToken}`;
-
-    const templateId = process.env.SENDGRID_RESET_PASSWORD_TEMPLATEID;
-    console.log("TEMPLATEID :", templateId);
-    if (!templateId) {
-      console.error("❌ TEMPLATEID חסר או לא מוגדר בקובץ .env");
-      return res.status(500).json({
-        success: false,
-        message: "הגדרת תבנית המייל חסרה בשרת.",
-      });
-    }
-
-    const result = await sendEmail({
-      to: user.email,
-      templateId: templateId,
-      dynamicData: {
-        resetLink,
-        userName: user.restaurantName || user.email,
-      },
-    });
-
-    if (result?.success) {
-      return res.status(200).json({
-        success: true,
-        message: "נשלח מייל לאיפוס סיסמה בהצלחה.",
-      });
-    } else {
-      console.error(
-        "❌ SendGrid error:",
-        JSON.stringify(result?.error, null, 2),
-      );
-      return res.status(500).json({
-        success: false,
-        message: "שליחת המייל נכשלה.",
-        error: result?.error,
-      });
-    }
-  } catch (error) {
-    console.error("שגיאה בשליחת האימייל:", error);
-    return res.status(500).json({
-      success: false,
-      message: "אירעה שגיאה בשרת בעת שליחת האימייל.",
-    });
-  }
-};
-
-const resetPassword = async (req, res) => {
-  const {data} = req.body;
-  const {token, newPassword} = data;
-
-  // 1. בדיקת תקינות הטוקן דרך הפונקציה שב־utils
-  const {valid, payload, message} = checkTokenValidity(token);
-
-  if (!valid) {
-    if (message === "jwt expired") {
-      return res.status(401).json({message: "הקישור לאיפוס הסיסמה פג תוקף"});
-    }
-    return res.status(400).json({message: "הטוקן לא תקין"});
-  }
-
-  try {
-    console.log(payload.userId);
-    // 2. חיפוש המשתמש
-    const user = await User.findById(payload._id);
-    if (!user) {
-      return res.status(404).json({message: "המשתמש לא נמצא"});
-    }
-
-    // 3. בדיקת סיסמה זהה
-    const isSamePassword = await bcrypt.compare(newPassword, user.password);
-    if (isSamePassword) {
-      return res
-        .status(400)
-        .json({message: "הסיסמה החדשה לא יכולה להיות זהה לקודמת"});
-    }
-
-    // 4. עידכון הסיסמה
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-    user.password = hashedPassword;
-    await user.save();
-
-    return res.status(200).json({message: "הסיסמה אופסה בהצלחה"});
-  } catch (error) {
-    console.error("Error resetting password:", error.message);
-    return res.status(500).json({message: "שגיאת שרת פנימית"});
-  }
-};
 
 const findBySlug = async (req, res) => {
   const {slug} = req.params;
@@ -679,15 +452,11 @@ const getFullMenu = async (req, res) => {
 
 export {
   getAllUsers,
-  createUser,
-  loginUser,
   updateUser,
   deleteUser,
   findRestaurantsByName,
   updateDesignByNumber,
   updateUserMenuSettings,
-  SendResetPasswordMail,
-  resetPassword,
   handleQrRedirect,
   findBySlug,
   getQrScanCount,

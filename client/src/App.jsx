@@ -36,6 +36,7 @@ import {AnimatePresence} from "framer-motion";
 import DishDetails from "./designs/Design4/Design4DishDetails";
 import EditProfile from "./pages/EditProfile";
 import ResetPassword from "./pages/ResetPassword";
+import VerifyEmail from "./pages/VerifyEmail";
 import ManageCategories from "./pages/ManageCategories";
 import ManageDishes from "./pages/ManageDishes";
 import Sidebar from "./components/SideBar";
@@ -241,6 +242,7 @@ function App() {
                         )
                       }
                     />
+                    <Route path="/verify-email" element={<VerifyEmail />} />
                     <Route path="/resetpassword" element={<ResetPassword />} />
                     <Route path="/design1" element={<Design1 />} />
                     <Route path="/design2" element={<Design2 />} />

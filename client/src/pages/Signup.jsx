@@ -36,7 +36,7 @@ const Signup = () => {
 
     try {
       setLoading(true);
-      const response = await axiosInstance.post("/user/auth", formData, {
+      const response = await axiosInstance.post("/auth/signup", formData, {
         headers: {"Content-Type": "multipart/form-data"},
       });
 

@@ -20,7 +20,7 @@ const Signin = () => {
     event.preventDefault();
     try {
       setLoading(true);
-      const response = await axiosInstance.post("/user/login", {
+      const response = await axiosInstance.post("/auth/login", {
         email,
         password,
       });

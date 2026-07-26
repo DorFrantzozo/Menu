@@ -29,6 +29,7 @@ const userSchema = new mongoose.Schema(
       enum: ["Free", "Essential", "Advance", "iMenu PRO"],
       default: "Free",
     },
+    isVerified: {type: Boolean, default: false},
     designNumber: {type: Number, default: 4},
 
     //payment://///////////////////////////////////

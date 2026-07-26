@@ -65,16 +65,24 @@ const AuthPage = () => {
         });
         if (logoFile) fd.append("logo", logoFile);
 
-        const {data, status} = await axiosInstance.post("/user/signup", fd);
+        const {data, status} = await axiosInstance.post("/auth/signup", fd);
         if (status === 201) {
-          dispatch(setUser(data.user));
-          dispatch(setToken(data.token));
-          localStorage.setItem("token", data.token);
-          navigate("/dashboard");
+          toast.success("הרשמתך בוצעה בהצלחה! קישור לאימות נשלח לכתובת המייל שלך. עליך לאמת את החשבון כדי להתחבר.");
+          setIsSignup(false);
+          // Clear form optionally
+          setFormData({
+            email: "",
+            password: "",
+            restaurantName: "",
+            phone: "",
+            displayName: "",
+            agree: false,
+          });
+          setLogoFile(null);
         }
       } else {
         // Login Logic
-        const {data, status} = await axiosInstance.post("/user/login", {
+        const {data, status} = await axiosInstance.post("/auth/login", {
           email: formData.email,
           password: formData.password,
         });

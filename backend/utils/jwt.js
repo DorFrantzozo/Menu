@@ -21,6 +21,12 @@ const generateResetToken = (user) => {
   });
 };
 
+const generateVerificationToken = (user) => {
+  return jwt.sign({_id: user._id}, process.env.JWT_SECRET, {
+    expiresIn: "24h", // Valid for 24 hours
+  });
+};
+
 const expirationTime = () => {
   return Date.now() + 60 * 60 * 1000;
 };
@@ -116,5 +122,6 @@ export {
   decodeToken,
   expirationTime,
   generateResetToken,
+  generateVerificationToken,
   checkTokenValidity,
 };

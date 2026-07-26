@@ -9,6 +9,7 @@ import {handleQrRedirect} from "./controllers/user-controller.js";
 import cors from "cors";
 
 import dotenv from "dotenv";
+import authRouter from "./routes/auth-route.js";
 import assetRouter from "./routes/asset-route.js";
 import analyticsRouter from "./routes/analyticsRoute.js";
 import supportRouter from "./routes/supportRoute.js";
@@ -82,6 +83,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 // Apply general rate limiter to all API routes
 app.use("/api", generalLimiter);
+app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/dish", dishRouter);

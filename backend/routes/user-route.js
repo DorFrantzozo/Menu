@@ -2,22 +2,16 @@ import express from "express";
 import {upload} from "../utils/multer.js";
 import {isAuth, isUserOrAdmin} from "../utils/jwt.js";
 import {isAdminMiddleware} from "../controllers/admin-controller.js";
-import {authLimiter} from "../middlewares/rateLimiter.js";
 import {
-  loginUser,
-  createUser,
   deleteUser,
   updateUser,
   findRestaurantsByName,
   updateDesignByNumber,
   getAllUsers,
   updateUserMenuSettings,
-  SendResetPasswordMail,
-  resetPassword,
   getQrScanCount,
   completeTour,
   findBySlug,
-  getCurrentUser,
   getFullMenu,
 } from "../controllers/user-controller.js";
 import {
@@ -27,8 +21,7 @@ import {
 
 const userRouter = express.Router();
 
-userRouter.post("/login", authLimiter, loginUser);
-userRouter.post("/signup", authLimiter, upload.single("logo"), createUser);
+
 userRouter.put(
   "/updateUser/:userId",
   isAuth,
@@ -39,7 +32,7 @@ userRouter.put(
 userRouter.get("/find", findRestaurantsByName);
 userRouter.get("/slug/:slug", findBySlug);
 userRouter.get("/qr-scan-count/:userId", getQrScanCount);
-userRouter.get("/me", isAuth, getCurrentUser);
+
 userRouter.get("/getMenu/:userId", getFullMenu);
 // For deleteUser, the controller expects email/password in body, not a target userId parameter.
 // However, adding isAuth ensures the requester is at least logged in.
@@ -54,8 +47,7 @@ userRouter.put(
 );
 userRouter.patch("/complete-tour", isAuth, completeTour);
 
-userRouter.post("/sendResetPasswordLink", SendResetPasswordMail);
-userRouter.post("/resetPassword", resetPassword);
+
 
 userRouter.post("/checkout", isAuth, startCheckout);
 userRouter.post("/morning-webhook", morningWebhookHandler);
