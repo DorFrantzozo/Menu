@@ -1,5 +1,5 @@
-import { useRef, useEffect, useState } from "react";
-import { useSpring, animated } from "@react-spring/web";
+import {useRef, useEffect, useState} from "react";
+import {useSpring, animated} from "@react-spring/web";
 import PropTypes from "prop-types";
 
 const AnimatedContent = ({
@@ -7,7 +7,7 @@ const AnimatedContent = ({
   distance = 100,
   direction = "vertical",
   reverse = false,
-  config = { tension: 50, friction: 25 },
+  config = {tension: 50, friction: 25},
   initialOpacity = 0,
   animateOpacity = true,
   scale = 1,
@@ -29,7 +29,7 @@ const AnimatedContent = ({
           }, delay);
         }
       },
-      { threshold },
+      {threshold},
     );
 
     observer.observe(ref.current);

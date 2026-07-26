@@ -123,7 +123,11 @@ const AuthPage = () => {
 
           {/* הלוגו */}
           <div className="flex justify-between items-start mb-12">
-            <img src={logo} alt="Logo" className="h-12 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer" />
+            <img
+              src={logo}
+              alt="Logo"
+              className="h-12 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer"
+            />
             <AuthToggle isSignup={isSignup} setIsSignup={setIsSignup} />
           </div>
 
@@ -140,8 +144,8 @@ const AuthPage = () => {
                   {isSignup ? "הצטרפות למהפכה" : "שלום שוב!"}
                 </h1>
                 <p className="text-slate-400 text-lg mb-10">
-                  {isSignup 
-                    ? "הפוך את המסעדה שלך לדיגיטלית בתוך דקות." 
+                  {isSignup
+                    ? "הפוך את המסעדה שלך לדיגיטלית בתוך דקות."
                     : "היה חסר לנו הניחוח של המטבח שלך..."}
                 </p>
               </motion.div>
@@ -159,13 +163,24 @@ const AuthPage = () => {
                     {/* Logo Upload Section */}
                     <div className="flex flex-col items-center justify-center mb-4">
                       <div className="relative group">
+                        <span className="absolute -top-2 -right-2 bg-slate-100 text-slate-500 text-[10px] font-medium px-2 py-0.5 rounded-full border border-slate-200 z-10 shadow-sm pointer-events-none">
+                          אופציונלי
+                        </span>
                         <div className="w-24 h-24 rounded-full border-2 border-dashed border-slate-200 flex items-center justify-center bg-slate-50 overflow-hidden cursor-pointer hover:border-[#00C38B] transition-all relative">
                           {logoPreview ? (
-                            <img src={logoPreview} alt="Logo Preview" className="w-full h-full object-cover" />
+                            <img
+                              src={logoPreview}
+                              alt="Logo Preview"
+                              className="w-full h-full object-cover"
+                            />
                           ) : (
                             <div className="flex flex-col items-center justify-center text-slate-400 group-hover:text-[#00C38B]">
-                              <span className="material-icons-round text-3xl">add_a_photo</span>
-                              <span className="text-[10px] font-bold mt-1 uppercase tracking-tighter">לוגו המסעדה</span>
+                              <span className="material-icons-round text-3xl">
+                                add_a_photo
+                              </span>
+                              <span className="text-[10px] font-bold mt-1 uppercase tracking-tighter">
+                                לוגו המסעדה
+                              </span>
                             </div>
                           )}
                           <input
@@ -176,37 +191,41 @@ const AuthPage = () => {
                           />
                         </div>
                         {logoPreview && (
-                          <button 
+                          <button
                             type="button"
-                            onClick={() => {setLogoFile(null); setLogoPreview(null);}}
-                            className="absolute -top-1 -right-1 bg-white shadow-md rounded-full p-1 text-red-500 hover:scale-110 transition-transform z-10"
+                            onClick={() => {
+                              setLogoFile(null);
+                              setLogoPreview(null);
+                            }}
+                            className="absolute -top-1 -right-1 bg-white shadow-md rounded-full p-1 text-red-500 hover:scale-110 transition-transform z-20"
                           >
-                            <span className="material-icons-round text-xs">close</span>
+                            <span className="material-icons-round text-xs">
+                              close
+                            </span>
                           </button>
                         )}
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6"
-                  >
-                    <AuthInput
-                      label="שם המסעדה (EN)"
-                      name="restaurantName"
-                      placeholder="MyResto"
-                      value={formData.restaurantName}
-                      onChange={handleChange}
-                      required
-                    />
-                    <AuthInput
-                      label="שם להצגה (עברית)"
-                      name="displayName"
-                      placeholder="המסעדה שלי"
-                      value={formData.displayName}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                </motion.div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <AuthInput
+                        label="שם המסעדה (EN)"
+                        name="restaurantName"
+                        placeholder="MyResto"
+                        value={formData.restaurantName}
+                        onChange={handleChange}
+                        required
+                      />
+                      <AuthInput
+                        label="שם להצגה (עברית)"
+                        name="displayName"
+                        placeholder="המסעדה שלי"
+                        value={formData.displayName}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                  </motion.div>
                 )}
               </AnimatePresence>
 
@@ -219,7 +238,7 @@ const AuthPage = () => {
                 onChange={handleChange}
                 required
               />
-              
+
               <div className="flex flex-col gap-1">
                 <AuthInput
                   label="סיסמה"
@@ -231,7 +250,11 @@ const AuthPage = () => {
                   required
                 />
                 {!isSignup && (
-                  <button onClick={() => navigate("/request/resetpassword")} type="button" className="text-xs text-slate-400 hover:text-[#00C38B] self-start transition-colors mr-4 mt-1">
+                  <button
+                    onClick={() => navigate("/request/resetpassword")}
+                    type="button"
+                    className="text-xs text-slate-400 hover:text-[#00C38B] self-start transition-colors mr-4 mt-1"
+                  >
                     שכחתי סיסמה?
                   </button>
                 )}
@@ -263,7 +286,12 @@ const AuthPage = () => {
                       />
                       <span className="text-sm text-slate-500">
                         אני מסכים ל
-                        <a href="/termofservice" className="text-[#00C38B] font-bold hover:underline mx-1">תנאי השימוש</a>
+                        <a
+                          href="/termofservice"
+                          className="text-[#00C38B] font-bold hover:underline mx-1"
+                        >
+                          תנאי השימוש
+                        </a>
                       </span>
                     </div>
                   </motion.div>

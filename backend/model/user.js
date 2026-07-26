@@ -74,7 +74,7 @@ const userSchema = new mongoose.Schema(
     totalQrScans: {type: Number, default: 0},
     hasCompletedTour: {type: Boolean, default: false},
     lastLogin: {type: Date},
-    enableSubCategories: {type: Boolean, default: false},
+    enableSubCategories: {type: Boolean, default: true},
   },
   {timestamps: true},
 );
