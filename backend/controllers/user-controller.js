@@ -3,7 +3,7 @@ import Category from "../model/category.js";
 import Dish from "../model/dish.js";
 import bcrypt from "bcryptjs";
 import cloudinary from "../utils/cloudinary.js";
-import { PUBLIC_MENU_PROJECTION } from "../utils/projections.js";
+import {PUBLIC_MENU_PROJECTION} from "../utils/projections.js";
 import {
   checkTokenValidity,
   expirationTime,
@@ -104,7 +104,11 @@ const loginUser = async (req, res) => {
     const isTrialExpired = !user.isPaid && user.trialExpiresAt < now;
 
     user.lastLogin = now;
-    await user.save().catch(err => console.error("Failed to update last login:", err.message));
+    await user
+      .save()
+      .catch((err) =>
+        console.error("Failed to update last login:", err.message),
+      );
 
     const token = generateToken(user);
     const expireTime = expirationTime();
@@ -124,8 +128,16 @@ const loginUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const {email, password, restaurantName, isPaid, role, displayName, menuDescription, phone} =
-    req.body;
+  const {
+    email,
+    password,
+    restaurantName,
+    isPaid,
+    role,
+    displayName,
+    menuDescription,
+    phone,
+  } = req.body;
   const {userId} = req.params;
 
   try {
@@ -366,7 +378,8 @@ const SendResetPasswordMail = async (req, res) => {
       : process.env.FRONTEND_URL;
     const resetLink = `${baseUrl}/resetpassword?token=${resetToken}`;
 
-    const templateId = process.env.TEMPLATEID;
+    const templateId = process.env.SENDGRID_RESET_PASSWORD_TEMPLATEID;
+    console.log("TEMPLATEID :", templateId);
     if (!templateId) {
       console.error("❌ TEMPLATEID חסר או לא מוגדר בקובץ .env");
       return res.status(500).json({
@@ -564,26 +577,26 @@ const getCurrentUser = async (req, res) => {
 };
 
 const getFullMenu = async (req, res) => {
-  const { userId } = req.params;
+  const {userId} = req.params;
   if (!userId) {
-    return res.status(400).json({ message: "User ID is required" });
+    return res.status(400).json({message: "User ID is required"});
   }
 
   try {
     const user = await User.findById(userId).lean();
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({message: "User not found"});
     }
 
     const enableSubCategories = user.enableSubCategories === true;
 
     // Fetch all categories for user
-    const allCategories = await Category.find({ userId })
+    const allCategories = await Category.find({userId})
       .select(PUBLIC_MENU_PROJECTION)
       .lean();
 
     // Fetch all dishes for user
-    const allDishes = await Dish.find({ userId })
+    const allDishes = await Dish.find({userId})
       .select(PUBLIC_MENU_PROJECTION)
       .lean();
 
@@ -600,7 +613,7 @@ const getFullMenu = async (req, res) => {
       // LEGACY FLAT RESPONSE
       allCategories.forEach((category) => {
         dishesMap[category._id] = allDishes.filter(
-          (dish) => String(dish.category) === String(category._id)
+          (dish) => String(dish.category) === String(category._id),
         );
       });
 
@@ -612,7 +625,9 @@ const getFullMenu = async (req, res) => {
     }
 
     // NEW NESTED RESPONSE
-    const topLevelCategories = allCategories.filter((cat) => !cat.parentCategory);
+    const topLevelCategories = allCategories.filter(
+      (cat) => !cat.parentCategory,
+    );
     const subCategories = allCategories.filter((cat) => cat.parentCategory);
 
     // Group dishes by their direct category
@@ -631,7 +646,7 @@ const getFullMenu = async (req, res) => {
 
       // Find sub-categories that belong to this top-level category
       const relatedSubCats = subCategories.filter(
-        (subCat) => String(subCat.parentCategory) === topCatId
+        (subCat) => String(subCat.parentCategory) === topCatId,
       );
 
       // Add sub-categories (with their dishes)
@@ -658,7 +673,7 @@ const getFullMenu = async (req, res) => {
     });
   } catch (error) {
     console.error("Error in getFullMenu:", error.message);
-    return res.status(500).json({ message: "Server error" });
+    return res.status(500).json({message: "Server error"});
   }
 };
 
