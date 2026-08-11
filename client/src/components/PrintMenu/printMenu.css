@@ -1,0 +1,201 @@
+/* Print Menu preview/print target. Everything else the app renders — including things
+   that portal straight onto <body> (the settings dialog, the accessibility-widget
+   overlay, toast containers) — must be hidden while this is active, not just #root.
+   Gated on body:has(#print-menu-root) so this only kicks in during our own print flow
+   (the portal only exists in the DOM while the preview is open) — otherwise an ordinary
+   Ctrl+P/browser "Print" anywhere else on the dashboard would print a blank page. */
+@media print {
+  body:has(#print-menu-root) > *:not(#print-menu-root) {
+    display: none !important;
+  }
+  #print-menu-root {
+    display: block !important;
+  }
+  body:has(#print-menu-root) {
+    height: auto !important;
+    overflow: visible !important;
+  }
+}
+
+.pm-print-only {
+  display: none;
+}
+@media print {
+  .pm-print-only {
+    display: block;
+  }
+}
+
+.pm-root {
+  font-family: "Segoe UI", "Calibri", "Heebo", Arial, sans-serif;
+  color: #222;
+  direction: rtl;
+}
+
+.pm-header {
+  border-bottom: 2px solid #222;
+  padding-bottom: 10px;
+  margin-bottom: 14px;
+}
+.pm-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+}
+.pm-subtitle {
+  font-size: 12px;
+  color: #555;
+  margin: 8px 0 0;
+}
+
+.pm-category {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  margin-bottom: 15px;
+}
+.pm-category-title {
+  font-size: 16px;
+  font-weight: 700;
+  border-bottom: 1px solid #000;
+  padding-bottom: 4px;
+  margin: 0 0 12px;
+}
+
+.pm-dish {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  margin-bottom: 12px;
+}
+.pm-dish-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+}
+.pm-dish-name {
+  font-size: 14px;
+  font-weight: 700;
+  overflow-wrap: break-word;
+  max-width: 75%;
+}
+.pm-price {
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.pm-price-sale {
+  color: #059669;
+}
+.pm-price-original {
+  font-size: 11px;
+  color: #b91c1c;
+  text-decoration: line-through;
+  opacity: 0.75;
+}
+
+.pm-allergens {
+  display: flex;
+  gap: 6px;
+  margin: 5px 0;
+}
+.pm-allergen-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.pm-description {
+  font-size: 11px;
+  line-height: 1.4;
+  color: #555;
+  margin: 6px 0 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.pm-footer {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  margin-top: 20px;
+  padding-top: 10px;
+  border-top: 1px solid #ccc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  color: #666;
+}
+.pm-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.pm-qr {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pm-qr img {
+  width: 60px;
+  height: 60px;
+}
+
+.pm-powered-by {
+  display: none;
+}
+@media print {
+  .pm-powered-by {
+    display: block;
+    position: fixed;
+    bottom: 2mm;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 8px;
+    letter-spacing: 0.5px;
+    color: #aaa;
+  }
+}
+
+/* Compact layout overrides */
+.pm-layout-compact .pm-dish-name {
+  font-size: 12px;
+}
+.pm-layout-compact .pm-price {
+  font-size: 12px;
+}
+.pm-layout-compact .pm-description {
+  font-size: 10px;
+  -webkit-line-clamp: 1;
+}
+.pm-layout-compact .pm-dish {
+  margin-bottom: 8px;
+}
+.pm-layout-compact .pm-category {
+  margin-bottom: 10px;
+}
+
+/* Color schemes */
+.pm-scheme-default .pm-category-title {
+  border-bottom-color: #10b981;
+  color: #059669;
+}
+.pm-scheme-default .pm-header {
+  border-bottom-color: #10b981;
+}
+
+.pm-scheme-bw,
+.pm-scheme-bw * {
+  color: #111 !important;
+  border-color: #111 !important;
+}
+.pm-scheme-bw .pm-allergen-icon {
+  filter: grayscale(1);
+}
+.pm-scheme-bw .pm-description {
+  color: #444 !important;
+}

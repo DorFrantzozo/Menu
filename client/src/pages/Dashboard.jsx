@@ -6,6 +6,7 @@ import DashboardDataCards from "@/components/Cards/DashboardDataCards";
 import QrProfile from "@/components/data/qrCode/QrProfile";
 import BentoAnalyticsGrid from "@/components/Dashboard/BentoAnalyticsGrid";
 import useQrScanPolling from "@/hooks/useQrScanPolling";
+import PrintMenuButton from "@/components/PrintMenu/PrintMenuButton";
 import {useTheme} from "../context/ThemeContext";
 
 const Dashboard = () => {
@@ -49,6 +50,8 @@ const Dashboard = () => {
               {isDarkMode ? "light_mode" : "dark_mode"}
             </span>
           </button>
+
+          <PrintMenuButton user={user} menuCategories={menuCategories} />
 
           <button
             onClick={() =>
