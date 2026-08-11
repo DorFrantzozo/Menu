@@ -4,3 +4,5 @@ package-lock.json
 diagnostic_audit_report.md.resolved
 node_modules
 gravity-instructions.md
+.env
+*.env

@@ -1,12 +1,17 @@
+import 'dotenv/config';
 import axios from 'axios';
 
 // Get token from local storage roughly by reading the user's DB
 import mongoose from 'mongoose';
-import User from './model/user.js';
-import { generateToken } from './utils/jwt.js';
+import User from '../../model/user.js';
+import { generateToken } from '../../utils/jwt.js';
 
 async function test() {
-  await mongoose.connect('mongodb+srv://dorfrant:842655vbn@cluster0.p716l.mongodb.net/menuyou?retryWrites=true&w=majority&appName=Cluster0');
+  if (!process.env.MONGO_URL) {
+    console.error("MONGO_URL is not defined in the environment variables.");
+    process.exit(1);
+  }
+  await mongoose.connect(process.env.MONGO_URL);
   const admin = await User.findOne({ email: 'dorfrant@gmail.com' }); // dor is admin according to screenshot
   
   if (!admin) {
