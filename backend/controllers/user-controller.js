@@ -2,7 +2,11 @@ import User from "../model/user.js";
 import Category from "../model/category.js";
 import Dish from "../model/dish.js";
 import bcrypt from "bcryptjs";
-import cloudinary from "../utils/cloudinary.js";
+import {
+  AssetFolder,
+  destroyTenantAsset,
+  uploadTenantAsset,
+} from "../utils/cloudinary.js";
 import {PUBLIC_MENU_PROJECTION} from "../utils/projections.js";
 import {
   generateToken,
@@ -87,30 +91,15 @@ const updateUser = async (req, res) => {
 
     // Handle image upload
     if (req.file) {
-      if (user.logo) {
-        const publicId = user.logo.split("/").pop().split(".")[0];
-        await cloudinary.uploader.destroy(`users/${publicId}`);
-      }
+      // Remove the previous logo (best effort — never blocks the update)
+      await destroyTenantAsset(user.logo, userId);
 
-      const uploadResult = await new Promise((resolve, reject) => {
-        cloudinary.uploader
-          .upload_stream(
-            {
-              public_id: `users/${user.email}_logo`,
-              folder: "users",
-              transformation: {
-                quality: "auto",
-                fetch_format: "auto",
-                width: 1000,
-                crop: "limit",
-              },
-            },
-            (error, result) => {
-              if (error) return reject(error);
-              resolve(result);
-            },
-          )
-          .end(req.file.buffer);
+      const uploadResult = await uploadTenantAsset({
+        buffer: req.file.buffer,
+        userId,
+        folder: AssetFolder.BRANDING,
+        publicId: "logo",
+        displayName: user.restaurantName,
       });
       user.logo = uploadResult.secure_url;
     }

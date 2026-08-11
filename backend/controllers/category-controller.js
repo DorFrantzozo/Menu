@@ -1,6 +1,10 @@
 import Category from "../model/category.js";
 import Dish from "../model/dish.js";
-import cloudinary from "../utils/cloudinary.js";
+import {
+  AssetFolder,
+  destroyTenantAsset,
+  uploadTenantAsset,
+} from "../utils/cloudinary.js";
 import { PUBLIC_MENU_PROJECTION } from "../utils/projections.js";
 
 const createCategoryByUserId = async (req, res) => {
@@ -28,42 +32,12 @@ const createCategoryByUserId = async (req, res) => {
         .json({ message: "Category Location is already used " });
     }
 
-    let imgUrl = null;
-
-    // Ensure the file is uploaded properly
-    if (req.file) {
-      try {
-        const uploadResult = await new Promise((resolve, reject) => {
-          const stream = cloudinary.uploader.upload_stream(
-            {
-              folder: "categories",
-              public_id: `categories/${name}`,
-              transformation: { 
-                quality: "auto", 
-                fetch_format: "auto",
-                width: 1000,
-                crop: "limit"
-              },
-            },
-            (error, result) => {
-              if (error) return reject(error);
-              resolve(result);
-            }
-          );
-          stream.end(req.file.buffer); // Ensure buffer is correctly passed
-        });
-
-        imgUrl = uploadResult.secure_url;
-      } catch (uploadError) {
-        return res.status(500).json({ message: uploadError });
-      }
-    }
-
+    // Build the document (unsaved) — its _id is the category's image path
     const newCategory = new Category({
       userId,
       name,
       nameEn: nameEn || "",
-      img: imgUrl || "",
+      img: "",
       locationNumber,
       hasTimeLimit: hasTimeLimit === "true" || hasTimeLimit === true || false,
       startTime: startTime || null,
@@ -71,6 +45,23 @@ const createCategoryByUserId = async (req, res) => {
       activeDays: activeDays ? (typeof activeDays === "string" ? JSON.parse(activeDays) : activeDays) : [],
       parentCategory: parentCategory || null,
     });
+
+    // Ensure the file is uploaded properly
+    if (req.file) {
+      try {
+        const uploadResult = await uploadTenantAsset({
+          buffer: req.file.buffer,
+          userId,
+          folder: AssetFolder.CATEGORIES,
+          publicId: newCategory._id,
+          displayName: name,
+        });
+
+        newCategory.img = uploadResult.secure_url;
+      } catch (uploadError) {
+        return res.status(500).json({ message: uploadError.message });
+      }
+    }
 
     await newCategory.save();
 
@@ -121,30 +112,15 @@ const updateCategoryByUserId = async (req, res) => {
 
     // Handle image upload if a new file is provided
     if (req.file) {
-      if (category.img) {
-        // Extract publicId from existing Cloudinary URL and delete old image
-        const publicId = category.img.split("/").pop().split(".")[0];
-        await cloudinary.uploader.destroy(`categories/${publicId}`);
-      }
+      // Remove the previous image (best effort — never blocks the update)
+      await destroyTenantAsset(category.img, userId);
 
-      // Upload new image to Cloudinary
-      const uploadResult = await new Promise((resolve, reject) => {
-        cloudinary.uploader
-          .upload_stream(
-            {
-              public_id: `categories/${category.name.replace(/\s+/g, "_")}`,
-              folder: "categories",
-              transformation: {
-                quality: "auto",
-                fetch_format: "auto",
-              },
-            },
-            (error, result) => {
-              if (error) return reject(error);
-              resolve(result);
-            }
-          )
-          .end(req.file.buffer);
+      const uploadResult = await uploadTenantAsset({
+        buffer: req.file.buffer,
+        userId,
+        folder: AssetFolder.CATEGORIES,
+        publicId: category._id,
+        displayName: newName || category.name, // category.name is still the pre-update value here
       });
 
       category.img = uploadResult.secure_url;
@@ -223,10 +199,7 @@ const deleteCategory = async (req, res) => {
     // Delete associated dishes
     const deleteResult = await Dish.deleteMany({ category: categoryId });
 
-    if (category.img) {
-      const publicId = category.img.split("/").pop().split(".")[0];
-      await cloudinary.uploader.destroy(`categories/${publicId}`);
-    }
+    await destroyTenantAsset(category.img, userId);
 
     await category.deleteOne();
     

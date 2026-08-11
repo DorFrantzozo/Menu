@@ -8,3 +8,6 @@ process.env.CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET || "test-s
 process.env.FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 process.env.SENDGRID_EMAIL_VERIFICATION = process.env.SENDGRID_EMAIL_VERIFICATION || "test-verify-template";
 process.env.SENDGRID_RESET_PASSWORD_TEMPLATEID = process.env.SENDGRID_RESET_PASSWORD_TEMPLATEID || "test-reset-template";
+process.env.SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || "SG.test-key";
+process.env.GROQ_API_KEY = process.env.GROQ_API_KEY || "test-groq-key";
+process.env.GEMINI_API_KEY = process.env.GEMINI_API_KEY || "test-gemini-key";

@@ -1,6 +1,6 @@
 import User from "../model/user.js";
 import bcrypt from "bcryptjs";
-import cloudinary from "../utils/cloudinary.js";
+import {AssetFolder, uploadTenantAsset} from "../utils/cloudinary.js";
 import {
   checkTokenValidity,
   expirationTime,
@@ -24,46 +24,33 @@ export const createUser = async (req, res) => {
       return res.status(400).json({message: "User already exists"});
     }
 
-    let logoUrl = null;
-
-    if (req.file) {
-      const uploadResult = await new Promise((resolve, reject) => {
-        cloudinary.uploader
-          .upload_stream(
-            {
-              public_id: `users/${email}_logo`,
-              folder: "users",
-              transformation: {
-                quality: "auto",
-                fetch_format: "auto",
-                width: 1000,
-                crop: "limit",
-              },
-            },
-            (error, result) => {
-              if (error) return reject(error);
-              resolve(result);
-            },
-          )
-          .end(req.file.buffer);
-      });
-      logoUrl = uploadResult.secure_url;
-    }
-
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create new user instance - with isVerified: false by default
+    // Create new user instance - with isVerified: false by default.
+    // Nothing is persisted until save(), but the _id is already assigned and is
+    // what namespaces this restaurant's media folder.
     const newUser = new User({
       email,
       password: hashedPassword,
       restaurantName,
-      logo: logoUrl || null,
+      logo: null,
       designNumber: 1,
       displayName,
       phone,
       isVerified: false,
     });
+
+    if (req.file) {
+      const uploadResult = await uploadTenantAsset({
+        buffer: req.file.buffer,
+        userId: newUser._id,
+        folder: AssetFolder.BRANDING,
+        publicId: "logo",
+        displayName: restaurantName,
+      });
+      newUser.logo = uploadResult.secure_url;
+    }
 
     await newUser.save();
 

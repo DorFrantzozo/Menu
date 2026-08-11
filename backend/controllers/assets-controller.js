@@ -1,45 +1,42 @@
 import Asset from "../model/assets.js";
-import cloudinary from "../utils/cloudinary.js";
+import { AssetFolder, uploadTenantAsset } from "../utils/cloudinary.js";
 
 const uploadAsset = async (req, res) => {
   const { fileName } = req.body;
+  const { userId } = req.params;
+
   try {
-    let imgUrl = null;
-    let publicId = null; // Add publicId variable
-
-    if (req.file) {
-      console.log("got file");
-      const uploadResult = await new Promise((resolve, reject) => {
-        cloudinary.uploader
-          .upload_stream(
-            {
-              public_id: `assets/${fileName}`,
-              folder: "assets",
-              transformation: {
-                quality: "auto",
-                fetch_format: "auto",
-              },
-            },
-            (error, result) => {
-              if (error) return reject(error);
-              resolve(result);
-            }
-          )
-          .end(req.file.buffer);
-      });
-
-      imgUrl = uploadResult.secure_url;
-      publicId = uploadResult.public_id; // Save the public_id from Cloudinary
+    // url/publicId are required by the schema, so a file is mandatory
+    if (!userId || !fileName || !req.file) {
+      return res
+        .status(400)
+        .json({ message: "userId, fileName and a file are required" });
     }
 
-    // Create the new Asset object with publicId
+    // Build the document (unsaved) — its _id is the asset's storage path
     const newAsset = new Asset({
-      fileName: fileName,
-      userId: req.params.userId,
-      url: imgUrl,
+      fileName,
+      userId,
+      url: null,
       type: req.body.type,
-      publicId, // Add publicId field if it's necessary for your use case
+      publicId: null,
     });
+
+    const uploadResult = await uploadTenantAsset({
+      buffer: req.file.buffer,
+      userId,
+      folder: AssetFolder.ASSETS,
+      publicId: newAsset._id,
+      displayName: fileName,
+      // Assets are design elements (icons, backgrounds) — delivered at full size
+      transformation: {
+        quality: "auto",
+        fetch_format: "auto",
+      },
+    });
+
+    newAsset.url = uploadResult.secure_url;
+    newAsset.publicId = uploadResult.public_id;
 
     await newAsset.save();
     res.status(201).json(newAsset);

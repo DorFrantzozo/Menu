@@ -1,5 +1,9 @@
 import Dish from "../model/dish.js";
-import cloudinary from "../utils/cloudinary.js";
+import {
+  AssetFolder,
+  destroyTenantAsset,
+  uploadTenantAsset,
+} from "../utils/cloudinary.js";
 import { PUBLIC_MENU_PROJECTION } from "../utils/projections.js";
 
 const createDish = async (req, res) => {
@@ -18,35 +22,7 @@ const createDish = async (req, res) => {
       return res.status(400).json({ message: "Dish with this name already exists for this user" });
     }
 
-    let imgUrl = null;
-
-    // 2. העלאה ל-Cloudinary
-    if (req.file) {
-      const uploadResult = await new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          {
-            folder: "dishes",
-            transformation: {
-              quality: "auto",
-              fetch_format: "auto",
-              width: 1000,
-              crop: "limit",
-            },
-          },
-          (error, result) => {
-            if (error) {
-              console.error("Cloudinary Upload Error:", error);
-              return reject(error);
-            }
-            resolve(result);
-          }
-        );
-        stream.end(req.file.buffer);
-      });
-      imgUrl = uploadResult.secure_url;
-    }
-
-    // 3. יצירת המנה
+    // 2. יצירת המנה (ללא שמירה) — ה-_id נדרש כדי לבנות את נתיב התמונה
     const newDish = new Dish({
       userId,
       name,
@@ -60,8 +36,20 @@ const createDish = async (req, res) => {
       lactose: lactose === "true" || lactose === true,
       vegi: vegi === "true" || vegi === true,
       hide: hide === "true" || hide === true,
-      img: imgUrl,
+      img: null,
     });
+
+    // 3. העלאה ל-Cloudinary לתיקייה של הלקוח
+    if (req.file) {
+      const uploadResult = await uploadTenantAsset({
+        buffer: req.file.buffer,
+        userId,
+        folder: AssetFolder.DISHES,
+        publicId: newDish._id,
+        displayName: name,
+      });
+      newDish.img = uploadResult.secure_url;
+    }
 
     await newDish.save();
     res.status(201).json(newDish);
@@ -153,32 +141,15 @@ const updateDish = async (req, res) => {
 
     // Check if a new image is being uploaded
     if (req.file) {
-      if (dish.img) {
-        // If the dish already has an image, delete it from Cloudinary
-        const publicId = dish.img.split("/").pop().split(".")[0];
-        await cloudinary.uploader.destroy(`dishes/${publicId}`);
-      }
+      // Remove the previous image (best effort — never blocks the update)
+      await destroyTenantAsset(dish.img, userId);
 
-      // Upload new image to Cloudinary
-      const uploadResult = await new Promise((resolve, reject) => {
-        cloudinary.uploader
-          .upload_stream(
-            {
-              public_id: `dishes/${dish.name.replace(/\s+/g, "_")}`, // Use dish name or a unique identifier
-              folder: "dishes",
-              transformation: {
-                quality: "auto",
-                fetch_format: "auto",
-                width: 1000,
-                crop: "limit"
-              },
-            },
-            (error, result) => {
-              if (error) return reject(error);
-              resolve(result);
-            }
-          )
-          .end(req.file.buffer);
+      const uploadResult = await uploadTenantAsset({
+        buffer: req.file.buffer,
+        userId,
+        folder: AssetFolder.DISHES,
+        publicId: dish._id,
+        displayName: name || dish.name, // dish.name is still the pre-update value here
       });
 
       dish.img = uploadResult.secure_url; // Update dish image URL with the new one
