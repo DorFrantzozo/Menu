@@ -70,4 +70,7 @@ const Dish = new mongoose.Schema({
   },
 });
 
+Dish.index({ userId: 1 });
+Dish.index({ category: 1 });
+
 export default mongoose.models.Dish || mongoose.model("Dish", Dish);

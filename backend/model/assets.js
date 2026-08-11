@@ -12,4 +12,6 @@ const assetSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
+assetSchema.index({ userId: 1 });
+
 export default mongoose.model("Asset", assetSchema);
