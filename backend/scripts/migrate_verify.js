@@ -1,8 +1,11 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import User from "../model/user.js";
+import { assertDevDatabase } from "../utils/assertDevDatabase.js";
 
 dotenv.config();
+
+assertDevDatabase("migrate_verify.js");
 
 const MONGO_URI = process.env.MONGO_URL;
 

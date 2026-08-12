@@ -4,10 +4,13 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import ActivityLog from "./model/activityLog.js";
 import User from "./model/user.js";
+import { assertDevDatabase } from "./utils/assertDevDatabase.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, '.env') });
+
+assertDevDatabase("seed_activity.js");
 
 const seed = async () => {
   try {

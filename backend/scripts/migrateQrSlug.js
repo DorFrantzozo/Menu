@@ -11,9 +11,12 @@ dotenv.config({ path: path.join(__dirname, "../.env") });
 
 // Import the User model
 import User from "../model/user.js";
+import { assertDevDatabase } from "../utils/assertDevDatabase.js";
 
 const migrateQrSlug = async () => {
   try {
+    assertDevDatabase("migrateQrSlug.js");
+
     const mongoUri = process.env.MONGO_URL || process.env.MONGO_URI;
     if (!mongoUri) {
       console.error("MONGO_URL is not defined in the environment variables.");
