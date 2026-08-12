@@ -1,4 +1,5 @@
 import sendDiscordAlert from "../utils/discordAlert.js"; // ודא שהנתיב תואם לתיקיות שלך
+import { captureError } from "../utils/sentry.js";
 
 export const globalErrorHandler = (err, req, res, next) => {
   console.error("Global Error Caught:", err.message);
@@ -8,9 +9,11 @@ export const globalErrorHandler = (err, req, res, next) => {
 
   // --- תוספת מערכת הטיקטים של דיסקורד ---
   if (statusCode >= 500) {
+    captureError(err);
+
     const errorDetails = `**Path:** \`${req.method} ${req.originalUrl}\`\n**Message:** ${err.message}\n${
-      environment === "development" && err.stack 
-        ? `**Stack:** \`\`\`${err.stack.substring(0, 500)}...\`\`\`` 
+      environment === "development" && err.stack
+        ? `**Stack:** \`\`\`${err.stack.substring(0, 500)}...\`\`\``
         : ""
     }`;
 

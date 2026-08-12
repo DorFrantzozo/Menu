@@ -72,6 +72,10 @@ app.use(
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+
+// Unauthenticated, no DB access — for external uptime monitoring.
+app.get("/health", (req, res) => res.status(200).json({ status: "ok" }));
+
 // Apply general rate limiter to all API routes
 app.use("/api", generalLimiter);
 app.use("/api/auth", authRouter);

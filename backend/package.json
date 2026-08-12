@@ -16,6 +16,7 @@
   "dependencies": {
     "@google/genai": "^1.50.0",
     "@sendgrid/mail": "^8.1.5",
+    "@sentry/node": "^10.70.0",
     "array-flatten": "^3.0.0",
     "aws4": "^1.13.2",
     "bcryptjs": "^2.4.3",
