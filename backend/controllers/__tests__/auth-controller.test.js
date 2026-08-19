@@ -30,6 +30,7 @@ import {
   generateResetToken,
   generateVerificationToken,
 } from "../../utils/jwt.js";
+import { createAuthedUser } from "../../test-utils/authFixtures.js";
 
 beforeAll(connectTestDb);
 afterEach(async () => {
@@ -234,5 +235,17 @@ describe("GET /api/auth/me", () => {
       .get("/api/auth/me")
       .set("Authorization", "Bearer not-a-real-token");
     expect(res.status).toBe(401);
+  });
+
+  it("returns the current user with their plan and without the password", async () => {
+    const { token } = await createAuthedUser({ plan: "iMenu PRO" });
+
+    const res = await request(app)
+      .get("/api/auth/me")
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.plan).toBe("iMenu PRO");
+    expect(res.body.password).toBeUndefined();
   });
 });

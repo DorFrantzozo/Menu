@@ -71,15 +71,22 @@ export const impersonateUser = async (req, res) => {
     // Generate new valid JWT for the target user
     const impersonationToken = generateToken(targetUser);
 
+    // Send the whole user document rather than a handful of fields: a partial
+    // user leaves `plan` undefined, and the client then falls back to defaults
+    // that look like real data. Billing secrets are stripped on the way out —
+    // nothing on the client reads them, and this payload is persisted to the
+    // admin's browser storage for the duration of the impersonation.
+    const {
+      password: _password,
+      morningPaymentToken: _paymentToken,
+      morningCustomerId: _customerId,
+      ...sanitizedUser
+    } = targetUser.toObject();
+
     res.status(200).json({
       message: "Impersonation successful",
       token: impersonationToken,
-      user: {
-        _id: targetUser._id,
-        restaurantName: targetUser.restaurantName,
-        email: targetUser.email,
-        qrSlug: targetUser.qrSlug
-      }
+      user: sanitizedUser
     });
 
   } catch (error) {

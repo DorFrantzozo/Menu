@@ -70,6 +70,19 @@ describe("POST /api/admin/impersonate/:userId", () => {
     expect(res.body.token).toBeTruthy();
     expect(res.body.user.email).toBe(target.email);
   });
+
+  it("returns the full user so plan-dependent UI does not fall back to a default", async () => {
+    const { token } = await createAuthedUser({ role: "admin" });
+    const { user: target } = await createAuthedUser({ plan: "iMenu PRO" });
+
+    const res = await request(app)
+      .post(`/api/admin/impersonate/${target._id}`)
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.user.plan).toBe("iMenu PRO");
+    expect(res.body.user.password).toBeUndefined();
+  });
 });
 
 describe("PUT /api/admin/users/:id", () => {

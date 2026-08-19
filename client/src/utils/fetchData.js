@@ -119,7 +119,7 @@ const getFreshUser = async () => {
   const token = localStorage.getItem("token");
   if (!token) return null;
   try {
-    const response = await axiosInstance.get("/user/me", {
+    const response = await axiosInstance.get("/auth/me", {
       headers: { Authorization: `Bearer ${token}` }
     });
     return response.data;

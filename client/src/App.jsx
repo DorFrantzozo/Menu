@@ -79,6 +79,10 @@ function App() {
             dispatch(setUser(null));
             localStorage.removeItem("user");
             localStorage.removeItem("token");
+          } else {
+            // Anything else leaves the cached user in place, where it can go
+            // stale indefinitely without any visible symptom. Surface it.
+            console.error("Failed to sync user from server:", error);
           }
         }
       };
