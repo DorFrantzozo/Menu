@@ -46,6 +46,12 @@ export const  getAdminDashboardStats = async (req, res) => {
         logo: user.logo,
         isPaid: user.isPaid,
         trialExpiresAt: user.trialExpiresAt,
+        // The billing window the admin table reads and the renewal action
+        // writes. Omitting these leaves the UI unable to tell "no subscription"
+        // apart from "field was never sent".
+        nextPaymentDate: user.nextPaymentDate,
+        lastBilledDate: user.lastBilledDate,
+        subscriptionStatus: user.subscriptionStatus,
         createdAt: user.createdAt,
       };
     });
@@ -142,7 +148,90 @@ export const updateUserPlan = async (req, res) => {
   }
 };
 
-// 4. Get Urgent Actions (Expiring Trials / Subscriptions)
+/**
+ * Add whole months to a date, clamping to the end of the target month.
+ *
+ * Date.setMonth() overflows instead of clamping: 31 Jan + 1 month lands on
+ * 3 Mar, which would quietly move a customer's collection day. Billing dates
+ * need 31 Jan + 1 month to be 28/29 Feb.
+ */
+const addMonths = (date, months) => {
+  const result = new Date(date);
+  const dayOfMonth = result.getDate();
+
+  result.setDate(1); // park on a day every month has, so the month shift is safe
+  result.setMonth(result.getMonth() + months);
+
+  const daysInTargetMonth = new Date(
+    result.getFullYear(),
+    result.getMonth() + 1,
+    0,
+  ).getDate();
+  result.setDate(Math.min(dayOfMonth, daysInTargetMonth));
+
+  return result;
+};
+
+// 4. Renew a subscription manually
+// Payment is collected outside the system, so this records that a customer has
+// paid for another period. It deliberately touches only the billing window —
+// `plan` and `trialExpiresAt` are managed separately and must not move here.
+export const renewSubscription = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { months = 1 } = req.body;
+
+    if (!Number.isInteger(months) || months < 1 || months > 12) {
+      return res
+        .status(400)
+        .json({ message: "months must be a whole number between 1 and 12" });
+    }
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.plan === "Free") {
+      return res
+        .status(400)
+        .json({ message: "Free users have no subscription to renew" });
+    }
+
+    // Extend from whichever comes later: today, or the end of the period the
+    // customer already paid for. Renewing early must not cost them days they
+    // bought; renewing late must not hand them a month that has mostly passed.
+    const now = new Date();
+    const periodStart =
+      user.nextPaymentDate && user.nextPaymentDate > now
+        ? user.nextPaymentDate
+        : now;
+
+    user.nextPaymentDate = addMonths(periodStart, months);
+    user.lastBilledDate = now;
+
+    // Nothing charges these customers automatically, so this is the only place
+    // a lapsed or cancelled subscription gets reinstated.
+    user.isPaid = true;
+    user.subscriptionStatus = "active";
+
+    await user.save();
+
+    res.status(200).json({
+      message: "Subscription renewed successfully",
+      nextPaymentDate: user.nextPaymentDate,
+      lastBilledDate: user.lastBilledDate,
+      isPaid: user.isPaid,
+      subscriptionStatus: user.subscriptionStatus,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error renewing subscription", error: error.message });
+  }
+};
+
+// 5. Get Urgent Actions (Expiring Trials / Subscriptions)
 export const getUrgentActions = async (req, res) => {
   try {
     const now = new Date();

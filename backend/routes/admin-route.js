@@ -5,6 +5,7 @@ import {
   getAdminDashboardStats,
   impersonateUser,
   updateUserPlan,
+  renewSubscription,
   getUrgentActions,
 } from "../controllers/admin-controller.js";
 
@@ -24,5 +25,8 @@ adminRouter.post("/impersonate/:userId", impersonateUser);
 
 // Update User Plan & Trial
 adminRouter.put("/users/:id", updateUserPlan);
+
+// Renew a subscription manually (payment is collected outside the system)
+adminRouter.patch("/users/:id/renew-subscription", renewSubscription);
 
 export default adminRouter;
