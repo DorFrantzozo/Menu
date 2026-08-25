@@ -2,6 +2,7 @@ import React from 'react';
 import MenuViewsChart from '../Cards/MenuViewsChart';
 import TopDishes from '../Cards/TopDishes';
 import PeakActivityWidget from './PeakActivityWidget';
+import ReviewFunnelCard from '../Cards/ReviewFunnelCard';
 import AiInsightsWidget from '../Ai/AI Insights/AiInsightsWidget';
 
 const BentoAnalyticsGrid = ({ user }) => {
@@ -30,7 +31,10 @@ const BentoAnalyticsGrid = ({ user }) => {
         </div>
       </div>
 
-      {/* ─── Row 2: Most Loved Dishes (6) + Peak Activity (6) ─── */}
+      {/* ─── Row 2: Google Reviews funnel (full width) — iMenu PRO only ─── */}
+      <ReviewFunnelCard />
+
+      {/* ─── Row 3: Most Loved Dishes (6) + Peak Activity (6) ─── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch lg:h-[420px]">
 
         {/* Most Loved (by Likes) — teaser for Essential, full for Advance+ */}

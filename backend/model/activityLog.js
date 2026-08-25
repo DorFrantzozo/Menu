@@ -8,7 +8,13 @@ const activityLogSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ["qr_scan", "menu_view", "dish_view"],
+    enum: [
+      "qr_scan",
+      "menu_view",
+      "dish_view",
+      "review_prompt_shown",
+      "review_click",
+    ],
     required: true,
   },
   timestamp: {

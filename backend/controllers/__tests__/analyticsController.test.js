@@ -132,6 +132,116 @@ describe("POST /api/analytics/menu-view", () => {
   });
 });
 
+describe("POST /api/analytics/review-event", () => {
+  it("returns 400 when restaurantId is missing", async () => {
+    const res = await request(app)
+      .post("/api/analytics/review-event")
+      .send({ event: "click" });
+    expect(res.status).toBe(400);
+  });
+
+  // The menu is public, so the event name must never reach the enum unchecked.
+  it("rejects an event name it does not recognise", async () => {
+    const { user } = await createAuthedUser();
+    const res = await request(app)
+      .post("/api/analytics/review-event")
+      .send({ restaurantId: user._id.toString(), event: "drop_table" });
+
+    expect(res.status).toBe(400);
+    expect(await ActivityLog.countDocuments({ restaurantId: user._id })).toBe(0);
+  });
+
+  it("counts an impression against the right column", async () => {
+    const { user } = await createAuthedUser();
+    const res = await request(app)
+      .post("/api/analytics/review-event")
+      .send({ restaurantId: user._id.toString(), event: "shown" });
+
+    expect(res.status).toBe(200);
+    const stats = await MenuStats.findOne({ restaurantId: user._id });
+    expect(stats.reviewPromptShown).toBe(1);
+    expect(stats.reviewClicks).toBe(0);
+    expect(
+      await ActivityLog.countDocuments({
+        restaurantId: user._id,
+        type: "review_prompt_shown",
+      }),
+    ).toBe(1);
+  });
+
+  it("counts a click without touching menu views", async () => {
+    const { user } = await createAuthedUser();
+    await request(app)
+      .post("/api/analytics/review-event")
+      .send({ restaurantId: user._id.toString(), event: "click" });
+
+    const stats = await MenuStats.findOne({ restaurantId: user._id });
+    expect(stats.reviewClicks).toBe(1);
+    expect(stats.views).toBe(0);
+  });
+});
+
+describe("GET /api/analytics/review-stats", () => {
+  it("requires authentication", async () => {
+    const res = await request(app).get("/api/analytics/review-stats");
+    expect(res.status).toBe(401);
+  });
+
+  it("returns the funnel and the rate between its two steps", async () => {
+    const { user, token } = await createAuthedUser();
+    const id = user._id.toString();
+    for (let i = 0; i < 4; i += 1) {
+      await request(app)
+        .post("/api/analytics/review-event")
+        .send({ restaurantId: id, event: "shown" });
+    }
+    await request(app)
+      .post("/api/analytics/review-event")
+      .send({ restaurantId: id, event: "click" });
+
+    const res = await request(app)
+      .get(`/api/analytics/review-stats?restaurantId=${id}`)
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.totals).toEqual({ shown: 4, clicks: 1, clickRate: 25 });
+    expect(res.body.totalClicksAllTime).toBe(1);
+  });
+
+  // A cleared session or a stale counter can leave more clicks than
+  // impressions. An owner must never be shown "300% conversion".
+  it("never reports a rate above 100%", async () => {
+    const { user, token } = await createAuthedUser();
+    const id = user._id.toString();
+    await request(app)
+      .post("/api/analytics/review-event")
+      .send({ restaurantId: id, event: "shown" });
+    for (let i = 0; i < 3; i += 1) {
+      await request(app)
+        .post("/api/analytics/review-event")
+        .send({ restaurantId: id, event: "click" });
+    }
+
+    const res = await request(app)
+      .get(`/api/analytics/review-stats?restaurantId=${id}`)
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.body.totals.shown).toBe(1);
+    expect(res.body.totals.clicks).toBe(3);
+    expect(res.body.totals.clickRate).toBe(100);
+  });
+
+  it("reports a zero rate rather than dividing by zero", async () => {
+    const { user, token } = await createAuthedUser();
+    const res = await request(app)
+      .get(`/api/analytics/review-stats?restaurantId=${user._id}`)
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.totals.clickRate).toBe(0);
+  });
+});
+
 describe("GET /api/analytics/menu-views", () => {
   it("returns 400 when restaurantId is missing", async () => {
     const res = await request(app).get("/api/analytics/menu-views");

@@ -7,7 +7,16 @@ import {
   destroyTenantAsset,
   uploadTenantAsset,
 } from "../utils/cloudinary.js";
-import {PUBLIC_MENU_PROJECTION} from "../utils/projections.js";
+import {
+  PUBLIC_MENU_PROJECTION,
+  PUBLIC_USER_PROJECTION,
+} from "../utils/projections.js";
+import {
+  normalizeReviewUrl,
+  coercePromptDelay,
+  isReviewPromptReady,
+  DEFAULT_PROMPT_DELAY_MINUTES,
+} from "../utils/reviewUrl.js";
 import {
   generateToken,
 } from "../utils/jwt.js";
@@ -26,6 +35,11 @@ const updateUser = async (req, res) => {
     displayName,
     menuDescription,
     phone,
+    // Review prompt. Flat keys because the profile form posts multipart
+    // FormData, which cannot carry nested objects.
+    googleReviewUrl,
+    reviewPromptEnabled,
+    promptDelayMinutes,
   } = req.body;
   const {userId} = req.params;
 
@@ -54,6 +68,33 @@ const updateUser = async (req, res) => {
     if (displayName) user.displayName = displayName;
     if (menuDescription !== undefined) user.menuDescription = menuDescription;
     if (phone) user.phone = phone;
+
+    // --- Google review prompt ---
+    if (!user.reviewSettings) {
+      user.reviewSettings = {};
+    }
+    if (googleReviewUrl !== undefined) {
+      const normalized = normalizeReviewUrl(googleReviewUrl);
+      user.reviewSettings.googleReviewUrl = normalized.googleReviewUrl;
+      user.reviewSettings.resolvedUrl = normalized.resolvedUrl;
+      user.reviewSettings.urlStatus = normalized.urlStatus;
+      user.reviewSettings.verifiedAt = new Date();
+      // A link we could not make sense of must not leave the prompt live.
+      if (normalized.urlStatus !== "valid") {
+        user.reviewSettings.isEnabled = false;
+      }
+    }
+    if (reviewPromptEnabled !== undefined) {
+      const wants =
+        reviewPromptEnabled === true || reviewPromptEnabled === "true";
+      // Switching it on is only meaningful once a link actually resolves.
+      user.reviewSettings.isEnabled =
+        wants && user.reviewSettings.urlStatus === "valid";
+    }
+    if (promptDelayMinutes !== undefined) {
+      user.reviewSettings.promptDelayMinutes =
+        coercePromptDelay(promptDelayMinutes);
+    }
 
     // --- לוגיקת אדמין ותשלומים ---
     if (isPaid !== undefined || role !== undefined) {
@@ -125,16 +166,18 @@ const findRestaurantsByName = async (req, res) => {
   }
 
   try {
+    // Unauthenticated endpoint: never widen this beyond PUBLIC_USER_PROJECTION.
     const restaurant = await User.find({
       restaurantName: {$regex: new RegExp(`^${name}$`, "i")},
-    });
+    })
+      .select(PUBLIC_USER_PROJECTION)
+      .lean();
 
     if (!restaurant || restaurant.length === 0) {
       return res.status(404).json({message: "Restaurant not found"});
     }
 
-    const {password: _, ...userWithoutPassword} = restaurant[0].toObject();
-    res.status(200).json(userWithoutPassword);
+    res.status(200).json(restaurant[0]);
   } catch (error) {
     res.status(500).json({message: error.message});
   }
@@ -234,14 +277,40 @@ const findBySlug = async (req, res) => {
   }
 
   try {
-    const user = await User.findOne({qrSlug: slug});
+    // Unauthenticated endpoint: never widen this beyond PUBLIC_USER_PROJECTION.
+    // `plan` and `reviewSettings` are read for the gate below and stripped
+    // before responding — only the two fields the prompt needs go out.
+    const user = await User.findOne({qrSlug: slug})
+      .select(`${PUBLIC_USER_PROJECTION} plan reviewSettings`)
+      .lean();
 
     if (!user) {
       return res.status(404).json({message: "Menu not found"});
     }
 
-    const {password: _, ...userWithoutPassword} = user.toObject();
-    res.status(200).json(userWithoutPassword);
+    const {plan, reviewSettings, ...publicUser} = user;
+
+    // Gates 1-4 for the review prompt, all enforced here so the client is left
+    // with a single condition and the feature cannot be switched on from
+    // DevTools. Same subscription test the menu itself uses.
+    const subscriptionActive =
+      user.isPaid ||
+      !user.trialExpiresAt ||
+      new Date(user.trialExpiresAt) > new Date();
+
+    if (
+      plan === "iMenu PRO" &&
+      subscriptionActive &&
+      isReviewPromptReady(reviewSettings)
+    ) {
+      publicUser.reviewSettings = {
+        resolvedUrl: reviewSettings.resolvedUrl,
+        promptDelayMinutes:
+          reviewSettings.promptDelayMinutes ?? DEFAULT_PROMPT_DELAY_MINUTES,
+      };
+    }
+
+    res.status(200).json(publicUser);
   } catch (error) {
     res.status(500).json({message: error.message});
   }

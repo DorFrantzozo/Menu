@@ -69,6 +69,25 @@ const userSchema = new mongoose.Schema(
       isEnabled: {type: Boolean, default: false},
       address: {type: String},
     },
+    // Google review prompt shown on the public menu near the end of a visit.
+    // Off until the owner supplies a working link; see utils/reviewUrl.js.
+    reviewSettings: {
+      isEnabled: {type: Boolean, default: false},
+      // Exactly what the owner pasted, kept so the form can show it back.
+      googleReviewUrl: {type: String},
+      // Normalised destination diners are actually sent to.
+      resolvedUrl: {type: String},
+      urlStatus: {
+        type: String,
+        enum: ["unset", "valid", "invalid"],
+        default: "unset",
+      },
+      verifiedAt: {type: Date},
+      // How long after the first scan the prompt may appear. Owners pick a
+      // venue type rather than a number; a cafe visit is over long before a
+      // steakhouse main course arrives.
+      promptDelayMinutes: {type: Number, default: 15},
+    },
     role: {type: String, default: "user"},
     qrSlug: {type: String, unique: true, index: true},
 

@@ -1,4 +1,5 @@
 import axiosInstance from "../utils/baseUrl";
+import {getSlugFromHostname} from "./menuSlug";
 
 // פונקציית עזר פנימית למניעת שגיאת [object Object]
 const getSafeId = (idOrObject) => {
@@ -78,9 +79,7 @@ const getAllDishesAndMapToCategories = async (userIdOrUser, categories) => {
 };
 
 const getRestaurantName = (menu) => {
-  const hostname = window.location.hostname;
-  const parts = hostname.split(".");
-  const restaurantNameFromSubdomain = parts.length >= 3 ? parts[0] : null;
+  const restaurantNameFromSubdomain = getSlugFromHostname();
   const restaurantNameFromState = menu?.restaurantName?.toLowerCase();
 
   return restaurantNameFromState || restaurantNameFromSubdomain || null;
@@ -169,6 +168,19 @@ const getMenuStats = async (restaurantIdOrUser, days = 30) => {
   }
 };
 
+const getReviewStats = async (restaurantIdOrUser, days = 30) => {
+  const restaurantId = getSafeId(restaurantIdOrUser);
+  try {
+    const response = await axiosInstance.get("/analytics/review-stats", {
+      params: { restaurantId, days },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching review stats:", error);
+    return null;
+  }
+};
+
 const fetchQrScanCount = async (userIdOrUser) => {
   const userId = getSafeId(userIdOrUser);
   try {
@@ -192,6 +204,7 @@ export {
   getTopDishes,
   recordMenuView,
   getMenuStats,
+  getReviewStats,
   fetchQrScanCount,
   getFreshUser,
 };

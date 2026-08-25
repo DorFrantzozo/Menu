@@ -231,6 +231,126 @@ export const getMenuStats = async (req, res) => {
   }
 };
 
+// The public menu sends a short name; the stored enum value and the counter
+// field are resolved here so a diner can never write an arbitrary event type.
+const REVIEW_EVENTS = {
+  shown: {logType: "review_prompt_shown", statsField: "reviewPromptShown"},
+  click: {logType: "review_click", statsField: "reviewClicks"},
+};
+
+/**
+ * Records one step of the review-prompt funnel.
+ *
+ * Called with navigator.sendBeacon from the menu, so the response is never
+ * read and this must stay cheap and never block the diner. Deliberately not
+ * a redirect: if this endpoint is slow or down the diner still reaches Google
+ * and we simply lose a data point.
+ */
+export const trackReviewEvent = async (req, res) => {
+  try {
+    const {restaurantId, event} = req.body;
+
+    if (!restaurantId) {
+      return res.status(400).json({message: "Restaurant ID is required"});
+    }
+
+    const mapping = REVIEW_EVENTS[event];
+    if (!mapping) {
+      return res.status(400).json({message: "Unknown review event"});
+    }
+
+    const today = getJerusalemMidnight(new Date());
+
+    await MenuStats.findOneAndUpdate(
+      {restaurantId, date: today},
+      {$inc: {[mapping.statsField]: 1}},
+      {upsert: true, new: true},
+    );
+
+    // Raw event for peak-activity reporting. Fire and forget: losing one of
+    // these must not fail the request.
+    ActivityLog.create({restaurantId, type: mapping.logType}).catch((err) => {
+      console.error(
+        `Failed to log ${mapping.logType} activity:`,
+        err.message,
+      );
+    });
+
+    res.status(200).json({message: "Review event tracked"});
+  } catch (error) {
+    console.error("Error tracking review event:", error);
+    res.status(500).json({message: "Internal server error"});
+  }
+};
+
+/**
+ * Review funnel for the owner's dashboard: how many diners were shown the
+ * prompt, how many went through to Google, and the rate between them. The
+ * rate is the number worth watching — it says whether the staff are actually
+ * asking, which a raw click count cannot.
+ */
+export const getReviewStats = async (req, res) => {
+  try {
+    const {restaurantId, days = 30} = req.query;
+
+    if (!restaurantId) {
+      return res.status(400).json({message: "Restaurant ID is required"});
+    }
+
+    const localFaceDate = new Date(
+      new Date().toLocaleString("en-US", {timeZone: "Asia/Jerusalem"}),
+    );
+    localFaceDate.setDate(localFaceDate.getDate() - parseInt(days));
+    const startDate = getJerusalemMidnight(localFaceDate);
+
+    const stats = await MenuStats.find({
+      restaurantId,
+      date: {$gte: startDate},
+    }).sort({date: 1});
+
+    const formattedStats = stats.map((stat) => ({
+      date: new Date(stat.date).toLocaleDateString("he-IL", {
+        day: "2-digit",
+        month: "2-digit",
+      }),
+      shown: stat.reviewPromptShown || 0,
+      clicks: stat.reviewClicks || 0,
+    }));
+
+    const totals = formattedStats.reduce(
+      (acc, day) => ({
+        shown: acc.shown + day.shown,
+        clicks: acc.clicks + day.clicks,
+      }),
+      {shown: 0, clicks: 0},
+    );
+
+    const allTimeResult = await MenuStats.aggregate([
+      {$match: {restaurantId: new mongoose.Types.ObjectId(restaurantId)}},
+      {$group: {_id: null, total: {$sum: "$reviewClicks"}}},
+    ]);
+
+    res.status(200).json({
+      formattedStats,
+      totals: {
+        ...totals,
+        // Percentage of diners who saw the prompt and went on to Google.
+        // Clamped: both halves are deduplicated per visit on the client, but
+        // a cleared session or a stale counter must never show an owner a
+        // rate above 100% — one absurd figure discredits the whole dashboard.
+        clickRate:
+          totals.shown > 0
+            ? Math.min(100, Math.round((totals.clicks / totals.shown) * 100))
+            : 0,
+      },
+      totalClicksAllTime: allTimeResult.length > 0 ? allTimeResult[0].total : 0,
+    });
+  } catch (error) {
+    console.error("Error fetching review stats:", error);
+    res.status(500).json({message: "Internal server error"});
+  }
+};
+
 export const getPeakActivity = async (req, res) => {
   try {
     const { userId } = req.params;
