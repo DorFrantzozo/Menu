@@ -5,7 +5,7 @@ const CategoryFilter = ({ categories, activeCategoryId, onSelectCategory }) => {
   const { language } = useLanguage();
 
   return (
-    <div className="sticky top-0 z-10 bg-[#FAF9F6]/90 backdrop-blur-md pb-4 pt-2 -mx-4 px-4 sm:mx-0 sm:px-0">
+    <div className="sticky top-0 z-menu-sticky bg-[#FAF9F6]/90 backdrop-blur-md pb-4 pt-2 -mx-4 px-4 sm:mx-0 sm:px-0">
       <div className="flex overflow-x-auto hide-scrollbar space-x-2 space-x-reverse snap-x snap-mandatory pb-1">
         
         {/* "All Items" Chip */}

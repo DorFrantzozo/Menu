@@ -8,6 +8,17 @@ export default {
   content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      // Stacking order for the public menu surface (designs, floating widgets,
+      // dish modals). Tailwind's numeric z-* utilities are still available and
+      // stay reserved for local layering inside a card or a modal.
+      // Anything that is fixed/sticky at page level belongs on this scale.
+      zIndex: {
+        "menu-sticky": "30", // sticky headers and category strips
+        "menu-float": "40", // persistent floating widgets (language selector)
+        "menu-prompt": "50", // review prompt: pill and sheet
+        "menu-backdrop": "60", // dish modal backdrop
+        "menu-modal": "70", // dish modal panel
+      },
       keyframes: {
         shine: {
           "0%": {

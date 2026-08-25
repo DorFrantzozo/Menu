@@ -31,7 +31,7 @@ const DishModal = ({ dish, isOpen, onClose }) => {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 sm:p-6" dir={isRTL ? 'rtl' : 'ltr'}>
+        <div className="fixed inset-0 z-menu-modal flex items-center justify-center p-4 sm:p-6" dir={isRTL ? 'rtl' : 'ltr'}>
           {/* Backdrop */}
           <motion.div 
             initial={{ opacity: 0 }}

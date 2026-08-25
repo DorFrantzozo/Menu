@@ -32,7 +32,7 @@ const DishModalDesign5 = ({ dish, isOpen, onClose }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-menu-backdrop"
             onClick={onClose}
           />
 
@@ -42,7 +42,7 @@ const DishModalDesign5 = ({ dish, isOpen, onClose }) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 60 }}
             transition={{ type: "spring", damping: 28, stiffness: 300 }}
-            className="fixed inset-x-0 bottom-0 lg:inset-y-0 lg:m-auto z-[101] max-h-[90vh] lg:max-h-[500px] lg:h-[450px] bg-white rounded-t-3xl lg:rounded-3xl overflow-hidden flex flex-col lg:flex-row lg:max-w-4xl w-full"
+            className="fixed inset-x-0 bottom-0 lg:inset-y-0 lg:m-auto z-menu-modal max-h-[90vh] lg:max-h-[500px] lg:h-[450px] bg-white rounded-t-3xl lg:rounded-3xl overflow-hidden flex flex-col lg:flex-row lg:max-w-4xl w-full"
           >
             {/* Close Button */}
             <button

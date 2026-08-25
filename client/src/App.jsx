@@ -17,21 +17,18 @@ import {
 } from "@/utils/fetchData";
 import Profile from "./pages/Profile";
 import Menu from "./pages/Menu";
-import Design1 from "./designs/Design1/Design1";
 import Designs from "./pages/Designs";
+import {DESIGN_NUMBERS, DESIGNS} from "./designs/registry";
 import Design1Dish from "./designs/Design1/Design1Dish";
-import Design2 from "./designs/Design2/Design2";
 import AddAssetsPage from "./pages/AddAssetsPage";
 import Landing2 from "./pages/Landing2";
 import AdminPage from "./pages/AdminPage";
 import {Analytics} from "@vercel/analytics/react";
 import {setMenuCategories} from "./state/menu/menuCategoriesSlice";
-import Design3 from "./designs/Design3/Design3";
 import ScrollToTop from "./components/ScrollToTop";
 import TermsOfService from "./pages/TermsOfService";
 import Settings from "./pages/Settings";
 import SendLinkToEmail from "./pages/SendLinkToEmail";
-import Design4 from "./designs/Design4/Design4";
 import {AnimatePresence} from "framer-motion";
 import DishDetails from "./designs/Design4/Design4DishDetails";
 import EditProfile from "./pages/EditProfile";
@@ -41,7 +38,6 @@ import ManageCategories from "./pages/ManageCategories";
 import ManageDishes from "./pages/ManageDishes";
 import Sidebar from "./components/SideBar";
 import SupportPage from "./pages/SupportPage";
-import Design5 from "./designs/Design5/Design5";
 import GlobalErrorBoundary from "./components/GlobalErrorBoundary";
 import OnboardingTour from "./components/Dashboard/TourFix";
 import {ThemeProvider} from "./context/ThemeContext";
@@ -52,7 +48,6 @@ import SuccessPage from "./pages/payment/SuccessPaymentPage";
 import CheckoutPage from "./pages/payment/CheckoutPage";
 import Accessibility from "./pages/legal/Accessibility";
 import AuthPage from "./pages/AuthPage";
-import Design6 from "./designs/Design6/Design6";
 import AIInsightsPage from "./pages/AIInsights/AIInsightsPage";
 
 function App() {
@@ -248,20 +243,24 @@ function App() {
                     />
                     <Route path="/verify-email" element={<VerifyEmail />} />
                     <Route path="/resetpassword" element={<ResetPassword />} />
-                    <Route path="/design1" element={<Design1 />} />
-                    <Route path="/design2" element={<Design2 />} />
-                    <Route path="/design3" element={<Design3 />} />
+                    {DESIGN_NUMBERS.map((designNumber) => {
+                      const {Component} = DESIGNS[designNumber];
+                      return (
+                        <Route
+                          key={designNumber}
+                          path={`/design${designNumber}`}
+                          element={<Component />}
+                        />
+                      );
+                    })}
                     <Route
                       path="/design1/:categoryName/dishes/:userId/:categoryId"
                       element={<Design1Dish />}
                     />
-                    <Route path="/design4" element={<Design4 />} />
                     <Route
                       path="/design4DishDetails"
                       element={<DishDetails />}
                     />
-                    <Route path="/design5" element={<Design5 />} />
-                    <Route path="/design6" element={<Design6 />} />
                     <Route path="/checkout" element={<CheckoutPage />} />
                     <Route path="/payment-success" element={<SuccessPage />} />
                     <Route

@@ -15,7 +15,7 @@ const Design1DishModal = ({ dish, isOpen, onClose }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50">
+      <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-menu-modal">
         <div className="relative w-full h-full bg-white shadow-lg overflow-y-auto">
           <Button
             onClick={onClose}

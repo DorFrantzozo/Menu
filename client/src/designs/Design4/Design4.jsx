@@ -142,7 +142,7 @@ const Design4 = ({ menu: menuProp }) => {
   return (
     <div className="min-h-screen overflow-x-hidden">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-white shadow-lg ">
+      <div className="sticky top-0 z-menu-sticky bg-white shadow-lg ">
         <div className={`flex justify-between items-center py-5 px-4 ${language === "en" ? "flex-row-reverse" : ""}`}>
           <div className="flex flex-col">
             <h1 className="text-2xl font-bold text-black flex items-center gap-2">

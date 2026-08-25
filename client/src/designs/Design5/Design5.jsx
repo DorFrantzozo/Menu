@@ -241,7 +241,7 @@ const Design5 = ({menu: menuProp}) => {
       </div>
 
       {/* ══════════ Sticky Controls ══════════ */}
-      <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-md shadow-sm">
+      <div className="sticky top-0 z-menu-sticky bg-white/95 backdrop-blur-md shadow-sm">
         <div className="lg:max-w-5xl lg:mx-auto">
           {/* Categories Strip */}
           <div
