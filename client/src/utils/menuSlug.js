@@ -7,6 +7,10 @@
 // menu renders "not found".
 const IPV4 = /^\d{1,3}(\.\d{1,3}){3}$/;
 
+// Labels that belong to the platform, never to a restaurant. Without this,
+// www.imenu-il.online/menu looks up a restaurant called "www".
+const RESERVED_LABELS = new Set(["www"]);
+
 export const getSlugFromHostname = (
   hostname = typeof window !== "undefined" ? window.location.hostname : "",
 ) => {
@@ -16,14 +20,17 @@ export const getSlugFromHostname = (
   // 127.0.0.1 splits into four labels and would otherwise yield "127".
   if (IPV4.test(host)) return null;
 
-  // Local development: <slug>.localhost
+  let candidate;
   if (host.endsWith(".localhost")) {
-    const [first] = host.split(".");
-    return first || null;
+    // Local development: <slug>.localhost
+    [candidate] = host.split(".");
+  } else {
+    const parts = host.split(".");
+    candidate = parts.length >= 3 ? parts[0] : null;
   }
 
-  const parts = host.split(".");
-  return parts.length >= 3 ? parts[0] : null;
+  if (!candidate || RESERVED_LABELS.has(candidate)) return null;
+  return candidate;
 };
 
 export default getSlugFromHostname;
