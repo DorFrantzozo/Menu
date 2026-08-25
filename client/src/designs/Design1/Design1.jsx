@@ -3,6 +3,7 @@ import useTrackMenuView from "@/hooks/useTrackMenuView";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import axiosInstance from "../../utils/baseUrl";
+import {getSlugFromHostname} from "@/utils/menuSlug";
 import Spinner from "@/components/Spinner";
 // ✅ ייבוא הפונקציה המסודרת שיצרנו ב-fetchData
 import { getCategories } from "@/utils/fetchData";
@@ -24,9 +25,7 @@ const Design1 = ({ menu: menuProp }) => {
   useTrackMenuView(restaurant?._id || menu?._id);
 
   const restaurantNameFromState = menu?.restaurantName?.toLowerCase();
-  const hostname = window.location.hostname;
-  const parts = hostname.split(".");
-  const restaurantNameFromSubdomain = parts.length >= 3 ? parts[0] : null;
+  const restaurantNameFromSubdomain = getSlugFromHostname();
 
   useEffect(() => {
     if (menu?.restaurantName) {

@@ -6,6 +6,7 @@ import Spinner from "../../components/Spinner";
 import Allergies from "../../components/sensitivities/Allergies";
 import IconDescription from "../../components/sensitivities/IconDescription";
 import axiosInstance from "@/utils/baseUrl";
+import {getSlugFromHostname} from "@/utils/menuSlug";
 import { fetchCategoriesAndDishes } from "@/utils/fetchData";
 import { isCategoryActive } from "@/utils/isCategoryActive";
 import { useNavigate } from "react-router-dom";
@@ -30,9 +31,7 @@ const Design2 = ({ menu: menuProp }) => {
   const trackId = restaurant?._id || menu?._id;
   useTrackMenuView(trackId);
 
-  const hostname = window.location.hostname;
-  const parts = hostname.split(".");
-  const restaurantNameFromSubdomain = parts.length >= 3 ? parts[0] : null;
+  const restaurantNameFromSubdomain = getSlugFromHostname();
   const restaurantNameFromState = menu?.restaurantName?.toLowerCase();
 
   useEffect(() => {

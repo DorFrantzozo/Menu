@@ -49,8 +49,14 @@ app.use(
       // 3. Check if it's a Vercel deployment (Dynamic Previews)
       const isVercelAllowed = /\.vercel\.app$/.test(origin);
 
-      // 4. Check for local development
-      const isLocalhost = /^http:\/\/localhost(:\d+)?$/.test(origin);
+      // 4. Check for local development. Subdomains are allowed because a menu
+      // is addressed as <slug>.host, so opening one locally means
+      // <slug>.localhost:5173. Browsers resolve every *.localhost name to
+      // loopback and never to a real host, so this cannot widen access beyond
+      // the developer's own machine.
+      const isLocalhost = /^http:\/\/(?:[a-z0-9-]+\.)*localhost(:\d+)?$/.test(
+        origin,
+      );
 
       if (
         isExactMatch ||
