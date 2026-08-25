@@ -71,6 +71,24 @@ hr.style-seven:before {
     --accent-foreground: 0 0% 98%;
     /* תיקון ה-Border */
     --border: 240 5% 20%;
+
+    /* Everything below was missing, so these tokens kept their light values in
+       dark mode: text stayed near-black and cards stayed white. Any screen
+       built from ui/ primitives without explicit dark: classes was unreadable
+       — the profile page most of all, since it is almost entirely primitives. */
+    --foreground: 0 0% 95%;
+    --card: 240 5% 14%;
+    --card-foreground: 0 0% 95%;
+    --popover: 240 5% 14%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 6% 10%;
+    --muted: 240 5% 18%;
+    --muted-foreground: 240 5% 65%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --input: 240 5% 22%;
+    --ring: 240 5% 65%;
   }
 }
 @layer base {

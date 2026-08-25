@@ -27,10 +27,13 @@ const PRO_ADDONS = [
   "עד 20 תגי NFC"
 ];
 
+// Keys must match the `plan` enum on the User model exactly
+// ("Free" | "Essential" | "Advance" | "iMenu PRO"). A lookup that misses here
+// falls through to a default and shows the wrong plan's features.
 export const ALL_PLANS = {
   // תוכנית ניסיון - זהה ביכולותיה ל-Essential
-  FREE: {
-    name: "FREE",
+  Free: {
+    name: "Free",
     features: [...ESSENTIAL_FEATURES]
   },
   Essential: {

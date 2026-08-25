@@ -8,7 +8,9 @@ const SubscriptionStatusCard = ({ currentPlan = 'Essential' }) => {
   const navigate = useNavigate();
   
   // שליפת הנתונים לפי המבנה של ALL_PLANS
-  const planData = ALL_PLANS[currentPlan] || ALL_PLANS['Essential'];
+  // Fall back to the free tier, not a paid one: an unknown plan should show
+  // the fewest features, never advertise capabilities the account lacks.
+  const planData = ALL_PLANS[currentPlan] || ALL_PLANS['Free'];
   const activeFeatures = planData.features;
   const isPro = currentPlan === 'iMenu PRO';
 
