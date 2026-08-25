@@ -6,7 +6,14 @@
 // never read a response: if the server is slow or down the diner still
 // reaches Google and we simply lose a data point. That trade is the whole
 // reason this is not a redirect through our own domain.
-const ENDPOINT = "/api/analytics/review-event";
+import { API_BASE_URL } from "./baseUrl";
+
+// Must be absolute. The client is served from the static host while the API
+// lives elsewhere, and that host rewrites every unmatched path to index.html —
+// so a relative URL returns 200 with a page of HTML and the event vanishes
+// without a trace, because sendBeacon only reports whether it queued the
+// request. Reuse the base axios already resolved.
+const ENDPOINT = `${API_BASE_URL}/analytics/review-event`;
 
 const send = (restaurantId, event) => {
   if (typeof navigator === "undefined" || !navigator.sendBeacon) return false;

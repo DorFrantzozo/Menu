@@ -6,6 +6,11 @@ let envBase = import.meta.env.VITE_BASE_URL || "";
 if (envBase.endsWith("/")) envBase = envBase.slice(0, -1);
 const finalBaseUrl = envBase.endsWith("/api") ? envBase : `${envBase}/api`;
 
+// Exported so non-axios callers (navigator.sendBeacon) target the same API as
+// everything else. A relative "/api/..." would work behind the dev proxy and
+// then quietly hit the static host in production.
+export const API_BASE_URL = finalBaseUrl;
+
 const axiosInstance = axios.create({
   baseURL: finalBaseUrl,
 });
